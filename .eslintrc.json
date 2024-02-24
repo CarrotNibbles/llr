@@ -11,16 +11,21 @@
   ],
   "overrides": [
     {
-      "extends": ["xo-typescript", "plugin:prettier/recommended"],
-      "files": ["*.ts", "*.tsx"]
+      "extends": [
+        "xo-typescript",
+        "next/core-web-vitals",
+        "plugin:@next/next/recommended",
+        "plugin:prettier/recommended"
+      ],
+      "files": ["*.ts", "*.tsx"],
+      "rules": {
+        "@typescript-eslint/no-unsafe-argument": "off"
+      }
     }
   ],
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
-  },
-  "rules": {
-    "typescript-eslint/no-unsafe-argument": "disable"
   },
   "ignorePatterns": ["postcss.config.js", "tailwind.config.ts", "src/components/ui/**"]
 }
