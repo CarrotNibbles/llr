@@ -17,11 +17,10 @@ const defaultUser: User = {
 const userState = atom<User>({
 	key: 'userState',
 	default: defaultUser,
-	// eslint-disable-next-line
 	effects_UNSTABLE: [persistAtom],
 });
 
-function useRecoilSsrState<T>(recoilState: RecoilState<T>, defaultValue: T) {
+function useRecoilSSRState<T>(recoilState: RecoilState<T>, defaultValue: T) {
 	const [isInitial, setIsInitial] = useState(true);
 	const [value, setValue] = useRecoilState(recoilState);
 
@@ -34,4 +33,4 @@ function useRecoilSsrState<T>(recoilState: RecoilState<T>, defaultValue: T) {
 	return [isInitial ? defaultValue : value, setValue] as const;
 }
 
-export const useUserState = () => useRecoilSsrState<User>(userState, defaultUser);
+export const useUserState = () => useRecoilSSRState<User>(userState, defaultUser);
