@@ -6,6 +6,7 @@
     "extends": [
         "xo",
         "next/core-web-vitals",
+        "plugin:prettier/recommended",
         "plugin:@next/next/recommended"
     ],
     "overrides": [
