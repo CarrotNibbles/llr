@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import { cn } from '@/lib/utils';
+import RecoilRootProvider from '@/components/RecoilRootProvider';
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',
@@ -20,10 +21,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>): React.ReactElement {
   return (
-    <html lang="en">
-      <body className={cn('min-h-screen bg-backgroun font-sans antialiased', pretendard.className)}>
-        {children}
-      </body>
-    </html>
+    <RecoilRootProvider>
+      <html lang="en">
+        <body
+          className={cn('min-h-screen bg-background font-sans antialiased', pretendard.className)}
+        >
+          {children}
+        </body>
+      </html>
+    </RecoilRootProvider>
   );
 }
