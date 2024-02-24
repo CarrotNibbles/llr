@@ -4,7 +4,7 @@ import './globals.css';
 import {cn} from '@/lib/utils';
 
 const pretendard = localFont({
-	src: '../../public/assets/fonts/PretendardVariable.woff2',
+	src: '../../public/fonts/PretendardVariable.woff2',
 	display: 'swap',
 	variable: '--font-sans',
 });
