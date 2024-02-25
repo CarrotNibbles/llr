@@ -4,15 +4,14 @@ import { recoilPersist } from 'recoil-persist';
 
 const { persistAtom } = recoilPersist();
 
-type User = {
-  name: string;
-  age: number;
-};
+type User =
+  | {
+      name: string;
+      age: number;
+    }
+  | undefined;
 
-const defaultUser: User = {
-  name: 'John Doe',
-  age: 300,
-};
+const defaultUser: User = undefined;
 
 const userState = atom<User>({
   key: 'userState',

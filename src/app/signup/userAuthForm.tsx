@@ -8,23 +8,32 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
+import { discordSignin, emailSignup } from './action';
+
 type UserAuthFormProps = Record<string, unknown> & React.HTMLAttributes<HTMLDivElement>;
 
-export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
+export function UserSignupForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [email, setEmail] = React.useState<string>('');
+  const [password, setPassword] = React.useState<string>('');
 
-  async function onSubmit(event: React.SyntheticEvent) {
+  async function onEmailSubmit(event: React.SyntheticEvent) {
     event.preventDefault();
-    setIsLoading(true);
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
+    setIsLoading(true);
+    await emailSignup(email, password);
+    setIsLoading(false);
+  }
+
+  async function onDiscordSubmit() {
+    setIsLoading(true);
+    await discordSignin();
+    setIsLoading(false);
   }
 
   return (
     <div className={cn('grid gap-6', className)} {...props}>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onEmailSubmit}>
         <div className="grid gap-2">
           <div className="grid gap-1">
             <Label className="sr-only" htmlFor="email">
@@ -38,6 +47,26 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               autoComplete="email"
               autoCorrect="off"
               disabled={isLoading}
+              value={email}
+              onChange={(event) => {
+                setEmail(event.target.value);
+              }}
+            />
+          </div>
+          <div className="grid gap-1">
+            <Label className="sr-only" htmlFor="email">
+              Password
+            </Label>
+            <Input
+              id="password"
+              placeholder="Password"
+              type="password"
+              autoCapitalize="none"
+              disabled={isLoading}
+              value={password}
+              onChange={(event) => {
+                setPassword(event.target.value);
+              }}
             />
           </div>
           <Button disabled={isLoading}>
@@ -54,6 +83,14 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
         </div>
       </div>
+      <Button variant="outline" type="button" disabled={isLoading} onClick={onDiscordSubmit}>
+        {isLoading ? (
+          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <Icons.discord className="mr-2 h-4 w-4" />
+        )}{' '}
+        Discord
+      </Button>
       <Button variant="outline" type="button" disabled={isLoading}>
         {isLoading ? (
           <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />

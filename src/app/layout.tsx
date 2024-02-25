@@ -7,6 +7,7 @@ import RecoilRootProvider from '@/components/RecoilRootProvider';
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',
   variable: '--font-sans',
+  preload: true,
 });
 
 export const metadata: Metadata = {
