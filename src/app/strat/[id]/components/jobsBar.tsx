@@ -1,7 +1,7 @@
 'use client';
 
 import { type ForwardedRef, forwardRef } from 'react';
-import { JobsBarColumn } from './jobsBarColumn';
+import { HeaderArea } from './headerArea';
 import { Separator } from '@/components/ui/separator';
 
 const JobsBarInner = (
@@ -10,9 +10,9 @@ const JobsBarInner = (
 ) => {
   return (
     <div className="w-full sticky" ref={ref}>
-      <ul className="p-2">
+      <ul className="pt-2">
         {jobs.map((job, index) => (
-          <JobsBarColumn key={index} job={job} isOpen={isOpens[index]} />
+          <HeaderArea key={index} job={job} />
         ))}
       </ul>
       <Separator />
