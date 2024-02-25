@@ -5,10 +5,12 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { MyScrollArea } from '@/components/myScrollArea';
 import { JobsBar } from './jobsBar';
 import { useRef, useState } from 'react';
+import { EditArea } from './editArea';
 
 export const MechanicsTable = () => {
   const viewportRef = useRef<HTMLDivElement>(null);
   const jobsBarRef = useRef<HTMLDivElement>(null);
+  const [isOpens, setIsOpens] = useState([true]);
 
   return (
     <MyScrollArea
@@ -29,10 +31,8 @@ export const MechanicsTable = () => {
         <ResizableHandle />
         <ResizablePanel defaultSize={80} minSize={60}>
           <ScrollArea>
-            <JobsBar jobs={[]} ref={jobsBarRef} />
-            <div className="flex h-[1200px] w-[1600px] items-center justify-center p-6">
-              <span className="font-semibold">Three</span>
-            </div>
+            <JobsBar jobs={[1]} isOpens={isOpens} ref={jobsBarRef} />
+            <EditArea jobs={[1]} isOpens={isOpens} />
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
         </ResizablePanel>
