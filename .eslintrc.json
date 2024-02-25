@@ -27,5 +27,10 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "ignorePatterns": ["postcss.config.js", "tailwind.config.ts", "src/components/ui/**"]
+  "ignorePatterns": [
+    "postcss.config.js",
+    "tailwind.config.ts",
+    "src/components/ui/**",
+    "database.types.ts"
+  ]
 }

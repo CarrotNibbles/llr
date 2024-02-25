@@ -6,7 +6,24 @@ import RecoilRootProvider from '@/components/RecoilRootProvider';
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',
+  fallback: [
+    'Pretendard',
+    '-apple-system',
+    'BlinkMacSystemFont',
+    'system-ui',
+    'Roboto',
+    'Helvetica Neue',
+    'Segoe UI',
+    'Apple SD Gothic Neo',
+    'Noto Sans KR',
+    'Malgun Gothic',
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol',
+    'sans-serif',
+  ],
   variable: '--font-sans',
+  display: 'optional',
   preload: true,
 });
 
@@ -24,7 +41,7 @@ export default function RootLayout({
     <RecoilRootProvider>
       <html lang="en">
         <body
-          className={cn('min-h-screen bg-background font-sans antialiased', pretendard.className)}
+          className={cn('min-h-screen bg-background font-sans antialiased', pretendard.variable)}
         >
           {children}
         </body>
