@@ -1,9 +1,10 @@
 'use client';
 
+import { MyScrollArea } from '@/components/myScrollArea';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { MyScrollArea } from '@/components/myScrollArea';
-import React, { type RefObject, useRef, useState } from 'react';
+import { Separator } from '@/components/ui/separator';
+import { useRef } from 'react';
 import { PlayerColumn } from './playerColumn';
 
 export const MechanicsTable = () => {
@@ -42,7 +43,7 @@ export const MechanicsTable = () => {
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel className="flex" defaultSize={80} minSize={60}>
-          <ScrollArea className="w-[95%] whitespace-nowrap rounded-md border">
+          <ScrollArea>
             <ul className="flex px-2">
               {jobs.map((job, index) => {
                 return (
@@ -52,6 +53,7 @@ export const MechanicsTable = () => {
             </ul>
             <ScrollBar orientation="horizontal" />
           </ScrollArea>
+          <Separator orientation="vertical" />
         </ResizablePanel>
       </ResizablePanelGroup>
     </MyScrollArea>
