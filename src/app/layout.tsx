@@ -2,10 +2,10 @@ import type {Metadata} from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import {cn} from '@/lib/utils';
+import {NavBar} from './components/navBar';
 
 const pretendard = localFont({
 	src: '../../public/fonts/PretendardVariable.woff2',
-	display: 'swap',
 	variable: '--font-sans',
 });
 
@@ -21,7 +21,11 @@ export default function RootLayout({
 }>): React.ReactElement {
 	return (
 		<html lang='en'>
-			<body className={cn('min-h-screen bg-backgroun font-sans antialiased', pretendard.className)}>{children}</body>
+			<body className={cn('min-h-screen bg-backgroun font-sans antialiased', pretendard.className)}>
+				<NavBar />
+				<hr />
+				{children}
+			</body>
 		</html>
 	);
 }
