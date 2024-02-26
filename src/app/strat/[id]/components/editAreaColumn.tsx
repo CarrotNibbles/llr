@@ -108,17 +108,22 @@ const DraggableBox = ({
           dragMomentum={false}
           dragTransition={{ bounceStiffness: 1000 }}
           _dragY={yMotionValue}
-          className={`lg:w-10 lg:h-0 float-left absolute`}
+          className={`lg:w-10 h-0 float-left absolute`}
           style={{ y: yMotionValue }}
         >
           <div
-            className="absolute lg:w-10 bg-red-300"
-            style={{ height: `${CoolDownTemp * PixelPerSecTemp}px` }}
-          />
-          <div
-            className="absolute lg:w-10 bg-green-300"
-            style={{ height: `${DurationTemp * PixelPerSecTemp}px` }}
-          />
+            className="absolute lg:w-10 rounded-sm overflow-hidden bg-red-300"
+            style={{
+              height: `${CoolDownTemp * PixelPerSecTemp}px`,
+              borderWidth: isLocked ? '2px' : undefined,
+              borderColor: isLocked ? 'gray' : undefined,
+            }}
+          >
+            <div
+              className="lg:w-10 bg-green-300"
+              style={{ height: `${DurationTemp * PixelPerSecTemp}px` }}
+            />
+          </div>
         </motion.div>
       </ContextMenuTrigger>
       <ContextMenuContent className="lg:w-32">
