@@ -23,6 +23,10 @@ const DurationTemp = 10;
 const CoolDownTemp = 30;
 const RaidDurationTemp = 600;
 const uidLength = 10;
+const columnWidth = 5;
+const columnWidthLarge = 10;
+const contextMenuWidth = 16;
+const contextMenuWidthLarge = 32;
 
 const snapToStep = (currentY: number) => {
   if (currentY < 0) currentY = 0;
@@ -107,11 +111,11 @@ const DraggableBox = ({
           dragMomentum={false}
           dragTransition={{ bounceStiffness: 1000 }}
           _dragY={yMotionValue}
-          className={`w-5 lg:w-10 h-0 float-left absolute`}
+          className={`w-${columnWidth} lg:w-${columnWidthLarge} h-0 float-left absolute`}
           style={{ y: yMotionValue }}
         >
           <div
-            className="w-5 lg:w-10 rounded-sm overflow-hidden bg-red-300"
+            className={`w-${columnWidth} lg:w-${columnWidthLarge} rounded-sm overflow-hidden bg-red-300`}
             style={{
               height: `${CoolDownTemp * PixelPerSecTemp}px`,
               borderWidth: isLocked ? '2px' : undefined,
@@ -119,13 +123,13 @@ const DraggableBox = ({
             }}
           >
             <div
-              className="w-5 lg:w-10 bg-green-300"
+              className={`w-${columnWidth} lg:w-${columnWidthLarge} bg-green-300`}
               style={{ height: `${DurationTemp * PixelPerSecTemp}px` }}
             />
           </div>
         </motion.div>
       </ContextMenuTrigger>
-      <ContextMenuContent className="w-16 lg:w-32">
+      <ContextMenuContent className={`w-${contextMenuWidth} lg:w-${contextMenuWidthLarge}`}>
         <ContextMenuCheckboxItem checked={isLocked} onCheckedChange={onLock}>
           Lock
         </ContextMenuCheckboxItem>
@@ -165,7 +169,7 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
 
   return (
     <li
-      className="flex w-5 lg:w-10 overflow-hidden"
+      className={`flex w-${columnWidth} lg:w-${columnWidthLarge} overflow-hidden`}
       style={{ height: RaidDurationTemp * PixelPerSecTemp }}
     >
       <ContextMenu>
@@ -195,7 +199,7 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
             />
           ))}
         </ContextMenuTrigger>
-        <ContextMenuContent className="w-16 lg:w-32">
+        <ContextMenuContent className={`w-${contextMenuWidth} lg:w-${contextMenuWidthLarge}`}>
           <ContextMenuItem inset disabled={!checkCanCreate()} onClick={onCreate}>
             Create
           </ContextMenuItem>
