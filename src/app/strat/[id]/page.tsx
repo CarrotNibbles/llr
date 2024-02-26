@@ -3,43 +3,48 @@
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import { StratHeader } from './StratHeader';
+import { DamageEvaluation } from './components/DamageEvaluation';
 
 export default function StratPage() {
   return (
     <ScrollSync>
-      <>
+      <div className="flex flex-col max-h-screen h-screen">
         <StratHeader />
         <ResizablePanelGroup
           direction="horizontal"
-          className="flex flex-col w-screen h-screen max-h-screen overflow-hidden"
+          className="relative flex w-screen flex-grow overflow-hidden"
         >
-          <div className="flex flex-grow overflow-auto">
-            <ResizablePanel
-              defaultSize={20}
-              minSize={10}
-              className="flex flex-col overflow-auto border-r"
-            >
-              <div className="min-h-10 h-10 border-b"></div>
-              <ScrollSyncPane group="y">
-                <div className="overflow-y-scroll overflow-x-clip overscroll-none flex-grow scrollbar-hide">
-                  ㅇ
-                </div>
-              </ScrollSyncPane>
-            </ResizablePanel>
-            <ResizableHandle className="w-0" />
-            <ResizablePanel className="flex flex-grow flex-col overflow-auto border-r">
-              <ScrollSyncPane group="x">
-                <div className="min-h-10 h-10 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide border-b">
-                  ㅠ
-                </div>
-              </ScrollSyncPane>
-              <ScrollSyncPane group={['x', 'y']}>
-                <div className="flex-grow overflow-scroll overscroll-none">ㅁ</div>
-              </ScrollSyncPane>
-            </ResizablePanel>
-          </div>
+          <ResizablePanel defaultSize={20} minSize={4} className="border-r">
+            <div className="min-h-10 h-10 border-b"></div>
+          </ResizablePanel>
+          <ResizableHandle className="w-0" withHandle />
+          <ResizablePanel
+            defaultSize={80}
+            maxSize={96}
+            className="flex flex-col overflow-auto border-r bg-white"
+          >
+            <ScrollSyncPane group="x">
+              <div className="min-h-10 h-10 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide border-b">
+                <div className="min-w-[1400px]"></div>
+              </div>
+            </ScrollSyncPane>
+            <ScrollSyncPane group={['x', 'y']}>
+              <div className="relative flex-grow overflow-scroll overscroll-none">
+                <div className="min-h-[2000px] min-w-[1400px]"></div>
+              </div>
+            </ScrollSyncPane>
+          </ResizablePanel>
+          <ScrollSyncPane group="y">
+            <div className="absolute top-10 left-0 w-screen h-full pointer-events-none overflow-y-scroll">
+              <div className="absolute top-0 left-0 w-screen min-h-[2000px]">
+                <DamageEvaluation />
+                <div className="absolute border-b border-2 border-red-500 h-0 w-screen top-[1200px]"></div>
+                <div className="absolute border-b border-2 border-blue-500 h-0 w-screen top-[1700px]"></div>
+              </div>
+            </div>
+          </ScrollSyncPane>
         </ResizablePanelGroup>
-      </>
+      </div>
     </ScrollSync>
   );
 }
