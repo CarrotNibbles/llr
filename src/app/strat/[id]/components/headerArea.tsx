@@ -14,6 +14,8 @@ const HeaderAreaInner = ({ job }: { job: any }, ref: ForwardedRef<HTMLDivElement
         <HeaderAreaColumn key={1} />
         <HeaderAreaColumn key={2} />
         <HeaderAreaColumn key={3} />
+        <HeaderAreaColumn key={4} />
+        <HeaderAreaColumn key={5} />
       </ul>
       <Separator orientation="vertical" />
     </div>
