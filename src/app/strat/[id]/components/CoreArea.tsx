@@ -2,7 +2,7 @@
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
-import { EditAreaColumn } from './editAreaColumn';
+import { EditAreaColumn } from './EditAreaColumn';
 import { DamageEvaluation } from './DamageEvaluation';
 
 export const CoreArea = () => {
