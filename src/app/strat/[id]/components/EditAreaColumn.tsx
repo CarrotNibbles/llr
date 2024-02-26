@@ -107,11 +107,11 @@ const DraggableBox = ({
           dragMomentum={false}
           dragTransition={{ bounceStiffness: 1000 }}
           _dragY={yMotionValue}
-          className={`lg:w-10 h-0 float-left absolute`}
+          className={`w-5 lg:w-10 h-0 float-left absolute`}
           style={{ y: yMotionValue }}
         >
           <div
-            className="absolute lg:w-10 rounded-sm overflow-hidden bg-red-300"
+            className="w-5 lg:w-10 rounded-sm overflow-hidden bg-red-300"
             style={{
               height: `${CoolDownTemp * PixelPerSecTemp}px`,
               borderWidth: isLocked ? '2px' : undefined,
@@ -119,13 +119,13 @@ const DraggableBox = ({
             }}
           >
             <div
-              className="lg:w-10 bg-green-300"
+              className="w-5 lg:w-10 bg-green-300"
               style={{ height: `${DurationTemp * PixelPerSecTemp}px` }}
             />
           </div>
         </motion.div>
       </ContextMenuTrigger>
-      <ContextMenuContent className="lg:w-32">
+      <ContextMenuContent className="w-16 lg:w-32">
         <ContextMenuCheckboxItem checked={isLocked} onCheckedChange={onLock}>
           Lock
         </ContextMenuCheckboxItem>
@@ -165,7 +165,7 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
 
   return (
     <li
-      className="flex lg:w-10 md:w-5 overflow-hidden"
+      className="flex w-5 lg:w-10 overflow-hidden"
       style={{ height: RaidDurationTemp * PixelPerSecTemp }}
     >
       <ContextMenu>
@@ -195,7 +195,7 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
             />
           ))}
         </ContextMenuTrigger>
-        <ContextMenuContent className="lg:w-32">
+        <ContextMenuContent className="w-16 lg:w-32">
           <ContextMenuItem inset disabled={!checkCanCreate()} onClick={onCreate}>
             Create
           </ContextMenuItem>
