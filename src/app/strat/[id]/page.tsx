@@ -1,7 +1,7 @@
 'use server';
 
 import { StratHeader } from './StratHeader';
-import { CoreArea } from './components/coreArea';
+import { CoreArea } from './components/CoreArea';
 
 export default async function StratPage() {
   return (
