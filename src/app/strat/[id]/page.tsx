@@ -2,6 +2,7 @@
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
+import { EditAreaColumn } from './components/editAreaColumn';
 
 export default function StratPage() {
   return (
@@ -25,7 +26,9 @@ export default function StratPage() {
                 <div className="min-h-10 h-10 bg-zinc-700 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide"></div>
               </ScrollSyncPane>
               <ScrollSyncPane group={['x', 'y']}>
-                <div className="flex flex-grow bg-zinc-500 overflow-scroll overscroll-none"></div>
+                <div className="flex flex-grow bg-zinc-500 overflow-scroll overscroll-none">
+                  <EditAreaColumn job={1} />
+                </div>
               </ScrollSyncPane>
             </ResizablePanel>
           </div>

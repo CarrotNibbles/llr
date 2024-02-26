@@ -15,13 +15,16 @@ import React, {
 } from 'react';
 
 const TimeStepTemp = 1;
-const PixelPerSecTemp = 5;
-// TODO: Move this somewhere else
+const PixelPerSecTemp = 4;
+const PixelStepTemp = TimeStepTemp * PixelPerSecTemp;
+const DurationTemp = 10;
+const CoolDownTemp = 120;
+const RaidDurationTemp = 600;
 
 const snapToStep = (num: number) => {
-  const step = Math.round(num / PixelPerSecTemp / TimeStepTemp);
+  if (num < 0) num = 0;
 
-  return step * TimeStepTemp * PixelPerSecTemp;
+  return PixelStepTemp * Math.round(num / PixelStepTemp);
 };
 
 const DraggableBox = ({
@@ -48,9 +51,18 @@ const DraggableBox = ({
       dragMomentum={false}
       onDragEnd={() => null}
       _dragY={y}
+      className={`lg:w-10 lg:h-0 float-left absolute`}
       style={{ y }}
-      className={`lg:w-10 h-10 bg-black float-left absolute`}
-    />
+    >
+      <div
+        className="absolute lg:w-10 bg-red-300"
+        style={{ height: `${CoolDownTemp * PixelPerSecTemp}px` }}
+      />
+      <div
+        className="absolute lg:w-10 bg-green-300"
+        style={{ height: `${DurationTemp * PixelPerSecTemp}px` }}
+      />
+    </motion.div>
   );
 };
 
@@ -74,7 +86,10 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
   };
 
   return (
-    <li className="flex lg:w-10 md:w-5 h-[1200px]">
+    <li
+      className="flex lg:w-10 md:w-5 pb-10 overflow-hidden"
+      style={{ height: RaidDurationTemp * PixelPerSecTemp }}
+    >
       <ContextMenu>
         <ContextMenuTrigger
           onContextMenu={onContextMenu}
