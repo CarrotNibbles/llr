@@ -165,7 +165,7 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
 
   return (
     <li
-      className="flex lg:w-10 md:w-5 pb-10 overflow-hidden"
+      className="flex lg:w-10 md:w-5 overflow-hidden"
       style={{ height: RaidDurationTemp * PixelPerSecTemp }}
     >
       <ContextMenu>

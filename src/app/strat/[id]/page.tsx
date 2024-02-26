@@ -2,7 +2,7 @@
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
-import { EditAreaColumn } from './components/editAreaColumn';
+import { EditAreaColumn } from './components/EditAreaColumn';
 import { StratHeader } from './StratHeader';
 import { DamageEvaluation } from './components/DamageEvaluation';
 
@@ -25,22 +25,18 @@ export default function StratPage() {
             className="flex flex-col overflow-auto border-r bg-white"
           >
             <ScrollSyncPane group="x">
-              <div className="min-h-10 h-10 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide border-b">
-                <div className="min-w-[1400px]"></div>
-              </div>
+              <div className="min-h-10 h-10 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide border-b"></div>
             </ScrollSyncPane>
             <ScrollSyncPane group={['x', 'y']}>
               <div className="relative flex-grow overflow-scroll overscroll-none">
-                <div className="min-h-[2000px] min-w-[1400px]"></div>
+                <EditAreaColumn job={1} />
               </div>
             </ScrollSyncPane>
           </ResizablePanel>
           <ScrollSyncPane group="y">
             <div className="absolute top-10 left-0 w-screen h-full pointer-events-none overflow-y-scroll">
-              <div className="absolute top-0 left-0 w-screen min-h-[2000px]">
+              <div className="absolute top-0 left-0 w-screen h-[2960px]">
                 <DamageEvaluation />
-                <div className="absolute border-b border-2 border-red-500 h-0 w-screen top-[1200px]"></div>
-                <div className="absolute border-b border-2 border-blue-500 h-0 w-screen top-[1700px]"></div>
               </div>
             </div>
           </ScrollSyncPane>
