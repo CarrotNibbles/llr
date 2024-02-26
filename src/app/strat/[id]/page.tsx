@@ -25,7 +25,7 @@ export default function StratPage() {
                 <div className="min-h-10 h-10 bg-zinc-700 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide"></div>
               </ScrollSyncPane>
               <ScrollSyncPane group={['x', 'y']}>
-                <div className="flex-grow bg-zinc-500 overflow-scroll overscroll-none"></div>
+                <div className="flex flex-grow bg-zinc-500 overflow-scroll overscroll-none"></div>
               </ScrollSyncPane>
             </ResizablePanel>
           </div>
