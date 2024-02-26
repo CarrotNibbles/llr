@@ -13,7 +13,7 @@ const StratHeader = React.forwardRef<
       className={cn('rounded-none border-b flex space-x-4 py-2 px-4 items-center', className)}
       {...props}
     >
-      <div className="font-bold">섭힐이 부릅니다: 살려주세요</div>
+      <div className="font-bold">내가 시발 부릅니다: 살려주세요</div>
       <div className="text-muted-foreground">마의 전당 판데모니움: 천옥편 4(영웅)</div>
       <div className="flex-grow"></div>
       <div className="flex">

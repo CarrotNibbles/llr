@@ -5,7 +5,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
-import { type BoundingBox, useMotionValue, useMotionValueEvent } from 'framer-motion';
+import { type BoundingBox, useMotionValue, useMotionValueEvent, useTransform } from 'framer-motion';
 import { motion } from 'framer-motion';
 import React, {
   type MouseEvent,
@@ -13,6 +13,8 @@ import React, {
   useState,
   type MouseEventHandler,
   type RefObject,
+  useEffect,
+  useLayoutEffect,
 } from 'react';
 import { uidSync } from 'uid-ts';
 
@@ -80,7 +82,6 @@ const DraggableBox = ({
   dragConstraints?: false | Partial<BoundingBox> | RefObject<Element>;
 }) => {
   const [isLocked, setIsLocked] = useState(false);
-
   const yMotionValue = useMotionValue(yCoord);
 
   const adjustPosition = () => {
@@ -92,6 +93,10 @@ const DraggableBox = ({
     setYCoord(calcedYCoord);
   };
 
+  useEffect(() => {
+    adjustPosition();
+  }, []);
+
   const onLock = (checked: boolean) => {
     setIsLocked(checked);
   };
@@ -101,6 +106,9 @@ const DraggableBox = ({
   };
 
   useMotionValueEvent(yMotionValue, 'animationComplete', adjustPosition);
+  useMotionValueEvent(yMotionValue, 'change', () => {
+    console.log(yMotionValue.get());
+  });
 
   return (
     <ContextMenu>
@@ -110,8 +118,7 @@ const DraggableBox = ({
           dragConstraints={dragConstraints}
           dragMomentum={false}
           dragTransition={{ bounceStiffness: 1000 }}
-          _dragY={yMotionValue}
-          className={`w-${columnWidth} lg:w-${columnWidthLarge} h-0 float-left absolute`}
+          className={`w-${columnWidth} lg:w-${columnWidthLarge} h-0 absolute`}
           style={{ y: yMotionValue }}
         >
           <div
@@ -165,20 +172,22 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
 
   const onCreate: MouseEventHandler<HTMLDivElement> = (evt) => {
     if (checkCanCreate())
-      setBoxValues([
-        ...boxValues,
-        {
-          yCoord: snapToStep(
-            removeOverlap(
-              snapToStep(menuOpenMouseYCoord),
-              snapToStep(menuOpenMouseYCoord),
-              boxValues.map((boxValue) => boxValue.yCoord),
-              CoolDownTemp,
+      setBoxValues(
+        [
+          ...boxValues,
+          {
+            yCoord: snapToStep(
+              removeOverlap(
+                snapToStep(menuOpenMouseYCoord),
+                snapToStep(menuOpenMouseYCoord),
+                boxValues.map((boxValue) => boxValue.yCoord),
+                CoolDownTemp,
+              ),
             ),
-          ),
-          key: uidSync(uidLength),
-        },
-      ]);
+            key: uidSync(uidLength),
+          },
+        ].toSorted((a, b) => a.yCoord - b.yCoord),
+      );
   };
 
   const onDebug: MouseEventHandler<HTMLDivElement> = (evt) => {
@@ -202,13 +211,19 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
               yCoord={boxValue.yCoord}
               setYCoord={(yCoord) => {
                 setBoxValues(
-                  boxValues.map((oldValue, j) =>
-                    j === index ? { yCoord, key: oldValue.key } : oldValue,
-                  ),
+                  boxValues
+                    .map((oldValue) =>
+                      oldValue.key === boxValue.key ? { yCoord, key: boxValue.key } : oldValue,
+                    )
+                    .toSorted((a, b) => a.yCoord - b.yCoord),
                 );
               }}
               deleteBox={() => {
-                setBoxValues(boxValues.filter((_, j) => j !== index));
+                setBoxValues(
+                  boxValues
+                    .filter((oldValue) => oldValue.key !== boxValue.key)
+                    .toSorted((a, b) => a.yCoord - b.yCoord),
+                );
               }}
               otherYCoords={boxValues
                 .filter((_, j) => j !== index)
