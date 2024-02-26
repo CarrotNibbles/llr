@@ -17,7 +17,7 @@ import React, {
 import { uidSync } from 'uid-ts';
 
 const TimeStepTemp = 1;
-const PixelPerSecTemp = 4;
+const PixelPerSecTemp = 5;
 const PixelStepTemp = TimeStepTemp * PixelPerSecTemp;
 const DurationTemp = 10;
 const CoolDownTemp = 30;
@@ -30,15 +30,15 @@ const snapToStep = (currentY: number) => {
   return PixelStepTemp * Math.round(currentY / PixelStepTemp);
 };
 
+const overlaps = (currentYCoord: number, otherYCoord: number, cooldown: number) =>
+  Math.abs(currentYCoord - otherYCoord) < cooldown * PixelPerSecTemp;
+
 const removeOverlap = (
   currentYCoord: number,
   prevYCoord: number,
   otherYCoords: number[],
   cooldown: number,
 ) => {
-  const overlaps = (currentYCoord: number, otherYCoord: number, cooldown: number) =>
-    Math.abs(currentYCoord - otherYCoord) < cooldown * PixelPerSecTemp;
-
   otherYCoords = otherYCoords.toSorted((a, b) => a - b);
 
   let overlapIndex = 0;
@@ -71,7 +71,6 @@ const DraggableBox = ({
   yCoord: number;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   setYCoord: (yCoord: number) => void;
-
   deleteBox: () => void;
   otherYCoords: number[];
   dragConstraints?: false | Partial<BoundingBox> | RefObject<Element>;
@@ -140,17 +139,24 @@ const DraggableBox = ({
 
 export const EditAreaColumn = ({ job }: { job: any }) => {
   const constraintRef = useRef<HTMLSpanElement>(null);
-  const [menuOpenMouseY, setMenuOpenMouseY] = useState(0);
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  const [menuOpenMouseYCoord, setMenuOpenMouseYCoord] = useState(0);
 
   const [boxValues, setBoxValues] = useState<Array<{ yCoord: number; key: string }>>([]);
-  const y = useMotionValue(30);
+
+  const checkCanCreate = () =>
+    boxValues.every((boxValue) => !overlaps(menuOpenMouseYCoord, boxValue.yCoord, CoolDownTemp));
 
   const onContextMenu = (evt: MouseEvent<HTMLSpanElement>) => {
-    setMenuOpenMouseY(evt.clientY - evt.currentTarget.getBoundingClientRect().top);
+    setMenuOpenMouseYCoord(evt.clientY - evt.currentTarget.getBoundingClientRect().top);
   };
 
   const onCreate: MouseEventHandler<HTMLDivElement> = (evt) => {
-    setBoxValues([...boxValues, { yCoord: snapToStep(menuOpenMouseY), key: uidSync(uidLength) }]);
+    if (checkCanCreate())
+      setBoxValues([
+        ...boxValues,
+        { yCoord: snapToStep(menuOpenMouseYCoord), key: uidSync(uidLength) },
+      ]);
   };
 
   const onDebug: MouseEventHandler<HTMLDivElement> = (evt) => {
@@ -190,7 +196,7 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
           ))}
         </ContextMenuTrigger>
         <ContextMenuContent className="lg:w-32">
-          <ContextMenuItem inset onClick={onCreate}>
+          <ContextMenuItem inset disabled={!checkCanCreate()} onClick={onCreate}>
             Create
           </ContextMenuItem>
           <ContextMenuItem inset onClick={onDebug}>
