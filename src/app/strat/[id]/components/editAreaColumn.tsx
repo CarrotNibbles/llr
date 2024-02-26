@@ -1,7 +1,7 @@
 import { ContextMenu, ContextMenuTrigger } from '@radix-ui/react-context-menu';
 import { ContextMenuContent, ContextMenuItem } from '@/components/ui/context-menu';
 import { motion } from 'framer-motion';
-import { type MouseEvent, useRef, useState, type MouseEventHandler } from 'react';
+import React, { type MouseEvent, useRef, useState, type MouseEventHandler } from 'react';
 
 export const EditAreaColumn = ({ job }: { job: any }) => {
   const constraintRef = useRef<HTMLSpanElement>(null);
@@ -22,17 +22,22 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
         <ContextMenu>
           <ContextMenuTrigger
             onContextMenu={onContextMenu}
-            className="flex flex-col w-full h-full"
+            className="w-full h-full grid grid-rows-1 grid-cols-1"
             ref={constraintRef}
           >
-            {...rectPositions.map((rectPosition, index) => (
-              <motion.div
-                key={index}
-                drag="y"
-                dragConstraints={constraintRef}
-                className={`w-full h-10 bg-black`}
-              />
-            ))}
+            {...rectPositions.map((rectPosition, index) => {
+              const box: React.ReactNode = (
+                <motion.div
+                  key={index}
+                  drag="y"
+                  dragConstraints={constraintRef}
+                  className={`w-10 h-10 bg-black absolute`}
+                  style={{ translateY: `${rectPosition}px` }}
+                />
+              );
+
+              return box;
+            })}
           </ContextMenuTrigger>
           <ContextMenuContent className="lg:w-32">
             <ContextMenuItem inset onClick={onCreate}>
