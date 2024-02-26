@@ -148,8 +148,16 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
 
   const [boxValues, setBoxValues] = useState<Array<{ yCoord: number; key: string }>>([]);
 
-  const checkCanCreate = () =>
-    boxValues.every((boxValue) => !overlaps(menuOpenMouseYCoord, boxValue.yCoord, CoolDownTemp));
+  const checkCanCreate = () => {
+    const tryY = removeOverlap(
+      snapToStep(menuOpenMouseYCoord),
+      snapToStep(menuOpenMouseYCoord),
+      boxValues.map((boxValue) => boxValue.yCoord),
+      CoolDownTemp,
+    );
+
+    return tryY >= 0 && tryY <= RaidDurationTemp * PixelPerSecTemp;
+  };
 
   const onContextMenu = (evt: MouseEvent<HTMLSpanElement>) => {
     setMenuOpenMouseYCoord(evt.clientY - evt.currentTarget.getBoundingClientRect().top);
@@ -159,7 +167,17 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
     if (checkCanCreate())
       setBoxValues([
         ...boxValues,
-        { yCoord: snapToStep(menuOpenMouseYCoord), key: uidSync(uidLength) },
+        {
+          yCoord: snapToStep(
+            removeOverlap(
+              snapToStep(menuOpenMouseYCoord),
+              snapToStep(menuOpenMouseYCoord),
+              boxValues.map((boxValue) => boxValue.yCoord),
+              CoolDownTemp,
+            ),
+          ),
+          key: uidSync(uidLength),
+        },
       ]);
   };
 
