@@ -2,30 +2,39 @@
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
+import { StratHeader } from './StratHeader';
 
 export default function StratPage() {
   return (
     <ScrollSync>
       <>
-        <div className="min-h-10 bg-zinc-900"></div>
+        <StratHeader />
         <ResizablePanelGroup
           direction="horizontal"
           className="flex flex-col w-screen h-screen max-h-screen overflow-hidden"
         >
           <div className="flex flex-grow overflow-auto">
-            <ResizablePanel defaultSize={20} minSize={10} className="flex flex-col overflow-auto">
-              <div className="min-h-10 h-10 bg-red-500"></div>
+            <ResizablePanel
+              defaultSize={20}
+              minSize={10}
+              className="flex flex-col overflow-auto border-r"
+            >
+              <div className="min-h-10 h-10 border-b"></div>
               <ScrollSyncPane group="y">
-                <div className="bg-zinc-700 overflow-y-scroll overflow-x-clip overscroll-none flex-grow scrollbar-hide"></div>
+                <div className="overflow-y-scroll overflow-x-clip overscroll-none flex-grow scrollbar-hide">
+                  ㅇ
+                </div>
               </ScrollSyncPane>
             </ResizablePanel>
             <ResizableHandle className="w-0" />
-            <ResizablePanel className="flex flex-grow flex-col overflow-auto">
+            <ResizablePanel className="flex flex-grow flex-col overflow-auto border-r">
               <ScrollSyncPane group="x">
-                <div className="min-h-10 h-10 bg-zinc-700 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide"></div>
+                <div className="min-h-10 h-10 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide border-b">
+                  ㅠ
+                </div>
               </ScrollSyncPane>
               <ScrollSyncPane group={['x', 'y']}>
-                <div className="flex-grow bg-zinc-500 overflow-scroll overscroll-none"></div>
+                <div className="flex-grow overflow-scroll overscroll-none">ㅁ</div>
               </ScrollSyncPane>
             </ResizablePanel>
           </div>
