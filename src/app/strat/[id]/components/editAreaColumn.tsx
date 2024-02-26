@@ -66,7 +66,7 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
   };
 
   const onCreate: MouseEventHandler<HTMLDivElement> = (evt) => {
-    setYValues([...yValues, menuOpenMouseY]);
+    setYValues([...yValues, snapToStep(menuOpenMouseY)]);
   };
 
   const onDebug: MouseEventHandler<HTMLDivElement> = (evt) => {
