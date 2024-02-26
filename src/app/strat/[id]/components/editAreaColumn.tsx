@@ -1,5 +1,6 @@
 import {
   ContextMenu,
+  ContextMenuCheckboxItem,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
@@ -13,91 +14,191 @@ import React, {
   type MouseEventHandler,
   type RefObject,
 } from 'react';
+import { uidSync } from 'uid-ts';
 
 const TimeStepTemp = 1;
 const PixelPerSecTemp = 5;
-// TODO: Move this somewhere else
+const PixelStepTemp = TimeStepTemp * PixelPerSecTemp;
+const DurationTemp = 10;
+const CoolDownTemp = 30;
+const RaidDurationTemp = 600;
+const uidLength = 10;
 
-const snapToStep = (num: number) => {
-  const step = Math.round(num / PixelPerSecTemp / TimeStepTemp);
+const snapToStep = (currentY: number) => {
+  if (currentY < 0) currentY = 0;
 
-  return step * TimeStepTemp * PixelPerSecTemp;
+  return PixelStepTemp * Math.round(currentY / PixelStepTemp);
+};
+
+const overlaps = (currentYCoord: number, otherYCoord: number, cooldown: number) =>
+  Math.abs(currentYCoord - otherYCoord) < cooldown * PixelPerSecTemp;
+
+const removeOverlap = (
+  currentYCoord: number,
+  prevYCoord: number,
+  otherYCoords: number[],
+  cooldown: number,
+) => {
+  otherYCoords = otherYCoords.toSorted((a, b) => a - b);
+
+  let overlapIndex = 0;
+  for (; overlapIndex < otherYCoords.length; overlapIndex++)
+    if (overlaps(currentYCoord, otherYCoords[overlapIndex], cooldown)) break;
+
+  if (overlapIndex < otherYCoords.length) {
+    if (prevYCoord < otherYCoords[overlapIndex])
+      while (overlaps(currentYCoord, otherYCoords[overlapIndex], cooldown)) {
+        currentYCoord = otherYCoords[overlapIndex] - cooldown * PixelPerSecTemp;
+        overlapIndex -= 1;
+      }
+    else
+      while (overlaps(currentYCoord, otherYCoords[overlapIndex], cooldown)) {
+        currentYCoord = otherYCoords[overlapIndex] + cooldown * PixelPerSecTemp;
+        overlapIndex += 1;
+      }
+  }
+
+  return currentYCoord;
 };
 
 const DraggableBox = ({
-  yValue,
-  setYValue,
+  yCoord,
+  setYCoord,
+  deleteBox,
+  otherYCoords,
   dragConstraints,
 }: {
-  yValue: number;
+  yCoord: number;
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  setYValue: (yValue: number) => void;
+  setYCoord: (yCoord: number) => void;
+  deleteBox: () => void;
+  otherYCoords: number[];
   dragConstraints?: false | Partial<BoundingBox> | RefObject<Element>;
 }) => {
-  const y = useMotionValue(yValue);
-  useMotionValueEvent(y, 'animationComplete', () => {
-    const snappedValue = snapToStep(y.get());
-    y.set(snappedValue);
-    setYValue(snappedValue);
-  });
+  const [isLocked, setIsLocked] = useState(false);
+
+  const yMotionValue = useMotionValue(yCoord);
+
+  const adjustPosition = () => {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const calcedYCoord = snapToStep(
+      removeOverlap(snapToStep(yMotionValue.get()), yCoord, otherYCoords, CoolDownTemp),
+    );
+    yMotionValue.set(calcedYCoord);
+    setYCoord(calcedYCoord);
+  };
+
+  const onLock = (checked: boolean) => {
+    setIsLocked(checked);
+  };
+
+  const onDelete: React.MouseEventHandler<HTMLDivElement> = (evt) => {
+    deleteBox();
+  };
+
+  useMotionValueEvent(yMotionValue, 'animationComplete', adjustPosition);
 
   return (
-    <motion.div
-      drag="y"
-      dragConstraints={dragConstraints}
-      dragMomentum={false}
-      onDragEnd={() => null}
-      _dragY={y}
-      style={{ y }}
-      className={`lg:w-10 h-10 bg-black float-left absolute`}
-    />
+    <ContextMenu>
+      <ContextMenuTrigger className="w-full h-full relative">
+        <motion.div
+          drag={isLocked ? false : 'y'}
+          dragConstraints={dragConstraints}
+          dragMomentum={false}
+          dragTransition={{ bounceStiffness: 1000 }}
+          _dragY={yMotionValue}
+          className={`lg:w-10 h-0 float-left absolute`}
+          style={{ y: yMotionValue }}
+        >
+          <div
+            className="absolute lg:w-10 rounded-sm overflow-hidden bg-red-300"
+            style={{
+              height: `${CoolDownTemp * PixelPerSecTemp}px`,
+              borderWidth: isLocked ? '2px' : undefined,
+              borderColor: isLocked ? 'gray' : undefined,
+            }}
+          >
+            <div
+              className="lg:w-10 bg-green-300"
+              style={{ height: `${DurationTemp * PixelPerSecTemp}px` }}
+            />
+          </div>
+        </motion.div>
+      </ContextMenuTrigger>
+      <ContextMenuContent className="lg:w-32">
+        <ContextMenuCheckboxItem checked={isLocked} onCheckedChange={onLock}>
+          Lock
+        </ContextMenuCheckboxItem>
+        <ContextMenuItem inset onClick={onDelete}>
+          Delete
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   );
 };
 
 export const EditAreaColumn = ({ job }: { job: any }) => {
   const constraintRef = useRef<HTMLSpanElement>(null);
-  const [menuOpenMouseY, setMenuOpenMouseY] = useState(0);
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  const [yValues, setYValues] = useState<number[]>([]);
-  const y = useMotionValue(30);
+  const [menuOpenMouseYCoord, setMenuOpenMouseYCoord] = useState(0);
+
+  const [boxValues, setBoxValues] = useState<Array<{ yCoord: number; key: string }>>([]);
+
+  const checkCanCreate = () =>
+    boxValues.every((boxValue) => !overlaps(menuOpenMouseYCoord, boxValue.yCoord, CoolDownTemp));
 
   const onContextMenu = (evt: MouseEvent<HTMLSpanElement>) => {
-    setMenuOpenMouseY(evt.clientY - evt.currentTarget.getBoundingClientRect().top);
+    setMenuOpenMouseYCoord(evt.clientY - evt.currentTarget.getBoundingClientRect().top);
   };
 
   const onCreate: MouseEventHandler<HTMLDivElement> = (evt) => {
-    setYValues([...yValues, snapToStep(menuOpenMouseY)]);
+    if (checkCanCreate())
+      setBoxValues([
+        ...boxValues,
+        { yCoord: snapToStep(menuOpenMouseYCoord), key: uidSync(uidLength) },
+      ]);
   };
 
   const onDebug: MouseEventHandler<HTMLDivElement> = (evt) => {
-    console.log(yValues);
+    console.log(boxValues);
   };
 
   return (
-    <li className="flex lg:w-10 md:w-5 h-[1200px]">
+    <li
+      className="flex lg:w-10 md:w-5 pb-10 overflow-hidden"
+      style={{ height: RaidDurationTemp * PixelPerSecTemp }}
+    >
       <ContextMenu>
         <ContextMenuTrigger
           onContextMenu={onContextMenu}
           className="w-full h-full relative"
           ref={constraintRef}
         >
-          {...yValues.map((yValue, index) => (
+          {...boxValues.map((boxValue, index) => (
             <DraggableBox
-              key={index}
-              yValue={yValue}
-              setYValue={(newValue) => {
-                setYValues(yValues.map((oldValue, j) => (j === index ? newValue : oldValue)));
+              key={boxValue.key}
+              yCoord={boxValue.yCoord}
+              setYCoord={(yCoord) => {
+                setBoxValues(
+                  boxValues.map((oldValue, j) =>
+                    j === index ? { yCoord, key: oldValue.key } : oldValue,
+                  ),
+                );
               }}
+              deleteBox={() => {
+                setBoxValues(boxValues.filter((_, j) => j !== index));
+              }}
+              otherYCoords={boxValues
+                .filter((_, j) => j !== index)
+                .map((boxValue) => boxValue.yCoord)}
               dragConstraints={constraintRef}
             />
           ))}
         </ContextMenuTrigger>
         <ContextMenuContent className="lg:w-32">
-          <ContextMenuItem inset onClick={onCreate}>
+          <ContextMenuItem inset disabled={!checkCanCreate()} onClick={onCreate}>
             Create
           </ContextMenuItem>
-          <ContextMenuItem inset>Lock</ContextMenuItem>
-          <ContextMenuItem inset>Delete</ContextMenuItem>
           <ContextMenuItem inset onClick={onDebug}>
             Debug
           </ContextMenuItem>

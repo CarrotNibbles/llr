@@ -2,6 +2,7 @@
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
+import { EditAreaColumn } from './components/editAreaColumn';
 import { StratHeader } from './StratHeader';
 import { DamageEvaluation } from './components/DamageEvaluation';
 

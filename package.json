@@ -31,7 +31,8 @@
     "recoil-persist": "^5.1.0",
     "tailwind-merge": "^2.2.1",
     "tailwind-scrollbar-hide": "^1.1.7",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "uid-ts": "^0.0.3"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^14.1.0",
