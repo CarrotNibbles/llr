@@ -106,9 +106,6 @@ const DraggableBox = ({
   };
 
   useMotionValueEvent(yMotionValue, 'animationComplete', adjustPosition);
-  useMotionValueEvent(yMotionValue, 'change', () => {
-    console.log(yMotionValue.get());
-  });
 
   return (
     <ContextMenu>
