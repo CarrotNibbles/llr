@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 
 import { createClient } from '@/lib/supabase/server';
 
-export async function emailSignup(email: string, password: string) {
+export async function emailSignUp(email: string, password: string) {
   const supabase = createClient();
 
   const { error } = await supabase.auth.signUp({
@@ -22,7 +22,7 @@ export async function emailSignup(email: string, password: string) {
   redirect('/');
 }
 
-export async function discordSignin() {
+export async function discordSignIn() {
   const supabase = createClient();
 
   const { data, error } = await supabase.auth.signInWithOAuth({

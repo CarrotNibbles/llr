@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 
 import { createClient } from '@/lib/supabase/server';
 
-export async function emailSignin(email: string, password: string) {
+export async function emailSignIn(email: string, password: string) {
   const supabase = createClient();
 
   const { error } = await supabase.auth.signInWithPassword({

@@ -3,16 +3,16 @@
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
-import { Icons } from '@/components/ui/icons';
+import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-import { discordSignin, emailSignup } from './action';
+import { emailSignIn } from '../action';
 
 type UserAuthFormProps = Record<string, unknown> & React.HTMLAttributes<HTMLDivElement>;
 
-export function UserSignupForm({ className, ...props }: UserAuthFormProps) {
+export function UserSignInForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [email, setEmail] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
@@ -21,13 +21,7 @@ export function UserSignupForm({ className, ...props }: UserAuthFormProps) {
     event.preventDefault();
 
     setIsLoading(true);
-    await emailSignup(email, password);
-    setIsLoading(false);
-  }
-
-  async function onDiscordSubmit() {
-    setIsLoading(true);
-    await discordSignin();
+    await emailSignIn(email, password);
     setIsLoading(false);
   }
 
@@ -83,14 +77,6 @@ export function UserSignupForm({ className, ...props }: UserAuthFormProps) {
           <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
         </div>
       </div>
-      <Button variant="outline" type="button" disabled={isLoading} onClick={onDiscordSubmit}>
-        {isLoading ? (
-          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <Icons.discord className="mr-2 h-4 w-4" />
-        )}{' '}
-        Discord
-      </Button>
       <Button variant="outline" type="button" disabled={isLoading}>
         {isLoading ? (
           <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />

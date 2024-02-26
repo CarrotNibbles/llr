@@ -3,16 +3,16 @@
 import * as React from 'react';
 
 import { cn } from '@/lib/utils';
-import { Icons } from '@/components/ui/icons';
+import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-import { emailSignin } from './action';
+import { discordSignIn, emailSignUp } from '../action';
 
 type UserAuthFormProps = Record<string, unknown> & React.HTMLAttributes<HTMLDivElement>;
 
-export function UserSigninForm({ className, ...props }: UserAuthFormProps) {
+export function UserSignupForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [email, setEmail] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
@@ -21,7 +21,13 @@ export function UserSigninForm({ className, ...props }: UserAuthFormProps) {
     event.preventDefault();
 
     setIsLoading(true);
-    await emailSignin(email, password);
+    await emailSignUp(email, password);
+    setIsLoading(false);
+  }
+
+  async function onDiscordSubmit() {
+    setIsLoading(true);
+    await discordSignIn();
     setIsLoading(false);
   }
 
@@ -77,14 +83,24 @@ export function UserSigninForm({ className, ...props }: UserAuthFormProps) {
           <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
         </div>
       </div>
-      <Button variant="outline" type="button" disabled={isLoading}>
-        {isLoading ? (
-          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <Icons.gitHub className="mr-2 h-4 w-4" />
-        )}{' '}
-        GitHub
-      </Button>
+      <div className="flex flex-col space-y-2.5">
+        <Button variant="outline" type="button" disabled={isLoading} onClick={onDiscordSubmit}>
+          {isLoading ? (
+            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Icons.discord className="mr-2 h-4 w-4" />
+          )}{' '}
+          Discord
+        </Button>
+        <Button variant="outline" type="button" disabled={isLoading}>
+          {isLoading ? (
+            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Icons.gitHub className="mr-2 h-4 w-4" />
+          )}{' '}
+          GitHub
+        </Button>
+      </div>
     </div>
   );
 }
