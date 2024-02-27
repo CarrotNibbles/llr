@@ -21,7 +21,7 @@ const propList: Array<Omit<DamageEvaluationProps, 'resizePanelSize'>> = Array.fr
     prepare_at: 120 + i * 200,
     raid: 'uuid(123123123)',
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    resolve_at: 200 + i * 200,
+    resolve_at: 130 + i * 200,
     damages: [
       {
         // eslint-disable-next-line @typescript-eslint/naming-convention
