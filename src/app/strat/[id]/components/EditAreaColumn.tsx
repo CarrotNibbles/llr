@@ -77,12 +77,13 @@ const removeOverlap = (
         .slice(0, overlapIndex + 1)
         .reduceRight(
           (acc, curr, _) =>
-            overlaps(acc, curr, cooldown) ? curr - cooldown * PixelPerSecTemp : curr,
+            overlaps(acc, curr, cooldown) ? curr - cooldown * PixelPerSecTemp : acc,
           currentYCoord,
         );
 
     return otherYCoords.slice(overlapIndex).reduce((acc, curr, _) => {
-      return overlaps(acc, curr, cooldown) ? curr + cooldown * PixelPerSecTemp : curr;
+      console.log(acc, curr);
+      return overlaps(acc, curr, cooldown) ? curr + cooldown * PixelPerSecTemp : acc;
     }, currentYCoord);
   }
 
