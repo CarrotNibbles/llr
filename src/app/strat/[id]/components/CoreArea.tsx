@@ -16,14 +16,14 @@ const propList: Array<Omit<DamageEvaluationProps, 'resizePanelSize'>> = Array.fr
   { length: 9 },
   (v, i) => ({
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    cast_at: 100 + i * 200,
+    cast_at: 100 + i * 2000,
     id: 'uuid(ansdkofsjao)',
     name: '판데모니움 시바라',
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    prepare_at: 120 + i * 200,
+    prepare_at: 120 + i * 2000,
     raid: 'uuid(123123123)',
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    resolve_at: 130 + i * 200,
+    resolve_at: 130 + i * 2000,
     damages: [
       {
         // eslint-disable-next-line @typescript-eslint/naming-convention
