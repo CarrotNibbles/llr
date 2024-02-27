@@ -7,6 +7,8 @@ import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import { DamageEvaluation, type DamageEvaluationProps } from './DamageEvaluation';
 import { EditColumn } from './EditColumn';
 import { HeadColumn } from './HeadColumn';
+import { usePixelPerFrame } from '@/lib/utils';
+import { raidDurationTemp } from './coreAreaConstants';
 
 const jobs: string[] = Array(5).fill('WAR') as string[];
 
@@ -39,7 +41,7 @@ const propList: Array<Omit<DamageEvaluationProps, 'resizePanelSize'>> = Array.fr
 
 export const CoreArea = () => {
   const [resizePanelSize, setResizePanelSize] = useState(20);
-  const [zoom, _] = useZoomState();
+  const pixelPerFrame = usePixelPerFrame();
 
   return (
     <ScrollSync>
@@ -86,7 +88,7 @@ export const CoreArea = () => {
           <div className="absolute top-10 left-0 w-screen h-full pointer-events-none overflow-y-scroll scrollbar-hide">
             <div
               className="absolute top-0 left-0 w-screen"
-              style={{ height: `${zoom * 3000 - 40}px` }}
+              style={{ height: `${raidDurationTemp * pixelPerFrame}px` }}
             >
               {propList.map((value, index) => {
                 return (
