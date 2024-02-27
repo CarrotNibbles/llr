@@ -4,6 +4,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/componen
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import { EditAreaColumn } from './EditAreaColumn';
 import { DamageEvaluation } from './DamageEvaluation';
+import { motion } from 'framer-motion';
 
 const jobs: string[] = Array(100).fill('WAR') as string[];
 

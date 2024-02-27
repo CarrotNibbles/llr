@@ -81,10 +81,12 @@ const removeOverlap = (
           currentYCoord,
         );
 
-    return otherYCoords.slice(overlapIndex).reduce((acc, curr, _) => {
-      console.log(acc, curr);
-      return overlaps(acc, curr, cooldown) ? curr + cooldown * PixelPerSecTemp : acc;
-    }, currentYCoord);
+    return otherYCoords
+      .slice(overlapIndex)
+      .reduce(
+        (acc, curr, _) => (overlaps(acc, curr, cooldown) ? curr + cooldown * PixelPerSecTemp : acc),
+        currentYCoord,
+      );
   }
 
   return currentYCoord;
@@ -95,14 +97,12 @@ const DraggableBox = ({
   setYCoord,
   deleteBox,
   otherYCoords,
-  dragConstraints,
 }: {
   yCoord: number;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   setYCoord: (yCoord: number) => void;
   deleteBox: () => void;
   otherYCoords: number[];
-  dragConstraints?: false | Partial<BoundingBox> | RefObject<Element>;
 }) => {
   const [isLocked, setIsLocked] = useState(false);
   const yMotionValue = useMotionValue(yCoord);
@@ -120,10 +120,6 @@ const DraggableBox = ({
     setYCoord(calcedYCoord);
   };
 
-  useEffect(() => {
-    adjustPosition();
-  }, []);
-
   const onLock = (checked: boolean) => {
     setIsLocked(checked);
   };
@@ -138,7 +134,6 @@ const DraggableBox = ({
         <motion.div
           layout
           drag={isLocked ? false : 'y'}
-          dragConstraints={dragConstraints}
           dragMomentum={false}
           onDragEnd={adjustPosition}
           className={`w-${columnWidth} lg:w-${columnWidthLarge} h-0 absolute`}
@@ -172,7 +167,6 @@ const DraggableBox = ({
 };
 
 export const EditAreaColumn = ({ job }: { job: any }) => {
-  const constraintRef = useRef<HTMLSpanElement>(null);
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const [menuOpenMouseYCoord, setMenuOpenMouseYCoord] = useState(0);
 
@@ -223,11 +217,7 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
       style={{ height: RaidDurationTemp * PixelPerSecTemp }}
     >
       <ContextMenu>
-        <ContextMenuTrigger
-          onContextMenu={onContextMenu}
-          className="w-full h-full relative"
-          ref={constraintRef}
-        >
+        <ContextMenuTrigger onContextMenu={onContextMenu} className="w-full h-full relative">
           {...boxValues.map((boxValue, index) => (
             <DraggableBox
               key={boxValue.key}
@@ -251,7 +241,6 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
               otherYCoords={boxValues
                 .filter((_, j) => j !== index)
                 .map((boxValue) => boxValue.yCoord)}
-              dragConstraints={constraintRef}
             />
           ))}
         </ContextMenuTrigger>
