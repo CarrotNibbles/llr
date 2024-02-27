@@ -3,11 +3,37 @@
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import { EditAreaColumn } from './EditAreaColumn';
-import { DamageEvaluation } from './DamageEvaluation';
+import { DamageEvaluation, type DamageEvaluationProps } from './DamageEvaluation';
+import { useState } from 'react';
 
 const jobs: string[] = Array(100).fill('WAR') as string[];
 
+const ExampleDamageEvaluationProps: Omit<DamageEvaluationProps, 'resizePanelSize'> = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  cast_at: 1000,
+  id: 'uuid(ansdkofsjao)',
+  name: '판데모니움 시바라',
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  prepare_at: 1120,
+  raid: 'uuid(123123123)',
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  resolve_at: 1200,
+  damages: [
+    {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      combined_damage: 100000,
+      gimmick: 'uuid(ansdkofsjao)',
+      id: 'uuid(zbkcvkxcbvlkl)',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      max_shared: 3,
+      target: 'Raidwide',
+      type: 'Physical',
+    },
+  ],
+};
+
 export const CoreArea = () => {
+  const [resizePanelSize, setResizePanelSize] = useState(20);
   return (
     <ScrollSync>
       <ResizablePanelGroup
@@ -22,6 +48,9 @@ export const CoreArea = () => {
           defaultSize={80}
           maxSize={96}
           className="flex flex-col overflow-auto border-r bg-white"
+          onResize={(size) => {
+            setResizePanelSize(size);
+          }}
         >
           <ScrollSyncPane group="x">
             <div className="min-h-10 h-10 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide border-b flex flex-row" />
@@ -37,7 +66,10 @@ export const CoreArea = () => {
         <ScrollSyncPane group="y">
           <div className="absolute top-10 left-0 w-screen h-full pointer-events-none overflow-y-scroll scrollbar-hide">
             <div className="absolute top-0 left-0 w-screen h-[2960px]">
-              <DamageEvaluation />
+              <DamageEvaluation
+                {...ExampleDamageEvaluationProps}
+                resizePanelSize={resizePanelSize}
+              />
             </div>
           </div>
         </ScrollSyncPane>
