@@ -5,17 +5,17 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
+import { usePixelPerFrame } from '@/lib/utils';
 import { animate, motion, useMotionValue } from 'framer-motion';
-import React, { useState, type MouseEventHandler } from 'react';
+import { useState, type MouseEventHandler } from 'react';
 import { uidSync } from 'uid-ts';
 import {
-  type JobTemp,
-  type SkillTemp,
   columnWidth,
   columnWidthLarge,
   raidDurationTemp,
   timeStep,
-  usePixelPerFrame,
+  type JobTemp,
+  type SkillTemp,
 } from './coreAreaConstants';
 
 const DurationTemp = 10 * 60;

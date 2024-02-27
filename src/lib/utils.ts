@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { useZoomState } from './states';
 
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
@@ -11,4 +12,10 @@ export const getZoom = (zoomState: number) => {
   }
 
   return 1 / (1 + 0.05 * (40 - zoomState));
+};
+export const usePixelPerFrame = () => {
+  const [zoom, _] = useZoomState();
+  const pixelPerFrameDefault = 0.1;
+
+  return pixelPerFrameDefault * zoom;
 };

@@ -1,7 +1,6 @@
 import { type Database } from '@/lib/database.types';
-import { useZoomState } from '@/lib/states';
-import React, { useEffect } from 'react';
-import { pixelPerSecTemp } from './coreAreaConstants';
+import { usePixelPerFrame } from '@/lib/utils';
+import React from 'react';
 
 export type DamageEvaluationProps = Database['public']['Tables']['gimmicks']['Row'] & {
   damages: Array<Database['public']['Tables']['damages']['Row']>;
@@ -38,28 +37,24 @@ const DamageEvaluation = React.forwardRef<
     resolve_at: defaultResolveAt,
     resizePanelSize,
   } = props;
-  const prepareAt = (defaultPrepareAt / 60) * pixelPerSecTemp;
-  const castAt = defaultCastAt ? (defaultCastAt / 60) * pixelPerSecTemp : null;
-  const resolveAt = defaultResolveAt ? (defaultResolveAt / 60) * pixelPerSecTemp : null;
-
-  const [zoom, _] = useZoomState();
-  useEffect(() => {
-    console.log(zoom * prepareAt);
-  }, [zoom, prepareAt]);
+  const pixelPerFrame = usePixelPerFrame();
+  const prepareAt = defaultPrepareAt;
+  const castAt = defaultCastAt ? defaultCastAt : null;
+  const resolveAt = defaultResolveAt ? defaultResolveAt : null;
 
   return (
     <div ref={ref}>
-      {castAt && Math.abs(castAt - prepareAt) > 5 / zoom && (
+      {castAt && Math.abs(castAt - prepareAt) * pixelPerFrame > 5 && (
         <>
           <div
             className={`absolute border-0 border-t ${borderColor}  right-0 border-dashed z-10`}
-            style={{ top: `${zoom * castAt}px`, width: `${resizePanelSize}vw` }}
+            style={{ top: `${castAt * pixelPerFrame}px`, width: `${resizePanelSize}vw` }}
           />
-          {Math.abs(castAt - prepareAt) > 10 / zoom && (
+          {Math.abs(castAt - prepareAt) * pixelPerFrame > 10 && (
             <div
               className={`absolute ${textColor} text-xs z-10 right-0`}
               style={{
-                top: `${zoom * castAt}px`,
+                top: `${pixelPerFrame * castAt}px`,
               }}
             >
               <text className="text-xs font-thin right-0">{name}</text>
@@ -67,17 +62,17 @@ const DamageEvaluation = React.forwardRef<
           )}
         </>
       )}
-      {resolveAt && Math.abs(resolveAt - prepareAt) > 5 / zoom && (
+      {resolveAt && Math.abs(resolveAt - prepareAt) * pixelPerFrame > 5 && (
         <>
           <div
             className={`absolute border-0 border-t ${borderColor} right-0 z-10`}
-            style={{ top: `${zoom * resolveAt}px`, width: `${resizePanelSize}vw` }}
+            style={{ top: `${resolveAt * pixelPerFrame}px`, width: `${resizePanelSize}vw` }}
           />
-          {Math.abs(resolveAt - prepareAt) > 10 / zoom && (
+          {Math.abs(resolveAt - prepareAt) * pixelPerFrame > 10 && (
             <div
               className={`absolute ${textColor} text-xs z-10 right-0`}
               style={{
-                top: `${zoom * resolveAt}px`,
+                top: `${resolveAt * pixelPerFrame}px`,
               }}
             >
               <text className="text-xs font-thin right-0">{name}</text>
@@ -87,11 +82,11 @@ const DamageEvaluation = React.forwardRef<
       )}
       <div
         className={`absolute border-0 border-t-2 ${borderColor} w-[98dvw] right-0 z-10`}
-        style={{ top: `${zoom * prepareAt}px` }}
+        style={{ top: `${prepareAt * pixelPerFrame}px` }}
       />
       <div
-        className={`absolute top-[${zoom * prepareAt}px] left-[2dvw] -z-10`}
-        style={{ top: `${zoom * prepareAt}px` }}
+        className={`absolute top-[${prepareAt * pixelPerFrame}px] left-[2dvw] -z-10`}
+        style={{ top: `${prepareAt * pixelPerFrame}px` }}
       >
         <div className="-z-10 space-y-2">
           <div className={`${textColor} font-bold text-md`}>{name}</div>
