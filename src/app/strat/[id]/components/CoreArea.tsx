@@ -5,6 +5,7 @@ import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import { EditAreaColumn } from './EditAreaColumn';
 import { DamageEvaluation, type DamageEvaluationProps } from './DamageEvaluation';
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 
 const jobs: string[] = Array(100).fill('WAR') as string[];
 
