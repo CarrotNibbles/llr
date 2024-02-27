@@ -135,7 +135,7 @@ const DraggableBox = ({
           drag={isLocked ? false : 'y'}
           dragMomentum={false}
           onDragEnd={adjustPosition}
-          className={`w-${columnWidth} lg:w-${columnWidthLarge} h-0 absolute`}
+          className={`w-${columnWidth} lg:w-${columnWidthLarge} h-0 absolute active:z-[5]`}
           style={{ y: yMotionValue }}
         >
           <div
@@ -166,12 +166,7 @@ const DraggableBox = ({
 };
 
 export const EditAreaColumn = ({ job }: { job: any }) => {
-  const [boxValues, setBoxValues] = useState<Array<{ yCoord: number; key: string }>>([
-    {
-      yCoord: 160,
-      key: uidSync(uidLength),
-    },
-  ]);
+  const [boxValues, setBoxValues] = useState<Array<{ yCoord: number; key: string }>>([]);
 
   const checkCanCreate = (cursorY: number) => {
     if (

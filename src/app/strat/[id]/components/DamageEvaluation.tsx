@@ -40,11 +40,11 @@ const DamageEvaluation = React.forwardRef<
       {cast_at && (
         <>
           <div
-            className={`absolute border-0 border-t ${borderColor}  right-0 border-dashed`}
+            className={`absolute border-0 border-t ${borderColor}  right-0 border-dashed z-10`}
             style={{ top: `${zoom * cast_at}px`, width: `${resizePanelSize}vw` }}
           />
           <div
-            className={`absolute ${textColor} text-xs`}
+            className={`absolute ${textColor} text-xs z-10`}
             style={{ top: `${zoom * cast_at}px`, left: `${100 - resizePanelSize}vw` }}
           >
             {name}
@@ -54,11 +54,11 @@ const DamageEvaluation = React.forwardRef<
       {resolve_at && (
         <>
           <div
-            className={`absolute border-0 border-t ${borderColor} right-0`}
+            className={`absolute border-0 border-t ${borderColor} right-0 z-10`}
             style={{ top: `${zoom * resolve_at}px`, width: `${resizePanelSize}vw` }}
           />
           <div
-            className={`absolute ${textColor} text-xs`}
+            className={`absolute ${textColor} text-xs z-10`}
             style={{ top: `${zoom * resolve_at}px`, left: `${100 - resizePanelSize}vw` }}
           >
             {name}
@@ -66,7 +66,7 @@ const DamageEvaluation = React.forwardRef<
         </>
       )}
       <div
-        className={`absolute border-0 border-t-2 ${borderColor} w-[98dvw] right-0`}
+        className={`absolute border-0 border-t-2 ${borderColor} w-[98dvw] right-0 z-10`}
         style={{ top: `${zoom * prepare_at}px` }}
       />
       <div
@@ -85,7 +85,7 @@ const DamageEvaluation = React.forwardRef<
             <span className="tabular-nums font-bold">100000</span>
             <span className="text-muted-foreground tabular-nums text-xs my-auto">180000</span>
 
-            <div className="space-x-1 pr-6">
+            {/* <div className="space-x-1 pr-6">
               <span className="font-bold">T1</span>
               <span className="text-muted-foreground">T2</span>
             </div>
@@ -117,7 +117,7 @@ const DamageEvaluation = React.forwardRef<
               <span className="text-muted-foreground">3+5</span>
             </div>
             <span className="tabular-nums font-bold">21000</span>
-            <span className="text-muted-foreground tabular-nums text-xs my-auto">40000</span>
+            <span className="text-muted-foreground tabular-nums text-xs my-auto">40000</span> */}
           </div>
         </div>
       </div>
