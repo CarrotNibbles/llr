@@ -196,7 +196,7 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
   };
 
   return (
-    <li
+    <div
       className={`flex flex-shrink-0 w-${columnWidth} lg:w-${columnWidthLarge} overflow-hidden`}
       style={{ height: RaidDurationTemp * PixelPerSecTemp }}
     >
