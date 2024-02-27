@@ -5,9 +5,9 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
-import { usePixelPerFrame } from '@/lib/utils';
+import { clamp, usePixelPerFrame } from '@/lib/utils';
 import { animate, motion, useMotionValue } from 'framer-motion';
-import { useState, type MouseEventHandler } from 'react';
+import { useEffect, useState, type MouseEventHandler } from 'react';
 import { uidSync } from 'uid-ts';
 import {
   columnWidth,
@@ -24,114 +24,99 @@ const uidLength = 10;
 const contextMenuWidth = 16;
 const contextMenuWidthLarge = 32;
 
-const snapToStep = (currentY: number, pixelPerFrame: number) => {
-  if (currentY < 0) currentY = 0;
+const snapToStep = (currentUseAt: number) => {
+  if (currentUseAt < 0) currentUseAt = 0;
 
-  return timeStep * pixelPerFrame * Math.round(currentY / (timeStep * pixelPerFrame));
+  return timeStep * Math.round(currentUseAt / timeStep);
 };
 
-const overlaps = (
-  currentYCoord: number,
-  otherYCoord: number,
-  cooldown: number,
-  pixelPerFrame: number,
-) => Math.abs(currentYCoord - otherYCoord) < cooldown * pixelPerFrame;
+const overlaps = (currentUseAt: number, otherUseAt: number, cooldown: number) =>
+  Math.abs(currentUseAt - otherUseAt) < cooldown;
 
 const evaluateOverlap = (
-  currentYCoord: number,
-  prevYCoord: number,
-  otherYCoord: number,
+  currentUseAt: number,
+  prevUseAt: number,
+  otherUseAt: number,
   cooldown: number,
-  pixelPerFrame: number,
-  // eslint-disable-next-line max-params
 ) => {
-  if (Math.abs(currentYCoord - otherYCoord) >= cooldown * pixelPerFrame * 0.5)
-    return currentYCoord < otherYCoord ? 'up' : 'down';
-  return prevYCoord < otherYCoord ? 'up' : 'down';
+  if (Math.abs(currentUseAt - otherUseAt) >= cooldown * 0.5)
+    return currentUseAt < otherUseAt ? 'up' : 'down';
+  return prevUseAt < otherUseAt ? 'up' : 'down';
 };
 
 const removeOverlap = (
-  currentYCoord: number,
-  prevYCoord: number,
-  otherYCoords: number[],
+  currentUseAt: number,
+  prevUseAt: number,
+  otherUseAts: number[],
   cooldown: number,
-  pixelPerFrame: number,
-  // eslint-disable-next-line max-params
 ) => {
-  otherYCoords = otherYCoords.toSorted((a, b) => a - b);
+  otherUseAts = otherUseAts.toSorted((a, b) => a - b);
 
-  const overlapIndex = otherYCoords.reduce(
+  const overlapIndex = otherUseAts.reduce(
     (acc, curr, index) =>
-      Math.abs(curr - currentYCoord) < acc.value
-        ? { value: Math.abs(curr - currentYCoord), index }
+      Math.abs(curr - currentUseAt) < acc.value
+        ? { value: Math.abs(curr - currentUseAt), index }
         : acc,
-    { value: cooldown * pixelPerFrame, index: -1 },
+    { value: cooldown, index: -1 },
   ).index;
 
-  if (overlapIndex !== -1) {
-    if (
-      evaluateOverlap(
-        currentYCoord,
-        prevYCoord,
-        otherYCoords[overlapIndex],
-        cooldown,
-        pixelPerFrame,
-      ) === 'up'
-    )
-      return otherYCoords
-        .slice(0, overlapIndex + 1)
-        .reduceRight(
-          (acc, curr, _) =>
-            overlaps(acc, curr, cooldown, pixelPerFrame) ? curr - cooldown * pixelPerFrame : acc,
-          currentYCoord,
-        );
+  if (overlapIndex === -1) return currentUseAt;
 
-    return otherYCoords
-      .slice(overlapIndex)
-      .reduce(
-        (acc, curr, _) =>
-          overlaps(acc, curr, cooldown, pixelPerFrame) ? curr + cooldown * pixelPerFrame : acc,
-        currentYCoord,
-      );
-  }
+  const newUseAt =
+    evaluateOverlap(currentUseAt, prevUseAt, otherUseAts[overlapIndex], cooldown) === 'up'
+      ? otherUseAts[overlapIndex] - cooldown
+      : otherUseAts[overlapIndex] + cooldown;
 
-  return currentYCoord;
+  if (
+    newUseAt >= 0 &&
+    newUseAt <= raidDurationTemp &&
+    otherUseAts.every((otherUseAt) => !overlaps(newUseAt, otherUseAt, cooldown))
+  )
+    return newUseAt;
+
+  return null;
 };
 
+const snapAndRemoveOverlap = (
+  currentUseAt: number,
+  prevUseAt: number,
+  otherUseAts: number[],
+  cooldown: number,
+) => removeOverlap(snapToStep(currentUseAt), prevUseAt, otherUseAts, cooldown);
+
 const DraggableBox = ({
-  yCoord,
-  setYCoord,
+  useAt,
+  setUseAt,
   deleteBox,
-  otherYCoords,
+  otherUseAts,
 }: {
-  yCoord: number;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  setYCoord: (yCoord: number) => void;
+  useAt: number;
+  setUseAt: (useAt: number) => void;
   deleteBox: () => void;
-  otherYCoords: number[];
+  otherUseAts: number[];
 }) => {
   const [isLocked, setIsLocked] = useState(false);
-  const yMotionValue = useMotionValue(yCoord);
   const pixelPerFrame = usePixelPerFrame();
+  const yMotionValue = useMotionValue(useAt * pixelPerFrame);
+
+  useEffect(() => {
+    yMotionValue.set(useAt * pixelPerFrame);
+  }, [yMotionValue, pixelPerFrame, useAt]);
 
   const adjustPosition = () => {
     yMotionValue.animation?.cancel();
 
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const clampedYCoord = Math.max(Math.min(yCoord, raidDurationTemp * pixelPerFrame), 0);
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const calcedYCoord = snapToStep(
-      removeOverlap(
-        snapToStep(yMotionValue.get(), pixelPerFrame),
-        clampedYCoord,
-        otherYCoords,
-        CoolDownTemp,
-        pixelPerFrame,
-      ),
-      pixelPerFrame,
-    );
-    void animate(yMotionValue, calcedYCoord);
-    setYCoord(calcedYCoord);
+    const oldUseAt = useAt;
+    const newUseAt = clamp(yMotionValue.get() / pixelPerFrame, 0, raidDurationTemp);
+    const newUseAtCalced = snapAndRemoveOverlap(newUseAt, useAt, otherUseAts, CoolDownTemp);
+
+    if (newUseAtCalced === null) {
+      void animate(yMotionValue, oldUseAt * pixelPerFrame);
+      setUseAt(oldUseAt);
+    } else {
+      void animate(yMotionValue, snapToStep(newUseAtCalced) * pixelPerFrame);
+      setUseAt(snapToStep(newUseAtCalced));
+    }
   };
 
   return (
@@ -181,61 +166,43 @@ const DraggableBox = ({
   );
 };
 
-const EditSubColumn = ({ job }: { job: JobTemp; skill: SkillTemp }) => {
-  const [boxValues, setBoxValues] = useState<Array<{ yCoord: number; key: string }>>([
+const EditSubColumn = ({ job, skill }: { job: JobTemp; skill: SkillTemp }) => {
+  const [boxValues, setBoxValues] = useState<Array<{ useAt: number; key: string }>>([
     {
-      yCoord: 160,
+      useAt: 1600,
       key: uidSync(uidLength),
     },
   ]);
   const pixelPerFrame = usePixelPerFrame();
 
-  const checkCanCreate = (cursorY: number) => {
+  const createBox: MouseEventHandler<HTMLDivElement> = (evt) => {
+    const cursorY = evt.clientY - evt.currentTarget.getBoundingClientRect().top;
+    const cursorUseAt = cursorY / pixelPerFrame;
+
     if (
       boxValues.some(
         (boxValue) =>
-          cursorY - boxValue.yCoord >= 0 &&
-          cursorY - boxValue.yCoord <= CoolDownTemp * pixelPerFrame,
+          cursorUseAt - boxValue.useAt >= 0 && cursorUseAt - boxValue.useAt <= CoolDownTemp,
       )
     )
       return false;
 
-    const tryY = removeOverlap(
-      snapToStep(cursorY, pixelPerFrame),
-      snapToStep(cursorY, pixelPerFrame),
-      boxValues.map((boxValue) => boxValue.yCoord),
+    const useAtCalced = snapAndRemoveOverlap(
+      cursorUseAt,
+      snapToStep(cursorUseAt),
+      boxValues.map((boxValue) => boxValue.useAt),
       CoolDownTemp,
-      pixelPerFrame,
     );
 
-    return (
-      Math.abs(tryY - cursorY) <= CoolDownTemp * pixelPerFrame &&
-      tryY >= 0 &&
-      tryY <= raidDurationTemp * pixelPerFrame
-    );
-  };
-
-  const createBox: MouseEventHandler<HTMLDivElement> = (evt) => {
-    const cursorY = evt.clientY - evt.currentTarget.getBoundingClientRect().top;
-
-    if (checkCanCreate(cursorY))
+    if (useAtCalced !== null)
       setBoxValues(
         [
           ...boxValues,
           {
-            yCoord: snapToStep(
-              removeOverlap(
-                snapToStep(cursorY, pixelPerFrame),
-                snapToStep(cursorY, pixelPerFrame),
-                boxValues.map((boxValue) => boxValue.yCoord),
-                CoolDownTemp,
-                pixelPerFrame,
-              ),
-              pixelPerFrame,
-            ),
+            useAt: useAtCalced,
             key: uidSync(uidLength),
           },
-        ].toSorted((a, b) => a.yCoord - b.yCoord),
+        ].toSorted((a, b) => a.useAt - b.useAt),
       );
   };
 
@@ -248,24 +215,24 @@ const EditSubColumn = ({ job }: { job: JobTemp; skill: SkillTemp }) => {
       {...boxValues.map((boxValue, index) => (
         <DraggableBox
           key={boxValue.key}
-          yCoord={boxValue.yCoord}
-          setYCoord={(yCoord) => {
+          useAt={boxValue.useAt}
+          setUseAt={(useAt) => {
             setBoxValues(
               boxValues
                 .map((oldValue) =>
-                  oldValue.key === boxValue.key ? { yCoord, key: boxValue.key } : oldValue,
+                  oldValue.key === boxValue.key ? { useAt, key: boxValue.key } : oldValue,
                 )
-                .toSorted((a, b) => a.yCoord - b.yCoord),
+                .toSorted((a, b) => a.useAt - b.useAt),
             );
           }}
           deleteBox={() => {
             setBoxValues(
               boxValues
                 .filter((oldValue) => oldValue.key !== boxValue.key)
-                .toSorted((a, b) => a.yCoord - b.yCoord),
+                .toSorted((a, b) => a.useAt - b.useAt),
             );
           }}
-          otherYCoords={boxValues.filter((_, j) => j !== index).map((boxValue) => boxValue.yCoord)}
+          otherUseAts={boxValues.filter((_, j) => j !== index).map((boxValue) => boxValue.useAt)}
         />
       ))}
     </div>
