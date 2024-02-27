@@ -14,6 +14,8 @@ export const getZoom = (zoomState: number) => {
   return 1 / (1 + 0.05 * (40 - zoomState));
 };
 
+export type ArrayElement<T> = T extends Array<infer R> ? R : never;
+
 export const usePixelPerFrame = () => {
   const [zoom, _] = useZoomState();
   const pixelPerFrameDefault = 0.1;
