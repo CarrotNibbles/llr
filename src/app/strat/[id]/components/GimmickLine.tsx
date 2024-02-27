@@ -1,6 +1,7 @@
-type GimmkLineProps = {
-  castAt: number;
-  prepareAt: number;
+type GimmickLineProps = {
+  time: number;
+  primaryTime: number;
+  isPrimary: boolean;
   zoom: number;
   textColor: string;
   borderColor: string;
@@ -9,27 +10,28 @@ type GimmkLineProps = {
 };
 
 export const GimmickLine = ({
-  castAt,
-  prepareAt,
+  time,
+  primaryTime,
+  isPrimary,
   zoom,
   textColor,
   borderColor,
   resizePanelSize,
   name,
-}: GimmkLineProps) => {
+}: GimmickLineProps) => {
   return (
-    castAt &&
-    Math.abs(castAt - prepareAt) > 5 / zoom && (
+    time &&
+    Math.abs(time - primaryTime) > 5 / zoom && (
       <>
         <div
           className={`absolute border-0 border-t ${borderColor}  right-0 border-dashed z-10`}
-          style={{ top: `${zoom * castAt}px`, width: `${resizePanelSize}vw` }}
+          style={{ top: `${zoom * time}px`, width: `${resizePanelSize}vw` }}
         />
-        {Math.abs(castAt - prepareAt) > 10 / zoom && (
+        {Math.abs(time - primaryTime) > 10 / zoom && (
           <div
             className={`absolute ${textColor} text-xs z-10 right-0`}
             style={{
-              top: `${zoom * castAt}px`,
+              top: `${zoom * time}px`,
             }}
           >
             <text className="text-xs font-thin right-0">{name}</text>

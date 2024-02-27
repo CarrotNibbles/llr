@@ -1,3 +1,5 @@
+'use client';
+
 import { type Database } from '@/lib/database.types';
 import { usePixelPerFrame } from '@/lib/utils';
 import React from 'react';
