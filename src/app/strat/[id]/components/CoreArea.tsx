@@ -9,29 +9,32 @@ import { motion } from 'framer-motion';
 
 const jobs: string[] = Array(100).fill('WAR') as string[];
 
-const ExampleDamageEvaluationProps: Omit<DamageEvaluationProps, 'resizePanelSize'> = {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  cast_at: 1000,
-  id: 'uuid(ansdkofsjao)',
-  name: '판데모니움 시바라',
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  prepare_at: 1120,
-  raid: 'uuid(123123123)',
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  resolve_at: 1200,
-  damages: [
-    {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      combined_damage: 100000,
-      gimmick: 'uuid(ansdkofsjao)',
-      id: 'uuid(zbkcvkxcbvlkl)',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      max_shared: 3,
-      target: 'Raidwide',
-      type: 'Physical',
-    },
-  ],
-};
+const propList: Array<Omit<DamageEvaluationProps, 'resizePanelSize'>> = Array.from(
+  { length: 9 },
+  (v, i) => ({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    cast_at: 100 + i * 200,
+    id: 'uuid(ansdkofsjao)',
+    name: '판데모니움 시바라',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    prepare_at: 120 + i * 200,
+    raid: 'uuid(123123123)',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    resolve_at: 200 + i * 200,
+    damages: [
+      {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        combined_damage: 100000,
+        gimmick: 'uuid(ansdkofsjao)',
+        id: 'uuid(zbkcvkxcbvlkl)',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        max_shared: 3,
+        target: 'Raidwide',
+        type: 'Physical',
+      },
+    ],
+  }),
+);
 
 export const CoreArea = () => {
   const [resizePanelSize, setResizePanelSize] = useState(20);
@@ -67,10 +70,11 @@ export const CoreArea = () => {
         <ScrollSyncPane group="y">
           <div className="absolute top-10 left-0 w-screen h-full pointer-events-none overflow-y-scroll scrollbar-hide">
             <div className="absolute top-0 left-0 w-screen h-[2960px]">
-              <DamageEvaluation
-                {...ExampleDamageEvaluationProps}
-                resizePanelSize={resizePanelSize}
-              />
+              {propList.map((value, index) => {
+                return (
+                  <DamageEvaluation {...value} resizePanelSize={resizePanelSize} key={index} />
+                );
+              })}
             </div>
           </div>
         </ScrollSyncPane>

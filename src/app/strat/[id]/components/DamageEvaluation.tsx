@@ -30,16 +30,32 @@ const DamageEvaluation = React.forwardRef<
   return (
     <div ref={ref}>
       {cast_at && (
-        <div
-          className={`absolute border-0 border-t border-${color}-600  top-[${zoom * cast_at}px] right-0 border-dashed`}
-          style={{ top: `${zoom * cast_at}px`, width: `${resizePanelSize}vw` }}
-        />
+        <>
+          <div
+            className={`absolute border-0 border-t border-${color}-600  right-0 border-dashed`}
+            style={{ top: `${zoom * cast_at}px`, width: `${resizePanelSize}vw` }}
+          />
+          <div
+            className={`absolute text-${color}-600 text-xs`}
+            style={{ top: `${zoom * cast_at}px`, left: `${100 - resizePanelSize}vw` }}
+          >
+            {name}
+          </div>
+        </>
       )}
       {resolve_at && (
-        <div
-          className={`absolute border-0 border-t border-${color}-600 top-[${zoom * resolve_at}px] right-0`}
-          style={{ top: `${zoom * resolve_at}px`, width: `${resizePanelSize}vw` }}
-        />
+        <>
+          <div
+            className={`absolute border-0 border-t border-${color}-600 right-0`}
+            style={{ top: `${zoom * resolve_at}px`, width: `${resizePanelSize}vw` }}
+          />
+          <div
+            className={`absolute text-${color}-600 text-xs`}
+            style={{ top: `${zoom * resolve_at}px`, left: `${100 - resizePanelSize}vw` }}
+          >
+            {name}
+          </div>
+        </>
       )}
       <div
         className={`absolute border-0 border-t-2 border-${color}-600 w-[98dvw] right-0`}
