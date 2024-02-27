@@ -5,6 +5,8 @@ import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import { EditAreaColumn } from './EditAreaColumn';
 import { DamageEvaluation } from './DamageEvaluation';
 
+const jobs: string[] = Array(100).fill('WAR') as string[];
+
 export const CoreArea = () => {
   return (
     <ScrollSync>
@@ -22,16 +24,18 @@ export const CoreArea = () => {
           className="flex flex-col overflow-auto border-r bg-white"
         >
           <ScrollSyncPane group="x">
-            <div className="min-h-10 h-10 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide border-b"></div>
+            <div className="min-h-10 h-10 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide border-b flex flex-row" />
           </ScrollSyncPane>
           <ScrollSyncPane group={['x', 'y']}>
-            <ul className="relative flex flex-grow overflow-scroll overscroll-none">
-              <EditAreaColumn job={1} />
-            </ul>
+            <div className="flex flex-grow relative overflow-scroll overscroll-none">
+              {jobs.map((value, index) => {
+                return <EditAreaColumn job={value} key={index} />;
+              })}
+            </div>
           </ScrollSyncPane>
         </ResizablePanel>
         <ScrollSyncPane group="y">
-          <div className="absolute top-10 left-0 w-screen h-full pointer-events-none overflow-y-scroll">
+          <div className="absolute top-10 left-0 w-screen h-full pointer-events-none overflow-y-scroll scrollbar-hide">
             <div className="absolute top-0 left-0 w-screen h-[2960px]">
               <DamageEvaluation />
             </div>

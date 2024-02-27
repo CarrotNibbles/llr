@@ -25,7 +25,8 @@ const DurationTemp = 10;
 const CoolDownTemp = 30;
 const RaidDurationTemp = 600;
 const uidLength = 10;
-const columnWidth = 5;
+const columnMinWidth = 4;
+const columnWidth = 6;
 const columnWidthLarge = 10;
 const contextMenuWidth = 16;
 const contextMenuWidthLarge = 32;
@@ -241,6 +242,6 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
           </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
-    </li>
+    </div>
   );
 };
