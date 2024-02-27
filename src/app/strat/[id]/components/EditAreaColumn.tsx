@@ -5,7 +5,13 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
-import { type BoundingBox, useMotionValue, useMotionValueEvent, useTransform } from 'framer-motion';
+import {
+  type BoundingBox,
+  useMotionValue,
+  useMotionValueEvent,
+  useTransform,
+  animate,
+} from 'framer-motion';
 import { motion } from 'framer-motion';
 import React, {
   type MouseEvent,
@@ -24,7 +30,6 @@ const DurationTemp = 10;
 const CoolDownTemp = 30;
 const RaidDurationTemp = 600;
 const uidLength = 10;
-const columnMinWidth = 4;
 const columnWidth = 6;
 const columnWidthLarge = 10;
 const contextMenuWidth = 16;
@@ -110,7 +115,7 @@ const DraggableBox = ({
     const calcedYCoord = snapToStep(
       removeOverlap(snapToStep(yMotionValue.get()), clampedYCoord, otherYCoords, CoolDownTemp),
     );
-    yMotionValue.set(calcedYCoord);
+    void animate(yMotionValue, calcedYCoord);
     setYCoord(calcedYCoord);
   };
 
