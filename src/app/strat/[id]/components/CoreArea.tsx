@@ -25,7 +25,7 @@ export const CoreArea = () => {
             <div className="min-h-10 h-10 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide border-b"></div>
           </ScrollSyncPane>
           <ScrollSyncPane group={['x', 'y']}>
-            <ul className="relative flex-grow overflow-scroll overscroll-none">
+            <ul className="relative flex flex-grow overflow-scroll overscroll-none">
               <EditAreaColumn job={1} />
             </ul>
           </ScrollSyncPane>

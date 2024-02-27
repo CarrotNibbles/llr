@@ -85,9 +85,13 @@ const DraggableBox = ({
   const yMotionValue = useMotionValue(yCoord);
 
   const adjustPosition = () => {
+    yMotionValue.animation?.cancel();
+
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const clampedYCoord = Math.max(Math.min(yCoord, RaidDurationTemp * PixelPerSecTemp), 0);
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const calcedYCoord = snapToStep(
-      removeOverlap(snapToStep(yMotionValue.get()), yCoord, otherYCoords, CoolDownTemp),
+      removeOverlap(snapToStep(yMotionValue.get()), clampedYCoord, otherYCoords, CoolDownTemp),
     );
     yMotionValue.set(calcedYCoord);
     setYCoord(calcedYCoord);
@@ -105,16 +109,15 @@ const DraggableBox = ({
     deleteBox();
   };
 
-  useMotionValueEvent(yMotionValue, 'animationComplete', adjustPosition);
-
   return (
     <ContextMenu>
       <ContextMenuTrigger className="w-full h-full relative">
         <motion.div
+          layout
           drag={isLocked ? false : 'y'}
           dragConstraints={dragConstraints}
           dragMomentum={false}
-          dragTransition={{ bounceStiffness: 1000 }}
+          onDragEnd={adjustPosition}
           className={`w-${columnWidth} lg:w-${columnWidthLarge} h-0 absolute`}
           style={{ y: yMotionValue }}
         >
@@ -193,7 +196,7 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
 
   return (
     <li
-      className={`flex w-${columnWidth} lg:w-${columnWidthLarge} overflow-hidden`}
+      className={`flex flex-shrink-0 w-${columnWidth} lg:w-${columnWidthLarge} overflow-hidden`}
       style={{ height: RaidDurationTemp * PixelPerSecTemp }}
     >
       <ContextMenu>
