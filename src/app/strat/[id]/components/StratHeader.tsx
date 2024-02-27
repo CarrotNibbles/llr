@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { CopyIcon, HeartIcon, Share1Icon, ZoomInIcon } from '@radix-ui/react-icons';
 import { cn } from '@/lib/utils';
-import { ZoomSlider } from './components/ZoomSlider';
+import { ZoomSlider } from './ZoomSlider';
 
 const StratHeader = React.forwardRef<
   HTMLDivElement,

@@ -2,10 +2,10 @@ import { type Database } from '@/lib/database.types';
 import { useZoomState } from '@/lib/states';
 import React, { useEffect } from 'react';
 import { pixelPerSecTemp } from './coreAreaConstants';
+import { type RaidDataType } from '@/lib/queries';
+import { type ArrayElement } from '@/lib/utils';
 
-export type DamageEvaluationProps = Database['public']['Tables']['gimmicks']['Row'] & {
-  damages: Array<Database['public']['Tables']['damages']['Row']>;
-} & {
+export type DamageEvaluationProps = ArrayElement<RaidDataType> & {
   resizePanelSize: number;
 };
 

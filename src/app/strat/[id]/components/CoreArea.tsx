@@ -7,39 +7,20 @@ import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import { DamageEvaluation, type DamageEvaluationProps } from './DamageEvaluation';
 import { EditColumn } from './EditColumn';
 import { HeadColumn } from './HeadColumn';
+import { type RaidDataType } from '@/lib/queries';
+import { type Enums } from '@/lib/database.types';
 
-const jobs: string[] = Array(5).fill('WAR') as string[];
+const jobs: Array<Enums<'job'>> = ['WAR', 'PLD', 'SAM', 'MNK', 'BRD', 'RDM', 'AST', 'SGE'];
 
-const propList: Array<Omit<DamageEvaluationProps, 'resizePanelSize'>> = Array.from(
-  { length: 9 },
-  (v, i) => ({
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    cast_at: 10 + i * 2000,
-    id: 'uuid(ansdkofsjao)',
-    name: '판데모니움 시바라',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    prepare_at: 120 + i * 2000,
-    raid: 'uuid(123123123)',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    resolve_at: 240 + i * 2000,
-    damages: [
-      {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        combined_damage: 100000,
-        gimmick: 'uuid(ansdkofsjao)',
-        id: 'uuid(zbkcvkxcbvlkl)',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        max_shared: 3,
-        target: 'Raidwide',
-        type: 'Physical',
-      },
-    ],
-  }),
-);
+export type CoreAreaProps = {
+  data: RaidDataType;
+};
 
-export const CoreArea = () => {
+export const CoreArea = (props: CoreAreaProps) => {
   const [resizePanelSize, setResizePanelSize] = useState(20);
   const [zoom, _] = useZoomState();
+
+  console.log(props);
 
   return (
     <ScrollSync>
@@ -88,7 +69,7 @@ export const CoreArea = () => {
               className="absolute top-0 left-0 w-screen"
               style={{ height: `${zoom * 3000 - 40}px` }}
             >
-              {propList.map((value, index) => {
+              {props.data.map((value, index) => {
                 return (
                   <DamageEvaluation {...value} resizePanelSize={resizePanelSize} key={index} />
                 );

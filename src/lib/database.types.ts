@@ -12,6 +12,7 @@ export type Database = {
       abilities: {
         Row: {
           cooldown: number
+          icon_url: string | null
           id: string
           job: Database["public"]["Enums"]["job"]
           name: string
@@ -19,6 +20,7 @@ export type Database = {
         }
         Insert: {
           cooldown: number
+          icon_url?: string | null
           id?: string
           job?: Database["public"]["Enums"]["job"]
           name?: string
@@ -26,6 +28,7 @@ export type Database = {
         }
         Update: {
           cooldown?: number
+          icon_url?: string | null
           id?: string
           job?: Database["public"]["Enums"]["job"]
           name?: string
@@ -39,6 +42,7 @@ export type Database = {
           gimmick: string
           id: string
           max_shared: number
+          num_targets: number
           target: Database["public"]["Enums"]["damage_target"]
           type: Database["public"]["Enums"]["damage_type"]
         }
@@ -47,6 +51,7 @@ export type Database = {
           gimmick: string
           id?: string
           max_shared?: number
+          num_targets: number
           target?: Database["public"]["Enums"]["damage_target"]
           type?: Database["public"]["Enums"]["damage_type"]
         }
@@ -55,6 +60,7 @@ export type Database = {
           gimmick?: string
           id?: string
           max_shared?: number
+          num_targets?: number
           target?: Database["public"]["Enums"]["damage_target"]
           type?: Database["public"]["Enums"]["damage_type"]
         }
@@ -76,6 +82,7 @@ export type Database = {
           prepare_at: number
           raid: string
           resolve_at: number | null
+          type: Database["public"]["Enums"]["gimmick_type"]
         }
         Insert: {
           cast_at?: number | null
@@ -84,6 +91,7 @@ export type Database = {
           prepare_at: number
           raid: string
           resolve_at?: number | null
+          type?: Database["public"]["Enums"]["gimmick_type"]
         }
         Update: {
           cast_at?: number | null
@@ -92,6 +100,7 @@ export type Database = {
           prepare_at?: number
           raid?: string
           resolve_at?: number | null
+          type?: Database["public"]["Enums"]["gimmick_type"]
         }
         Relationships: [
           {
@@ -317,6 +326,12 @@ export type Database = {
     Enums: {
       damage_target: "Raidwide" | "Tankbuster"
       damage_type: "Physical" | "Magical" | "Unique"
+      gimmick_type:
+        | "Raidwide"
+        | "Tankbuster"
+        | "AutoAttack"
+        | "Avoidable"
+        | "Hybrid"
       job:
         | "PLD"
         | "WAR"
@@ -339,7 +354,7 @@ export type Database = {
         | "SMN"
         | "BLU"
         | "LB"
-      mitigation_type: "Physical" | "Magical" | "Barrier" | "Invuln"
+      mitigation_type: "Physical" | "Magical" | "Barrier" | "Invuln" | "Support"
       raid_category: "Savage" | "Ultimate" | "Trial" | "Raid" | "Dungeon"
     }
     CompositeTypes: {
