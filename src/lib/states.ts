@@ -11,13 +11,20 @@ type User =
     }
   | undefined;
 
-type Zoom = number;
+type ZoomType = number;
+type LastZoomType = number;
 
-const defaultZoom: Zoom = 40;
+const defaultZoom: ZoomType = 1;
+const defaultLastZoom: LastZoomType = 1;
 
-const zoomState = atom<Zoom>({
+const zoomState = atom<ZoomType>({
   key: 'zoomState',
   default: defaultZoom,
+});
+
+const lastZoomState = atom<LastZoomType>({
+  key: 'lastZoomState',
+  default: defaultLastZoom,
 });
 
 const defaultUser: User = undefined;
@@ -43,4 +50,6 @@ function useCheckedRecoilState<T>(recoilState: RecoilState<T>, defaultValue: T) 
 }
 
 export const useUserState = () => useCheckedRecoilState<User>(userState, defaultUser);
-export const useZoomState = () => useCheckedRecoilState<Zoom>(zoomState, defaultZoom);
+export const useZoomState = () => useCheckedRecoilState<ZoomType>(zoomState, defaultZoom);
+export const useLastZoomState = () =>
+  useCheckedRecoilState<LastZoomType>(lastZoomState, defaultLastZoom);

@@ -1,19 +1,20 @@
 'use client';
 
-import { cn } from '@/lib/utils';
+import { cn, getZoom } from '@/lib/utils';
 import { Slider as DefaultSlider } from '@/components/ui/slider';
-import { useZoomState } from '@/lib/states';
+import { useLastZoomState, useZoomState } from '@/lib/states';
 
 type SliderProps = React.ComponentProps<typeof DefaultSlider>;
 
 export function ZoomSlider({ className, ...props }: SliderProps) {
   const [zoom, setZoom] = useZoomState();
+  const [_, setLastZoom] = useLastZoomState();
   return (
     <DefaultSlider
       defaultValue={[40]}
-      value={[zoom]}
       onValueChange={(value) => {
-        setZoom(value[0]);
+        setLastZoom(zoom);
+        setZoom(getZoom(value[0]));
       }}
       max={80}
       step={10}
