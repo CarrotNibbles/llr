@@ -1,13 +1,11 @@
 'use client';
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
+import { useZoomState } from '@/lib/states';
 import { useState } from 'react';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import { DamageEvaluation, type DamageEvaluationProps } from './DamageEvaluation';
-import { useZoomState } from '@/lib/states';
-import { getZoom } from '@/lib/utils';
 import { EditColumn } from './EditColumn';
-import { Separator } from '@radix-ui/react-separator';
 import { HeadColumn } from './HeadColumn';
 
 const jobs: string[] = Array(5).fill('WAR') as string[];
@@ -16,14 +14,14 @@ const propList: Array<Omit<DamageEvaluationProps, 'resizePanelSize'>> = Array.fr
   { length: 9 },
   (v, i) => ({
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    cast_at: 100 + i * 2000,
+    cast_at: 10 + i * 2000,
     id: 'uuid(ansdkofsjao)',
     name: '판데모니움 시바라',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     prepare_at: 120 + i * 2000,
     raid: 'uuid(123123123)',
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    resolve_at: 130 + i * 2000,
+    resolve_at: 240 + i * 2000,
     damages: [
       {
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -88,7 +86,7 @@ export const CoreArea = () => {
           <div className="absolute top-10 left-0 w-screen h-full pointer-events-none overflow-y-scroll scrollbar-hide">
             <div
               className="absolute top-0 left-0 w-screen"
-              style={{ height: `${getZoom(zoom) * 3000 - 40}px` }}
+              style={{ height: `${zoom * 3000 - 40}px` }}
             >
               {propList.map((value, index) => {
                 return (

@@ -1,7 +1,5 @@
 import { type Database } from '@/lib/database.types';
 import { useZoomState } from '@/lib/states';
-import { getZoom } from '@/lib/utils';
-import { REALTIME_POSTGRES_CHANGES_LISTEN_EVENT } from '@supabase/supabase-js';
 import React, { useEffect } from 'react';
 import { pixelPerSecTemp } from './coreAreaConstants';
 
@@ -44,51 +42,56 @@ const DamageEvaluation = React.forwardRef<
   const castAt = defaultCastAt ? (defaultCastAt / 60) * pixelPerSecTemp : null;
   const resolveAt = defaultResolveAt ? (defaultResolveAt / 60) * pixelPerSecTemp : null;
 
-  const [zoomState, _] = useZoomState();
+  const [zoom, _] = useZoomState();
   useEffect(() => {
-    console.log(getZoom(zoomState) * prepareAt);
-  }, [zoomState, prepareAt]);
+    console.log(zoom * prepareAt);
+  }, [zoom, prepareAt]);
 
   return (
     <div ref={ref}>
-      {castAt && (
+      {castAt && Math.abs(castAt - prepareAt) > 5 / zoom && (
         <>
           <div
             className={`absolute border-0 border-t ${borderColor}  right-0 border-dashed z-10`}
-            style={{ top: `${getZoom(zoomState) * castAt}px`, width: `${resizePanelSize}vw` }}
+            style={{ top: `${zoom * castAt}px`, width: `${resizePanelSize}vw` }}
           />
-          <div
-            className={`absolute ${textColor} text-xs z-10`}
-            style={{ top: `${getZoom(zoomState) * castAt}px`, left: `${100 - resizePanelSize}vw` }}
-          >
-            {name}
-          </div>
+          {Math.abs(castAt - prepareAt) > 10 / zoom && (
+            <div
+              className={`absolute ${textColor} text-xs z-10 right-0`}
+              style={{
+                top: `${zoom * castAt}px`,
+              }}
+            >
+              <text className="text-xs font-thin right-0">{name}</text>
+            </div>
+          )}
         </>
       )}
-      {resolveAt && (
+      {resolveAt && Math.abs(resolveAt - prepareAt) > 5 / zoom && (
         <>
           <div
             className={`absolute border-0 border-t ${borderColor} right-0 z-10`}
-            style={{ top: `${getZoom(zoomState) * resolveAt}px`, width: `${resizePanelSize}vw` }}
+            style={{ top: `${zoom * resolveAt}px`, width: `${resizePanelSize}vw` }}
           />
-          <div
-            className={`absolute ${textColor} text-xs z-10`}
-            style={{
-              top: `${getZoom(zoomState) * resolveAt}px`,
-              left: `${100 - resizePanelSize}vw`,
-            }}
-          >
-            {name}
-          </div>
+          {Math.abs(resolveAt - prepareAt) > 10 / zoom && (
+            <div
+              className={`absolute ${textColor} text-xs z-10 right-0`}
+              style={{
+                top: `${zoom * resolveAt}px`,
+              }}
+            >
+              <text className="text-xs font-thin right-0">{name}</text>
+            </div>
+          )}
         </>
       )}
       <div
         className={`absolute border-0 border-t-2 ${borderColor} w-[98dvw] right-0 z-10`}
-        style={{ top: `${getZoom(zoomState) * prepareAt}px` }}
+        style={{ top: `${zoom * prepareAt}px` }}
       />
       <div
-        className={`absolute top-[${getZoom(zoomState) * prepareAt}px] left-[2dvw] -z-10`}
-        style={{ top: `${getZoom(zoomState) * prepareAt}px` }}
+        className={`absolute top-[${zoom * prepareAt}px] left-[2dvw] -z-10`}
+        style={{ top: `${zoom * prepareAt}px` }}
       >
         <div className="-z-10 space-y-2">
           <div className={`${textColor} font-bold text-md`}>{name}</div>
