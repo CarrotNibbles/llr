@@ -3,6 +3,7 @@
 import { type Database } from '@/lib/database.types';
 import { usePixelPerFrame } from '@/lib/utils';
 import React from 'react';
+import { GimmickSubLine } from './GimmickLine';
 
 export type DamageEvaluationProps = Database['public']['Tables']['gimmicks']['Row'] & {
   damages: Array<Database['public']['Tables']['damages']['Row']>;
@@ -46,41 +47,29 @@ const DamageEvaluation = React.forwardRef<
 
   return (
     <div ref={ref}>
-      {castAt && Math.abs(castAt - prepareAt) * pixelPerFrame > 5 && (
-        <>
-          <div
-            className={`absolute border-0 border-t ${borderColor}  right-0 border-dashed z-10`}
-            style={{ top: `${castAt * pixelPerFrame}px`, width: `${resizePanelSize}vw` }}
-          />
-          {Math.abs(castAt - prepareAt) * pixelPerFrame > 10 && (
-            <div
-              className={`absolute ${textColor} text-xs z-10 right-0`}
-              style={{
-                top: `${pixelPerFrame * castAt}px`,
-              }}
-            >
-              <text className="text-xs font-thin right-0">{name}</text>
-            </div>
-          )}
-        </>
+      {castAt && (
+        <GimmickSubLine
+          time={castAt}
+          primaryTime={prepareAt}
+          textColor={textColor}
+          borderColor={borderColor}
+          resizePanelSize={resizePanelSize}
+          name={name}
+          lineType="border-dashed"
+          pixelPerFrame={pixelPerFrame}
+        />
       )}
-      {resolveAt && Math.abs(resolveAt - prepareAt) * pixelPerFrame > 5 && (
-        <>
-          <div
-            className={`absolute border-0 border-t ${borderColor} right-0 z-10`}
-            style={{ top: `${resolveAt * pixelPerFrame}px`, width: `${resizePanelSize}vw` }}
-          />
-          {Math.abs(resolveAt - prepareAt) * pixelPerFrame > 10 && (
-            <div
-              className={`absolute ${textColor} text-xs z-10 right-0`}
-              style={{
-                top: `${resolveAt * pixelPerFrame}px`,
-              }}
-            >
-              <text className="text-xs font-thin right-0">{name}</text>
-            </div>
-          )}
-        </>
+      {resolveAt && (
+        <GimmickSubLine
+          time={resolveAt}
+          primaryTime={prepareAt}
+          textColor={textColor}
+          borderColor={borderColor}
+          resizePanelSize={resizePanelSize}
+          name={name}
+          lineType=""
+          pixelPerFrame={pixelPerFrame}
+        />
       )}
       <div
         className={`absolute border-0 border-t-2 ${borderColor} w-[98dvw] right-0 z-10`}

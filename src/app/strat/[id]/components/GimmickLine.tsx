@@ -1,37 +1,37 @@
-type GimmickLineProps = {
+type GimmickSubLineProps = {
   time: number;
   primaryTime: number;
-  isPrimary: boolean;
-  zoom: number;
+  pixelPerFrame: number;
   textColor: string;
   borderColor: string;
   resizePanelSize: number;
   name: string;
+  lineType: string;
 };
 
-export const GimmickLine = ({
+export const GimmickSubLine = ({
   time,
   primaryTime,
-  isPrimary,
-  zoom,
+  pixelPerFrame,
   textColor,
   borderColor,
   resizePanelSize,
   name,
-}: GimmickLineProps) => {
+  lineType,
+}: GimmickSubLineProps) => {
   return (
     time &&
-    Math.abs(time - primaryTime) > 5 / zoom && (
+    Math.abs(time - primaryTime) * pixelPerFrame > 5 && (
       <>
         <div
-          className={`absolute border-0 border-t ${borderColor}  right-0 border-dashed z-10`}
-          style={{ top: `${zoom * time}px`, width: `${resizePanelSize}vw` }}
+          className={`absolute border-0 border-t ${borderColor}  right-0 ${lineType} z-10`}
+          style={{ top: `${time * pixelPerFrame}px`, width: `${resizePanelSize}vw` }}
         />
-        {Math.abs(time - primaryTime) > 10 / zoom && (
+        {Math.abs(time - primaryTime) * pixelPerFrame > 10 && (
           <div
             className={`absolute ${textColor} text-xs z-10 right-0`}
             style={{
-              top: `${zoom * time}px`,
+              top: `${pixelPerFrame * time}px`,
             }}
           >
             <text className="text-xs font-thin right-0">{name}</text>
