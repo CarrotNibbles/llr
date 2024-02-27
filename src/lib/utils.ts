@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useZoomState } from './states';
+import { type Enums } from './database.types';
 
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
@@ -26,3 +27,21 @@ const myMin = (...values: Array<number | undefined>) =>
 const myMax = (...values: Array<number | undefined>) =>
   Math.max(...values.filter(notNullOrUndefined));
 export const clamp = (num: number, min?: number, max?: number) => myMax(myMin(num, max), min);
+
+/* eslint-disable */
+export const gimmickTextColor = {
+  AutoAttack: 'text-slate-400',
+  Raidwide: 'text-blue-600',
+  Tankbuster: 'text-red-600',
+  Hybrid: 'text-purple-600',
+  Avoidable: 'text-green-600',
+} satisfies Record<Enums<'gimmick_type'>, string>;
+
+export const gimmickBorderColor = {
+  AutoAttack: 'border-slate-400',
+  Raidwide: 'border-blue-600',
+  Tankbuster: 'border-red-600',
+  Hybrid: 'border-purple-600',
+  Avoidable: 'border-green-600',
+} satisfies Record<Enums<'gimmick_type'>, string>;
+/* eslint-enable */

@@ -130,7 +130,7 @@ const DraggableBox = ({
           style={{ y: yMotionValue }}
         >
           <div
-            className={`w-${columnWidth} lg:w-${columnWidthLarge} rounded-sm overflow-hidden bg-secondary shadow-inner`}
+            className={`w-${columnWidth} lg:w-${columnWidthLarge} rounded-sm overflow-hidden bg-slate-300 shadow-inner`}
             style={{
               height: `${CoolDownTemp * pixelPerFrame}px`,
               borderWidth: isLocked ? '2px' : undefined,
@@ -138,7 +138,7 @@ const DraggableBox = ({
             }}
           >
             <div
-              className={`w-${columnWidth} lg:w-${columnWidthLarge} rounded-sm bg-slate-300 shadow-inner`}
+              className={`w-${columnWidth} lg:w-${columnWidthLarge} rounded-sm bg-slate-400 shadow-inner`}
               style={{ height: `${DurationTemp * pixelPerFrame}px` }}
             />
           </div>

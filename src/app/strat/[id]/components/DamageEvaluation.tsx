@@ -1,7 +1,7 @@
 'use client';
 
 import { type Database } from '@/lib/database.types';
-import { usePixelPerFrame } from '@/lib/utils';
+import { gimmickBorderColor, gimmickTextColor, usePixelPerFrame } from '@/lib/utils';
 import React from 'react';
 import { GimmickSubLine } from './GimmickLine';
 import { type RaidDataType } from '@/lib/queries';
@@ -23,16 +23,9 @@ const DamageEvaluation = React.forwardRef<
   DamageEvaluationProps & { className?: string } & React.ComponentPropsWithoutRef<'div'>
 >(({ className, ...props }, ref) => {
   const { damages } = props;
-  const textColor = damages.some((d) => d.target === 'Tankbuster')
-    ? damages.some((d) => d.target === 'Raidwide')
-      ? CombinedTextColor
-      : TankbusterTextColor
-    : RaidwideTextColor;
-  const borderColor = damages.some((d) => d.target === 'Tankbuster')
-    ? damages.some((d) => d.target === 'Raidwide')
-      ? CombinedBorderColor
-      : TankbusterBorderColor
-    : RaidwideBorderColor;
+  const textColor = gimmickTextColor[props.type];
+  const borderColor = gimmickBorderColor[props.type];
+
   const {
     name,
     prepare_at: defaultPrepareAt,
@@ -85,11 +78,11 @@ const DamageEvaluation = React.forwardRef<
             className="inline-grid text-sm gap-x-2 gap-y-1"
             style={{ gridTemplateColumns: 'auto auto auto' }}
           >
-            <div className="space-x-1 pr-6">
+            {/* <div className="space-x-1 pr-6">
               <span className="font-bold">T1+T2</span>
             </div>
             <span className="tabular-nums font-bold">100000</span>
-            <span className="text-muted-foreground tabular-nums text-xs my-auto">180000</span>
+            <span className="text-muted-foreground tabular-nums text-xs my-auto">180000</span> */}
 
             {/* <div className="space-x-1 pr-6">
               <span className="font-bold">T1</span>

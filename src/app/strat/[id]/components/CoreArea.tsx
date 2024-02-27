@@ -48,7 +48,14 @@ export const CoreArea = (props: CoreAreaProps) => {
               {jobs.map((value, index) => (
                 <HeadColumn
                   job={value}
-                  skills={[{ id: '1' }, { id: '2' }, { id: '3' }]}
+                  skills={[
+                    { id: '1' },
+                    { id: '2' },
+                    { id: '3' },
+                    { id: '4' },
+                    { id: '5' },
+                    { id: '6' },
+                  ]}
                   key={index}
                 />
               ))}
@@ -59,7 +66,14 @@ export const CoreArea = (props: CoreAreaProps) => {
               {jobs.map((value, index) => (
                 <EditColumn
                   job={value}
-                  skills={[{ id: '1' }, { id: '2' }, { id: '3' }]}
+                  skills={[
+                    { id: '1' },
+                    { id: '2' },
+                    { id: '3' },
+                    { id: '4' },
+                    { id: '5' },
+                    { id: '6' },
+                  ]}
                   key={index}
                 />
               ))}
