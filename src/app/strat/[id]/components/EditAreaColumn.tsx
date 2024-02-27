@@ -50,7 +50,7 @@ const evaluateOverlap = (
   otherYCoord: number,
   cooldown: number,
 ) => {
-  if (Math.abs(currentYCoord - otherYCoord) >= cooldown * PixelPerSecTemp * 0.8)
+  if (Math.abs(currentYCoord - otherYCoord) >= cooldown * PixelPerSecTemp * 0.5)
     return currentYCoord < otherYCoord ? 'up' : 'down';
   return prevYCoord < otherYCoord ? 'up' : 'down';
 };
@@ -140,7 +140,7 @@ const DraggableBox = ({
           style={{ y: yMotionValue }}
         >
           <div
-            className={`w-${columnWidth} lg:w-${columnWidthLarge} rounded-sm overflow-hidden bg-red-300`}
+            className={`w-${columnWidth} lg:w-${columnWidthLarge} rounded-sm overflow-hidden bg-secondary shadow-inner`}
             style={{
               height: `${CoolDownTemp * PixelPerSecTemp}px`,
               borderWidth: isLocked ? '2px' : undefined,
@@ -148,7 +148,7 @@ const DraggableBox = ({
             }}
           >
             <div
-              className={`w-${columnWidth} lg:w-${columnWidthLarge} bg-green-300`}
+              className={`w-${columnWidth} lg:w-${columnWidthLarge} rounded-sm bg-slate-300 shadow-inner`}
               style={{ height: `${DurationTemp * PixelPerSecTemp}px` }}
             />
           </div>
@@ -170,7 +170,12 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const [menuOpenMouseYCoord, setMenuOpenMouseYCoord] = useState(0);
 
-  const [boxValues, setBoxValues] = useState<Array<{ yCoord: number; key: string }>>([]);
+  const [boxValues, setBoxValues] = useState<Array<{ yCoord: number; key: string }>>([
+    {
+      yCoord: 160,
+      key: uidSync(uidLength),
+    },
+  ]);
 
   const checkCanCreate = () => {
     const tryY = removeOverlap(
