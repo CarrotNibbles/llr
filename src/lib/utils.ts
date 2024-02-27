@@ -46,4 +46,22 @@ export const gimmickBorderColor = {
   Avoidable: 'border-green-600',
   Enrage: 'border-slate-900',
 } satisfies Record<Enums<'gimmick_type'>, string>;
+
+export const gimmickBackgroundColor = {
+  AutoAttack: 'bg-slate-400',
+  Raidwide: 'bg-blue-600',
+  Tankbuster: 'bg-red-600',
+  Hybrid: 'bg-purple-600',
+  Avoidable: 'bg-green-600',
+  Enrage: 'bg-slate-900',
+} satisfies Record<Enums<'gimmick_type'>, string>;
+
+export const gimmickTypeName = {
+  AutoAttack: '평타',
+  Raidwide: '전체공격',
+  Tankbuster: '탱커버스터',
+  Hybrid: '혼합',
+  Avoidable: '회피 가능',
+  Enrage: '전멸기',
+} satisfies Record<Enums<'gimmick_type'>, string>;
 /* eslint-enable */
