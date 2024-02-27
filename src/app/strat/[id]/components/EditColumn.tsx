@@ -125,7 +125,7 @@ const DraggableBox = ({
           drag={isLocked ? false : 'y'}
           dragMomentum={false}
           onDragEnd={adjustPosition}
-          className={`w-${columnWidth} lg:w-${columnWidthLarge} h-0 absolute`}
+          className={`w-${columnWidth} lg:w-${columnWidthLarge} h-0 absolute active:z-[5]`}
           style={{ y: yMotionValue }}
         >
           <div
