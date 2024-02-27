@@ -14,7 +14,6 @@ import React, {
   type MouseEventHandler,
   type RefObject,
   useEffect,
-  useLayoutEffect,
 } from 'react';
 import { uidSync } from 'uid-ts';
 
@@ -40,6 +39,17 @@ const snapToStep = (currentY: number) => {
 const overlaps = (currentYCoord: number, otherYCoord: number, cooldown: number) =>
   Math.abs(currentYCoord - otherYCoord) < cooldown * PixelPerSecTemp;
 
+const evaluateOverlap = (
+  currentYCoord: number,
+  prevYCoord: number,
+  otherYCoord: number,
+  cooldown: number,
+) => {
+  if (Math.abs(currentYCoord - otherYCoord) >= cooldown * PixelPerSecTemp * 0.8)
+    return currentYCoord < otherYCoord ? 'up' : 'down';
+  return prevYCoord < otherYCoord ? 'up' : 'down';
+};
+
 const removeOverlap = (
   currentYCoord: number,
   prevYCoord: number,
@@ -48,21 +58,27 @@ const removeOverlap = (
 ) => {
   otherYCoords = otherYCoords.toSorted((a, b) => a - b);
 
-  let overlapIndex = 0;
-  for (; overlapIndex < otherYCoords.length; overlapIndex++)
-    if (overlaps(currentYCoord, otherYCoords[overlapIndex], cooldown)) break;
+  const overlapIndex = otherYCoords.reduce(
+    (acc, curr, index) =>
+      Math.abs(curr - currentYCoord) < acc.value
+        ? { value: Math.abs(curr - currentYCoord), index }
+        : acc,
+    { value: cooldown * PixelPerSecTemp, index: -1 },
+  ).index;
 
-  if (overlapIndex < otherYCoords.length) {
-    if (prevYCoord < otherYCoords[overlapIndex])
-      while (overlaps(currentYCoord, otherYCoords[overlapIndex], cooldown)) {
-        currentYCoord = otherYCoords[overlapIndex] - cooldown * PixelPerSecTemp;
-        overlapIndex -= 1;
-      }
-    else
-      while (overlaps(currentYCoord, otherYCoords[overlapIndex], cooldown)) {
-        currentYCoord = otherYCoords[overlapIndex] + cooldown * PixelPerSecTemp;
-        overlapIndex += 1;
-      }
+  if (overlapIndex !== -1) {
+    if (evaluateOverlap(currentYCoord, prevYCoord, otherYCoords[overlapIndex], cooldown) === 'up')
+      return otherYCoords
+        .slice(0, overlapIndex + 1)
+        .reduceRight(
+          (acc, curr, _) =>
+            overlaps(acc, curr, cooldown) ? curr - cooldown * PixelPerSecTemp : curr,
+          currentYCoord,
+        );
+
+    return otherYCoords.slice(overlapIndex).reduce((acc, curr, _) => {
+      return overlaps(acc, curr, cooldown) ? curr + cooldown * PixelPerSecTemp : curr;
+    }, currentYCoord);
   }
 
   return currentYCoord;
