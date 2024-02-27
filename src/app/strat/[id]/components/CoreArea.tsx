@@ -1,15 +1,16 @@
 'use client';
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
-import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
-import { EditAreaColumn } from './EditAreaColumn';
-import { DamageEvaluation, type DamageEvaluationProps } from './DamageEvaluation';
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
+import { DamageEvaluation, type DamageEvaluationProps } from './DamageEvaluation';
 import { useZoomState } from '@/lib/states';
 import { getZoom } from '@/lib/utils';
+import { EditColumn } from './EditColumn';
+import { Separator } from '@radix-ui/react-separator';
+import { HeadColumn } from './HeadColumn';
 
-const jobs: string[] = Array(100).fill('WAR') as string[];
+const jobs: string[] = Array(5).fill('WAR') as string[];
 
 const propList: Array<Omit<DamageEvaluationProps, 'resizePanelSize'>> = Array.from(
   { length: 9 },
@@ -61,13 +62,25 @@ export const CoreArea = () => {
           }}
         >
           <ScrollSyncPane group="x">
-            <div className="min-h-10 h-10 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide border-b flex flex-row" />
+            <div className="min-h-10 h-10 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide border-b flex flex-row">
+              {jobs.map((value, index) => (
+                <HeadColumn
+                  job={value}
+                  skills={[{ id: '1' }, { id: '2' }, { id: '3' }]}
+                  key={index}
+                />
+              ))}
+            </div>
           </ScrollSyncPane>
           <ScrollSyncPane group={['x', 'y']}>
             <div className="flex flex-grow relative overflow-scroll overscroll-none">
-              {jobs.map((value, index) => {
-                return <EditAreaColumn job={value} key={index} />;
-              })}
+              {jobs.map((value, index) => (
+                <EditColumn
+                  job={value}
+                  skills={[{ id: '1' }, { id: '2' }, { id: '3' }]}
+                  key={index}
+                />
+              ))}
             </div>
           </ScrollSyncPane>
         </ResizablePanel>

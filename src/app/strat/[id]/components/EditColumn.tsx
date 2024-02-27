@@ -5,35 +5,23 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
-import { useZoomState } from '@/lib/states';
-import { getZoom } from '@/lib/utils';
-import {
-  type BoundingBox,
-  useMotionValue,
-  useMotionValueEvent,
-  useTransform,
-  animate,
-} from 'framer-motion';
-import { motion } from 'framer-motion';
-import React, {
-  type MouseEvent,
-  useRef,
-  useState,
-  type MouseEventHandler,
-  type RefObject,
-  useEffect,
-} from 'react';
+import { animate, motion, useMotionValue } from 'framer-motion';
+import React, { useState, type MouseEventHandler } from 'react';
 import { uidSync } from 'uid-ts';
+import {
+  type JobTemp,
+  type SkillTemp,
+  columnWidth,
+  columnWidthLarge,
+  pixelPerSecTemp,
+  raidDurationTemp,
+} from './coreAreaConstants';
 
 const TimeStepTemp = 1;
-const PixelPerSecTemp = 5;
-const PixelStepTemp = TimeStepTemp * PixelPerSecTemp;
+const PixelStepTemp = TimeStepTemp * pixelPerSecTemp;
 const DurationTemp = 10;
 const CoolDownTemp = 30;
-const RaidDurationTemp = 600;
 const uidLength = 10;
-const columnWidth = 6;
-const columnWidthLarge = 10;
 const contextMenuWidth = 16;
 const contextMenuWidthLarge = 32;
 
@@ -44,7 +32,7 @@ const snapToStep = (currentY: number) => {
 };
 
 const overlaps = (currentYCoord: number, otherYCoord: number, cooldown: number) =>
-  Math.abs(currentYCoord - otherYCoord) < cooldown * PixelPerSecTemp;
+  Math.abs(currentYCoord - otherYCoord) < cooldown * pixelPerSecTemp;
 
 const evaluateOverlap = (
   currentYCoord: number,
@@ -52,7 +40,7 @@ const evaluateOverlap = (
   otherYCoord: number,
   cooldown: number,
 ) => {
-  if (Math.abs(currentYCoord - otherYCoord) >= cooldown * PixelPerSecTemp * 0.5)
+  if (Math.abs(currentYCoord - otherYCoord) >= cooldown * pixelPerSecTemp * 0.5)
     return currentYCoord < otherYCoord ? 'up' : 'down';
   return prevYCoord < otherYCoord ? 'up' : 'down';
 };
@@ -70,7 +58,7 @@ const removeOverlap = (
       Math.abs(curr - currentYCoord) < acc.value
         ? { value: Math.abs(curr - currentYCoord), index }
         : acc,
-    { value: cooldown * PixelPerSecTemp, index: -1 },
+    { value: cooldown * pixelPerSecTemp, index: -1 },
   ).index;
 
   if (overlapIndex !== -1) {
@@ -79,14 +67,14 @@ const removeOverlap = (
         .slice(0, overlapIndex + 1)
         .reduceRight(
           (acc, curr, _) =>
-            overlaps(acc, curr, cooldown) ? curr - cooldown * PixelPerSecTemp : acc,
+            overlaps(acc, curr, cooldown) ? curr - cooldown * pixelPerSecTemp : acc,
           currentYCoord,
         );
 
     return otherYCoords
       .slice(overlapIndex)
       .reduce(
-        (acc, curr, _) => (overlaps(acc, curr, cooldown) ? curr + cooldown * PixelPerSecTemp : acc),
+        (acc, curr, _) => (overlaps(acc, curr, cooldown) ? curr + cooldown * pixelPerSecTemp : acc),
         currentYCoord,
       );
   }
@@ -113,7 +101,7 @@ const DraggableBox = ({
     yMotionValue.animation?.cancel();
 
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const clampedYCoord = Math.max(Math.min(yCoord, RaidDurationTemp * PixelPerSecTemp), 0);
+    const clampedYCoord = Math.max(Math.min(yCoord, raidDurationTemp * pixelPerSecTemp), 0);
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const calcedYCoord = snapToStep(
       removeOverlap(snapToStep(yMotionValue.get()), clampedYCoord, otherYCoords, CoolDownTemp),
@@ -143,14 +131,14 @@ const DraggableBox = ({
           <div
             className={`w-${columnWidth} lg:w-${columnWidthLarge} rounded-sm overflow-hidden bg-secondary shadow-inner`}
             style={{
-              height: `${CoolDownTemp * PixelPerSecTemp}px`,
+              height: `${CoolDownTemp * pixelPerSecTemp}px`,
               borderWidth: isLocked ? '2px' : undefined,
               borderColor: isLocked ? 'gray' : undefined,
             }}
           >
             <div
               className={`w-${columnWidth} lg:w-${columnWidthLarge} rounded-sm bg-slate-300 shadow-inner`}
-              style={{ height: `${DurationTemp * PixelPerSecTemp}px` }}
+              style={{ height: `${DurationTemp * pixelPerSecTemp}px` }}
             />
           </div>
         </motion.div>
@@ -167,16 +155,20 @@ const DraggableBox = ({
   );
 };
 
-export const EditAreaColumn = ({ job }: { job: any }) => {
-  const [boxValues, setBoxValues] = useState<Array<{ yCoord: number; key: string }>>([]);
-  const [zoom, _] = useZoomState();
+const EditSubColumn = ({ job }: { job: JobTemp; skill: SkillTemp }) => {
+  const [boxValues, setBoxValues] = useState<Array<{ yCoord: number; key: string }>>([
+    {
+      yCoord: 160,
+      key: uidSync(uidLength),
+    },
+  ]);
 
   const checkCanCreate = (cursorY: number) => {
     if (
       boxValues.some(
         (boxValue) =>
           cursorY - boxValue.yCoord >= 0 &&
-          cursorY - boxValue.yCoord <= CoolDownTemp * PixelPerSecTemp,
+          cursorY - boxValue.yCoord <= CoolDownTemp * pixelPerSecTemp,
       )
     )
       return false;
@@ -188,12 +180,10 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
       CoolDownTemp,
     );
 
-    console.log({ cursorY, tryY });
-
     return (
-      Math.abs(tryY - cursorY) <= CoolDownTemp * PixelPerSecTemp &&
+      Math.abs(tryY - cursorY) <= CoolDownTemp * pixelPerSecTemp &&
       tryY >= 0 &&
-      tryY <= RaidDurationTemp * PixelPerSecTemp
+      tryY <= raidDurationTemp * pixelPerSecTemp
     );
   };
 
@@ -219,14 +209,10 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
       );
   };
 
-  const onDebug: MouseEventHandler<HTMLDivElement> = (evt) => {
-    console.log(boxValues);
-  };
-
   return (
     <div
       className={`flex flex-shrink-0 w-${columnWidth} lg:w-${columnWidthLarge} overflow-hidden`}
-      style={{ height: RaidDurationTemp * PixelPerSecTemp * getZoom(zoom) }}
+      style={{ height: raidDurationTemp * pixelPerSecTemp }}
       onClick={createBox}
     >
       {...boxValues.map((boxValue, index) => (
@@ -255,3 +241,11 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
     </div>
   );
 };
+
+export const EditColumn = ({ job, skills }: { job: JobTemp; skills: SkillTemp[] }) => (
+  <div className="flex px-1 border-r-[1px]" style={{ height: raidDurationTemp * pixelPerSecTemp }}>
+    {skills.map((skill) => (
+      <EditSubColumn key={skill.id} job={job} skill={skill} />
+    ))}
+  </div>
+);
