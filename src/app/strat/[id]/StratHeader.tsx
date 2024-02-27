@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { CopyIcon, HeartIcon, Share1Icon } from '@radix-ui/react-icons';
+import { CopyIcon, HeartIcon, Share1Icon, ZoomInIcon } from '@radix-ui/react-icons';
 import { cn } from '@/lib/utils';
+import { ZoomSlider } from './components/ZoomSlider';
 
 const StratHeader = React.forwardRef<
   HTMLDivElement,
@@ -16,6 +17,8 @@ const StratHeader = React.forwardRef<
       <div className="font-bold">내가 시발 부릅니다: 살려주세요</div>
       <div className="text-muted-foreground">마의 전당 판데모니움: 천옥편 4(영웅)</div>
       <div className="flex-grow"></div>
+      <ZoomInIcon className="w-5 h-5" />
+      <ZoomSlider className="ml-0" />
       <div className="flex">
         <Button variant="ghost" size="icon">
           <Share1Icon />

@@ -5,6 +5,8 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
+import { useZoomState } from '@/lib/states';
+import { getZoom } from '@/lib/utils';
 import {
   type BoundingBox,
   useMotionValue,
@@ -167,6 +169,7 @@ const DraggableBox = ({
 
 export const EditAreaColumn = ({ job }: { job: any }) => {
   const [boxValues, setBoxValues] = useState<Array<{ yCoord: number; key: string }>>([]);
+  const [zoom, _] = useZoomState();
 
   const checkCanCreate = (cursorY: number) => {
     if (
@@ -223,7 +226,7 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
   return (
     <div
       className={`flex flex-shrink-0 w-${columnWidth} lg:w-${columnWidthLarge} overflow-hidden`}
-      style={{ height: RaidDurationTemp * PixelPerSecTemp }}
+      style={{ height: RaidDurationTemp * PixelPerSecTemp * getZoom(zoom) }}
       onClick={createBox}
     >
       {...boxValues.map((boxValue, index) => (

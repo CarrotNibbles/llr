@@ -1,6 +1,8 @@
 import { type Database } from '@/lib/database.types';
+import { useZoomState } from '@/lib/states';
+import { getZoom } from '@/lib/utils';
 import { REALTIME_POSTGRES_CHANGES_LISTEN_EVENT } from '@supabase/supabase-js';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 export type DamageEvaluationProps = Database['public']['Tables']['gimmicks']['Row'] & {
   damages: Array<Database['public']['Tables']['damages']['Row']>;
@@ -33,7 +35,10 @@ const DamageEvaluation = React.forwardRef<
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const { name, prepare_at, cast_at, resolve_at, resizePanelSize } = props;
 
-  const zoom = 1;
+  const [zoomState, _] = useZoomState();
+  useEffect(() => {
+    console.log(getZoom(zoomState) * prepare_at);
+  }, [zoomState, prepare_at]);
 
   return (
     <div ref={ref}>
@@ -41,11 +46,11 @@ const DamageEvaluation = React.forwardRef<
         <>
           <div
             className={`absolute border-0 border-t ${borderColor}  right-0 border-dashed z-10`}
-            style={{ top: `${zoom * cast_at}px`, width: `${resizePanelSize}vw` }}
+            style={{ top: `${getZoom(zoomState) * cast_at}px`, width: `${resizePanelSize}vw` }}
           />
           <div
             className={`absolute ${textColor} text-xs z-10`}
-            style={{ top: `${zoom * cast_at}px`, left: `${100 - resizePanelSize}vw` }}
+            style={{ top: `${getZoom(zoomState) * cast_at}px`, left: `${100 - resizePanelSize}vw` }}
           >
             {name}
           </div>
@@ -55,11 +60,14 @@ const DamageEvaluation = React.forwardRef<
         <>
           <div
             className={`absolute border-0 border-t ${borderColor} right-0 z-10`}
-            style={{ top: `${zoom * resolve_at}px`, width: `${resizePanelSize}vw` }}
+            style={{ top: `${getZoom(zoomState) * resolve_at}px`, width: `${resizePanelSize}vw` }}
           />
           <div
             className={`absolute ${textColor} text-xs z-10`}
-            style={{ top: `${zoom * resolve_at}px`, left: `${100 - resizePanelSize}vw` }}
+            style={{
+              top: `${getZoom(zoomState) * resolve_at}px`,
+              left: `${100 - resizePanelSize}vw`,
+            }}
           >
             {name}
           </div>
@@ -67,11 +75,11 @@ const DamageEvaluation = React.forwardRef<
       )}
       <div
         className={`absolute border-0 border-t-2 ${borderColor} w-[98dvw] right-0 z-10`}
-        style={{ top: `${zoom * prepare_at}px` }}
+        style={{ top: `${getZoom(zoomState) * prepare_at}px` }}
       />
       <div
-        className={`absolute top-[${zoom * prepare_at}px] left-[2dvw] -z-10`}
-        style={{ top: `${zoom * prepare_at}px` }}
+        className={`absolute top-[${getZoom(zoomState) * prepare_at}px] left-[2dvw] -z-10`}
+        style={{ top: `${getZoom(zoomState) * prepare_at}px` }}
       >
         <div className="-z-10 space-y-2">
           <div className={`${textColor} font-bold text-md`}>{name}</div>

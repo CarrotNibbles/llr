@@ -6,6 +6,8 @@ import { EditAreaColumn } from './EditAreaColumn';
 import { DamageEvaluation, type DamageEvaluationProps } from './DamageEvaluation';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useZoomState } from '@/lib/states';
+import { getZoom } from '@/lib/utils';
 
 const jobs: string[] = Array(100).fill('WAR') as string[];
 
@@ -38,6 +40,8 @@ const propList: Array<Omit<DamageEvaluationProps, 'resizePanelSize'>> = Array.fr
 
 export const CoreArea = () => {
   const [resizePanelSize, setResizePanelSize] = useState(20);
+  const [zoom, _] = useZoomState();
+
   return (
     <ScrollSync>
       <ResizablePanelGroup
@@ -69,7 +73,10 @@ export const CoreArea = () => {
         </ResizablePanel>
         <ScrollSyncPane group="y">
           <div className="absolute top-10 left-0 w-screen h-full pointer-events-none overflow-y-scroll scrollbar-hide">
-            <div className="absolute top-0 left-0 w-screen h-[2960px]">
+            <div
+              className="absolute top-0 left-0 w-screen"
+              style={{ height: `${getZoom(zoom) * 3000 - 40}px` }}
+            >
               {propList.map((value, index) => {
                 return (
                   <DamageEvaluation {...value} resizePanelSize={resizePanelSize} key={index} />
