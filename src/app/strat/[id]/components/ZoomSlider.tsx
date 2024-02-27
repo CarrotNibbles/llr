@@ -11,13 +11,14 @@ export function ZoomSlider({ className, ...props }: SliderProps) {
   const [_, setLastZoom] = useLastZoomState();
   return (
     <DefaultSlider
-      defaultValue={[40]}
+      defaultValue={[5]}
       onValueChange={(value) => {
         setLastZoom(zoom);
         setZoom(getZoom(value[0]));
       }}
-      max={80}
-      step={10}
+      max={15}
+      min={0}
+      step={1}
       className={cn('w-[15%] ml-1', className)}
       {...props}
     />
