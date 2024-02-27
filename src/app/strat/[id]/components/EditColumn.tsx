@@ -5,42 +5,47 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
+import { usePixelPerFrame } from '@/lib/utils';
 import { animate, motion, useMotionValue } from 'framer-motion';
-import React, { useState, type MouseEventHandler } from 'react';
+import { useState, type MouseEventHandler } from 'react';
 import { uidSync } from 'uid-ts';
 import {
-  type JobTemp,
-  type SkillTemp,
   columnWidth,
   columnWidthLarge,
-  pixelPerSecTemp,
   raidDurationTemp,
+  timeStep,
+  type JobTemp,
+  type SkillTemp,
 } from './coreAreaConstants';
 
-const TimeStepTemp = 1;
-const PixelStepTemp = TimeStepTemp * pixelPerSecTemp;
-const DurationTemp = 10;
-const CoolDownTemp = 30;
+const DurationTemp = 10 * 60;
+const CoolDownTemp = 30 * 60;
 const uidLength = 10;
 const contextMenuWidth = 16;
 const contextMenuWidthLarge = 32;
 
-const snapToStep = (currentY: number) => {
+const snapToStep = (currentY: number, pixelPerFrame: number) => {
   if (currentY < 0) currentY = 0;
 
-  return PixelStepTemp * Math.round(currentY / PixelStepTemp);
+  return timeStep * pixelPerFrame * Math.round(currentY / (timeStep * pixelPerFrame));
 };
 
-const overlaps = (currentYCoord: number, otherYCoord: number, cooldown: number) =>
-  Math.abs(currentYCoord - otherYCoord) < cooldown * pixelPerSecTemp;
+const overlaps = (
+  currentYCoord: number,
+  otherYCoord: number,
+  cooldown: number,
+  pixelPerFrame: number,
+) => Math.abs(currentYCoord - otherYCoord) < cooldown * pixelPerFrame;
 
 const evaluateOverlap = (
   currentYCoord: number,
   prevYCoord: number,
   otherYCoord: number,
   cooldown: number,
+  pixelPerFrame: number,
+  // eslint-disable-next-line max-params
 ) => {
-  if (Math.abs(currentYCoord - otherYCoord) >= cooldown * pixelPerSecTemp * 0.5)
+  if (Math.abs(currentYCoord - otherYCoord) >= cooldown * pixelPerFrame * 0.5)
     return currentYCoord < otherYCoord ? 'up' : 'down';
   return prevYCoord < otherYCoord ? 'up' : 'down';
 };
@@ -50,6 +55,8 @@ const removeOverlap = (
   prevYCoord: number,
   otherYCoords: number[],
   cooldown: number,
+  pixelPerFrame: number,
+  // eslint-disable-next-line max-params
 ) => {
   otherYCoords = otherYCoords.toSorted((a, b) => a - b);
 
@@ -58,23 +65,32 @@ const removeOverlap = (
       Math.abs(curr - currentYCoord) < acc.value
         ? { value: Math.abs(curr - currentYCoord), index }
         : acc,
-    { value: cooldown * pixelPerSecTemp, index: -1 },
+    { value: cooldown * pixelPerFrame, index: -1 },
   ).index;
 
   if (overlapIndex !== -1) {
-    if (evaluateOverlap(currentYCoord, prevYCoord, otherYCoords[overlapIndex], cooldown) === 'up')
+    if (
+      evaluateOverlap(
+        currentYCoord,
+        prevYCoord,
+        otherYCoords[overlapIndex],
+        cooldown,
+        pixelPerFrame,
+      ) === 'up'
+    )
       return otherYCoords
         .slice(0, overlapIndex + 1)
         .reduceRight(
           (acc, curr, _) =>
-            overlaps(acc, curr, cooldown) ? curr - cooldown * pixelPerSecTemp : acc,
+            overlaps(acc, curr, cooldown, pixelPerFrame) ? curr - cooldown * pixelPerFrame : acc,
           currentYCoord,
         );
 
     return otherYCoords
       .slice(overlapIndex)
       .reduce(
-        (acc, curr, _) => (overlaps(acc, curr, cooldown) ? curr + cooldown * pixelPerSecTemp : acc),
+        (acc, curr, _) =>
+          overlaps(acc, curr, cooldown, pixelPerFrame) ? curr + cooldown * pixelPerFrame : acc,
         currentYCoord,
       );
   }
@@ -96,26 +112,26 @@ const DraggableBox = ({
 }) => {
   const [isLocked, setIsLocked] = useState(false);
   const yMotionValue = useMotionValue(yCoord);
+  const pixelPerFrame = usePixelPerFrame();
 
   const adjustPosition = () => {
     yMotionValue.animation?.cancel();
 
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const clampedYCoord = Math.max(Math.min(yCoord, raidDurationTemp * pixelPerSecTemp), 0);
+    const clampedYCoord = Math.max(Math.min(yCoord, raidDurationTemp * pixelPerFrame), 0);
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const calcedYCoord = snapToStep(
-      removeOverlap(snapToStep(yMotionValue.get()), clampedYCoord, otherYCoords, CoolDownTemp),
+      removeOverlap(
+        snapToStep(yMotionValue.get(), pixelPerFrame),
+        clampedYCoord,
+        otherYCoords,
+        CoolDownTemp,
+        pixelPerFrame,
+      ),
+      pixelPerFrame,
     );
     void animate(yMotionValue, calcedYCoord);
     setYCoord(calcedYCoord);
-  };
-
-  const onLock = (checked: boolean) => {
-    setIsLocked(checked);
-  };
-
-  const onDelete: React.MouseEventHandler<HTMLDivElement> = (evt) => {
-    deleteBox();
   };
 
   return (
@@ -131,23 +147,33 @@ const DraggableBox = ({
           <div
             className={`w-${columnWidth} lg:w-${columnWidthLarge} rounded-sm overflow-hidden bg-secondary shadow-inner`}
             style={{
-              height: `${CoolDownTemp * pixelPerSecTemp}px`,
+              height: `${CoolDownTemp * pixelPerFrame}px`,
               borderWidth: isLocked ? '2px' : undefined,
               borderColor: isLocked ? 'gray' : undefined,
             }}
           >
             <div
               className={`w-${columnWidth} lg:w-${columnWidthLarge} rounded-sm bg-slate-300 shadow-inner`}
-              style={{ height: `${DurationTemp * pixelPerSecTemp}px` }}
+              style={{ height: `${DurationTemp * pixelPerFrame}px` }}
             />
           </div>
         </motion.div>
       </ContextMenuTrigger>
       <ContextMenuContent className={`w-${contextMenuWidth} lg:w-${contextMenuWidthLarge}`}>
-        <ContextMenuCheckboxItem checked={isLocked} onCheckedChange={onLock}>
+        <ContextMenuCheckboxItem
+          checked={isLocked}
+          onCheckedChange={(checked) => {
+            setIsLocked(checked);
+          }}
+        >
           Lock
         </ContextMenuCheckboxItem>
-        <ContextMenuItem inset onClick={onDelete}>
+        <ContextMenuItem
+          inset
+          onClick={() => {
+            deleteBox();
+          }}
+        >
           Delete
         </ContextMenuItem>
       </ContextMenuContent>
@@ -162,28 +188,30 @@ const EditSubColumn = ({ job }: { job: JobTemp; skill: SkillTemp }) => {
       key: uidSync(uidLength),
     },
   ]);
+  const pixelPerFrame = usePixelPerFrame();
 
   const checkCanCreate = (cursorY: number) => {
     if (
       boxValues.some(
         (boxValue) =>
           cursorY - boxValue.yCoord >= 0 &&
-          cursorY - boxValue.yCoord <= CoolDownTemp * pixelPerSecTemp,
+          cursorY - boxValue.yCoord <= CoolDownTemp * pixelPerFrame,
       )
     )
       return false;
 
     const tryY = removeOverlap(
-      snapToStep(cursorY),
-      snapToStep(cursorY),
+      snapToStep(cursorY, pixelPerFrame),
+      snapToStep(cursorY, pixelPerFrame),
       boxValues.map((boxValue) => boxValue.yCoord),
       CoolDownTemp,
+      pixelPerFrame,
     );
 
     return (
-      Math.abs(tryY - cursorY) <= CoolDownTemp * pixelPerSecTemp &&
+      Math.abs(tryY - cursorY) <= CoolDownTemp * pixelPerFrame &&
       tryY >= 0 &&
-      tryY <= raidDurationTemp * pixelPerSecTemp
+      tryY <= raidDurationTemp * pixelPerFrame
     );
   };
 
@@ -197,11 +225,13 @@ const EditSubColumn = ({ job }: { job: JobTemp; skill: SkillTemp }) => {
           {
             yCoord: snapToStep(
               removeOverlap(
-                snapToStep(cursorY),
-                snapToStep(cursorY),
+                snapToStep(cursorY, pixelPerFrame),
+                snapToStep(cursorY, pixelPerFrame),
                 boxValues.map((boxValue) => boxValue.yCoord),
                 CoolDownTemp,
+                pixelPerFrame,
               ),
+              pixelPerFrame,
             ),
             key: uidSync(uidLength),
           },
@@ -212,7 +242,7 @@ const EditSubColumn = ({ job }: { job: JobTemp; skill: SkillTemp }) => {
   return (
     <div
       className={`flex flex-shrink-0 w-${columnWidth} lg:w-${columnWidthLarge} overflow-hidden`}
-      style={{ height: raidDurationTemp * pixelPerSecTemp }}
+      style={{ height: raidDurationTemp * pixelPerFrame }}
       onClick={createBox}
     >
       {...boxValues.map((boxValue, index) => (
@@ -242,10 +272,14 @@ const EditSubColumn = ({ job }: { job: JobTemp; skill: SkillTemp }) => {
   );
 };
 
-export const EditColumn = ({ job, skills }: { job: JobTemp; skills: SkillTemp[] }) => (
-  <div className="flex px-1 border-r-[1px]" style={{ height: raidDurationTemp * pixelPerSecTemp }}>
-    {skills.map((skill) => (
-      <EditSubColumn key={skill.id} job={job} skill={skill} />
-    ))}
-  </div>
-);
+export const EditColumn = ({ job, skills }: { job: JobTemp; skills: SkillTemp[] }) => {
+  const pixelPerFrame = usePixelPerFrame();
+
+  return (
+    <div className="flex px-1 border-r-[1px]" style={{ height: raidDurationTemp * pixelPerFrame }}>
+      {skills.map((skill) => (
+        <EditSubColumn key={skill.id} job={job} skill={skill} />
+      ))}
+    </div>
+  );
+};

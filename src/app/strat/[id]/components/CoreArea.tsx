@@ -7,6 +7,8 @@ import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import { DamageEvaluation, type DamageEvaluationProps } from './DamageEvaluation';
 import { EditColumn } from './EditColumn';
 import { HeadColumn } from './HeadColumn';
+import { usePixelPerFrame } from '@/lib/utils';
+import { raidDurationTemp } from './coreAreaConstants';
 import { type RaidDataType } from '@/lib/queries';
 import { type Enums } from '@/lib/database.types';
 
@@ -19,6 +21,7 @@ export type CoreAreaProps = {
 export const CoreArea = (props: CoreAreaProps) => {
   const [resizePanelSize, setResizePanelSize] = useState(20);
   const [zoom, _] = useZoomState();
+  const pixelPerFrame = usePixelPerFrame();
 
   console.log(props);
 
@@ -67,7 +70,7 @@ export const CoreArea = (props: CoreAreaProps) => {
           <div className="absolute top-10 left-0 w-screen h-full pointer-events-none overflow-y-scroll scrollbar-hide">
             <div
               className="absolute top-0 left-0 w-screen"
-              style={{ height: `${zoom * 3000 - 40}px` }}
+              style={{ height: `${raidDurationTemp * pixelPerFrame}px` }}
             >
               {props.data.map((value, index) => {
                 return (
