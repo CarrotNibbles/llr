@@ -25,7 +25,8 @@ const DurationTemp = 10;
 const CoolDownTemp = 30;
 const RaidDurationTemp = 600;
 const uidLength = 10;
-const columnWidth = 5;
+const columnMinWidth = 4;
+const columnWidth = 6;
 const columnWidthLarge = 10;
 const contextMenuWidth = 16;
 const contextMenuWidthLarge = 32;
@@ -111,6 +112,7 @@ const DraggableBox = ({
     <ContextMenu>
       <ContextMenuTrigger className="w-full h-full relative">
         <motion.div
+          layout
           drag={isLocked ? false : 'y'}
           dragConstraints={dragConstraints}
           dragMomentum={false}
@@ -192,8 +194,8 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
   };
 
   return (
-    <li
-      className={`flex w-${columnWidth} lg:w-${columnWidthLarge} overflow-hidden`}
+    <div
+      className={`flex flex-shrink-0 min-w-${columnMinWidth} w-${columnWidth} lg:w-${columnWidthLarge} overflow-hidden hover:shadow-lg`}
       style={{ height: RaidDurationTemp * PixelPerSecTemp }}
     >
       <ContextMenu>
@@ -238,6 +240,6 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
           </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
-    </li>
+    </div>
   );
 };
