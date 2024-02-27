@@ -190,7 +190,13 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
       CoolDownTemp,
     );
 
-    return tryY >= 0 && tryY <= RaidDurationTemp * PixelPerSecTemp;
+    console.log({ cursorY, tryY });
+
+    return (
+      Math.abs(tryY - cursorY) <= CoolDownTemp * PixelPerSecTemp &&
+      tryY >= 0 &&
+      tryY <= RaidDurationTemp * PixelPerSecTemp
+    );
   };
 
   const createBox: MouseEventHandler<HTMLDivElement> = (evt) => {
