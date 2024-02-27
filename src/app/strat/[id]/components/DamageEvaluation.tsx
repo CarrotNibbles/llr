@@ -6,6 +6,7 @@ import React from 'react';
 import { GimmickSubLine } from './GimmickLine';
 import { type RaidDataType } from '@/lib/queries';
 import { type ArrayElement } from '@/lib/utils';
+import { DamageText } from './DamageText';
 
 export type DamageEvaluationProps = ArrayElement<RaidDataType> & {
   resizePanelSize: number;
@@ -85,45 +86,7 @@ const DamageEvaluation = React.forwardRef<
             className="inline-grid text-sm gap-x-2 gap-y-1"
             style={{ gridTemplateColumns: 'auto auto auto' }}
           >
-            <div className="space-x-1 pr-6">
-              <span className="font-bold">T1+T2</span>
-            </div>
-            <span className="tabular-nums font-bold">100000</span>
-            <span className="text-muted-foreground tabular-nums text-xs my-auto">180000</span>
-
-            {/* <div className="space-x-1 pr-6">
-              <span className="font-bold">T1</span>
-              <span className="text-muted-foreground">T2</span>
-            </div>
-            <span className="tabular-nums font-bold">100000</span>
-            <span className="text-muted-foreground tabular-nums text-xs my-auto">180000</span>
-
-            <div className="space-x-1 pr-6">
-              <span className="text-muted-foreground">T1+T2</span>
-              <span className="font-bold">T1</span>
-              <span className="text-muted-foreground">T2</span>
-            </div>
-            <span className="tabular-nums font-bold">240000</span>
-            <span className="text-muted-foreground tabular-nums text-xs my-auto">480000</span>
-
-            <div className="space-x-1 pr-6">
-              <span className="font-bold">쉐어</span>
-            </div>
-            <span className="tabular-nums font-bold">40000</span>
-            <span className="text-muted-foreground tabular-nums text-xs my-auto">70000</span>
-
-            <div className="space-x-1 pr-6">
-              <span className="font-bold">전체</span>
-            </div>
-            <span className="tabular-nums font-bold">35000</span>
-            <span className="text-muted-foreground tabular-nums text-xs my-auto">60000</span>
-
-            <div className="space-x-1 pr-6">
-              <span className="font-bold">4+4</span>
-              <span className="text-muted-foreground">3+5</span>
-            </div>
-            <span className="tabular-nums font-bold">21000</span>
-            <span className="text-muted-foreground tabular-nums text-xs my-auto">40000</span> */}
+            <DamageText damages={damages} />
           </div>
         </div>
       </div>
