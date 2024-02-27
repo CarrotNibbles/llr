@@ -332,6 +332,7 @@ export type Database = {
         | "AutoAttack"
         | "Avoidable"
         | "Hybrid"
+        | "Enrage"
       job:
         | "PLD"
         | "WAR"

@@ -1,30 +1,27 @@
 'use client';
 
-import { type Database } from '@/lib/database.types';
-import { gimmickBorderColor, gimmickTextColor, usePixelPerFrame } from '@/lib/utils';
+import { type RaidDataType } from '@/lib/queries';
+import {
+  gimmickBorderColor,
+  gimmickTextColor,
+  usePixelPerFrame,
+  type ArrayElement,
+} from '@/lib/utils';
 import React from 'react';
 import { GimmickSubLine } from './GimmickLine';
-import { type RaidDataType } from '@/lib/queries';
-import { type ArrayElement } from '@/lib/utils';
 
 export type DamageEvaluationProps = ArrayElement<RaidDataType> & {
   resizePanelSize: number;
 };
 
-const TankbusterTextColor = 'text-blue-600';
-const RaidwideTextColor = 'text-red-600';
-const CombinedTextColor = 'text-purple-600';
-const TankbusterBorderColor = 'border-blue-600';
-const RaidwideBorderColor = 'border-red-600';
-const CombinedBorderColor = 'border-purple-600';
-
 const DamageEvaluation = React.forwardRef<
   HTMLDivElement,
   DamageEvaluationProps & { className?: string } & React.ComponentPropsWithoutRef<'div'>
 >(({ className, ...props }, ref) => {
-  const { damages } = props;
   const textColor = gimmickTextColor[props.type];
   const borderColor = gimmickBorderColor[props.type];
+  const borderWidth = props.type === 'Enrage' ? 'border-t-4' : 'border-t-2';
+  const titleWeight = props.type === 'Enrage' ? 'font-extrabold' : 'font-bold';
 
   const {
     name,
@@ -65,7 +62,7 @@ const DamageEvaluation = React.forwardRef<
         />
       )}
       <div
-        className={`absolute border-0 border-t-2 ${borderColor} w-[98dvw] right-0 z-10`}
+        className={`absolute border-0 ${borderWidth} ${borderColor} w-[98dvw] right-0 z-10`}
         style={{ top: `${prepareAt * pixelPerFrame}px` }}
       />
       <div
@@ -73,7 +70,11 @@ const DamageEvaluation = React.forwardRef<
         style={{ top: `${prepareAt * pixelPerFrame}px` }}
       >
         <div className="-z-10 space-y-2">
-          <div className={`${textColor} font-bold text-md`}>{name}</div>
+          <div
+            className={`${textColor} ${titleWeight} text-md ${props.type === 'Enrage' && 'mt-1'}`}
+          >
+            {name}
+          </div>
           <div
             className="inline-grid text-sm gap-x-2 gap-y-1"
             style={{ gridTemplateColumns: 'auto auto auto' }}

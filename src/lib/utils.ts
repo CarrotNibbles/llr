@@ -35,6 +35,7 @@ export const gimmickTextColor = {
   Tankbuster: 'text-red-600',
   Hybrid: 'text-purple-600',
   Avoidable: 'text-green-600',
+  Enrage: 'text-slate-900',
 } satisfies Record<Enums<'gimmick_type'>, string>;
 
 export const gimmickBorderColor = {
@@ -43,5 +44,6 @@ export const gimmickBorderColor = {
   Tankbuster: 'border-red-600',
   Hybrid: 'border-purple-600',
   Avoidable: 'border-green-600',
+  Enrage: 'border-slate-900',
 } satisfies Record<Enums<'gimmick_type'>, string>;
 /* eslint-enable */
