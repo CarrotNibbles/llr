@@ -130,9 +130,8 @@ const DraggableBox = ({
 
   return (
     <ContextMenu>
-      <ContextMenuTrigger className="w-full h-full relative">
+      <ContextMenuTrigger className="relative">
         <motion.div
-          layout
           drag={isLocked ? false : 'y'}
           dragMomentum={false}
           onDragEnd={adjustPosition}
@@ -167,9 +166,6 @@ const DraggableBox = ({
 };
 
 export const EditAreaColumn = ({ job }: { job: any }) => {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const [menuOpenMouseYCoord, setMenuOpenMouseYCoord] = useState(0);
-
   const [boxValues, setBoxValues] = useState<Array<{ yCoord: number; key: string }>>([
     {
       yCoord: 160,
@@ -177,10 +173,19 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
     },
   ]);
 
-  const checkCanCreate = () => {
+  const checkCanCreate = (cursorY: number) => {
+    if (
+      boxValues.some(
+        (boxValue) =>
+          cursorY - boxValue.yCoord >= 0 &&
+          cursorY - boxValue.yCoord <= CoolDownTemp * PixelPerSecTemp,
+      )
+    )
+      return false;
+
     const tryY = removeOverlap(
-      snapToStep(menuOpenMouseYCoord),
-      snapToStep(menuOpenMouseYCoord),
+      snapToStep(cursorY),
+      snapToStep(cursorY),
       boxValues.map((boxValue) => boxValue.yCoord),
       CoolDownTemp,
     );
@@ -188,20 +193,18 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
     return tryY >= 0 && tryY <= RaidDurationTemp * PixelPerSecTemp;
   };
 
-  const onContextMenu = (evt: MouseEvent<HTMLSpanElement>) => {
-    setMenuOpenMouseYCoord(evt.clientY - evt.currentTarget.getBoundingClientRect().top);
-  };
+  const createBox: MouseEventHandler<HTMLDivElement> = (evt) => {
+    const cursorY = evt.clientY - evt.currentTarget.getBoundingClientRect().top;
 
-  const onCreate: MouseEventHandler<HTMLDivElement> = (evt) => {
-    if (checkCanCreate())
+    if (checkCanCreate(cursorY))
       setBoxValues(
         [
           ...boxValues,
           {
             yCoord: snapToStep(
               removeOverlap(
-                snapToStep(menuOpenMouseYCoord),
-                snapToStep(menuOpenMouseYCoord),
+                snapToStep(cursorY),
+                snapToStep(cursorY),
                 boxValues.map((boxValue) => boxValue.yCoord),
                 CoolDownTemp,
               ),
@@ -220,44 +223,31 @@ export const EditAreaColumn = ({ job }: { job: any }) => {
     <div
       className={`flex flex-shrink-0 w-${columnWidth} lg:w-${columnWidthLarge} overflow-hidden`}
       style={{ height: RaidDurationTemp * PixelPerSecTemp }}
+      onClick={createBox}
     >
-      <ContextMenu>
-        <ContextMenuTrigger onContextMenu={onContextMenu} className="w-full h-full relative">
-          {...boxValues.map((boxValue, index) => (
-            <DraggableBox
-              key={boxValue.key}
-              yCoord={boxValue.yCoord}
-              setYCoord={(yCoord) => {
-                setBoxValues(
-                  boxValues
-                    .map((oldValue) =>
-                      oldValue.key === boxValue.key ? { yCoord, key: boxValue.key } : oldValue,
-                    )
-                    .toSorted((a, b) => a.yCoord - b.yCoord),
-                );
-              }}
-              deleteBox={() => {
-                setBoxValues(
-                  boxValues
-                    .filter((oldValue) => oldValue.key !== boxValue.key)
-                    .toSorted((a, b) => a.yCoord - b.yCoord),
-                );
-              }}
-              otherYCoords={boxValues
-                .filter((_, j) => j !== index)
-                .map((boxValue) => boxValue.yCoord)}
-            />
-          ))}
-        </ContextMenuTrigger>
-        <ContextMenuContent className={`w-${contextMenuWidth} lg:w-${contextMenuWidthLarge}`}>
-          <ContextMenuItem inset disabled={!checkCanCreate()} onClick={onCreate}>
-            Create
-          </ContextMenuItem>
-          <ContextMenuItem inset onClick={onDebug}>
-            Debug
-          </ContextMenuItem>
-        </ContextMenuContent>
-      </ContextMenu>
+      {...boxValues.map((boxValue, index) => (
+        <DraggableBox
+          key={boxValue.key}
+          yCoord={boxValue.yCoord}
+          setYCoord={(yCoord) => {
+            setBoxValues(
+              boxValues
+                .map((oldValue) =>
+                  oldValue.key === boxValue.key ? { yCoord, key: boxValue.key } : oldValue,
+                )
+                .toSorted((a, b) => a.yCoord - b.yCoord),
+            );
+          }}
+          deleteBox={() => {
+            setBoxValues(
+              boxValues
+                .filter((oldValue) => oldValue.key !== boxValue.key)
+                .toSorted((a, b) => a.yCoord - b.yCoord),
+            );
+          }}
+          otherYCoords={boxValues.filter((_, j) => j !== index).map((boxValue) => boxValue.yCoord)}
+        />
+      ))}
     </div>
   );
 };
