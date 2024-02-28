@@ -7,13 +7,17 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { type Database } from '@/lib/database.types';
-import { LikeButton } from './components/LikeButton';
+import { LikeButton } from './LikeButton';
+import { type StrategyCardDataType } from '@/lib/queries';
+import { type ArrayElement } from '@/lib/utils';
 
-type StrategyCardProps = Database['public']['Tables']['strategies']['Row'] & {
-  jobs: Array<Database['public']['Enums']['job']>;
+// eslint-disable-next-line
+const timeStampZtoKST = (timeStamp: string) => {
+  const date = new Date(timeStamp);
+  return date.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });
 };
 
-export function StrategyCard(props: StrategyCardProps) {
+export function StrategyCard(props: ArrayElement<StrategyCardDataType>) {
   return (
     <Card className="text-xs hover:drop-shadow-xl md:text-base">
       <CardHeader className="flex-col justify-between space-y-0 p-4 md:p-6">
@@ -24,15 +28,15 @@ export function StrategyCard(props: StrategyCardProps) {
       </CardHeader>
       <CardContent className="pb-0 pl-4 md:pb-6 md:pl-6">
         <div className="w-full items-center flex flex-row space-x-2">
-          {props.jobs.map((job, index) => (
-            <text key={index}>{job}</text>
+          {props.strategy_players.map((player, index) => (
+            <text key={index}>{player.job}</text>
           ))}
         </div>
       </CardContent>
       <CardFooter className="flex-row justify-between pb-3 pl-4 pr-4 md:pb-6 md:pl-6 md:pr-6">
         <CardDescription className="md:text-sm text-xs">
           {props.created_at === props.modified_at
-            ? `Created@${props.created_at}`
+            ? `Created@${timeStampZtoKST(props.created_at)}`
             : `Modified@${props.modified_at}`}
         </CardDescription>
         <LikeButton likes={props.likes} />
