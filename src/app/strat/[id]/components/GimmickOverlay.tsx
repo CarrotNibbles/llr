@@ -32,10 +32,10 @@ const GimmickOverlay = React.forwardRef<
       .toSorted((gimmick1, gimmick2) => gimmick1.prepare_at - gimmick2.prepare_at)
       .map<
         ArrayElement<RaidDataType> & {
-          mergedGimmicksWithDamageCount: number;
+          damageRowCount?: number;
           mergedGimmicks: MergedGimmick[];
         }
-      >((gimmick) => ({ ...gimmick, mergedGimmicks: [], mergedGimmicksWithDamageCount: 0 }));
+      >((gimmick) => ({ ...gimmick, mergedGimmicks: [] }));
 
     for (let i = 0; i < gimmicksWithMerged.length; i++) {
       gimmicksWithMerged[i].mergedGimmicks.push({
@@ -45,24 +45,23 @@ const GimmickOverlay = React.forwardRef<
         type: gimmicksWithMerged[i].type,
       });
 
-      gimmicksWithMerged[i].mergedGimmicksWithDamageCount +=
-        gimmicksWithMerged[i].damages.length === 0 ? 0 : 1;
+      if (gimmicksWithMerged[i].damages.length !== 0) {
+        if (gimmicksWithMerged[i].damageRowCount) gimmicksWithMerged[i].damageRowCount = 0;
+        else gimmicksWithMerged[i].damageRowCount = gimmicksWithMerged[i].damages.length;
+      }
 
       if (
         i + 1 < gimmicksWithMerged.length - 1 &&
         (gimmicksWithMerged[i + 1].prepare_at - gimmicksWithMerged[i].prepare_at) * pixelPerFrame <=
           mergePixelThresholdDefault +
-            (gimmicksWithMerged[i].mergedGimmicksWithDamageCount === 1
-              ? mergePixelThresholdIncremental
-              : 0) &&
+            mergePixelThresholdIncremental * (gimmicksWithMerged[i].damageRowCount ?? 0) &&
         gimmicksWithMerged[i + 1].type !== 'Enrage'
       ) {
         gimmicksWithMerged[i + 1].mergedGimmicks = gimmicksWithMerged[i].mergedGimmicks;
-        gimmicksWithMerged[i + 1].mergedGimmicksWithDamageCount =
-          gimmicksWithMerged[i].mergedGimmicksWithDamageCount;
+        gimmicksWithMerged[i + 1].damageRowCount = gimmicksWithMerged[i].damageRowCount;
 
         gimmicksWithMerged[i].mergedGimmicks = [];
-        gimmicksWithMerged[i].mergedGimmicksWithDamageCount = 0;
+        gimmicksWithMerged[i].damageRowCount = 0;
       }
     }
 

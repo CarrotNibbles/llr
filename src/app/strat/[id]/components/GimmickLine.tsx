@@ -68,7 +68,8 @@ const GimmicksNames = React.forwardRef<
     for (const mergedGimmick of mergedGimmicks) {
       if (
         superMergedGimmicks.length === 0 ||
-        superMergedGimmicks[superMergedGimmicks.length - 1].name !== mergedGimmick.name
+        superMergedGimmicks[superMergedGimmicks.length - 1].name !== mergedGimmick.name ||
+        superMergedGimmicks[superMergedGimmicks.length - 1].type !== mergedGimmick.type
       )
         superMergedGimmicks.push({ ...mergedGimmick, mergeCount: 1 });
       else superMergedGimmicks[superMergedGimmicks.length - 1].mergeCount++;
