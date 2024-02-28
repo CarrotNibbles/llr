@@ -29,9 +29,9 @@ export const HeadColumn = ({
   job: Enums<'job'>;
   abilities: AbilityDataType;
 }) => (
-  <div className="flex flex-col p-1 border-r-[1px] space-y-2">
-    <div className="flex flex-grow relative justify-start">
-      <div className="aspect-square relative">
+  <div className="flex flex-col p-1 border-r-[1px] justify-center items-center space-y-1">
+    <div className="flex flex-grow relative">
+      <div className={`aspect-square relative ${columnWidth} ${columnWidthLarge} saturate-0`}>
         <Image
           src={`/icons/${job}.png`}
           alt={`Job Icon of ${job}`}
@@ -39,8 +39,6 @@ export const HeadColumn = ({
           objectFit="contain"
         />
       </div>
-      <div className="flex-grow" />
-      <div className="font-bold text-sm">{job}</div>
     </div>
     <div className="flex">
       {abilities.map((ability) => (
