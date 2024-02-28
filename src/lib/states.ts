@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { type RecoilState, atom, useRecoilState } from 'recoil';
 import { recoilPersist } from 'recoil-persist';
+import { type Enums } from './database.types';
 
 const { persistAtom } = recoilPersist();
 
@@ -14,19 +15,28 @@ type User =
   | undefined;
 
 type ZoomType = number;
-type LastZoomType = number;
 
 const defaultZoom: ZoomType = 1;
-const defaultLastZoom: LastZoomType = 1;
+
+type FilterType = Map<Enums<'gimmick_type'>, boolean>;
+
+const defaultFilter: FilterType = new Map([
+  ['AutoAttack', false],
+  ['Avoidable', true],
+  ['Raidwide', true],
+  ['Tankbuster', true],
+  ['Hybrid', true],
+  ['Enrage', true],
+]);
 
 const zoomState = atom<ZoomType>({
   key: 'zoomState',
   default: defaultZoom,
 });
 
-const lastZoomState = atom<LastZoomType>({
-  key: 'lastZoomState',
-  default: defaultLastZoom,
+const filterState = atom<FilterType>({
+  key: 'filterState',
+  default: defaultFilter,
 });
 
 const defaultUser: User = undefined;
@@ -53,5 +63,4 @@ function useCheckedRecoilState<T>(recoilState: RecoilState<T>, defaultValue: T) 
 
 export const useUserState = () => useCheckedRecoilState<User>(userState, defaultUser);
 export const useZoomState = () => useCheckedRecoilState<ZoomType>(zoomState, defaultZoom);
-export const useLastZoomState = () =>
-  useCheckedRecoilState<LastZoomType>(lastZoomState, defaultLastZoom);
+export const useFilterState = () => useCheckedRecoilState<FilterType>(filterState, defaultFilter);
