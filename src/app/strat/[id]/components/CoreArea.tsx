@@ -1,16 +1,15 @@
 'use client';
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
-import { useZoomState } from '@/lib/states';
+import { type Enums } from '@/lib/database.types';
+import { type RaidDataType } from '@/lib/queries';
+import { usePixelPerFrame } from '@/lib/utils';
 import { useState } from 'react';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
-import { DamageEvaluation, type DamageEvaluationProps } from './DamageEvaluation';
+import { DamageEvaluation } from './DamageEvaluation';
 import { EditColumn } from './EditColumn';
 import { HeadColumn } from './HeadColumn';
-import { usePixelPerFrame } from '@/lib/utils';
 import { raidDurationTemp } from './coreAreaConstants';
-import { type RaidDataType } from '@/lib/queries';
-import { type Enums } from '@/lib/database.types';
 
 const jobs: Array<Enums<'job'>> = ['WAR', 'PLD', 'SAM', 'MNK', 'BRD', 'RDM', 'AST', 'SGE'];
 
@@ -20,10 +19,7 @@ export type CoreAreaProps = {
 
 export const CoreArea = (props: CoreAreaProps) => {
   const [resizePanelSize, setResizePanelSize] = useState(20);
-  const [zoom, _] = useZoomState();
   const pixelPerFrame = usePixelPerFrame();
-
-  console.log(props);
 
   return (
     <ScrollSync>
