@@ -268,16 +268,19 @@ export type Database = {
       strategy_player_entries: {
         Row: {
           ability: string
+          id: string
           player: string
           use_at: number
         }
         Insert: {
           ability: string
+          id?: string
           player: string
           use_at: number
         }
         Update: {
           ability?: string
+          id?: string
           player?: string
           use_at?: number
         }
@@ -314,7 +317,15 @@ export type Database = {
           job?: Database["public"]["Enums"]["job"]
           strategy?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "public_strategy_players_strategy_fkey"
+            columns: ["strategy"]
+            isOneToOne: false
+            referencedRelation: "strategies"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {
