@@ -16,16 +16,18 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { type Enums } from '@/lib/database.types';
 import { Toggle } from '@/components/ui/toggle';
 import { Separator } from '@/components/ui/separator';
+import { useFilterState } from '@/lib/states';
 
 export const FilterMenu = () => {
-  const [filterState, setFilterState] = useState<Array<[Enums<'gimmick_type'>, boolean]>>([
-    ['AutoAttack', false],
-    ['Avoidable', true],
-    ['Raidwide', true],
-    ['Tankbuster', true],
-    ['Hybrid', true],
-    ['Enrage', true],
-  ]);
+  const GimmickTypes: Array<Enums<'gimmick_type'>> = [
+    'AutoAttack',
+    'Avoidable',
+    'Raidwide',
+    'Tankbuster',
+    'Hybrid',
+    'Enrage',
+  ];
+  const [filterState, setFilterState] = useFilterState();
 
   return (
     <Popover>
@@ -41,20 +43,14 @@ export const FilterMenu = () => {
         </div>
         <Separator className="mb-[2px]" />
         <div className="grid grid-rows-3 grid-cols-2">
-          {filterState.map(([gimmickType, gimmickActive]) => (
+          {GimmickTypes.map((gimmickType) => (
             <Toggle
               className="flex justify-start text-start h-7 px-3 m-[2px]"
               aria-label="h"
               key={gimmickType}
-              pressed={gimmickActive}
+              pressed={filterState.get(gimmickType)}
               onPressedChange={(pressed) => {
-                setFilterState(
-                  filterState.map(([gimmickType_, gimmickActive_]) =>
-                    gimmickType_ === gimmickType
-                      ? [gimmickType, pressed]
-                      : [gimmickType_, gimmickActive_],
-                  ),
-                );
+                setFilterState(new Map(filterState).set(gimmickType, pressed));
               }}
             >
               <div

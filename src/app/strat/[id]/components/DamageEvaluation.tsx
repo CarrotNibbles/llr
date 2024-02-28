@@ -10,6 +10,7 @@ import {
 import React from 'react';
 import { GimmickSubLine } from './GimmickLine';
 import { DamageText } from './DamageText';
+import { useFilterState } from '@/lib/states';
 
 export type DamageEvaluationProps = ArrayElement<RaidDataType> & {
   resizePanelSize: number;
@@ -19,26 +20,24 @@ const DamageEvaluation = React.forwardRef<
   HTMLDivElement,
   DamageEvaluationProps & { className?: string } & React.ComponentPropsWithoutRef<'div'>
 >(({ className, ...props }, ref) => {
+  const {
+    damages,
+    name,
+    type: gimmickType,
+    prepare_at: prepareAt,
+    cast_at: castAt,
+    resolve_at: resolveAt,
+    resizePanelSize,
+  } = props;
+  const pixelPerFrame = usePixelPerFrame();
+  const [filterState, _] = useFilterState();
   const textColor = gimmickTextColor[props.type];
   const borderColor = gimmickBorderColor[props.type];
   const borderWidth = props.type === 'Enrage' ? 'border-t-4' : 'border-t-2';
   const titleWeight = props.type === 'Enrage' ? 'font-extrabold' : 'font-bold';
 
-  const {
-    damages,
-    name,
-    prepare_at: defaultPrepareAt,
-    cast_at: defaultCastAt,
-    resolve_at: defaultResolveAt,
-    resizePanelSize,
-  } = props;
-  const pixelPerFrame = usePixelPerFrame();
-  const prepareAt = defaultPrepareAt;
-  const castAt = defaultCastAt ? defaultCastAt : null;
-  const resolveAt = defaultResolveAt ? defaultResolveAt : null;
-
   return (
-    <div ref={ref}>
+    <div style={{ visibility: filterState.get(gimmickType) ? 'visible' : 'hidden' }} ref={ref}>
       {castAt && (
         <GimmickSubLine
           time={castAt}

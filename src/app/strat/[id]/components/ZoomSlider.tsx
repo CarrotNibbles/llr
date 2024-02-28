@@ -7,7 +7,7 @@ import { useZoomState } from '@/lib/states';
 type SliderProps = React.ComponentProps<typeof DefaultSlider>;
 
 export function ZoomSlider({ className, ...props }: SliderProps) {
-  const [zoom, setZoom] = useZoomState();
+  const [_, setZoom] = useZoomState();
   return (
     <DefaultSlider
       defaultValue={[5]}
