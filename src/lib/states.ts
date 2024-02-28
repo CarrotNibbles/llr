@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { type RecoilState, atom, useRecoilState } from 'recoil';
 import { recoilPersist } from 'recoil-persist';
 import { type Enums } from './database.types';
+import { createClient } from './supabase/client';
 
 const { persistAtom } = recoilPersist();
 
