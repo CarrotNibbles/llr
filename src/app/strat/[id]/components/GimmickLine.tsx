@@ -61,7 +61,6 @@ const GimmicksNames = React.forwardRef<
   HTMLDivElement,
   GimmicksNamesProps & { className?: string } & React.ComponentPropsWithRef<'div'>
 >(({ className, mergedGimmicks }, ref) => {
-  console.log(mergedGimmicks);
   const superMergeGimmicks = (mergedGimmicks: MergedGimmick[]) => {
     const superMergedGimmicks: SuperMergedGimmick[] = [];
 
@@ -100,6 +99,8 @@ const GimmicksNames = React.forwardRef<
 });
 
 export type GimmickLineProps = ArrayElement<RaidDataType> & {
+  displayDamage: boolean;
+  damageDisplayGimmick?: ArrayElement<RaidDataType>;
   mergedGimmicks: MergedGimmick[];
   resizePanelSize: number;
 };
@@ -115,6 +116,8 @@ const GimmickLine = React.forwardRef<
     prepare_at: prepareAt,
     cast_at: castAt,
     resolve_at: resolveAt,
+    displayDamage,
+    damageDisplayGimmick,
     mergedGimmicks,
     resizePanelSize,
   } = props;
@@ -159,19 +162,19 @@ const GimmickLine = React.forwardRef<
         style={{ top: `${prepareAt * pixelPerFrame}px` }}
       >
         <div className="-z-10 space-y-1">
-          {mergedGimmicks.length !== 0 && (
+          {mergedGimmicks.length > 0 && (
             <GimmicksNames
               mergedGimmicks={mergedGimmicks}
               className={cn(titleWeight, gimmickType === 'Enrage' && 'mt-1')}
             />
           )}
-          {mergedGimmicks.length === 1 && (
+          {mergedGimmicks.length > 0 && displayDamage && damageDisplayGimmick && (
             <div className={className}>
               <div
                 className="grid text-sm gap-x-2 gap-y-1"
                 style={{ gridTemplateColumns: 'auto auto auto' }}
               >
-                <DamageText damages={mergedGimmicks[0].damages} />
+                <DamageText damages={damageDisplayGimmick.damages} />
               </div>
             </div>
           )}

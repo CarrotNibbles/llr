@@ -32,10 +32,15 @@ const GimmickOverlay = React.forwardRef<
       .toSorted((gimmick1, gimmick2) => gimmick1.prepare_at - gimmick2.prepare_at)
       .map<
         ArrayElement<RaidDataType> & {
-          damageRowCount?: number;
+          damageDisplayGimmick?: ArrayElement<RaidDataType>;
+          displayDamage: boolean;
           mergedGimmicks: MergedGimmick[];
         }
-      >((gimmick) => ({ ...gimmick, mergedGimmicks: [] }));
+      >((gimmick) => ({
+        ...gimmick,
+        displayDamage: gimmick.damages.length > 0,
+        mergedGimmicks: [],
+      }));
 
     for (let i = 0; i < gimmicksWithMerged.length; i++) {
       gimmicksWithMerged[i].mergedGimmicks.push({
@@ -45,24 +50,66 @@ const GimmickOverlay = React.forwardRef<
         type: gimmicksWithMerged[i].type,
       });
 
-      if (gimmicksWithMerged[i].damages.length !== 0) {
-        if (gimmicksWithMerged[i].damageRowCount) gimmicksWithMerged[i].damageRowCount = 0;
-        else gimmicksWithMerged[i].damageRowCount = gimmicksWithMerged[i].damages.length;
+      if (gimmicksWithMerged[i].damages.length > 0) {
+        if (gimmicksWithMerged[i].damageDisplayGimmick) gimmicksWithMerged[i].displayDamage = false;
+        else {
+          gimmicksWithMerged[i].damageDisplayGimmick = gimmicksWithMerged[i];
+          gimmicksWithMerged[i].displayDamage = true;
+        }
+      }
+
+      if (gimmicksWithMerged[i].name === '착지') {
+        console.log(i);
+        console.log(gimmicksWithMerged[i]);
       }
 
       if (
-        i + 1 < gimmicksWithMerged.length - 1 &&
-        (gimmicksWithMerged[i + 1].prepare_at - gimmicksWithMerged[i].prepare_at) * pixelPerFrame <=
+        i + 1 >= gimmicksWithMerged.length ||
+        (gimmicksWithMerged[i + 1].prepare_at - gimmicksWithMerged[i].prepare_at) * pixelPerFrame >=
           mergePixelThresholdDefault +
-            mergePixelThresholdIncremental * (gimmicksWithMerged[i].damageRowCount ?? 0) &&
-        gimmicksWithMerged[i + 1].type !== 'Enrage'
-      ) {
-        gimmicksWithMerged[i + 1].mergedGimmicks = gimmicksWithMerged[i].mergedGimmicks;
-        gimmicksWithMerged[i + 1].damageRowCount = gimmicksWithMerged[i].damageRowCount;
+            mergePixelThresholdIncremental *
+              (gimmicksWithMerged[i].damageDisplayGimmick?.damages.length ?? 0) ||
+        gimmicksWithMerged[i + 1].type === 'Enrage'
+      )
+        continue;
 
-        gimmicksWithMerged[i].mergedGimmicks = [];
-        gimmicksWithMerged[i].damageRowCount = 0;
+      if (
+        (gimmicksWithMerged[i + 1].prepare_at - gimmicksWithMerged[i].prepare_at) * pixelPerFrame >=
+        mergePixelThresholdDefault
+      ) {
+        let j = i;
+        let stopMerge = false;
+
+        while (
+          j + 1 < gimmicksWithMerged.length &&
+          (gimmicksWithMerged[j + 1].prepare_at - gimmicksWithMerged[j].prepare_at) *
+            pixelPerFrame <
+            mergePixelThresholdDefault +
+              mergePixelThresholdIncremental *
+                (gimmicksWithMerged[i].damageDisplayGimmick?.damages.length ?? 0) &&
+          gimmicksWithMerged[i + 1].type !== 'Enrage'
+        ) {
+          if (
+            gimmicksWithMerged[j + 1].damages.length !== 0 &&
+            gimmicksWithMerged[i].damageDisplayGimmick !== undefined
+          ) {
+            gimmicksWithMerged[i].displayDamage = false;
+            stopMerge = true;
+            break;
+          }
+
+          j++;
+        }
+
+        if (stopMerge) continue;
       }
+
+      gimmicksWithMerged[i + 1].mergedGimmicks = gimmicksWithMerged[i].mergedGimmicks;
+      gimmicksWithMerged[i + 1].displayDamage = gimmicksWithMerged[i].displayDamage;
+      gimmicksWithMerged[i + 1].damageDisplayGimmick = gimmicksWithMerged[i].damageDisplayGimmick;
+
+      gimmicksWithMerged[i].mergedGimmicks = [];
+      gimmicksWithMerged[i].displayDamage = false;
     }
 
     return gimmicksWithMerged;
