@@ -9,6 +9,7 @@ import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import { DamageEvaluation } from './DamageEvaluation';
 import { EditColumn } from './EditColumn';
 import { HeadColumn } from './HeadColumn';
+import { GimmickOverlay } from './GimmickOverlay';
 
 const jobs: Array<Enums<'job'>> = ['WAR', 'PLD', 'SAM', 'MNK', 'BRD', 'RDM', 'AST', 'SGE'];
 
@@ -67,16 +68,11 @@ export const CoreArea = (props: CoreAreaProps) => {
         </ResizablePanel>
         <ScrollSyncPane group="y">
           <div className="absolute top-20 left-0 w-screen h-full pointer-events-none overflow-y-scroll scrollbar-hide">
-            <div
-              className="absolute top-0 left-0 w-screen"
-              style={{ height: `${(raidDuration + 420) * pixelPerFrame}px` }}
-            >
-              {props.strategyData.raids?.gimmicks.map((value, index) => {
-                return (
-                  <DamageEvaluation {...value} resizePanelSize={resizePanelSize} key={index} />
-                );
-              })}
-            </div>
+            <GimmickOverlay
+              resizePanelSize={resizePanelSize}
+              raidDuration={props.strategyData.raids?.duration ?? 0}
+              gimmicks={props.strategyData.raids?.gimmicks ?? []}
+            />
           </div>
         </ScrollSyncPane>
       </ResizablePanelGroup>

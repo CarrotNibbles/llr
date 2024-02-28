@@ -61,6 +61,7 @@ const GimmicksNames = React.forwardRef<
   HTMLDivElement,
   GimmicksNamesProps & { className?: string } & React.ComponentPropsWithRef<'div'>
 >(({ className, mergedGimmicks }, ref) => {
+  console.log(mergedGimmicks);
   const superMergeGimmicks = (mergedGimmicks: MergedGimmick[]) => {
     const superMergedGimmicks: SuperMergedGimmick[] = [];
 
