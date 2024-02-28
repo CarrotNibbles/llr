@@ -1,18 +1,23 @@
 import { type QueryData } from '@supabase/supabase-js';
-import { type Enums } from './database.types';
 import { type createClient } from './supabase/server';
 
 export const buildRaidDataQuery = (supabase: ReturnType<typeof createClient>, raidId: string) => {
-  return supabase.from('gimmicks').select().eq('raid', raidId).select('*, damages(*)');
+  return supabase.from('gimmicks').select('*, damages(*)').eq('raid', raidId);
 };
 
 export type RaidDataType = QueryData<ReturnType<typeof buildRaidDataQuery>>;
+
+export const buildAbilityDataQuery = (supabase: ReturnType<typeof createClient>) => {
+  return supabase.from('abilities').select('*, mitigations(*)');
+};
+
+export type AbilityDataType = QueryData<ReturnType<typeof buildAbilityDataQuery>>;
 
 export const buildStrategyCardDataQuery = (
   supabase: ReturnType<typeof createClient>,
   raidId: string,
 ) => {
-  return supabase.from('strategies').select().eq('raid', raidId).select('*, strategy_players(*)');
+  return supabase.from('strategies').select('*, strategy_players(*)').eq('raid', raidId);
 };
 
 export type StrategyCardDataType = QueryData<ReturnType<typeof buildStrategyCardDataQuery>>;
