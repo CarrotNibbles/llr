@@ -2,7 +2,7 @@
 
 import { type Tables, type Database } from '@/lib/database.types';
 import { StrategyCard } from './StrategyCard';
-import { buildStrategyCardDataQuery } from '@/lib/queries';
+import { buildAllPrivateDataListQuery, buildStrategyCardDataQuery } from '@/lib/queries';
 import { createClient } from '@/lib/supabase/server';
 
 type StrategiesAreaProps = {
@@ -49,9 +49,15 @@ export const StrategiesArea = async (props: StrategiesAreaProps) => {
   const supabase = createClient();
   const { data: strategies, error } = await buildStrategyCardDataQuery(supabase, props.raid);
 
+  buildAllPrivateDataListQuery(supabase).forEach(async (query) => {
+    const { data, error } = await query;
+    // eslint-disable-next-line
+    if (error) throw error;
+    console.log(data);
+  });
+
   // eslint-disable-next-line
   if (error) throw error;
-  console.log(strategies);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-7">
