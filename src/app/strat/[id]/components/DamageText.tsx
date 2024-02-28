@@ -1,13 +1,12 @@
 'use client';
 
-import { type Database } from '@/lib/database.types';
+import { type Tables } from '@/lib/database.types';
 
 type DamageTextProps = {
   defaultDamage: number;
   currentDamage: number;
   primaryTarget?: string;
   numShared?: number;
-  damageId: string;
 };
 
 const BothTankBuster = (props: DamageTextProps) => {
@@ -133,14 +132,41 @@ const ShareHalfRaidWide = (props: DamageTextProps) => {
   );
 };
 
-export const DamageText = ({
-  damages,
-}: {
-  damages: Array<Database['public']['Tables']['damages']['Row']>;
-}) => {
+const Unknown = () => <div className="space-x-1 pr-6">머지 버그인듯</div>;
+
+export const DamageText = ({ damages }: { damages: Array<Tables<'damages'>> }) => {
   return (
     <>
-      <BothTankBuster defaultDamage={180000} currentDamage={100000} damageId={'akcnklsf'} />
+      {damages.map((damage) => {
+        if (damage.target === 'Tankbuster') {
+          if (damage.num_targets === 1 && damage.max_shared === 1)
+            return (
+              <SingleTankBuster key={damage.id} defaultDamage={100000} currentDamage={90000} />
+            );
+          if (damage.num_targets === 1 && damage.max_shared === 2)
+            return <ShareTankBuster key={damage.id} defaultDamage={100000} currentDamage={90000} />;
+          if (damage.num_targets === 2)
+            return <BothTankBuster key={damage.id} defaultDamage={100000} currentDamage={90000} />;
+          return <Unknown key={damage.id} />;
+        }
+
+        if (damage.target === 'Raidwide') {
+          if (damage.num_targets === 1 && damage.max_shared === 8)
+            return (
+              <ShareAllRaidWide key={damage.id} defaultDamage={110000} currentDamage={90000} />
+            );
+          if (damage.num_targets === 2 && damage.max_shared === 4)
+            return (
+              <ShareHalfRaidWide key={damage.id} defaultDamage={100000} currentDamage={90000} />
+            );
+          if (damage.num_targets === 8 && damage.max_shared === 1)
+            return <RaidWide key={damage.id} defaultDamage={100000} currentDamage={900000} />;
+
+          return <Unknown key={damage.id} />;
+        }
+
+        return <Unknown key={damage.id} />;
+      })}
     </>
   );
 };
