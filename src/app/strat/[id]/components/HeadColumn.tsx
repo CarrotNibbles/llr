@@ -1,6 +1,6 @@
 import { type Enums } from '@/lib/database.types';
 import { columnWidth, columnWidthLarge, type JobTemp, type SkillTemp } from './coreAreaConstants';
-import { type AbilityDataType } from '@/lib/queries/server';
+import { type AbilityDataType } from '@/lib/queries';
 import { type ArrayElement } from '@/lib/utils';
 import Image from 'next/image';
 

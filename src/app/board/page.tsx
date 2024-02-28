@@ -15,7 +15,7 @@ const Page = () => {
         </div>
         <div className="flex-auto m-5 mt-0">
           <div className="hidden md:block mt-10 mb-5">
-            <div className="text-3xl font-bold">천옥 영식 4층</div>
+            <text className="text-3xl font-bold">천옥 영식 4층</text>
           </div>
           <StrategiesArea raid={'17e466d6-01eb-45cb-88be-0c2f430aa024'} />
         </div>

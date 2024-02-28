@@ -2,7 +2,6 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useZoomState } from './states';
 import { type Enums } from './database.types';
-import { type fetchQueryFallbackData, type useQuery } from '@supabase-cache-helpers/postgrest-swr';
 
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
@@ -13,8 +12,6 @@ export const getZoom = (zoomState: number) => {
 };
 
 export type ArrayElement<T> = T extends Array<infer R> ? R : never;
-export type Equals<T, U> = T extends U ? (U extends T ? true : never) : never;
-export type RescueType<T> = T extends ReturnType<typeof useQuery<infer U>> ? U : never;
 
 export const usePixelPerFrame = () => {
   const [zoom, _] = useZoomState();
@@ -68,14 +65,3 @@ export const gimmickTypeName = {
   Enrage: '전멸기',
 } satisfies Record<Enums<'gimmick_type'>, string>;
 /* eslint-enable */
-
-export const timeStep = 30;
-export const mergePixelThreshold = 30;
-
-export const weightedCompareFunction =
-  <ValueType>(
-    compareFn1: (item1: ValueType, item2: ValueType) => number,
-    compareFn2: (item1: ValueType, item2: ValueType) => number,
-  ) =>
-  (item1: ValueType, item2: ValueType): number =>
-    compareFn1(item1, item2) === 0 ? compareFn2(item1, item2) : compareFn1(item1, item2);

@@ -1,7 +1,7 @@
 'use server';
 
 import { type Database, type Tables } from '@/lib/database.types';
-import { buildStrategyCardDataQuery } from '@/lib/queries/server';
+import { buildStrategyCardDataQuery } from '@/lib/queries';
 import { createClient } from '@/lib/supabase/server';
 import { StrategyCard } from './StrategyCard';
 

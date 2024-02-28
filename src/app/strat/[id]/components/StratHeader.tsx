@@ -6,7 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Separator } from '@/components/ui/separator';
 import { Toggle } from '@/components/ui/toggle';
 import { type Enums } from '@/lib/database.types';
-import { type StrategyDataType } from '@/lib/queries/server';
+import { type StrategyDataType } from '@/lib/queries';
 import { useFilterState } from '@/lib/states';
 import { cn, gimmickBackgroundColor, gimmickTypeName } from '@/lib/utils';
 import {
