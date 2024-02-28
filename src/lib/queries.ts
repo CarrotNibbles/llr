@@ -15,12 +15,3 @@ export const buildStrategyCardDataQuery = (
 };
 
 export type StrategyCardDataType = QueryData<ReturnType<typeof buildStrategyCardDataQuery>>;
-
-export const buildAllPrivateDataListQuery = (supabase: ReturnType<typeof createClient>) => {
-  return [
-    supabase.from('strategies').select('*'),
-    supabase.from('strategy_players').select('*'),
-    supabase.from('strategy_damage_options').select('*'),
-    supabase.from('strategy_player_entries').select('*'),
-  ];
-};

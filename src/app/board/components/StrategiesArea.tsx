@@ -1,9 +1,9 @@
 'use server';
 
-import { type Tables, type Database } from '@/lib/database.types';
-import { StrategyCard } from './StrategyCard';
-import { buildAllPrivateDataListQuery, buildStrategyCardDataQuery } from '@/lib/queries';
+import { type Database, type Tables } from '@/lib/database.types';
+import { buildStrategyCardDataQuery } from '@/lib/queries';
 import { createClient } from '@/lib/supabase/server';
+import { StrategyCard } from './StrategyCard';
 
 type StrategiesAreaProps = {
   raid: string;
@@ -48,13 +48,6 @@ const exampleData: StrategyCardProps = {
 export const StrategiesArea = async (props: StrategiesAreaProps) => {
   const supabase = createClient();
   const { data: strategies, error } = await buildStrategyCardDataQuery(supabase, props.raid);
-
-  buildAllPrivateDataListQuery(supabase).forEach(async (query) => {
-    const { data, error } = await query;
-    // eslint-disable-next-line
-    if (error) throw error;
-    console.log(data);
-  });
 
   // eslint-disable-next-line
   if (error) throw error;
