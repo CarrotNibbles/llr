@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { Toggle } from '@/components/ui/toggle';
 import { type Enums } from '@/lib/database.types';
 import { type StrategyDataType } from '@/lib/queries';
+import { useFilterState } from '@/lib/states';
 import { cn, gimmickBackgroundColor, gimmickTypeName } from '@/lib/utils';
 import {
   CopyIcon,
@@ -15,9 +16,8 @@ import {
   Share1Icon,
   ZoomInIcon,
 } from '@radix-ui/react-icons';
-import React, { useState } from 'react';
+import React from 'react';
 import { ZoomSlider } from './ZoomSlider';
-import { useFilterState } from '@/lib/states';
 
 export const FilterMenu = () => {
   const GimmickTypes: Array<Enums<'gimmick_type'>> = [
@@ -38,11 +38,11 @@ export const FilterMenu = () => {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-60 p-3">
-        <div className="flex justify-between">
+        {/* <div className="flex justify-between">
           <div className="text-xs w-full mb-[2px] ml-1">표시할 공격</div>
           <MixerHorizontalIcon />
         </div>
-        <Separator className="mb-[2px]" />
+        <Separator className="mb-[2px]" /> */}
         <div className="grid grid-rows-3 grid-cols-2">
           {GimmickTypes.map((gimmickType) => (
             <Toggle
