@@ -6,9 +6,9 @@ import { type AbilityDataType, type StrategyDataType } from '@/lib/queries';
 import { usePixelPerFrame } from '@/lib/utils';
 import { useState } from 'react';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
+import { DamageEvaluation } from './DamageEvaluation';
 import { EditColumn } from './EditColumn';
 import { HeadColumn } from './HeadColumn';
-import { GimmickOverlay } from './GimmickOverlay';
 
 const jobs: Array<Enums<'job'>> = ['WAR', 'PLD', 'SAM', 'MNK', 'BRD', 'RDM', 'AST', 'SGE'];
 
@@ -20,6 +20,7 @@ export type CoreAreaProps = {
 export const CoreArea = (props: CoreAreaProps) => {
   const [resizePanelSize, setResizePanelSize] = useState(20);
   const pixelPerFrame = usePixelPerFrame();
+
   const raidDuration = props.strategyData.raids?.duration ?? 0;
 
   return (
@@ -66,11 +67,16 @@ export const CoreArea = (props: CoreAreaProps) => {
         </ResizablePanel>
         <ScrollSyncPane group="y">
           <div className="absolute top-20 left-0 w-screen h-full pointer-events-none overflow-y-scroll scrollbar-hide">
-            <GimmickOverlay
-              raidDuration={raidDuration}
-              resizePanelSize={resizePanelSize}
-              gimmicks={props.strategyData.raids?.gimmicks ?? []}
-            />
+            <div
+              className="absolute top-0 left-0 w-screen"
+              style={{ height: `${(raidDuration + 420) * pixelPerFrame}px` }}
+            >
+              {props.strategyData.raids?.gimmicks.map((value, index) => {
+                return (
+                  <DamageEvaluation {...value} resizePanelSize={resizePanelSize} key={index} />
+                );
+              })}
+            </div>
           </div>
         </ScrollSyncPane>
       </ResizablePanelGroup>

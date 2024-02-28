@@ -29,7 +29,7 @@ export function StrategyCard(props: ArrayElement<StrategyCardDataType>) {
       <CardContent className="pb-0 pl-4 md:pb-6 md:pl-6">
         <div className="w-full items-center flex flex-row space-x-2">
           {props.strategy_players.map((player, index) => (
-            <div key={index}>{player.job}</div>
+            <text key={index}>{player.job}</text>
           ))}
         </div>
       </CardContent>
