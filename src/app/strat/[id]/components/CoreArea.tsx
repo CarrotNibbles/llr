@@ -6,7 +6,6 @@ import { type AbilityDataType, type StrategyDataType } from '@/lib/queries';
 import { usePixelPerFrame } from '@/lib/utils';
 import { useState } from 'react';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
-import { DamageEvaluation } from './DamageEvaluation';
 import { EditColumn } from './EditColumn';
 import { HeadColumn } from './HeadColumn';
 import { GimmickOverlay } from './GimmickOverlay';
