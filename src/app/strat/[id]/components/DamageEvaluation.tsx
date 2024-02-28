@@ -1,6 +1,7 @@
 'use client';
 
-import { type RaidDataType } from '@/lib/queries';
+import { type RaidDataType } from '@/lib/queries/server';
+import { useFilterState } from '@/lib/states';
 import {
   gimmickBorderColor,
   gimmickTextColor,
@@ -8,9 +9,8 @@ import {
   type ArrayElement,
 } from '@/lib/utils';
 import React from 'react';
-import { GimmickSubLine } from './GimmickLine';
 import { DamageText } from './DamageText';
-import { useFilterState } from '@/lib/states';
+import { GimmickSubLine } from './GimmickLine';
 
 export type DamageEvaluationProps = ArrayElement<RaidDataType> & {
   resizePanelSize: number;

@@ -2,19 +2,29 @@
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { type Enums } from '@/lib/database.types';
-import { type AbilityDataType, type StrategyDataType } from '@/lib/queries';
+import { type AbilityDataType, type StrategyDataType } from '@/lib/queries/server';
 import { usePixelPerFrame } from '@/lib/utils';
-import { useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import { DamageEvaluation } from './DamageEvaluation';
 import { EditColumn } from './EditColumn';
 import { HeadColumn } from './HeadColumn';
+import { createClient } from '@/lib/supabase/client';
+import {
+  type AbilityFallbackDataType,
+  useAbilityDataQuery,
+  type StrategyFallbackDataType,
+  useStrategyDataQuery,
+} from '@/lib/queries/client';
+import { useInsertMutation } from '@supabase-cache-helpers/postgrest-swr';
 
 const jobs: Array<Enums<'job'>> = ['WAR', 'PLD', 'SAM', 'MNK', 'BRD', 'RDM', 'AST', 'SGE'];
 
 export type CoreAreaProps = {
   strategyData: StrategyDataType;
   abilityData: AbilityDataType;
+  strategyFallbackData: StrategyFallbackDataType;
+  stratId: string;
 };
 
 export const CoreArea = (props: CoreAreaProps) => {
@@ -22,6 +32,18 @@ export const CoreArea = (props: CoreAreaProps) => {
   const pixelPerFrame = usePixelPerFrame();
 
   const raidDuration = props.strategyData.raids?.duration ?? 0;
+
+  const supabase = createClient();
+
+  const { data: strategyClientData, error: strategyError } = useStrategyDataQuery(
+    supabase,
+    props.stratId,
+    props.strategyFallbackData,
+  );
+
+  useEffect(() => {
+    console.log(strategyClientData);
+  }, [strategyClientData]);
 
   return (
     <ScrollSync>
@@ -37,7 +59,7 @@ export const CoreArea = (props: CoreAreaProps) => {
           defaultSize={80}
           maxSize={96}
           className="flex flex-col overflow-auto border-r bg-white"
-          onResize={(size) => {
+          onResize={async (size) => {
             setResizePanelSize(size);
           }}
         >
@@ -71,7 +93,7 @@ export const CoreArea = (props: CoreAreaProps) => {
               className="absolute top-0 left-0 w-screen"
               style={{ height: `${(raidDuration + 420) * pixelPerFrame}px` }}
             >
-              {props.strategyData.raids?.gimmicks.map((value, index) => {
+              {(strategyClientData ?? props.strategyData).raids?.gimmicks.map((value, index) => {
                 return (
                   <DamageEvaluation {...value} resizePanelSize={resizePanelSize} key={index} />
                 );

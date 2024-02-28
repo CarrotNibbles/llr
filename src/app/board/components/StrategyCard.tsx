@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/card';
 import { type Database } from '@/lib/database.types';
 import { LikeButton } from './LikeButton';
-import { type StrategyCardDataType } from '@/lib/queries';
+import { type StrategyCardDataType } from '@/lib/queries/server';
 import { type ArrayElement } from '@/lib/utils';
 
 // eslint-disable-next-line
@@ -37,7 +37,7 @@ export function StrategyCard(props: ArrayElement<StrategyCardDataType>) {
         <CardDescription className="md:text-sm text-xs">
           {props.created_at === props.modified_at
             ? `Created@${timeStampZtoKST(props.created_at)}`
-            : `Modified@${props.modified_at}`}
+            : `Modified@${timeStampZtoKST(props.modified_at)}`}
         </CardDescription>
         <LikeButton likes={props.likes} />
       </CardFooter>

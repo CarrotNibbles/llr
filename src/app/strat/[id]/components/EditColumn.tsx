@@ -5,7 +5,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
-import { type AbilityDataType, type StrategyDataType } from '@/lib/queries';
+import { type AbilityDataType, type StrategyDataType } from '@/lib/queries/server';
 import { clamp, usePixelPerFrame, type ArrayElement } from '@/lib/utils';
 import { animate, motion, useMotionValue } from 'framer-motion';
 import { useEffect, useState, type MouseEventHandler } from 'react';

@@ -1,5 +1,5 @@
 import { type QueryData } from '@supabase/supabase-js';
-import { type createClient } from './supabase/server';
+import { type createClient } from '../supabase/server';
 
 export const buildRaidDataQuery = (supabase: ReturnType<typeof createClient>, raidId: string) => {
   return supabase.from('gimmicks').select('*, damages(*)').eq('raid', raidId);
@@ -22,7 +22,7 @@ export const buildStrategyCardDataQuery = (
 
 export type StrategyCardDataType = QueryData<ReturnType<typeof buildStrategyCardDataQuery>>;
 
-export const buildStrategyDataQuery = async (
+export const buildStrategyDataQuery = (
   supabase: ReturnType<typeof createClient>,
   strategyId: string,
 ) => {
