@@ -1,7 +1,8 @@
-import { type ClassValue, clsx } from 'clsx';
+import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { type Tables, type Enums } from './database.types';
+import { type RaidDataType } from './queries';
 import { useZoomState } from './states';
-import { type Enums } from './database.types';
 
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
@@ -67,7 +68,19 @@ export const gimmickTypeName = {
 /* eslint-enable */
 
 export const timeStep = 30;
-export const mergePixelThreshold = 30;
+export const mergePixelThresholdDefault = 28;
+export const mergePixelThresholdIncremental = 20;
+
+export type MergedGimmick = {
+  id: string;
+  name: string;
+  damages: Array<Tables<'damages'>>;
+  type: Enums<'gimmick_type'>;
+};
+
+export type SuperMergedGimmick = MergedGimmick & {
+  mergeCount: number;
+};
 
 export const weightedCompareFunction =
   <ValueType>(
@@ -76,3 +89,5 @@ export const weightedCompareFunction =
   ) =>
   (item1: ValueType, item2: ValueType): number =>
     compareFn1(item1, item2) === 0 ? compareFn2(item1, item2) : compareFn1(item1, item2);
+
+export const maxDisplayCount = 3;
