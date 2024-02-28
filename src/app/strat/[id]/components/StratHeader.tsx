@@ -1,7 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Separator } from '@/components/ui/separator';
+import { Toggle } from '@/components/ui/toggle';
+import { type Enums } from '@/lib/database.types';
+import { type StrategyDataType } from '@/lib/queries';
+import { cn, gimmickBackgroundColor, gimmickTypeName } from '@/lib/utils';
 import {
   CopyIcon,
   HeartIcon,
@@ -9,13 +15,8 @@ import {
   Share1Icon,
   ZoomInIcon,
 } from '@radix-ui/react-icons';
-import { cn, gimmickBackgroundColor, gimmickTypeName } from '@/lib/utils';
+import React, { useState } from 'react';
 import { ZoomSlider } from './ZoomSlider';
-import { Icons } from '@/components/icons';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { type Enums } from '@/lib/database.types';
-import { Toggle } from '@/components/ui/toggle';
-import { Separator } from '@/components/ui/separator';
 
 export const FilterMenu = () => {
   const [filterState, setFilterState] = useState<Array<[Enums<'gimmick_type'>, boolean]>>([
@@ -74,16 +75,16 @@ export const FilterMenu = () => {
 
 const StratHeader = React.forwardRef<
   HTMLDivElement,
-  { className?: string } & React.ComponentPropsWithoutRef<'div'>
->(({ className, ...props }, ref) => {
+  { strategyData: StrategyDataType; className?: string } & React.ComponentPropsWithoutRef<'div'>
+>(({ strategyData: { name, raids, likes }, className, ...props }, ref) => {
   return (
     <div
       ref={ref}
       className={cn('rounded-none border-b flex space-x-4 py-2 px-4 items-center', className)}
       {...props}
     >
-      <div className="font-bold">내가 시발 부릅니다: 살려주세요</div>
-      <div className="text-muted-foreground">마의 전당 판데모니움: 천옥편 4(영웅)</div>
+      <div className="font-bold">{name}</div>
+      <div className="text-muted-foreground">{raids?.name}</div>
       <div className="flex-grow"></div>
       <ZoomInIcon className="w-5 h-5" />
       <ZoomSlider className="ml-0" />
@@ -98,7 +99,7 @@ const StratHeader = React.forwardRef<
       </div>
       <Button className="">
         <HeartIcon className="mr-2" />
-        13598
+        {likes}
       </Button>
     </div>
   );

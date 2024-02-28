@@ -5,21 +5,13 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
-import { clamp, usePixelPerFrame } from '@/lib/utils';
+import { type AbilityDataType, type StrategyDataType } from '@/lib/queries';
+import { clamp, usePixelPerFrame, type ArrayElement } from '@/lib/utils';
 import { animate, motion, useMotionValue } from 'framer-motion';
 import { useEffect, useState, type MouseEventHandler } from 'react';
 import { uidSync } from 'uid-ts';
-import {
-  columnWidth,
-  columnWidthLarge,
-  raidDurationTemp,
-  timeStep,
-  type JobTemp,
-  type SkillTemp,
-} from './coreAreaConstants';
+import { columnWidth, columnWidthLarge, timeStep } from './coreAreaConstants';
 
-const DurationTemp = 10 * 60;
-const CoolDownTemp = 30 * 60;
 const uidLength = 10;
 const contextMenuWidth = 16;
 const contextMenuWidthLarge = 32;
@@ -44,60 +36,63 @@ const evaluateOverlap = (
   return prevUseAt < otherUseAt ? 'up' : 'down';
 };
 
-const removeOverlap = (
-  currentUseAt: number,
-  prevUseAt: number,
-  otherUseAts: number[],
-  cooldown: number,
-) => {
-  otherUseAts = otherUseAts.toSorted((a, b) => a - b);
+function buildHelperFunctions(raidDuration: number, cooldown: number) {
+  const removeOverlap = (currentUseAt: number, prevUseAt: number, otherUseAts: number[]) => {
+    otherUseAts = otherUseAts.toSorted((a, b) => a - b);
 
-  const overlapIndex = otherUseAts.reduce(
-    (acc, curr, index) =>
-      Math.abs(curr - currentUseAt) < acc.value
-        ? { value: Math.abs(curr - currentUseAt), index }
-        : acc,
-    { value: cooldown, index: -1 },
-  ).index;
+    const overlapIndex = otherUseAts.reduce(
+      (acc, curr, index) =>
+        Math.abs(curr - currentUseAt) < acc.value
+          ? { value: Math.abs(curr - currentUseAt), index }
+          : acc,
+      { value: cooldown, index: -1 },
+    ).index;
 
-  if (overlapIndex === -1) return currentUseAt;
+    if (overlapIndex === -1) return currentUseAt;
 
-  const newUseAt =
-    evaluateOverlap(currentUseAt, prevUseAt, otherUseAts[overlapIndex], cooldown) === 'up'
-      ? otherUseAts[overlapIndex] - cooldown
-      : otherUseAts[overlapIndex] + cooldown;
+    const newUseAt =
+      evaluateOverlap(currentUseAt, prevUseAt, otherUseAts[overlapIndex], cooldown) === 'up'
+        ? otherUseAts[overlapIndex] - cooldown
+        : otherUseAts[overlapIndex] + cooldown;
 
-  if (
-    newUseAt >= 0 &&
-    newUseAt <= raidDurationTemp &&
-    otherUseAts.every((otherUseAt) => !overlaps(newUseAt, otherUseAt, cooldown))
-  )
-    return newUseAt;
+    if (
+      newUseAt >= 0 &&
+      newUseAt <= raidDuration &&
+      otherUseAts.every((otherUseAt) => !overlaps(newUseAt, otherUseAt, cooldown))
+    )
+      return newUseAt;
 
-  return null;
-};
+    return null;
+  };
 
-const snapAndRemoveOverlap = (
-  currentUseAt: number,
-  prevUseAt: number,
-  otherUseAts: number[],
-  cooldown: number,
-) => removeOverlap(snapToStep(currentUseAt), prevUseAt, otherUseAts, cooldown);
+  const snapAndRemoveOverlap = (currentUseAt: number, prevUseAt: number, otherUseAts: number[]) =>
+    removeOverlap(snapToStep(currentUseAt), prevUseAt, otherUseAts);
+
+  return { removeOverlap, snapAndRemoveOverlap };
+}
 
 const DraggableBox = ({
   useAt,
   setUseAt,
   deleteBox,
   otherUseAts,
+  raidDuration,
+  durations,
+  cooldown,
 }: {
   useAt: number;
   setUseAt: (useAt: number) => void;
   deleteBox: () => void;
   otherUseAts: number[];
+  raidDuration: number;
+  durations: number[];
+  cooldown: number;
 }) => {
   const [isLocked, setIsLocked] = useState(false);
   const pixelPerFrame = usePixelPerFrame();
   const yMotionValue = useMotionValue(useAt * pixelPerFrame);
+  const { snapAndRemoveOverlap } = buildHelperFunctions(raidDuration, cooldown);
+  const [primaryDuration, ...otherDurations] = [...new Set(durations)].toSorted((a, b) => a - b);
 
   useEffect(() => {
     yMotionValue.set(useAt * pixelPerFrame);
@@ -107,8 +102,8 @@ const DraggableBox = ({
     yMotionValue.animation?.cancel();
 
     const oldUseAt = useAt;
-    const newUseAt = clamp(yMotionValue.get() / pixelPerFrame, 0, raidDurationTemp);
-    const newUseAtCalced = snapAndRemoveOverlap(newUseAt, useAt, otherUseAts, CoolDownTemp);
+    const newUseAt = clamp(yMotionValue.get() / pixelPerFrame, 0, raidDuration);
+    const newUseAtCalced = snapAndRemoveOverlap(newUseAt, useAt, otherUseAts);
 
     if (newUseAtCalced === null) {
       void animate(yMotionValue, oldUseAt * pixelPerFrame);
@@ -130,16 +125,22 @@ const DraggableBox = ({
           style={{ y: yMotionValue }}
         >
           <div
-            className={`w-${columnWidth} lg:w-${columnWidthLarge} rounded-sm overflow-hidden bg-slate-300 shadow-inner`}
+            className={`relative w-${columnWidth} lg:w-${columnWidthLarge} rounded-sm overflow-hidden bg-slate-300 shadow-inner`}
             style={{
-              height: `${CoolDownTemp * pixelPerFrame}px`,
+              height: `${cooldown * pixelPerFrame}px`,
               borderWidth: isLocked ? '2px' : undefined,
               borderColor: isLocked ? 'gray' : undefined,
             }}
           >
+            {otherDurations.length > 0 && (
+              <div
+                className={`absolute top-0 w-${columnWidth} lg:w-${columnWidthLarge} rounded-sm bg-slate-400 shadow-inner`}
+                style={{ height: `${otherDurations[0] * pixelPerFrame}px` }}
+              />
+            )}
             <div
-              className={`w-${columnWidth} lg:w-${columnWidthLarge} rounded-sm bg-slate-400 shadow-inner`}
-              style={{ height: `${DurationTemp * pixelPerFrame}px` }}
+              className={`absolute top-0 w-${columnWidth} lg:w-${columnWidthLarge} rounded-sm bg-slate-500 shadow-inner`}
+              style={{ height: `${primaryDuration * pixelPerFrame}px` }}
             />
           </div>
         </motion.div>
@@ -166,14 +167,20 @@ const DraggableBox = ({
   );
 };
 
-const EditSubColumn = ({ job, skill }: { job: JobTemp; skill: SkillTemp }) => {
-  const [boxValues, setBoxValues] = useState<Array<{ useAt: number; key: string }>>([
-    {
-      useAt: 1600,
-      key: uidSync(uidLength),
-    },
-  ]);
+const EditSubColumn = ({
+  raidDuration,
+  ability,
+  entries,
+}: {
+  raidDuration: number;
+  ability: ArrayElement<AbilityDataType>;
+  entries: ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries'];
+}) => {
+  const [boxValues, setBoxValues] = useState<Array<{ useAt: number; key: string }>>(
+    entries.map(({ use_at: useAt }) => ({ useAt, key: uidSync(uidLength) })),
+  );
   const pixelPerFrame = usePixelPerFrame();
+  const { snapAndRemoveOverlap } = buildHelperFunctions(raidDuration, ability.cooldown);
 
   const createBox: MouseEventHandler<HTMLDivElement> = (evt) => {
     const cursorY = evt.clientY - evt.currentTarget.getBoundingClientRect().top;
@@ -182,7 +189,7 @@ const EditSubColumn = ({ job, skill }: { job: JobTemp; skill: SkillTemp }) => {
     if (
       boxValues.some(
         (boxValue) =>
-          cursorUseAt - boxValue.useAt >= 0 && cursorUseAt - boxValue.useAt <= CoolDownTemp,
+          cursorUseAt - boxValue.useAt >= 0 && cursorUseAt - boxValue.useAt <= ability.cooldown,
       )
     )
       return false;
@@ -191,7 +198,6 @@ const EditSubColumn = ({ job, skill }: { job: JobTemp; skill: SkillTemp }) => {
       cursorUseAt,
       snapToStep(cursorUseAt),
       boxValues.map((boxValue) => boxValue.useAt),
-      CoolDownTemp,
     );
 
     if (useAtCalced !== null)
@@ -208,13 +214,16 @@ const EditSubColumn = ({ job, skill }: { job: JobTemp; skill: SkillTemp }) => {
 
   return (
     <div
-      className={`flex flex-shrink-0 w-${columnWidth} lg:w-${columnWidthLarge} overflow-hidden`}
-      style={{ height: raidDurationTemp * pixelPerFrame }}
+      className={`flex flex-shrink-0 w-${columnWidth} lg:w-${columnWidthLarge} overflow-hidden hover:bg-slate-100`}
+      style={{ height: raidDuration * pixelPerFrame }}
       onClick={createBox}
     >
       {...boxValues.map((boxValue, index) => (
         <DraggableBox
           key={boxValue.key}
+          raidDuration={raidDuration}
+          durations={ability.mitigations.map(({ duration }) => duration)}
+          cooldown={ability.cooldown}
           useAt={boxValue.useAt}
           setUseAt={(useAt) => {
             setBoxValues(
@@ -239,13 +248,26 @@ const EditSubColumn = ({ job, skill }: { job: JobTemp; skill: SkillTemp }) => {
   );
 };
 
-export const EditColumn = ({ job, skills }: { job: JobTemp; skills: SkillTemp[] }) => {
+export type EditColumnProps = {
+  raidDuration: number;
+  playerStrategy: ArrayElement<StrategyDataType['strategy_players']>;
+  abilities: AbilityDataType;
+};
+
+export const EditColumn = ({ raidDuration, playerStrategy, abilities }: EditColumnProps) => {
   const pixelPerFrame = usePixelPerFrame();
 
   return (
-    <div className="flex px-1 border-r-[1px]" style={{ height: raidDurationTemp * pixelPerFrame }}>
-      {skills.map((skill) => (
-        <EditSubColumn key={skill.id} job={job} skill={skill} />
+    <div className="flex px-1 border-r-[1px]" style={{ height: raidDuration * pixelPerFrame }}>
+      {abilities.map((ability) => (
+        <EditSubColumn
+          key={`subcolumn-${ability.id}`}
+          raidDuration={raidDuration}
+          ability={ability}
+          entries={playerStrategy.strategy_player_entries.filter(
+            ({ ability: abilityId }) => abilityId === ability.id,
+          )}
+        />
       ))}
     </div>
   );
