@@ -6,9 +6,9 @@ import { type AbilityDataType, type StrategyDataType } from '@/lib/queries/serve
 import { usePixelPerFrame } from '@/lib/utils';
 import { use, useEffect, useState } from 'react';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
-import { DamageEvaluation } from './DamageEvaluation';
 import { EditColumn } from './EditColumn';
 import { HeadColumn } from './HeadColumn';
+import { GimmickOverlay } from './GimmickOverlay';
 import { createClient } from '@/lib/supabase/client';
 import {
   type AbilityFallbackDataType,
@@ -30,7 +30,6 @@ export type CoreAreaProps = {
 export const CoreArea = (props: CoreAreaProps) => {
   const [resizePanelSize, setResizePanelSize] = useState(20);
   const pixelPerFrame = usePixelPerFrame();
-
   const raidDuration = props.strategyData.raids?.duration ?? 0;
 
   const supabase = createClient();
@@ -89,16 +88,11 @@ export const CoreArea = (props: CoreAreaProps) => {
         </ResizablePanel>
         <ScrollSyncPane group="y">
           <div className="absolute top-20 left-0 w-screen h-full pointer-events-none overflow-y-scroll scrollbar-hide">
-            <div
-              className="absolute top-0 left-0 w-screen"
-              style={{ height: `${(raidDuration + 420) * pixelPerFrame}px` }}
-            >
-              {(strategyClientData ?? props.strategyData).raids?.gimmicks.map((value, index) => {
-                return (
-                  <DamageEvaluation {...value} resizePanelSize={resizePanelSize} key={index} />
-                );
-              })}
-            </div>
+          <GimmickOverlay
+              raidDuration={raidDuration}
+              resizePanelSize={resizePanelSize}
+              gimmicks={props.strategyData.raids?.gimmicks ?? []}
+            />
           </div>
         </ScrollSyncPane>
       </ResizablePanelGroup>
