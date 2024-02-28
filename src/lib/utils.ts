@@ -57,10 +57,10 @@ export const gimmickBackgroundColor = {
 } satisfies Record<Enums<'gimmick_type'>, string>;
 
 export const gimmickTypeName = {
-  AutoAttack: '평타',
-  Raidwide: '전체공격',
+  AutoAttack: '자동 공격',
+  Raidwide: '광역 공격',
   Tankbuster: '탱커버스터',
-  Hybrid: '혼합',
+  Hybrid: '기타',
   Avoidable: '회피 가능',
   Enrage: '전멸기',
 } satisfies Record<Enums<'gimmick_type'>, string>;
