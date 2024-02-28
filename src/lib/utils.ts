@@ -65,3 +65,14 @@ export const gimmickTypeName = {
   Enrage: '전멸기',
 } satisfies Record<Enums<'gimmick_type'>, string>;
 /* eslint-enable */
+
+export const timeStep = 30;
+export const mergePixelThreshold = 30;
+
+export const weightedCompareFunction =
+  <ValueType>(
+    compareFn1: (item1: ValueType, item2: ValueType) => number,
+    compareFn2: (item1: ValueType, item2: ValueType) => number,
+  ) =>
+  (item1: ValueType, item2: ValueType): number =>
+    compareFn1(item1, item2) === 0 ? compareFn2(item1, item2) : compareFn1(item1, item2);
