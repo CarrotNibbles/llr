@@ -1,7 +1,7 @@
 'use client';
 
 import { useUserState } from '@/lib/states';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { Suspense, useState } from 'react';
 
 export default function Home(): React.ReactElement {

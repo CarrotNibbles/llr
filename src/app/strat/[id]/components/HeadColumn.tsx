@@ -1,6 +1,6 @@
 import { type Enums } from '@/lib/database.types';
 import { type AbilityDataType } from '@/lib/queries/server';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { columnWidth, columnWidthLarge } from './coreAreaConstants';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 
