@@ -30,7 +30,7 @@ export const CoreArea = (props: CoreAreaProps) => {
         className="relative flex w-screen flex-grow overflow-hidden"
       >
         <ResizablePanel defaultSize={20} minSize={4} className="border-r">
-          <div className="min-h-20 h-20 border-b"></div>
+          <div className="min-h-16 h-16 border-b"></div>
         </ResizablePanel>
         <ResizableHandle className="w-0" withHandle />
         <ResizablePanel
@@ -42,7 +42,7 @@ export const CoreArea = (props: CoreAreaProps) => {
           }}
         >
           <ScrollSyncPane group="x">
-            <div className="min-h-20 h-20 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide border-b flex flex-row">
+            <div className="min-h-16 h-16 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide border-b flex flex-row">
               {props.strategyData.strategy_players.map((playerStrategy) => (
                 <HeadColumn
                   job={playerStrategy.job}
@@ -66,7 +66,7 @@ export const CoreArea = (props: CoreAreaProps) => {
           </ScrollSyncPane>
         </ResizablePanel>
         <ScrollSyncPane group="y">
-          <div className="absolute top-20 left-0 w-screen h-full pointer-events-none overflow-y-scroll scrollbar-hide">
+          <div className="absolute top-16 left-0 w-screen h-full pointer-events-none overflow-y-scroll scrollbar-hide">
             <div
               className="absolute top-0 left-0 w-screen"
               style={{ height: `${(raidDuration + 420) * pixelPerFrame}px` }}

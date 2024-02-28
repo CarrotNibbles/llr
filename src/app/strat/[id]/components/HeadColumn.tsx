@@ -1,8 +1,8 @@
 import { type Enums } from '@/lib/database.types';
-import { columnWidth, columnWidthLarge, type JobTemp, type SkillTemp } from './coreAreaConstants';
-import { type AbilityDataType } from '@/lib/queries';
-import { type ArrayElement } from '@/lib/utils';
+import { type AbilityDataType } from '@/lib/queries/server';
 import Image from 'next/image';
+import { columnWidth, columnWidthLarge } from './coreAreaConstants';
+import { AspectRatio } from '@/components/ui/aspect-ratio';
 
 const HeadSubColumn = ({
   job,
@@ -14,9 +14,11 @@ const HeadSubColumn = ({
   iconURL: string | null; // eslint-disable-line
 }) => (
   <div
-    className={`flex flex-shrink-0 w-${columnWidth} lg:w-${columnWidthLarge} overflow-hidden flex justify-center items-center`}
+    className={`flex flex-shrink-0 ${columnWidth} ${columnWidthLarge} overflow-hidden justify-center items-end relative`}
   >
-    {iconURL && <Image src={iconURL} alt={name} width={100} height={100} />}
+    <div className="aspect-square relative w-full">
+      {iconURL && <Image src={iconURL} alt={name} layout="fill" objectFit="contain" />}
+    </div>
   </div>
 );
 
@@ -27,7 +29,19 @@ export const HeadColumn = ({
   job: Enums<'job'>;
   abilities: AbilityDataType;
 }) => (
-  <div className="p-1 border-r-[1px] flex flex-col-reverse">
+  <div className="flex flex-col p-1 border-r-[1px] space-y-2">
+    <div className="flex flex-grow relative justify-start">
+      <div className="aspect-square relative">
+        <Image
+          src={`/icons/${job}.png`}
+          alt={`Job Icon of ${job}`}
+          layout="fill"
+          objectFit="contain"
+        />
+      </div>
+      <div className="flex-grow" />
+      <div className="font-bold text-sm">{job}</div>
+    </div>
     <div className="flex">
       {abilities.map((ability) => (
         <HeadSubColumn

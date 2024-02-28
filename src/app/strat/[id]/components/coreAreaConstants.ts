@@ -1,5 +1,5 @@
-export const columnWidth = 6;
-export const columnWidthLarge = 10;
+export const columnWidth = 'w-6';
+export const columnWidthLarge = 'lg:w-6';
 
 export type JobTemp = string;
 export type SkillTemp = {
