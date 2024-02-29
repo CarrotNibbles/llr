@@ -3,21 +3,15 @@
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Separator } from '@/components/ui/separator';
 import { Toggle } from '@/components/ui/toggle';
 import { type Enums } from '@/lib/database.types';
 import { type StrategyDataType } from '@/lib/queries';
 import { useFilterState } from '@/lib/states';
 import { cn, gimmickBackgroundColor, gimmickTypeName } from '@/lib/utils';
-import {
-  CopyIcon,
-  HeartIcon,
-  MixerHorizontalIcon,
-  Share1Icon,
-  ZoomInIcon,
-} from '@radix-ui/react-icons';
+import { CopyIcon, HeartIcon, Share1Icon, ZoomInIcon } from '@radix-ui/react-icons';
 import React from 'react';
 import { ZoomSlider } from './ZoomSlider';
+import { EditableText } from '@/components/EditableText';
 
 export const FilterMenu = () => {
   const GimmickTypes: Array<Enums<'gimmick_type'>> = [
@@ -79,7 +73,7 @@ const StratHeader = React.forwardRef<
       className={cn('rounded-none border-b flex space-x-4 py-2 px-4 items-center', className)}
       {...props}
     >
-      <div className="font-bold">{name}</div>
+      <EditableText initialText={name} className="font-bold" />
       <div className="text-muted-foreground">{raids?.name}</div>
       <div className="flex-grow"></div>
       <ZoomInIcon className="w-5 h-5" />

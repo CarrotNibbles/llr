@@ -7,7 +7,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from '@/components/myselect';
+} from '@/components/ㅡyselect';
 
 export function SelectDemo() {
   return (

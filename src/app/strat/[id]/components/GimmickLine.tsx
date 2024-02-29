@@ -182,17 +182,16 @@ const GimmickLine = React.forwardRef<
               {mergedGimmicks.length > 0 &&
                 mergedGimmicks.map((mergedGimmick) => (
                   <div key={mergedGimmick.id} className={cn(className, 'space-y-1 mb-1')}>
-                    <div className={cn(textColor, 'text-xs', 'font-bold', 'border')}>
-                      {mergedGimmick.name} - 꼬와 고쳐!!
+                    <div className={cn(textColor, 'text-xs', 'font-bold')}>
+                      {mergedGimmick.name}
                     </div>
                     <div
                       className="grid text-sm gap-x-2 gap-y-1"
                       style={{ gridTemplateColumns: 'auto auto auto' }}
                     >
                       <DamageText damages={mergedGimmick.damages} />
-                      TODO라는 Liberal한 방법을 쓰면 혹시 ESLint가 꼬와하니?
                     </div>
-                    <Separator className='translate-x-20 -translate-y-20' />
+                    <Separator />
                   </div>
                 ))}
             </HoverCardContent>
