@@ -13,6 +13,7 @@ import React from 'react';
 import { DamageText } from './DamageText';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 
 type GimmickSubLineProps = {
   time: number;
@@ -89,7 +90,7 @@ const GimmicksNames = React.forwardRef<
           className={cn(gimmickTextColor[superMergedGimmick.type], 'mr-1')}
         >
           {superMergedGimmick.name}
-          {superMergedGimmick.mergeCount >= 2 && `x${superMergedGimmick.mergeCount}`}
+          {superMergedGimmick.mergeCount >= 2 && `×${superMergedGimmick.mergeCount}`}
           {idx !== array.length - 1 && ','}
         </div>
       ))}
@@ -180,13 +181,18 @@ const GimmickLine = React.forwardRef<
             <HoverCardContent>
               {mergedGimmicks.length > 0 &&
                 mergedGimmicks.map((mergedGimmick) => (
-                  <div key={mergedGimmick.id} className={className}>
+                  <div key={mergedGimmick.id} className={cn(className, 'space-y-1 mb-1')}>
+                    <div className={cn(textColor, 'text-xs', 'font-bold', 'border')}>
+                      {mergedGimmick.name} - 꼬와 고쳐!!
+                    </div>
                     <div
                       className="grid text-sm gap-x-2 gap-y-1"
                       style={{ gridTemplateColumns: 'auto auto auto' }}
                     >
                       <DamageText damages={mergedGimmick.damages} />
+                      TODO라는 Liberal한 방법을 쓰면 혹시 ESLint가 꼬와하니?
                     </div>
+                    <Separator className='translate-x-20 -translate-y-20' />
                   </div>
                 ))}
             </HoverCardContent>
