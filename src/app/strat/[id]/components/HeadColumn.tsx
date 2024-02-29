@@ -2,7 +2,8 @@ import { type Enums } from '@/lib/database.types';
 import { type AbilityDataType } from '@/lib/queries/server';
 import Image from 'next/legacy/image';
 import { columnWidth, columnWidthLarge } from './coreAreaConstants';
-import { AspectRatio } from '@/components/ui/aspect-ratio';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Button } from '@/components/ui/button';
 
 const HeadSubColumn = ({
   job,
@@ -16,9 +17,18 @@ const HeadSubColumn = ({
   <div
     className={`flex flex-shrink-0 ${columnWidth} ${columnWidthLarge} overflow-hidden justify-center items-end relative`}
   >
-    <div className="aspect-square relative w-full">
-      {iconURL && <Image src={iconURL} alt={name} layout="fill" objectFit="contain" />}
-    </div>
+    <Tooltip>
+      <div className="aspect-square relative w-full">
+        <TooltipTrigger>
+          <Button variant="ghost" className="w-auto h-auto cursor-default">
+            {iconURL && <Image src={iconURL} alt={name} layout="fill" objectFit="contain" />}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p className="pointer-events-none">{name}</p>
+        </TooltipContent>
+      </div>
+    </Tooltip>
   </div>
 );
 
