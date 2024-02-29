@@ -58,11 +58,6 @@ const GimmickOverlay = React.forwardRef<
         }
       }
 
-      if (gimmicksWithMerged[i].name === '착지') {
-        console.log(i);
-        console.log(gimmicksWithMerged[i]);
-      }
-
       if (
         i + 1 >= gimmicksWithMerged.length ||
         (gimmicksWithMerged[i + 1].prepare_at - gimmicksWithMerged[i].prepare_at) * pixelPerFrame >=

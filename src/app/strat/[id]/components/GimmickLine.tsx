@@ -11,6 +11,8 @@ import {
 } from '@/lib/utils';
 import React from 'react';
 import { DamageText } from './DamageText';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import { Button } from '@/components/ui/button';
 
 type GimmickSubLineProps = {
   time: number;
@@ -37,7 +39,7 @@ export const GimmickSubLine = ({
   Math.abs(time - primaryTime) * pixelPerFrame > 5 && (
     <>
       <div
-        className={`absolute border-0 border-t ${borderColor}  right-0 ${lineType} z-10`}
+        className={`absolute border-0 border-t ${borderColor} right-0 ${lineType} z-10`}
         style={{ top: `${time * pixelPerFrame}px`, width: `${resizePanelSize}vw` }}
       />
       {Math.abs(time - primaryTime) * pixelPerFrame > 10 && (
@@ -158,16 +160,37 @@ const GimmickLine = React.forwardRef<
         style={{ top: `${prepareAt * pixelPerFrame}px` }}
       />
       <div
-        className={`absolute top-[${prepareAt * pixelPerFrame}px] left-[2dvw] -z-10`}
+        className={`absolute top-[${prepareAt * pixelPerFrame}px] left-[2dvw]`}
         style={{ top: `${prepareAt * pixelPerFrame}px` }}
       >
-        <div className="-z-10 space-y-1">
-          {mergedGimmicks.length > 0 && (
-            <GimmicksNames
-              mergedGimmicks={mergedGimmicks}
-              className={cn(titleWeight, gimmickType === 'Enrage' && 'mt-1')}
-            />
-          )}
+        <div className="space-y-1">
+          <HoverCard>
+            <HoverCardTrigger>
+              {mergedGimmicks.length > 0 && (
+                <GimmicksNames
+                  mergedGimmicks={mergedGimmicks}
+                  className={cn(
+                    titleWeight,
+                    gimmickType === 'Enrage' && 'mt-1',
+                    'pointer-events-auto',
+                  )}
+                />
+              )}
+            </HoverCardTrigger>
+            <HoverCardContent>
+              {mergedGimmicks.length > 0 &&
+                mergedGimmicks.map((mergedGimmick) => (
+                  <div key={mergedGimmick.id} className={className}>
+                    <div
+                      className="grid text-sm gap-x-2 gap-y-1"
+                      style={{ gridTemplateColumns: 'auto auto auto' }}
+                    >
+                      <DamageText damages={mergedGimmick.damages} />
+                    </div>
+                  </div>
+                ))}
+            </HoverCardContent>
+          </HoverCard>
           {mergedGimmicks.length > 0 && displayDamage && damageDisplayGimmick && (
             <div className={className}>
               <div
