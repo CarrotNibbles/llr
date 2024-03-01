@@ -4,6 +4,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import RecoilRootProvider from '@/components/RecoilRootProvider';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import { Toaster } from '@/components/ui/toaster';
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',
@@ -51,6 +52,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             {children}
+            <Toaster />
           </ThemeProvider>
         </body>
       </html>

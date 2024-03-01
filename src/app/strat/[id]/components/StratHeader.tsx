@@ -13,6 +13,7 @@ import React from 'react';
 import { ZoomSlider } from './ZoomSlider';
 import { EditableText } from '@/components/EditableText';
 import { ModeToggle } from '@/components/ModeToggle';
+import { useToast } from '@/components/ui/use-toast';
 
 export const FilterMenu = () => {
   const GimmickTypes: Array<Enums<'gimmick_type'>> = [
@@ -68,6 +69,8 @@ const StratHeader = React.forwardRef<
   HTMLDivElement,
   { strategyData: StrategyDataType; className?: string } & React.ComponentPropsWithoutRef<'div'>
 >(({ strategyData: { name, raids, likes }, className, ...props }, ref) => {
+  const { toast } = useToast();
+
   return (
     <div
       ref={ref}
@@ -80,7 +83,22 @@ const StratHeader = React.forwardRef<
       <ZoomInIcon className="w-5 h-5" />
       <ZoomSlider className="ml-0" />
       <div className="flex">
-        <Button variant="ghost" size="icon">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={async () => {
+            try {
+              await window.navigator.clipboard.writeText(window.location.href);
+              toast({ description: '클립보드에 링크가 복사되었습니다!' });
+            } catch {
+              toast({
+                variant: 'destructive',
+                title: '오류가 발생했습니다.',
+                description: '클립보드에 복사하는 중 오류가 발생하였습니다.',
+              });
+            }
+          }}
+        >
           <Share1Icon />
         </Button>
         <Button variant="ghost" size="icon">
