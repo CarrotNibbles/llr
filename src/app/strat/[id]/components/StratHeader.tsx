@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Toggle } from '@/components/ui/toggle';
 import { type Enums } from '@/lib/database.types';
-import { type StrategyDataType } from '@/lib/queries';
+import { type StrategyDataType } from '@/lib/queries/server';
 import { useFilterState } from '@/lib/states';
 import { cn, gimmickBackgroundColor, gimmickTypeName } from '@/lib/utils';
 import { CopyIcon, HeartIcon, Share1Icon, ZoomInIcon } from '@radix-ui/react-icons';

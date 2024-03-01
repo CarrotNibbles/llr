@@ -1,12 +1,6 @@
 import { type QueryData } from '@supabase/supabase-js';
 import { type createClient } from '../supabase/server';
 
-export const buildRaidDataQuery = (supabase: ReturnType<typeof createClient>, raidId: string) => {
-  return supabase.from('gimmicks').select('*, damages(*)').eq('raid', raidId);
-};
-
-export type RaidDataType = QueryData<ReturnType<typeof buildRaidDataQuery>>;
-
 export const buildAbilityDataQuery = (supabase: ReturnType<typeof createClient>) => {
   return supabase.from('abilities').select('*, mitigations(*)');
 };
@@ -22,7 +16,7 @@ export const buildStrategyCardDataQuery = (
 
 export type StrategyCardDataType = QueryData<ReturnType<typeof buildStrategyCardDataQuery>>;
 
-export const buildStrategyDataQuery = (
+export const buildStrategyDataQuery = async (
   supabase: ReturnType<typeof createClient>,
   strategyId: string,
 ) => {
@@ -31,8 +25,7 @@ export const buildStrategyDataQuery = (
     .select(
       `*, 
       strategy_players(*, strategy_player_entries(*)),
-      strategy_damage_options(*),
-      raids!inner(*, gimmicks(*, damages(*)))`,
+      raids!inner(*, gimmicks(*, damages(*, strategy_damage_options(*))))`,
     )
     .eq('id', strategyId)
     .maybeSingle();

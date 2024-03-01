@@ -1,6 +1,8 @@
 'use client';
 
 import { type Tables } from '@/lib/database.types';
+import { type StrategyDataType } from '@/lib/queries/server';
+import { type ArrayElement } from '@/lib/utils';
 
 type DamageTextProps = {
   defaultDamage: number;
@@ -134,7 +136,11 @@ const ShareHalfRaidWide = (props: DamageTextProps) => {
 
 const Unknown = () => <div className="space-x-1 pr-6">머지 버그인듯</div>;
 
-export const DamageText = ({ damages }: { damages: Array<Tables<'damages'>> }) => {
+export const DamageText = ({
+  damages,
+}: {
+  damages: ArrayElement<Exclude<StrategyDataType['raids'], null>['gimmicks']>['damages']; // eslint-disable-line
+}) => {
   return (
     <>
       {damages.map((damage) => {

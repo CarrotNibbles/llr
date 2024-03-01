@@ -2,7 +2,7 @@
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { type Enums } from '@/lib/database.types';
-import { type AbilityDataType, type StrategyDataType } from '@/lib/queries';
+import { type AbilityDataType, type StrategyDataType } from '@/lib/queries/server';
 import { usePixelPerFrame } from '@/lib/utils';
 import { useState } from 'react';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';

@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/card';
 import { type Database } from '@/lib/database.types';
 import { LikeButton } from './LikeButton';
-import { type StrategyCardDataType } from '@/lib/queries';
+import { type StrategyCardDataType } from '@/lib/queries/server';
 import { type ArrayElement } from '@/lib/utils';
 
 // eslint-disable-next-line

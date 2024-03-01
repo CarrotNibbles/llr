@@ -1,7 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { type Tables, type Enums } from './database.types';
-import { type RaidDataType } from './queries';
 import { useZoomState } from './states';
 
 export function cn(...inputs: ClassValue[]): string {
@@ -74,7 +73,11 @@ export const mergePixelThresholdIncremental = 20;
 export type MergedGimmick = {
   id: string;
   name: string;
-  damages: Array<Tables<'damages'>>;
+  damages: Array<
+    Tables<'damages'> & {
+      strategy_damage_options: Array<Tables<'strategy_damage_options'>>;
+    }
+  >;
   type: Enums<'gimmick_type'>;
 };
 

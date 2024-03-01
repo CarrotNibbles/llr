@@ -1,6 +1,6 @@
 'use client';
 
-import { type RaidDataType } from '@/lib/queries';
+import { type StrategyDataType } from '@/lib/queries/server';
 import { GimmickLine } from './GimmickLine';
 import React from 'react';
 import {
@@ -13,7 +13,7 @@ import {
 import { useFilterState } from '@/lib/states';
 
 type GimmickOverlayProps = {
-  gimmicks: RaidDataType;
+  gimmicks: Exclude<StrategyDataType['raids'], null>['gimmicks']; // eslint-disable-line
   raidDuration: number;
   resizePanelSize: number;
 };
@@ -26,13 +26,13 @@ const GimmickOverlay = React.forwardRef<
   const pixelPerFrame = usePixelPerFrame();
   const [filterState, _] = useFilterState();
 
-  const mergeGimmicks = (gimmicks: RaidDataType) => {
+  const mergeGimmicks = (gimmicks: GimmickOverlayProps['gimmicks']) => {
     const gimmicksWithMerged = gimmicks
       .filter((gimmick) => filterState.get(gimmick.type))
       .toSorted((gimmick1, gimmick2) => gimmick1.prepare_at - gimmick2.prepare_at)
       .map<
-        ArrayElement<RaidDataType> & {
-          damageDisplayGimmick?: ArrayElement<RaidDataType>;
+        ArrayElement<GimmickOverlayProps['gimmicks']> & {
+          damageDisplayGimmick?: ArrayElement<GimmickOverlayProps['gimmicks']>;
           displayDamage: boolean;
           mergedGimmicks: MergedGimmick[];
         }

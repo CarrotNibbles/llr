@@ -5,17 +5,16 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
-import { type AbilityDataType, type StrategyDataType } from '@/lib/queries';
 import {
   buildClientDeleteStrategyPlayerEntryQuery,
   buildClientInsertStrategyPlayerEntryQuery,
   buildClientUpdateStrategyPlayerEntryQuery,
 } from '@/lib/queries/client';
+import { type AbilityDataType, type StrategyDataType } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/client';
 import { clamp, usePixelPerFrame, type ArrayElement } from '@/lib/utils';
 import { animate, motion, useMotionValue } from 'framer-motion';
 import { useEffect, useState, type MouseEventHandler } from 'react';
-import { uidSync } from 'uid-ts';
 import { columnWidth, columnWidthLarge, timeStep } from './coreAreaConstants';
 
 const uidLength = 10;

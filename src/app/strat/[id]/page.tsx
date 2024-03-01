@@ -1,6 +1,6 @@
 'use server';
 
-import { buildAbilityDataQuery, buildStrategyDataQuery } from '@/lib/queries';
+import { buildAbilityDataQuery, buildStrategyDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
 import { CoreArea } from './components/CoreArea';
 import { StratHeader } from './components/StratHeader';
