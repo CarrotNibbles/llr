@@ -19,14 +19,12 @@ const HeadSubColumn = ({
   >
     <Tooltip>
       <div className="aspect-square relative w-full">
-        <TooltipTrigger>
+        <TooltipTrigger asChild>
           <Button variant="ghost" className="w-auto h-auto cursor-default">
             {iconURL && <Image src={iconURL} alt={name} layout="fill" objectFit="contain" />}
           </Button>
         </TooltipTrigger>
-        <TooltipContent>
-          <p className="pointer-events-none">{name}</p>
-        </TooltipContent>
+        <TooltipContent className="pointer-events-none">{name}</TooltipContent>
       </div>
     </Tooltip>
   </div>
