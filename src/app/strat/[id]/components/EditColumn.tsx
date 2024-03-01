@@ -147,7 +147,7 @@ const DraggableBox = ({
           style={{ y: yMotionValue }}
         >
           <div
-            className={`relative ${columnWidth} ${columnWidthLarge} rounded-sm overflow-hidden bg-slate-300 shadow-inner`}
+            className={`relative ${columnWidth} ${columnWidthLarge} rounded-sm overflow-hidden bg-zinc-200 dark:bg-zinc-700 shadow-inner`}
             style={{
               height: `${cooldown * pixelPerFrame}px`,
               borderWidth: isLocked ? '2px' : undefined,
@@ -156,12 +156,12 @@ const DraggableBox = ({
           >
             {otherDurations.length > 0 && (
               <div
-                className={`absolute top-0 ${columnWidth} ${columnWidthLarge} rounded-sm bg-slate-400 shadow-inner`}
+                className={`absolute top-0 ${columnWidth} ${columnWidthLarge} rounded-sm bg-zinc-300 dark:bg-zinc-600 shadow-inner`}
                 style={{ height: `${otherDurations[0] * pixelPerFrame}px` }}
               />
             )}
             <div
-              className={`absolute top-0 ${columnWidth} ${columnWidthLarge} rounded-sm bg-slate-500 shadow-inner`}
+              className={`absolute top-0 ${columnWidth} ${columnWidthLarge} rounded-sm bg-zinc-400 dark:bg-zinc-500 shadow-inner`}
               style={{ height: `${primaryDuration * pixelPerFrame}px` }}
             />
           </div>
@@ -250,7 +250,7 @@ const EditSubColumn = ({
 
   return (
     <div
-      className={`flex flex-shrink-0 ${columnWidth} ${columnWidthLarge} overflow-hidden hover:bg-slate-100`}
+      className={`flex flex-shrink-0 ${columnWidth} ${columnWidthLarge} overflow-hidden hover:bg-muted`}
       style={{ height: raidDuration * pixelPerFrame }}
       onClick={createBox}
     >

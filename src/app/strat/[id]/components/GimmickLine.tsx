@@ -1,3 +1,5 @@
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import { Separator } from '@/components/ui/separator';
 import { type RaidDataType } from '@/lib/queries';
 import {
   cn,
@@ -11,9 +13,6 @@ import {
 } from '@/lib/utils';
 import React from 'react';
 import { DamageText } from './DamageText';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 
 type GimmickSubLineProps = {
   time: number;

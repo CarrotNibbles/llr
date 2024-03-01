@@ -36,7 +36,7 @@ export const CoreArea = (props: CoreAreaProps) => {
         <ResizablePanel
           defaultSize={80}
           maxSize={96}
-          className="z-10 flex flex-col overflow-auto border-r bg-white"
+          className="z-10 flex flex-col overflow-auto border-r bg-background"
           onResize={(size) => {
             setResizePanelSize(size);
           }}

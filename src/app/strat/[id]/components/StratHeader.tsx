@@ -12,6 +12,7 @@ import { CopyIcon, HeartIcon, Share1Icon, ZoomInIcon } from '@radix-ui/react-ico
 import React from 'react';
 import { ZoomSlider } from './ZoomSlider';
 import { EditableText } from '@/components/EditableText';
+import { ModeToggle } from '@/components/ModeToggle';
 
 export const FilterMenu = () => {
   const GimmickTypes: Array<Enums<'gimmick_type'>> = [
@@ -86,6 +87,7 @@ const StratHeader = React.forwardRef<
           <CopyIcon />
         </Button>
         <FilterMenu />
+        <ModeToggle />
       </div>
       <Button className="">
         <HeartIcon className="mr-2" />
