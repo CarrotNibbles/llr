@@ -1,3 +1,5 @@
+'use client';
+
 import { type Tables } from '../database.types';
 import { type createClient } from '../supabase/client';
 
@@ -104,4 +106,68 @@ export const buildClientDeleteStrategyDamageOptionQuery = (
     .delete()
     .eq('strategy', strategyDamageOptionStrategy)
     .eq('damage', strategyDamageOptionDamage);
+};
+
+// SupabaseSubscription
+export const subscribeClientStrategyTable = (
+  supabase: ReturnType<typeof createClient>,
+  strategyId: string,
+) => {
+  return supabase
+    .channel(`strategy-${strategyId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'strategies',
+        filter: `id=eq.${strategyId}`,
+      },
+      (payload) => {
+        console.log('Change received!', payload);
+      },
+    )
+    .subscribe();
+};
+
+export const subscribeClientStrategyPlayerTable = (
+  supabase: ReturnType<typeof createClient>,
+  strategyId: string,
+) => {
+  return supabase
+    .channel(`strategy-${strategyId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'strategy_players',
+        filter: `strategy=eq.${strategyId}`,
+      },
+      (payload) => {
+        console.log('Change received!', payload);
+      },
+    )
+    .subscribe();
+};
+
+export const subscribeClientStrategyPlayerEntryTable = (
+  supabase: ReturnType<typeof createClient>,
+  playerId: string,
+) => {
+  return supabase
+    .channel(`Player-${playerId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'strategy_player_entries',
+        filter: `player=eq.${playerId}`,
+      },
+      (payload) => {
+        console.log('Change received!', payload);
+      },
+    )
+    .subscribe();
 };
