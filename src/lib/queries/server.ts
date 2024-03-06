@@ -34,3 +34,8 @@ export const buildStrategyDataQuery = async (
 };
 
 export type StrategyDataType = QueryData<ReturnType<typeof buildStrategyDataQuery>>;
+
+export const buildRaidsDataQuery = async (supabase: ReturnType<typeof createClient>) =>
+  supabase.from('raids').select();
+
+export type RaidsDataType = QueryData<ReturnType<typeof buildRaidsDataQuery>>;
