@@ -9,6 +9,7 @@ import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import { EditColumn } from './EditColumn';
 import { GimmickOverlay } from './GimmickOverlay';
 import { HeadColumn } from './HeadColumn';
+import { title } from 'process';
 
 const jobs: Array<Enums<'job'>> = ['WAR', 'PLD', 'SAM', 'MNK', 'BRD', 'RDM', 'AST', 'SGE'];
 

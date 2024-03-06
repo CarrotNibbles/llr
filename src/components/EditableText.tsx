@@ -1,28 +1,29 @@
+import { cn } from '@/lib/utils';
 import React, { useState } from 'react';
 
 type EditableTextProps = {
-  onDoubleClick?: React.MouseEventHandler<HTMLInputElement>;
-  onBlur?: React.FocusEventHandler<HTMLInputElement>;
-  onChange?: React.ChangeEventHandler<HTMLInputElement>;
   isEditable?: boolean;
-  initialText?: string;
+  initialText: string;
 };
 
 const EditableText = React.forwardRef<
   HTMLDivElement,
-  EditableTextProps & { className?: string } & React.ComponentPropsWithoutRef<'div'>
+  EditableTextProps & { className?: string } & React.ComponentPropsWithoutRef<'span'>
 >(({ className, onDoubleClick, onBlur, onChange, isEditable, initialText }, ref) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [text, setText] = useState(initialText ?? '');
+  const [text, setText] = useState(initialText);
+  const [lastText, setLastText] = useState(initialText);
 
-  const handleDoubleClick: React.MouseEventHandler<HTMLInputElement> = (event) => {
+  const handleDoubleClick: React.MouseEventHandler<HTMLSpanElement> = (event) => {
     if (!(isEditable ?? true)) return;
     setIsEditing(true);
+    setLastText(text);
     if (onDoubleClick) onDoubleClick(event);
   };
 
-  const handleBlur: React.FocusEventHandler<HTMLInputElement> = (event) => {
+  const handleBlur: React.FocusEventHandler<HTMLSpanElement> = (event) => {
     setIsEditing(false);
+    if (text.length === 0) setText(lastText);
     if (onBlur) onBlur(event);
   };
 
@@ -32,19 +33,16 @@ const EditableText = React.forwardRef<
   };
 
   return (
-    <div onDoubleClick={handleDoubleClick} className={className}>
+    <div onDoubleClick={handleDoubleClick} onBlur={handleBlur} className={className}>
       {isEditing ? (
-        <span
-          className="w-auto min-w-1 inline-block input"
-          contentEditable
+        <input
+          className="w-auto min-w-1 inline-flex input whitespace-nowrap"
           onChange={handleChange}
-          onDoubleClick={handleDoubleClick}
-          onBlur={handleBlur}
-        >
-          {text}
-        </span>
+          value={text}
+          size={30}
+        />
       ) : (
-        <span className="w-auto min-w-1 inline-block">{text}</span>
+        <span>{text}</span>
       )}
     </div>
   );

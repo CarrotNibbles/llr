@@ -9,7 +9,7 @@ import { type StrategyDataType } from '@/lib/queries/server';
 import { useFilterState } from '@/lib/states';
 import { cn, gimmickBackgroundColor, gimmickTypeName } from '@/lib/utils';
 import { CopyIcon, HeartIcon, Share1Icon, ZoomInIcon } from '@radix-ui/react-icons';
-import React from 'react';
+import React, { useState } from 'react';
 import { ZoomSlider } from './ZoomSlider';
 import { EditableText } from '@/components/EditableText';
 import { ModeToggle } from '@/components/ModeToggle';
@@ -70,6 +70,7 @@ const StratHeader = React.forwardRef<
   { strategyData: StrategyDataType; className?: string } & React.ComponentPropsWithoutRef<'div'>
 >(({ strategyData: { name, raids, likes }, className, ...props }, ref) => {
   const { toast } = useToast();
+  const [lastTitle, setLastTitle] = useState(name);
 
   return (
     <div
