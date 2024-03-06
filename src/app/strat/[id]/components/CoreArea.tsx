@@ -54,15 +54,20 @@ export const CoreArea = (props: CoreAreaProps) => {
             </div>
           </ScrollSyncPane>
           <ScrollSyncPane group={['x', 'y']}>
-            <div className="flex flex-grow relative overflow-scroll overscroll-none">
-              {props.strategyData.strategy_players.map((playerStrategy) => (
-                <EditColumn
-                  raidDuration={raidDuration}
-                  playerStrategy={playerStrategy}
-                  abilities={props.abilityData.filter(({ job }) => job === playerStrategy.job)}
-                  key={`column-${playerStrategy.id}`}
-                />
-              ))}
+            <div className="overflow-scroll overscroll-none">
+              <div
+                className="flex flex-grow relative"
+                style={{ height: raidDuration * pixelPerFrame }}
+              >
+                {props.strategyData.strategy_players.map((playerStrategy) => (
+                  <EditColumn
+                    raidDuration={raidDuration}
+                    playerStrategy={playerStrategy}
+                    abilities={props.abilityData.filter(({ job }) => job === playerStrategy.job)}
+                    key={`column-${playerStrategy.id}`}
+                  />
+                ))}
+              </div>
             </div>
           </ScrollSyncPane>
         </ResizablePanel>
