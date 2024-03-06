@@ -109,7 +109,7 @@ const CreateButton = React.forwardRef<
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" className={cn(className, 'fixed', 'bottom-4', 'right-4')}>
+        <Button className={cn(className, 'fixed', 'bottom-4', 'right-4')}>
           <Pencil1Icon className="mr-1" />
           <div className="mx-1">공략 작성</div>
         </Button>
