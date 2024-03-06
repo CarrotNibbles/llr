@@ -35,7 +35,7 @@ const EditableText = React.forwardRef<
     <div onDoubleClick={handleDoubleClick} className={className}>
       {isEditing ? (
         <span
-          className="w-auto input"
+          className="w-auto min-w-1 inline-block input"
           contentEditable
           onChange={handleChange}
           onDoubleClick={handleDoubleClick}
@@ -44,7 +44,7 @@ const EditableText = React.forwardRef<
           {text}
         </span>
       ) : (
-        <span>{text}</span>
+        <span className="w-auto min-w-1 inline-block">{text}</span>
       )}
     </div>
   );
