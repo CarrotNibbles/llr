@@ -4,9 +4,12 @@ import { buildAbilityDataQuery, buildStrategyDataQuery } from '@/lib/queries/ser
 import { createClient } from '@/lib/supabase/server';
 import { CoreArea } from './components/CoreArea';
 import { StratHeader } from './components/StratHeader';
+import { QueryClient } from '@tanstack/react-query';
 
 export default async function StratPage({ params }: { params: { id: string } }) {
   const supabase = createClient();
+
+  const queryClient = new QueryClient();
 
   const { data: strategyData, error: strategyDataQueryError } = await buildStrategyDataQuery(
     supabase,
