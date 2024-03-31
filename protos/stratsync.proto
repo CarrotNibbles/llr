@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+package stratsync;
+
+import "google/protobuf/empty.proto";
+
+service StratSync {
+    rpc Event (SubscriptionRequest) returns (stream EventResponse);
+    rpc UpsertDamageOption (UpsertDamageOptionRequest) returns (google.protobuf.Empty);
+    rpc UpsertEntry (UpsertEntryRequest) returns (google.protobuf.Empty);
+    rpc DeleteEntry (DeleteEntryRequest) returns (google.protobuf.Empty);
+    rpc InsertPlayer (InsertPlayerRequest) returns (google.protobuf.Empty);
+    rpc DeletePlayer (DeletePlayerRequest) returns (google.protobuf.Empty);
+}
+
+message SubscriptionRequest {
+    string session = 1;
+    string strategy = 2;
+}
+
+message DamageOption {
+    string damage = 1;
+    optional int32 num_shared = 2;
+    optional string primary_target = 3;
+}
+
+message Player {
+    string id = 1;
+    string job = 2;
+}
+
+message Entry {
+    string id = 1;
+    string player = 2;
+    string ability = 3;
+    int32 use_at = 4;
+}
+
+message InitializationEvent {
+    string token = 1;
+    repeated Player players = 2;
+    repeated DamageOption damage_options = 3;
+    repeated Entry entries = 4;
+}
+
+message UpsertDamageOptionRequest {
+    string token = 1;
+    DamageOption damage_option = 2;
+}
+
+message UpsertEntryRequest {
+    string token = 1;
+    Entry entry = 2;
+}
+
+message DeleteEntryRequest {
+    string token = 1;
+    string id = 2;
+}
+
+message InsertPlayerRequest {
+    string token = 1;
+    Player player = 2;
+}
+
+message DeletePlayerRequest {
+    string token = 1;
+    string id = 2;
+}
+
+message UpsertDamageOptionEvent {
+    DamageOption damage_option = 1;
+}
+
+message UpsertEntryEvent {
+    Entry entry = 1;
+}
+
+message DeleteEntryEvent {
+    string id = 1;
+}
+
+message InsertPlayerEvent {
+    Player player = 1;
+}
+
+message DeletePlayerEvent {
+    string id = 1;
+}
+
+message EventResponse {
+    oneof event {
+        InitializationEvent initialization_event = 1;
+        UpsertDamageOptionEvent upsert_damage_option_event = 2;
+        UpsertEntryEvent upsert_entry_event = 3;
+        DeleteEntryEvent delete_entry_event = 4;
+        InsertPlayerEvent insert_player_event = 5;
+        DeletePlayerEvent delete_player_event = 6;
+    }
+}
