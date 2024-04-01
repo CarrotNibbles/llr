@@ -28,6 +28,8 @@
     "sourceType": "module"
   },
   "ignorePatterns": [
+    "src/lib/proto/*.ts",
+    "src/lib/proto/*.js",
     "postcss.config.js",
     "tailwind.config.ts",
     "src/components/ui/**",
