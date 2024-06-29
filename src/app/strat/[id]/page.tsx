@@ -1,6 +1,6 @@
 'use server';
 
-import { buildAbilityDataQuery, buildStrategyDataQuery } from '@/lib/queries/server';
+import { buildActionDataQuery, buildStrategyDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
 import { CoreArea } from './components/CoreArea';
 import { StratHeader } from './components/StratHeader';
@@ -12,18 +12,18 @@ export default async function StratPage({ params }: { params: { id: string } }) 
     supabase,
     params.id,
   );
-  const { data: abilityData, error: abilityDataQueryError } = await buildAbilityDataQuery(supabase);
+  const { data: actionData, error: actionDataQueryError } = await buildActionDataQuery(supabase);
 
   // eslint-disable-next-line
   if (strategyDataQueryError || strategyData === null) throw strategyDataQueryError;
 
   // eslint-disable-next-line
-  if (abilityDataQueryError || abilityData === null) throw abilityDataQueryError;
+  if (actionDataQueryError || actionData === null) throw actionDataQueryError;
 
   return (
     <div className="flex flex-col max-h-screen h-screen">
       <StratHeader strategyData={strategyData} />
-      <CoreArea strategyData={strategyData} abilityData={abilityData} />
+      <CoreArea strategyData={strategyData} actionData={actionData} />
     </div>
   );
 }

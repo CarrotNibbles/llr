@@ -2,20 +2,17 @@
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { type Enums } from '@/lib/database.types';
-import { type AbilityDataType, type StrategyDataType } from '@/lib/queries/server';
+import { type ActionDataType, type StrategyDataType } from '@/lib/queries/server';
 import { usePixelPerFrame } from '@/lib/utils';
 import { useState } from 'react';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import { EditColumn } from './EditColumn';
 import { GimmickOverlay } from './GimmickOverlay';
 import { HeadColumn } from './HeadColumn';
-import { title } from 'process';
-
-const jobs: Array<Enums<'job'>> = ['WAR', 'PLD', 'SAM', 'MNK', 'BRD', 'RDM', 'AST', 'SGE'];
 
 export type CoreAreaProps = {
   strategyData: StrategyDataType;
-  abilityData: AbilityDataType;
+  actionData: ActionDataType;
 };
 
 export const CoreArea = (props: CoreAreaProps) => {
@@ -23,6 +20,37 @@ export const CoreArea = (props: CoreAreaProps) => {
   const pixelPerFrame = usePixelPerFrame();
 
   const raidDuration = props.strategyData.raids?.duration ?? 0;
+  const raidLevel = props.strategyData.raids?.level ?? 0;
+
+  const availableActions = props.actionData.filter(
+    ({
+      available_level,
+      superseding_level,
+      updated_version,
+      updated_subversion,
+      deleted_version,
+      deleted_subversion,
+    }) => {
+      if (available_level > raidLevel) return false;
+      if (superseding_level && superseding_level <= raidLevel) return false;
+      if (updated_version > props.strategyData.version) return false;
+      if (
+        updated_version === props.strategyData.version &&
+        updated_subversion > props.strategyData.subversion
+      )
+        return false;
+      if (deleted_version && deleted_subversion) {
+        if (deleted_version < props.strategyData.version) return false;
+        if (
+          deleted_version === props.strategyData.version &&
+          deleted_subversion <= props.strategyData.subversion
+        )
+          return false;
+      }
+
+      return true;
+    },
+  );
 
   return (
     <ScrollSync>
@@ -47,7 +75,7 @@ export const CoreArea = (props: CoreAreaProps) => {
               {props.strategyData.strategy_players.map((playerStrategy) => (
                 <HeadColumn
                   job={playerStrategy.job}
-                  abilities={props.abilityData.filter(({ job }) => job === playerStrategy.job)}
+                  actions={availableActions.filter(({ job }) => job === playerStrategy.job)}
                   key={`column-${playerStrategy.id}`}
                 />
               ))}
@@ -63,7 +91,7 @@ export const CoreArea = (props: CoreAreaProps) => {
                   <EditColumn
                     raidDuration={raidDuration}
                     playerStrategy={playerStrategy}
-                    abilities={props.abilityData.filter(({ job }) => job === playerStrategy.job)}
+                    actions={availableActions.filter(({ job }) => job === playerStrategy.job)}
                     key={`column-${playerStrategy.id}`}
                   />
                 ))}

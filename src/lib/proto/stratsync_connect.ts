@@ -3,29 +3,47 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { DeleteEntryRequest, DeletePlayerRequest, EventResponse, InsertPlayerRequest, SubscriptionRequest, UpsertDamageOptionRequest, UpsertEntryRequest } from "./stratsync_pb.js";
-import { Empty, MethodKind } from "@bufbuild/protobuf";
+import {
+  DeleteEntryRequest,
+  DeletePlayerRequest,
+  ElevationRequest,
+  EventResponse,
+  InsertPlayerRequest,
+  SubscriptionRequest,
+  UpsertDamageOptionRequest,
+  UpsertEntryRequest,
+} from './stratsync_pb.js';
+import { Empty, MethodKind } from '@bufbuild/protobuf';
 
 /**
  * @generated from service stratsync.StratSync
  */
 export const StratSync = {
-  typeName: "stratsync.StratSync",
+  typeName: 'stratsync.StratSync',
   methods: {
     /**
      * @generated from rpc stratsync.StratSync.Event
      */
     event: {
-      name: "Event",
+      name: 'Event',
       I: SubscriptionRequest,
       O: EventResponse,
       kind: MethodKind.ServerStreaming,
     },
     /**
+     * @generated from rpc stratsync.StratSync.Elevate
+     */
+    elevate: {
+      name: 'Elevate',
+      I: ElevationRequest,
+      O: Empty,
+      kind: MethodKind.Unary,
+    },
+    /**
      * @generated from rpc stratsync.StratSync.UpsertDamageOption
      */
     upsertDamageOption: {
-      name: "UpsertDamageOption",
+      name: 'UpsertDamageOption',
       I: UpsertDamageOptionRequest,
       O: Empty,
       kind: MethodKind.Unary,
@@ -34,7 +52,7 @@ export const StratSync = {
      * @generated from rpc stratsync.StratSync.UpsertEntry
      */
     upsertEntry: {
-      name: "UpsertEntry",
+      name: 'UpsertEntry',
       I: UpsertEntryRequest,
       O: Empty,
       kind: MethodKind.Unary,
@@ -43,7 +61,7 @@ export const StratSync = {
      * @generated from rpc stratsync.StratSync.DeleteEntry
      */
     deleteEntry: {
-      name: "DeleteEntry",
+      name: 'DeleteEntry',
       I: DeleteEntryRequest,
       O: Empty,
       kind: MethodKind.Unary,
@@ -52,7 +70,7 @@ export const StratSync = {
      * @generated from rpc stratsync.StratSync.InsertPlayer
      */
     insertPlayer: {
-      name: "InsertPlayer",
+      name: 'InsertPlayer',
       I: InsertPlayerRequest,
       O: Empty,
       kind: MethodKind.Unary,
@@ -61,11 +79,10 @@ export const StratSync = {
      * @generated from rpc stratsync.StratSync.DeletePlayer
      */
     deletePlayer: {
-      name: "DeletePlayer",
+      name: 'DeletePlayer',
       I: DeletePlayerRequest,
       O: Empty,
       kind: MethodKind.Unary,
     },
-  }
+  },
 } as const;
-

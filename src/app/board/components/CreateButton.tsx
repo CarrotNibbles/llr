@@ -78,7 +78,7 @@ const CreateButton = React.forwardRef<
     }
 
     /* eslint-disable */
-    const stratPrototype: Omit<Tables<'strategies'>, 'id'> = {
+    const stratPrototype: Omit<Tables<'strategies'>, 'id' | 'password'> = {
       author: userResponse.data.user.id,
       created_at: new Date().toISOString(),
       is_public: values.public === 'public',

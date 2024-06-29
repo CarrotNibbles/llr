@@ -3,11 +3,11 @@
 import { type QueryData } from '@supabase/supabase-js';
 import { type createClient } from '../supabase/server';
 
-export const buildAbilityDataQuery = (supabase: ReturnType<typeof createClient>) => {
-  return supabase.from('abilities').select('*, mitigations(*)');
+export const buildActionDataQuery = (supabase: ReturnType<typeof createClient>) => {
+  return supabase.from('actions').select('*, mitigations(*)').order('priority');
 };
 
-export type AbilityDataType = QueryData<ReturnType<typeof buildAbilityDataQuery>>;
+export type ActionDataType = QueryData<ReturnType<typeof buildActionDataQuery>>;
 
 export const buildStrategyCardDataQuery = (
   supabase: ReturnType<typeof createClient>,

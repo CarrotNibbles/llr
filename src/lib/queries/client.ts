@@ -68,12 +68,12 @@ export const buildClientUpdateStrategyPlayerEntryQuery = (
 export const buildClientDeleteStrategyPlayerEntryQuery = (
   supabase: ReturnType<typeof createClient>,
   strategyPlayerEntryUseAt: number,
-  strategyPlayerEntryAbility: string,
+  strategyPlayerEntryAction: string,
 ) => {
   return supabase
     .from('strategy_player_entries')
     .delete()
-    .eq('ability', strategyPlayerEntryAbility)
+    .eq('action', strategyPlayerEntryAction)
     .eq('use_at', strategyPlayerEntryUseAt);
 };
 

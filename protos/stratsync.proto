@@ -6,6 +6,7 @@ import "google/protobuf/empty.proto";
 
 service StratSync {
     rpc Event (SubscriptionRequest) returns (stream EventResponse);
+    rpc Elevate (ElevationRequest) returns (google.protobuf.Empty);
     rpc UpsertDamageOption (UpsertDamageOptionRequest) returns (google.protobuf.Empty);
     rpc UpsertEntry (UpsertEntryRequest) returns (google.protobuf.Empty);
     rpc DeleteEntry (DeleteEntryRequest) returns (google.protobuf.Empty);
@@ -14,8 +15,7 @@ service StratSync {
 }
 
 message SubscriptionRequest {
-    string session = 1;
-    string strategy = 2;
+    string strategy = 1;
 }
 
 message DamageOption {
@@ -32,7 +32,7 @@ message Player {
 message Entry {
     string id = 1;
     string player = 2;
-    string ability = 3;
+    string action = 3;
     int32 use_at = 4;
 }
 
@@ -41,6 +41,11 @@ message InitializationEvent {
     repeated Player players = 2;
     repeated DamageOption damage_options = 3;
     repeated Entry entries = 4;
+}
+
+message ElevationRequest {
+    string token = 1;
+    string password = 2;
 }
 
 message UpsertDamageOptionRequest {

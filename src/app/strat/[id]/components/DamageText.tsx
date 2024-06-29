@@ -1,6 +1,5 @@
 'use client';
 
-import { type Tables } from '@/lib/database.types';
 import { type StrategyDataType } from '@/lib/queries/server';
 import { type ArrayElement } from '@/lib/utils';
 

@@ -10,14 +10,13 @@ import {
   buildClientInsertStrategyPlayerEntryQuery,
   buildClientUpdateStrategyPlayerEntryQuery,
 } from '@/lib/queries/client';
-import { type AbilityDataType, type StrategyDataType } from '@/lib/queries/server';
+import { type ActionDataType, type StrategyDataType } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/client';
 import { clamp, usePixelPerFrame, type ArrayElement } from '@/lib/utils';
 import { animate, motion, useMotionValue } from 'framer-motion';
 import { useEffect, useState, type MouseEventHandler } from 'react';
 import { columnWidth, columnWidthLarge, timeStep } from './coreAreaConstants';
 
-const uidLength = 10;
 const contextMenuWidth = 16;
 const contextMenuWidthLarge = 32;
 
@@ -85,7 +84,7 @@ const DraggableBox = ({
   durations,
   cooldown,
   id,
-  abilityId,
+  actionId,
   playerId,
 }: {
   useAt: number;
@@ -96,7 +95,7 @@ const DraggableBox = ({
   durations: number[];
   cooldown: number;
   id: string;
-  abilityId: string;
+  actionId: string;
   playerId: string;
 }) => {
   const [isLocked, setIsLocked] = useState(false);
@@ -130,7 +129,7 @@ const DraggableBox = ({
       id,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       use_at: newUseAtCalced ?? newUseAt,
-      ability: abilityId,
+      action: actionId,
       player: playerId,
     });
   };
@@ -143,7 +142,7 @@ const DraggableBox = ({
           dragMomentum={false}
           onDragEnd={onDragEnd}
           className={`${columnWidth} ${columnWidthLarge} h-0 absolute active:z-[5]`}
-          style={{ y: yMotionValue }}
+          style={{ y: yMotionValue, cursor: isLocked ? 'not-allowed' : 'grab' }}
         >
           <div
             className={`relative ${columnWidth} ${columnWidthLarge} rounded-sm overflow-hidden bg-zinc-200 dark:bg-zinc-700 shadow-inner`}
@@ -190,12 +189,12 @@ const DraggableBox = ({
 
 const EditSubColumn = ({
   raidDuration,
-  ability,
+  action,
   entries,
   playerId,
 }: {
   raidDuration: number;
-  ability: ArrayElement<AbilityDataType>;
+  action: ArrayElement<ActionDataType>;
   entries: ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries'];
   playerId: string;
 }) => {
@@ -203,7 +202,7 @@ const EditSubColumn = ({
     entries.map((entry) => ({ useAt: entry.use_at, key: entry.id })),
   );
   const pixelPerFrame = usePixelPerFrame();
-  const { snapAndRemoveOverlap } = buildHelperFunctions(raidDuration, ability.cooldown);
+  const { snapAndRemoveOverlap } = buildHelperFunctions(raidDuration, action.cooldown);
 
   const supabase = createClient();
 
@@ -214,7 +213,7 @@ const EditSubColumn = ({
     if (
       boxValues.some(
         (boxValue) =>
-          cursorUseAt - boxValue.useAt >= 0 && cursorUseAt - boxValue.useAt <= ability.cooldown,
+          cursorUseAt - boxValue.useAt >= 0 && cursorUseAt - boxValue.useAt <= action.cooldown,
       )
     )
       return false;
@@ -228,11 +227,13 @@ const EditSubColumn = ({
     if (useAtCalced !== null) {
       // Supabase insert
       const response = await buildClientInsertStrategyPlayerEntryQuery(supabase, {
-        ability: ability.id,
+        action: action.id,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         use_at: useAtCalced,
         player: playerId,
       });
+
+      const insertedId = response.data?.[0]?.id ?? '';
 
       setBoxValues(
         [
@@ -240,7 +241,7 @@ const EditSubColumn = ({
           {
             useAt: useAtCalced,
             // 흑마법 (쿼리횟수 줄이기)
-            key: response.data?.[0].id as string,
+            key: insertedId,
           },
         ].toSorted((a, b) => a.useAt - b.useAt),
       );
@@ -257,8 +258,8 @@ const EditSubColumn = ({
         <DraggableBox
           key={boxValue.key}
           raidDuration={raidDuration}
-          durations={ability.mitigations.map(({ duration }) => duration)}
-          cooldown={ability.cooldown}
+          durations={action.mitigations.map(({ duration }) => duration)}
+          cooldown={action.cooldown}
           useAt={boxValue.useAt}
           setUseAt={(useAt) => {
             setBoxValues(
@@ -276,11 +277,11 @@ const EditSubColumn = ({
                 .toSorted((a, b) => a.useAt - b.useAt),
             );
             // Supabase delete
-            await buildClientDeleteStrategyPlayerEntryQuery(supabase, boxValue.useAt, ability.id);
+            await buildClientDeleteStrategyPlayerEntryQuery(supabase, boxValue.useAt, action.id);
           }}
           otherUseAts={boxValues.filter((_, j) => j !== index).map((boxValue) => boxValue.useAt)}
           id={boxValue.key}
-          abilityId={ability.id}
+          actionId={action.id}
           playerId={playerId}
         />
       ))}
@@ -291,21 +292,24 @@ const EditSubColumn = ({
 export type EditColumnProps = {
   raidDuration: number;
   playerStrategy: ArrayElement<StrategyDataType['strategy_players']>;
-  abilities: AbilityDataType;
+  actions: ActionDataType;
 };
 
-export const EditColumn = ({ raidDuration, playerStrategy, abilities }: EditColumnProps) => {
+export const EditColumn = ({ raidDuration, playerStrategy, actions }: EditColumnProps) => {
   const pixelPerFrame = usePixelPerFrame();
 
   return (
-    <div className="flex px-1 border-r-[1px]" style={{ height: raidDuration * pixelPerFrame }}>
-      {abilities.map((ability) => (
+    <div
+      className="flex px-1 space-x-1 border-r-[1px]"
+      style={{ height: raidDuration * pixelPerFrame }}
+    >
+      {actions.map((action) => (
         <EditSubColumn
-          key={`subcolumn-${ability.id}`}
+          key={`subcolumn-${action.id}`}
           raidDuration={raidDuration}
-          ability={ability}
+          action={action}
           entries={playerStrategy.strategy_player_entries.filter(
-            ({ ability: abilityId }) => abilityId === ability.id,
+            ({ action: actionId }) => actionId === action.id,
           )}
           playerId={playerStrategy.id}
         />

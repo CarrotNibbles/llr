@@ -113,7 +113,7 @@ const GimmickOverlay = React.forwardRef<
   return (
     <div
       className="absolute top-0 left-0 w-screen"
-      style={{ height: `${(raidDuration + 420) * pixelPerFrame}px` }}
+      style={{ height: `${raidDuration * pixelPerFrame + 120}px` }}
     >
       {mergeGimmicks(gimmicks).map((value, index) => {
         return <GimmickLine {...value} resizePanelSize={resizePanelSize} key={index} />;
