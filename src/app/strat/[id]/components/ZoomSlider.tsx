@@ -1,8 +1,8 @@
 'use client';
 
-import { cn, getZoom } from '@/lib/utils';
 import { Slider as DefaultSlider } from '@/components/ui/slider';
 import { useZoomState } from '@/lib/states';
+import { cn, getZoom } from '@/lib/utils';
 
 type SliderProps = React.ComponentProps<typeof DefaultSlider>;
 

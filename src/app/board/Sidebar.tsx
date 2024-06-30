@@ -1,9 +1,9 @@
 'use client';
 
-import { cn } from '@/lib/utils';
+import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Icons } from '@/components/icons';
+import { cn } from '@/lib/utils';
 
 const playlists = [
   'Recently Added',
@@ -121,11 +121,7 @@ export function SideBar({ className }: React.HTMLAttributes<HTMLDivElement>) {
           <ScrollArea className="h-[300px] px-1">
             <div className="space-y-1 p-2">
               {playlists?.map((playlist, i) => (
-                <Button
-                  key={`${playlist}-${i}`}
-                  variant="ghost"
-                  className="w-full justify-start font-normal"
-                >
+                <Button key={`${playlist}-${i}`} variant="ghost" className="w-full justify-start font-normal">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"

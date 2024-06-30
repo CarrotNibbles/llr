@@ -41,10 +41,7 @@ export class SubscriptionRequest extends Message<SubscriptionRequest> {
     return new SubscriptionRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(
-    jsonString: string,
-    options?: Partial<JsonReadOptions>,
-  ): SubscriptionRequest {
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): SubscriptionRequest {
     return new SubscriptionRequest().fromJsonString(jsonString, options);
   }
 
@@ -146,10 +143,7 @@ export class Player extends Message<Player> {
     return new Player().fromJsonString(jsonString, options);
   }
 
-  static equals(
-    a: Player | PlainMessage<Player> | undefined,
-    b: Player | PlainMessage<Player> | undefined,
-  ): boolean {
+  static equals(a: Player | PlainMessage<Player> | undefined, b: Player | PlainMessage<Player> | undefined): boolean {
     return proto3.util.equals(Player, a, b);
   }
 }
@@ -204,10 +198,7 @@ export class Entry extends Message<Entry> {
     return new Entry().fromJsonString(jsonString, options);
   }
 
-  static equals(
-    a: Entry | PlainMessage<Entry> | undefined,
-    b: Entry | PlainMessage<Entry> | undefined,
-  ): boolean {
+  static equals(a: Entry | PlainMessage<Entry> | undefined, b: Entry | PlainMessage<Entry> | undefined): boolean {
     return proto3.util.equals(Entry, a, b);
   }
 }
@@ -258,10 +249,7 @@ export class InitializationEvent extends Message<InitializationEvent> {
     return new InitializationEvent().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(
-    jsonString: string,
-    options?: Partial<JsonReadOptions>,
-  ): InitializationEvent {
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): InitializationEvent {
     return new InitializationEvent().fromJsonString(jsonString, options);
   }
 
@@ -345,24 +333,15 @@ export class UpsertDamageOptionRequest extends Message<UpsertDamageOptionRequest
     { no: 2, name: 'damage_option', kind: 'message', T: DamageOption },
   ]);
 
-  static fromBinary(
-    bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>,
-  ): UpsertDamageOptionRequest {
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpsertDamageOptionRequest {
     return new UpsertDamageOptionRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(
-    jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>,
-  ): UpsertDamageOptionRequest {
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UpsertDamageOptionRequest {
     return new UpsertDamageOptionRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(
-    jsonString: string,
-    options?: Partial<JsonReadOptions>,
-  ): UpsertDamageOptionRequest {
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UpsertDamageOptionRequest {
     return new UpsertDamageOptionRequest().fromJsonString(jsonString, options);
   }
 
@@ -408,10 +387,7 @@ export class UpsertEntryRequest extends Message<UpsertEntryRequest> {
     return new UpsertEntryRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(
-    jsonString: string,
-    options?: Partial<JsonReadOptions>,
-  ): UpsertEntryRequest {
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UpsertEntryRequest {
     return new UpsertEntryRequest().fromJsonString(jsonString, options);
   }
 
@@ -457,10 +433,7 @@ export class DeleteEntryRequest extends Message<DeleteEntryRequest> {
     return new DeleteEntryRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(
-    jsonString: string,
-    options?: Partial<JsonReadOptions>,
-  ): DeleteEntryRequest {
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): DeleteEntryRequest {
     return new DeleteEntryRequest().fromJsonString(jsonString, options);
   }
 
@@ -506,10 +479,7 @@ export class InsertPlayerRequest extends Message<InsertPlayerRequest> {
     return new InsertPlayerRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(
-    jsonString: string,
-    options?: Partial<JsonReadOptions>,
-  ): InsertPlayerRequest {
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): InsertPlayerRequest {
     return new InsertPlayerRequest().fromJsonString(jsonString, options);
   }
 
@@ -555,10 +525,7 @@ export class DeletePlayerRequest extends Message<DeletePlayerRequest> {
     return new DeletePlayerRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(
-    jsonString: string,
-    options?: Partial<JsonReadOptions>,
-  ): DeletePlayerRequest {
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): DeletePlayerRequest {
     return new DeletePlayerRequest().fromJsonString(jsonString, options);
   }
 
@@ -590,24 +557,15 @@ export class UpsertDamageOptionEvent extends Message<UpsertDamageOptionEvent> {
     { no: 1, name: 'damage_option', kind: 'message', T: DamageOption },
   ]);
 
-  static fromBinary(
-    bytes: Uint8Array,
-    options?: Partial<BinaryReadOptions>,
-  ): UpsertDamageOptionEvent {
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpsertDamageOptionEvent {
     return new UpsertDamageOptionEvent().fromBinary(bytes, options);
   }
 
-  static fromJson(
-    jsonValue: JsonValue,
-    options?: Partial<JsonReadOptions>,
-  ): UpsertDamageOptionEvent {
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UpsertDamageOptionEvent {
     return new UpsertDamageOptionEvent().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(
-    jsonString: string,
-    options?: Partial<JsonReadOptions>,
-  ): UpsertDamageOptionEvent {
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UpsertDamageOptionEvent {
     return new UpsertDamageOptionEvent().fromJsonString(jsonString, options);
   }
 

@@ -1,4 +1,3 @@
-import { Icons } from '@/components/icons';
 import {
   Select,
   SelectContent,
@@ -8,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/Myselect';
+import { Icons } from '@/components/icons';
 
 export function SelectDemo() {
   return (

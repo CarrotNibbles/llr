@@ -1,7 +1,7 @@
 'use client';
 
-import { type Tables } from '../database.types';
-import { type createClient } from '../supabase/client';
+import type { Tables } from '../database.types';
+import type { createClient } from '../supabase/client';
 
 // Strategy
 export const buildClientInsertStrategyQuery = (
@@ -18,10 +18,7 @@ export const buildClientUpdateStrategyQuery = (
   return supabase.from('strategies').update(strategy).eq('id', strategy.id);
 };
 
-export const buildClientDeleteStrategyQuery = (
-  supabase: ReturnType<typeof createClient>,
-  strategyId: string,
-) => {
+export const buildClientDeleteStrategyQuery = (supabase: ReturnType<typeof createClient>, strategyId: string) => {
   return supabase.from('strategies').delete().eq('id', strategyId);
 };
 
@@ -59,10 +56,7 @@ export const buildClientUpdateStrategyPlayerEntryQuery = (
   supabase: ReturnType<typeof createClient>,
   strategyPlayerEntry: Tables<'strategy_player_entries'>,
 ) => {
-  return supabase
-    .from('strategy_player_entries')
-    .update(strategyPlayerEntry)
-    .eq('id', strategyPlayerEntry.id);
+  return supabase.from('strategy_player_entries').update(strategyPlayerEntry).eq('id', strategyPlayerEntry.id);
 };
 
 export const buildClientDeleteStrategyPlayerEntryQuery = (
@@ -109,10 +103,7 @@ export const buildClientDeleteStrategyDamageOptionQuery = (
 };
 
 // SupabaseSubscription
-export const subscribeClientStrategyTable = (
-  supabase: ReturnType<typeof createClient>,
-  strategyId: string,
-) => {
+export const subscribeClientStrategyTable = (supabase: ReturnType<typeof createClient>, strategyId: string) => {
   return supabase
     .channel(`strategy-${strategyId}`)
     .on(
@@ -130,10 +121,7 @@ export const subscribeClientStrategyTable = (
     .subscribe();
 };
 
-export const subscribeClientStrategyPlayerTable = (
-  supabase: ReturnType<typeof createClient>,
-  strategyId: string,
-) => {
+export const subscribeClientStrategyPlayerTable = (supabase: ReturnType<typeof createClient>, strategyId: string) => {
   return supabase
     .channel(`strategy-${strategyId}`)
     .on(

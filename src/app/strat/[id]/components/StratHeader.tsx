@@ -1,19 +1,19 @@
 'use client';
 
+import { EditableText } from '@/components/EditableText';
+import { ModeToggle } from '@/components/ModeToggle';
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Toggle } from '@/components/ui/toggle';
-import { type Enums } from '@/lib/database.types';
-import { type StrategyDataType } from '@/lib/queries/server';
+import { useToast } from '@/components/ui/use-toast';
+import type { Enums } from '@/lib/database.types';
+import type { StrategyDataType } from '@/lib/queries/server';
 import { useFilterState } from '@/lib/states';
 import { cn, gimmickBackgroundColor, gimmickTypeName } from '@/lib/utils';
 import { CopyIcon, HeartIcon, Share1Icon, ZoomInIcon } from '@radix-ui/react-icons';
 import React, { useState } from 'react';
 import { ZoomSlider } from './ZoomSlider';
-import { EditableText } from '@/components/EditableText';
-import { ModeToggle } from '@/components/ModeToggle';
-import { useToast } from '@/components/ui/use-toast';
 
 export const FilterMenu = () => {
   const GimmickTypes: Array<Enums<'gimmick_type'>> = [
@@ -50,12 +50,7 @@ export const FilterMenu = () => {
                 setFilterState(new Map(filterState).set(gimmickType, pressed));
               }}
             >
-              <div
-                className={cn(
-                  'rounded-sm mr-2 w-[8px] h-[8px]',
-                  gimmickBackgroundColor[gimmickType],
-                )}
-              />
+              <div className={cn('rounded-sm mr-2 w-[8px] h-[8px]', gimmickBackgroundColor[gimmickType])} />
               <div className="text-xs">{gimmickTypeName[gimmickType]}</div>
             </Toggle>
           ))}
@@ -73,11 +68,7 @@ const StratHeader = React.forwardRef<
   const [lastTitle, setLastTitle] = useState(name);
 
   return (
-    <div
-      ref={ref}
-      className={cn('rounded-none border-b flex space-x-4 py-2 px-4 items-center', className)}
-      {...props}
-    >
+    <div ref={ref} className={cn('rounded-none border-b flex space-x-4 py-2 px-4 items-center', className)} {...props}>
       <EditableText initialText={name} className="font-bold" />
       <div className="text-muted-foreground">{raids?.name}</div>
       <div className="flex-grow"></div>

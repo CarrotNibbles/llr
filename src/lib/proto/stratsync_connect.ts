@@ -3,6 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
+import { Empty, MethodKind } from '@bufbuild/protobuf';
 import {
   DeleteEntryRequest,
   DeletePlayerRequest,
@@ -13,7 +14,6 @@ import {
   UpsertDamageOptionRequest,
   UpsertEntryRequest,
 } from './stratsync_pb.js';
-import { Empty, MethodKind } from '@bufbuild/protobuf';
 
 /**
  * @generated from service stratsync.StratSync

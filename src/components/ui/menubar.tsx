@@ -1,8 +1,8 @@
 'use client';
 
-import * as React from 'react';
 import { CheckIcon, ChevronRightIcon, DotFilledIcon } from '@radix-ui/react-icons';
 import * as MenubarPrimitive from '@radix-ui/react-menubar';
+import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
@@ -22,10 +22,7 @@ const Menubar = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <MenubarPrimitive.Root
     ref={ref}
-    className={cn(
-      'flex h-9 items-center space-x-1 rounded-md border bg-background p-1 shadow-sm',
-      className,
-    )}
+    className={cn('flex h-9 items-center space-x-1 rounded-md border bg-background p-1 shadow-sm', className)}
     {...props}
   />
 ));
@@ -183,21 +180,12 @@ const MenubarSeparator = React.forwardRef<
   React.ElementRef<typeof MenubarPrimitive.Separator>,
   React.ComponentPropsWithoutRef<typeof MenubarPrimitive.Separator>
 >(({ className, ...props }, ref) => (
-  <MenubarPrimitive.Separator
-    ref={ref}
-    className={cn('-mx-1 my-1 h-px bg-muted', className)}
-    {...props}
-  />
+  <MenubarPrimitive.Separator ref={ref} className={cn('-mx-1 my-1 h-px bg-muted', className)} {...props} />
 ));
 MenubarSeparator.displayName = MenubarPrimitive.Separator.displayName;
 
 const MenubarShortcut = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => {
-  return (
-    <span
-      className={cn('ml-auto text-xs tracking-widest text-muted-foreground', className)}
-      {...props}
-    />
-  );
+  return <span className={cn('ml-auto text-xs tracking-widest text-muted-foreground', className)} {...props} />;
 };
 MenubarShortcut.displayname = 'MenubarShortcut';
 

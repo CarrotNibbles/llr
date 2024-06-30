@@ -1,12 +1,12 @@
 'use server';
 
-import { type Database } from '@/lib/database.types';
-import { SideBar } from './Sidebar';
-import { MobileHeader } from './components/MobileHeader';
-import { StrategiesArea } from './components/StrategiesArea';
-import { CreateButton } from './components/CreateButton';
+import type { Database } from '@/lib/database.types';
 import { buildRaidsDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
+import { SideBar } from './Sidebar';
+import { CreateButton } from './components/CreateButton';
+import { MobileHeader } from './components/MobileHeader';
+import { StrategiesArea } from './components/StrategiesArea';
 
 const Page = async () => {
   const supabase = createClient();

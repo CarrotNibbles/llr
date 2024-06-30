@@ -1,6 +1,6 @@
-import { clsx, type ClassValue } from 'clsx';
+import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { type Tables, type Enums } from './database.types';
+import type { Enums, Tables } from './database.types';
 import { useZoomState } from './states';
 
 export function cn(...inputs: ClassValue[]): string {
@@ -22,10 +22,8 @@ export const usePixelPerFrame = () => {
 
 const notNullOrUndefined = <ValueType>(value: ValueType | undefined): value is ValueType =>
   value !== null && value !== undefined;
-const myMin = (...values: Array<number | undefined>) =>
-  Math.min(...values.filter(notNullOrUndefined));
-const myMax = (...values: Array<number | undefined>) =>
-  Math.max(...values.filter(notNullOrUndefined));
+const myMin = (...values: Array<number | undefined>) => Math.min(...values.filter(notNullOrUndefined));
+const myMax = (...values: Array<number | undefined>) => Math.max(...values.filter(notNullOrUndefined));
 export const clamp = (num: number, min?: number, max?: number) => myMax(myMin(num, max), min);
 
 /* eslint-disable */

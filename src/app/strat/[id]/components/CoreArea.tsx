@@ -1,8 +1,8 @@
 'use client';
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
-import { type Enums } from '@/lib/database.types';
-import { type ActionDataType, type StrategyDataType } from '@/lib/queries/server';
+import type { Enums } from '@/lib/database.types';
+import type { ActionDataType, StrategyDataType } from '@/lib/queries/server';
 import { usePixelPerFrame } from '@/lib/utils';
 import { useState } from 'react';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
@@ -34,17 +34,11 @@ export const CoreArea = (props: CoreAreaProps) => {
       if (available_level > raidLevel) return false;
       if (superseding_level && superseding_level <= raidLevel) return false;
       if (updated_version > props.strategyData.version) return false;
-      if (
-        updated_version === props.strategyData.version &&
-        updated_subversion > props.strategyData.subversion
-      )
+      if (updated_version === props.strategyData.version && updated_subversion > props.strategyData.subversion)
         return false;
       if (deleted_version && deleted_subversion) {
         if (deleted_version < props.strategyData.version) return false;
-        if (
-          deleted_version === props.strategyData.version &&
-          deleted_subversion <= props.strategyData.subversion
-        )
+        if (deleted_version === props.strategyData.version && deleted_subversion <= props.strategyData.subversion)
           return false;
       }
 
@@ -54,12 +48,9 @@ export const CoreArea = (props: CoreAreaProps) => {
 
   return (
     <ScrollSync>
-      <ResizablePanelGroup
-        direction="horizontal"
-        className="relative flex w-screen flex-grow overflow-hidden"
-      >
+      <ResizablePanelGroup direction="horizontal" className="relative flex w-screen flex-grow overflow-hidden">
         <ResizablePanel defaultSize={20} minSize={4} className="border-r">
-          <div className="min-h-20 h-20 border-b"></div>
+          <div className="min-h-20 h-20 border-b" />
         </ResizablePanel>
         <ResizableHandle className="w-0" withHandle />
         <ResizablePanel
@@ -83,10 +74,7 @@ export const CoreArea = (props: CoreAreaProps) => {
           </ScrollSyncPane>
           <ScrollSyncPane group={['x', 'y']}>
             <div className="overflow-scroll overscroll-none">
-              <div
-                className="flex flex-grow relative"
-                style={{ height: raidDuration * pixelPerFrame }}
-              >
+              <div className="flex flex-grow relative" style={{ height: raidDuration * pixelPerFrame }}>
                 {props.strategyData.strategy_players.map((playerStrategy) => (
                   <EditColumn
                     raidDuration={raidDuration}

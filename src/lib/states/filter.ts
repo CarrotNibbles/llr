@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
-import { type Enums } from '../database.types';
 import { useCheckedRecoilState } from '.';
+import type { Enums } from '../database.types';
 
 type FilterType = Map<Enums<'gimmick_type'>, boolean>;
 

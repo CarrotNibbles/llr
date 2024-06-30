@@ -10,11 +10,11 @@ import {
   buildClientInsertStrategyPlayerEntryQuery,
   buildClientUpdateStrategyPlayerEntryQuery,
 } from '@/lib/queries/client';
-import { type ActionDataType, type StrategyDataType } from '@/lib/queries/server';
+import type { ActionDataType, StrategyDataType } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/client';
-import { clamp, usePixelPerFrame, type ArrayElement } from '@/lib/utils';
+import { type ArrayElement, clamp, usePixelPerFrame } from '@/lib/utils';
 import { animate, motion, useMotionValue } from 'framer-motion';
-import { useEffect, useState, type MouseEventHandler } from 'react';
+import { type MouseEventHandler, useEffect, useState } from 'react';
 import { columnWidth, columnWidthLarge, timeStep } from './coreAreaConstants';
 
 const contextMenuWidth = 16;
@@ -29,14 +29,8 @@ const snapToStep = (currentUseAt: number) => {
 const overlaps = (currentUseAt: number, otherUseAt: number, cooldown: number) =>
   Math.abs(currentUseAt - otherUseAt) < cooldown;
 
-const evaluateOverlap = (
-  currentUseAt: number,
-  prevUseAt: number,
-  otherUseAt: number,
-  cooldown: number,
-) => {
-  if (Math.abs(currentUseAt - otherUseAt) >= cooldown * 0.5)
-    return currentUseAt < otherUseAt ? 'up' : 'down';
+const evaluateOverlap = (currentUseAt: number, prevUseAt: number, otherUseAt: number, cooldown: number) => {
+  if (Math.abs(currentUseAt - otherUseAt) >= cooldown * 0.5) return currentUseAt < otherUseAt ? 'up' : 'down';
   return prevUseAt < otherUseAt ? 'up' : 'down';
 };
 
@@ -46,9 +40,7 @@ function buildHelperFunctions(raidDuration: number, cooldown: number) {
 
     const overlapIndex = otherUseAts.reduce(
       (acc, curr, index) =>
-        Math.abs(curr - currentUseAt) < acc.value
-          ? { value: Math.abs(curr - currentUseAt), index }
-          : acc,
+        Math.abs(curr - currentUseAt) < acc.value ? { value: Math.abs(curr - currentUseAt), index } : acc,
       { value: cooldown, index: -1 },
     ).index;
 
@@ -211,10 +203,7 @@ const EditSubColumn = ({
     const cursorUseAt = cursorY / pixelPerFrame;
 
     if (
-      boxValues.some(
-        (boxValue) =>
-          cursorUseAt - boxValue.useAt >= 0 && cursorUseAt - boxValue.useAt <= action.cooldown,
-      )
+      boxValues.some((boxValue) => cursorUseAt - boxValue.useAt >= 0 && cursorUseAt - boxValue.useAt <= action.cooldown)
     )
       return false;
 
@@ -264,17 +253,13 @@ const EditSubColumn = ({
           setUseAt={(useAt) => {
             setBoxValues(
               boxValues
-                .map((oldValue) =>
-                  oldValue.key === boxValue.key ? { useAt, key: boxValue.key } : oldValue,
-                )
+                .map((oldValue) => (oldValue.key === boxValue.key ? { useAt, key: boxValue.key } : oldValue))
                 .toSorted((a, b) => a.useAt - b.useAt),
             );
           }}
           deleteBox={async () => {
             setBoxValues(
-              boxValues
-                .filter((oldValue) => oldValue.key !== boxValue.key)
-                .toSorted((a, b) => a.useAt - b.useAt),
+              boxValues.filter((oldValue) => oldValue.key !== boxValue.key).toSorted((a, b) => a.useAt - b.useAt),
             );
             // Supabase delete
             await buildClientDeleteStrategyPlayerEntryQuery(supabase, boxValue.useAt, action.id);
@@ -299,18 +284,13 @@ export const EditColumn = ({ raidDuration, playerStrategy, actions }: EditColumn
   const pixelPerFrame = usePixelPerFrame();
 
   return (
-    <div
-      className="flex px-1 space-x-1 border-r-[1px]"
-      style={{ height: raidDuration * pixelPerFrame }}
-    >
+    <div className="flex px-1 space-x-1 border-r-[1px]" style={{ height: raidDuration * pixelPerFrame }}>
       {actions.map((action) => (
         <EditSubColumn
           key={`subcolumn-${action.id}`}
           raidDuration={raidDuration}
           action={action}
-          entries={playerStrategy.strategy_player_entries.filter(
-            ({ action: actionId }) => actionId === action.id,
-          )}
+          entries={playerStrategy.strategy_player_entries.filter(({ action: actionId }) => actionId === action.id)}
           playerId={playerStrategy.id}
         />
       ))}

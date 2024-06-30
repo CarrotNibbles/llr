@@ -1,16 +1,16 @@
 'use client';
 
-import { type StrategyDataType } from '@/lib/queries/server';
-import { GimmickLine } from './GimmickLine';
-import React from 'react';
+import type { StrategyDataType } from '@/lib/queries/server';
+import { useFilterState } from '@/lib/states';
 import {
   type ArrayElement,
-  usePixelPerFrame,
+  type MergedGimmick,
   mergePixelThresholdDefault,
   mergePixelThresholdIncremental,
-  type MergedGimmick,
+  usePixelPerFrame,
 } from '@/lib/utils';
-import { useFilterState } from '@/lib/states';
+import React from 'react';
+import { GimmickLine } from './GimmickLine';
 
 type GimmickOverlayProps = {
   gimmicks: Exclude<StrategyDataType['raids'], null>['gimmicks']; // eslint-disable-line
@@ -62,8 +62,7 @@ const GimmickOverlay = React.forwardRef<
         i + 1 >= gimmicksWithMerged.length ||
         (gimmicksWithMerged[i + 1].prepare_at - gimmicksWithMerged[i].prepare_at) * pixelPerFrame >=
           mergePixelThresholdDefault +
-            mergePixelThresholdIncremental *
-              (gimmicksWithMerged[i].damageDisplayGimmick?.damages.length ?? 0) ||
+            mergePixelThresholdIncremental * (gimmicksWithMerged[i].damageDisplayGimmick?.damages.length ?? 0) ||
         gimmicksWithMerged[i + 1].type === 'Enrage'
       )
         continue;
@@ -77,11 +76,9 @@ const GimmickOverlay = React.forwardRef<
 
         while (
           j + 1 < gimmicksWithMerged.length &&
-          (gimmicksWithMerged[j + 1].prepare_at - gimmicksWithMerged[j].prepare_at) *
-            pixelPerFrame <
+          (gimmicksWithMerged[j + 1].prepare_at - gimmicksWithMerged[j].prepare_at) * pixelPerFrame <
             mergePixelThresholdDefault +
-              mergePixelThresholdIncremental *
-                (gimmicksWithMerged[i].damageDisplayGimmick?.damages.length ?? 0) &&
+              mergePixelThresholdIncremental * (gimmicksWithMerged[i].damageDisplayGimmick?.damages.length ?? 0) &&
           gimmicksWithMerged[i + 1].type !== 'Enrage'
         ) {
           if (
@@ -111,10 +108,7 @@ const GimmickOverlay = React.forwardRef<
   };
 
   return (
-    <div
-      className="absolute top-0 left-0 w-screen"
-      style={{ height: `${raidDuration * pixelPerFrame + 120}px` }}
-    >
+    <div className="absolute top-0 left-0 w-screen" style={{ height: `${raidDuration * pixelPerFrame + 120}px` }}>
       {mergeGimmicks(gimmicks).map((value, index) => {
         return <GimmickLine {...value} resizePanelSize={resizePanelSize} key={index} />;
       })}

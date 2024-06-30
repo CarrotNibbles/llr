@@ -1,6 +1,6 @@
 'use server';
 
-import { type Database, type Tables } from '@/lib/database.types';
+import type { Database, Tables } from '@/lib/database.types';
 import { buildStrategyCardDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
 import { StrategyCard } from './StrategyCard';
@@ -55,7 +55,9 @@ export const StrategiesArea = async (props: StrategiesAreaProps) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-7">
       <StrategyCard {...exampleData} />
-      {strategies?.map((strategy, index) => <StrategyCard key={index} {...strategy} />)}
+      {strategies?.map((strategy, index) => (
+        <StrategyCard key={index} {...strategy} />
+      ))}
     </div>
   );
 };

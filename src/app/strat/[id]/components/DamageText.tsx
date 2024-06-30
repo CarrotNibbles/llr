@@ -1,7 +1,7 @@
 'use client';
 
-import { type StrategyDataType } from '@/lib/queries/server';
-import { type ArrayElement } from '@/lib/utils';
+import type { StrategyDataType } from '@/lib/queries/server';
+import type { ArrayElement } from '@/lib/utils';
 
 type DamageTextProps = {
   defaultDamage: number;
@@ -145,9 +145,7 @@ export const DamageText = ({
       {damages.map((damage) => {
         if (damage.target === 'Tankbuster') {
           if (damage.num_targets === 1 && damage.max_shared === 1)
-            return (
-              <SingleTankBuster key={damage.id} defaultDamage={100000} currentDamage={90000} />
-            );
+            return <SingleTankBuster key={damage.id} defaultDamage={100000} currentDamage={90000} />;
           if (damage.num_targets === 1 && damage.max_shared === 2)
             return <ShareTankBuster key={damage.id} defaultDamage={100000} currentDamage={90000} />;
           if (damage.num_targets === 2)
@@ -157,13 +155,9 @@ export const DamageText = ({
 
         if (damage.target === 'Raidwide') {
           if (damage.num_targets === 1 && damage.max_shared === 8)
-            return (
-              <ShareAllRaidWide key={damage.id} defaultDamage={110000} currentDamage={90000} />
-            );
+            return <ShareAllRaidWide key={damage.id} defaultDamage={110000} currentDamage={90000} />;
           if (damage.num_targets === 2 && damage.max_shared === 4)
-            return (
-              <ShareHalfRaidWide key={damage.id} defaultDamage={100000} currentDamage={90000} />
-            );
+            return <ShareHalfRaidWide key={damage.id} defaultDamage={100000} currentDamage={90000} />;
           if (damage.num_targets === 8 && damage.max_shared === 1)
             return <RaidWide key={damage.id} defaultDamage={100000} currentDamage={900000} />;
 

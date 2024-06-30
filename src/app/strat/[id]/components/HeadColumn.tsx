@@ -1,9 +1,9 @@
-import { type Enums } from '@/lib/database.types';
-import { type ActionDataType } from '@/lib/queries/server';
+import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import type { Enums } from '@/lib/database.types';
+import type { ActionDataType } from '@/lib/queries/server';
 import Image from 'next/legacy/image';
 import { columnWidth, columnWidthLarge } from './coreAreaConstants';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Button } from '@/components/ui/button';
 
 // eslint-disable-next-line
 const iconFilenameToURL = (job: Enums<'job'>, iconFilename: string | null) => {
@@ -44,12 +44,7 @@ export const HeadColumn = ({ job, actions }: { job: Enums<'job'>; actions: Actio
   <div className="flex flex-col p-1 border-r-[1px] justify-center items-center space-y-1">
     <div className="flex flex-grow relative">
       <div className={`aspect-square relative ${columnWidth} ${columnWidthLarge} saturate-0`}>
-        <Image
-          src={`/icons/${job}.png`}
-          alt={`Job Icon of ${job}`}
-          layout="fill"
-          objectFit="contain"
-        />
+        <Image src={`/icons/${job}.png`} alt={`Job Icon of ${job}`} layout="fill" objectFit="contain" />
       </div>
     </div>
     <div className="flex space-x-1">

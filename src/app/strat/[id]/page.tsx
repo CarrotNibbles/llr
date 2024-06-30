@@ -8,10 +8,7 @@ import { StratHeader } from './components/StratHeader';
 export default async function StratPage({ params }: { params: { id: string } }) {
   const supabase = createClient();
 
-  const { data: strategyData, error: strategyDataQueryError } = await buildStrategyDataQuery(
-    supabase,
-    params.id,
-  );
+  const { data: strategyData, error: strategyDataQueryError } = await buildStrategyDataQuery(supabase, params.id);
   const { data: actionData, error: actionDataQueryError } = await buildActionDataQuery(supabase);
 
   // eslint-disable-next-line

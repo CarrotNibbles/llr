@@ -1,35 +1,22 @@
 'use client';
 
+import { fail } from 'assert';
 import { Button } from '@/components/ui/button';
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from '@/components/ui/command';
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { type Tables } from '@/lib/database.types';
+import type { Tables } from '@/lib/database.types';
 import { buildClientInsertStrategyQuery } from '@/lib/queries/client';
-import { type RaidsDataType } from '@/lib/queries/server';
+import type { RaidsDataType } from '@/lib/queries/server';
 import { useUserState } from '@/lib/states';
 import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CaretSortIcon, CheckIcon, Pencil1Icon } from '@radix-ui/react-icons';
-import { fail } from 'assert';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -91,9 +78,7 @@ const CreateButton = React.forwardRef<
 
     console.log(stratPrototype);
 
-    const stratResponse = await buildClientInsertStrategyQuery(supabase, stratPrototype).select(
-      'id',
-    );
+    const stratResponse = await buildClientInsertStrategyQuery(supabase, stratPrototype).select('id');
 
     const stratId = stratResponse.data?.shift()?.id;
 
@@ -127,12 +112,7 @@ const CreateButton = React.forwardRef<
                 <FormItem>
                   <FormLabel className="inline-block">공략명</FormLabel>
                   <FormControl>
-                    <Input
-                      className="inline-block"
-                      id="name"
-                      placeholder="공략명을 입력하세요..."
-                      {...field}
-                    />
+                    <Input className="inline-block" id="name" placeholder="공략명을 입력하세요..." {...field} />
                   </FormControl>
                 </FormItem>
               )}
@@ -183,10 +163,7 @@ const CreateButton = React.forwardRef<
                             >
                               {raid.name}
                               <CheckIcon
-                                className={cn(
-                                  'ml-auto h-4 w-4',
-                                  raid.id === field.value ? 'opacity-100' : 'opacity-0',
-                                )}
+                                className={cn('ml-auto h-4 w-4', raid.id === field.value ? 'opacity-100' : 'opacity-0')}
                               />
                             </CommandItem>
                           ))}
@@ -218,9 +195,7 @@ const CreateButton = React.forwardRef<
                       <RadioGroupItem value="private" id="private" />
                       <div className="flex flex-col">
                         <Label>비공개</Label>
-                        <div className="text-xs">
-                          작성자 및 수정 권한이 부여된 사람만 공략을 열람할 수 있습니다.
-                        </div>
+                        <div className="text-xs">작성자 및 수정 권한이 부여된 사람만 공략을 열람할 수 있습니다.</div>
                       </div>
                     </RadioGroup>
                   </FormControl>

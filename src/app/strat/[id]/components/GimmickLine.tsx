@@ -1,18 +1,18 @@
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Separator } from '@/components/ui/separator';
+import type { StrategyDataType } from '@/lib/queries/server';
 import {
+  type ArrayElement,
+  type MergedGimmick,
+  type SuperMergedGimmick,
   cn,
   gimmickBorderColor,
   gimmickTextColor,
   maxDisplayCount,
   usePixelPerFrame,
-  type ArrayElement,
-  type MergedGimmick,
-  type SuperMergedGimmick,
 } from '@/lib/utils';
 import React from 'react';
 import { DamageText } from './DamageText';
-import { type StrategyDataType } from '@/lib/queries/server';
 
 type GimmickSubLineProps = {
   time: number;
@@ -40,7 +40,10 @@ export const GimmickSubLine = ({
     <>
       <div
         className={`absolute border-0 border-t ${borderColor} right-0 ${lineType} z-10`}
-        style={{ top: `${time * pixelPerFrame}px`, width: `${resizePanelSize}vw` }}
+        style={{
+          top: `${time * pixelPerFrame}px`,
+          width: `${resizePanelSize}vw`,
+        }}
       />
       {Math.abs(time - primaryTime) * pixelPerFrame > 10 && (
         <div
@@ -61,7 +64,9 @@ type GimmicksNamesProps = {
 
 const GimmicksNames = React.forwardRef<
   HTMLDivElement,
-  GimmicksNamesProps & { className?: string } & React.ComponentPropsWithRef<'div'>
+  GimmicksNamesProps & {
+    className?: string;
+  } & React.ComponentPropsWithRef<'div'>
 >(({ className, mergedGimmicks }, ref) => {
   const superMergeGimmicks = (mergedGimmicks: MergedGimmick[]) => {
     const superMergedGimmicks: SuperMergedGimmick[] = [];
@@ -84,10 +89,7 @@ const GimmicksNames = React.forwardRef<
   return (
     <div className={cn('flex text-md', className)}>
       {superMergedGimmicks.slice(0, maxDisplayCount).map((superMergedGimmick, idx, array) => (
-        <div
-          key={superMergedGimmick.id}
-          className={cn(gimmickTextColor[superMergedGimmick.type], 'mr-1')}
-        >
+        <div key={superMergedGimmick.id} className={cn(gimmickTextColor[superMergedGimmick.type], 'mr-1')}>
           {superMergedGimmick.name}
           {superMergedGimmick.mergeCount >= 2 && `×${superMergedGimmick.mergeCount}`}
           {idx !== array.length - 1 && ','}
@@ -111,7 +113,9 @@ export type GimmickLineProps = ArrayElement<
 
 const GimmickLine = React.forwardRef<
   HTMLDivElement,
-  GimmickLineProps & { className?: string } & React.ComponentPropsWithoutRef<'div'>
+  GimmickLineProps & {
+    className?: string;
+  } & React.ComponentPropsWithoutRef<'div'>
 >(({ className, ...props }, ref) => {
   const {
     damages,
@@ -171,11 +175,7 @@ const GimmickLine = React.forwardRef<
               {mergedGimmicks.length > 0 && (
                 <GimmicksNames
                   mergedGimmicks={mergedGimmicks}
-                  className={cn(
-                    titleWeight,
-                    gimmickType === 'Enrage' && 'mt-1',
-                    'pointer-events-auto',
-                  )}
+                  className={cn(titleWeight, gimmickType === 'Enrage' && 'mt-1', 'pointer-events-auto')}
                 />
               )}
             </HoverCardTrigger>
@@ -183,15 +183,10 @@ const GimmickLine = React.forwardRef<
               {mergedGimmicks.length > 0 &&
                 mergedGimmicks.map((mergedGimmick, index) => (
                   <div key={mergedGimmick.id} className={cn(className, 'space-y-1 mb-1')}>
-                    <div
-                      className={cn(gimmickTextColor[mergedGimmick.type], 'text-xs', 'font-bold')}
-                    >
+                    <div className={cn(gimmickTextColor[mergedGimmick.type], 'text-xs', 'font-bold')}>
                       {mergedGimmick.name}
                     </div>
-                    <div
-                      className="grid text-sm gap-x-2 gap-y-1"
-                      style={{ gridTemplateColumns: 'auto auto auto' }}
-                    >
+                    <div className="grid text-sm gap-x-2 gap-y-1" style={{ gridTemplateColumns: 'auto auto auto' }}>
                       <DamageText damages={mergedGimmick.damages} />
                     </div>
                     {index !== mergedGimmicks.length - 1 && <Separator />}
@@ -201,10 +196,7 @@ const GimmickLine = React.forwardRef<
           </HoverCard>
           {mergedGimmicks.length > 0 && displayDamage && damageDisplayGimmick && (
             <div className={className}>
-              <div
-                className="inline-grid text-sm gap-x-2 gap-y-1"
-                style={{ gridTemplateColumns: 'auto auto auto' }}
-              >
+              <div className="inline-grid text-sm gap-x-2 gap-y-1" style={{ gridTemplateColumns: 'auto auto auto' }}>
                 <DamageText damages={damageDisplayGimmick.damages} />
               </div>
             </div>

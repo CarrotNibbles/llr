@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRecoilState, type RecoilState } from 'recoil';
+import { type RecoilState, useRecoilState } from 'recoil';
 
 export function useCheckedRecoilState<T>(recoilState: RecoilState<T>, defaultValue: T) {
   const [isInitial, setIsInitial] = useState(true);
