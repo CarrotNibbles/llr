@@ -103,10 +103,10 @@ const GimmicksNames = React.forwardRef<
 });
 
 export type GimmickLineProps = ArrayElement<
-  Exclude<StrategyDataType['raids'], null>['gimmicks'] // eslint-disable-line
+  Exclude<StrategyDataType['raids'], null>['gimmicks']
 > & {
   displayDamage: boolean;
-  damageDisplayGimmick?: ArrayElement<Exclude<StrategyDataType['raids'], null>['gimmicks']>; // eslint-disable-line
+  damageDisplayGimmick?: ArrayElement<Exclude<StrategyDataType['raids'], null>['gimmicks']>;
   mergedGimmicks: MergedGimmick[];
   resizePanelSize: number;
 };

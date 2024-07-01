@@ -119,7 +119,6 @@ const DraggableBox = ({
     // Supabase update
     await buildClientUpdateStrategyPlayerEntryQuery(createClient(), {
       id,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       use_at: newUseAtCalced ?? newUseAt,
       action: actionId,
       player: playerId,
@@ -217,7 +216,6 @@ const EditSubColumn = ({
       // Supabase insert
       const response = await buildClientInsertStrategyPlayerEntryQuery(supabase, {
         action: action.id,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         use_at: useAtCalced,
         player: playerId,
       });

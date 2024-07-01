@@ -71,7 +71,7 @@ const StratHeader = React.forwardRef<
     <div ref={ref} className={cn('rounded-none border-b flex space-x-4 py-2 px-4 items-center', className)} {...props}>
       <EditableText initialText={name} className="font-bold" />
       <div className="text-muted-foreground">{raids?.name}</div>
-      <div className="flex-grow"></div>
+      <div className="flex-grow" />
       <ZoomInIcon className="w-5 h-5" />
       <ZoomSlider className="ml-0" />
       <div className="flex">

@@ -16,7 +16,6 @@ const defaultUser: User = undefined;
 const userState = atom<User>({
   key: 'userState',
   default: defaultUser,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   effects_UNSTABLE: [persistAtom],
 });
 

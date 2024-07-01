@@ -11,10 +11,7 @@ export default async function StratPage({ params }: { params: { id: string } }) 
   const { data: strategyData, error: strategyDataQueryError } = await buildStrategyDataQuery(supabase, params.id);
   const { data: actionData, error: actionDataQueryError } = await buildActionDataQuery(supabase);
 
-  // eslint-disable-next-line
   if (strategyDataQueryError || strategyData === null) throw strategyDataQueryError;
-
-  // eslint-disable-next-line
   if (actionDataQueryError || actionData === null) throw actionDataQueryError;
 
   return (

@@ -26,7 +26,6 @@ const myMin = (...values: Array<number | undefined>) => Math.min(...values.filte
 const myMax = (...values: Array<number | undefined>) => Math.max(...values.filter(notNullOrUndefined));
 export const clamp = (num: number, min?: number, max?: number) => myMax(myMin(num, max), min);
 
-/* eslint-disable */
 export const gimmickTextColor = {
   AutoAttack: 'text-zinc-500',
   Raidwide: 'text-blue-600 dark:text-blue-500',
@@ -62,7 +61,6 @@ export const gimmickTypeName = {
   Avoidable: '회피 가능',
   Enrage: '전멸기',
 } satisfies Record<Enums<'gimmick_type'>, string>;
-/* eslint-enable */
 
 export const timeStep = 30;
 export const mergePixelThresholdDefault = 28;

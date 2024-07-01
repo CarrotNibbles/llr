@@ -12,7 +12,6 @@ const Page = async () => {
   const supabase = createClient();
   const { data: raidsData, error: raidsDataQueryError } = await buildRaidsDataQuery(supabase);
 
-  // eslint-disable-next-line
   if (raidsDataQueryError || raidsData === null) throw raidsDataQueryError;
 
   return (

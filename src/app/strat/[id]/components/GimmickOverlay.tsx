@@ -13,7 +13,7 @@ import React from 'react';
 import { GimmickLine } from './GimmickLine';
 
 type GimmickOverlayProps = {
-  gimmicks: Exclude<StrategyDataType['raids'], null>['gimmicks']; // eslint-disable-line
+  gimmicks: Exclude<StrategyDataType['raids'], null>['gimmicks'];
   raidDuration: number;
   resizePanelSize: number;
 };

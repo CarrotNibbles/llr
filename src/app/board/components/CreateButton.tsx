@@ -22,7 +22,6 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-/* eslint-disable */
 const formSchema = z.object({
   name: z.string({ required_error: '이름을 입력하세요' }).min(2).max(50),
   raid: z.string(),
@@ -30,7 +29,6 @@ const formSchema = z.object({
     required_error: '공개 여부를 선택하세요',
   }),
 });
-/* eslint-enable */
 
 export type CreateButtonProps = {
   raidsData: RaidsDataType;
@@ -64,7 +62,6 @@ const CreateButton = React.forwardRef<
       return;
     }
 
-    /* eslint-disable */
     const stratPrototype: Omit<Tables<'strategies'>, 'id' | 'password'> = {
       author: userResponse.data.user.id,
       created_at: new Date().toISOString(),
@@ -74,7 +71,6 @@ const CreateButton = React.forwardRef<
       name: values.name,
       raid: values.raid,
     };
-    /* eslint-enable */
 
     console.log(stratPrototype);
 

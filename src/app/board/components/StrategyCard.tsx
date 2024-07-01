@@ -4,7 +4,6 @@ import type { StrategyCardDataType } from '@/lib/queries/server';
 import type { ArrayElement } from '@/lib/utils';
 import { LikeButton } from './LikeButton';
 
-// eslint-disable-next-line
 const timeStampZtoKST = (timeStamp: string) => {
   const date = new Date(timeStamp);
   return date.toLocaleString('ko-KR', { timeZone: 'Asia/Seoul' });

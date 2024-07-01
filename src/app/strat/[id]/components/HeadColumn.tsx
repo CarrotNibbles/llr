@@ -5,7 +5,6 @@ import type { ActionDataType } from '@/lib/queries/server';
 import Image from 'next/legacy/image';
 import { columnWidth, columnWidthLarge } from './coreAreaConstants';
 
-// eslint-disable-next-line
 const iconFilenameToURL = (job: Enums<'job'>, iconFilename: string | null) => {
   if (!iconFilename) return null;
   return `https://jbgcbfblivbtdnhbkfab.supabase.co/storage/v1/object/public/icons/${job}/${iconFilename}.png`;
@@ -18,7 +17,7 @@ const HeadSubColumn = ({
 }: {
   job: Enums<'job'>;
   name: string;
-  iconFilename: string | null; // eslint-disable-line
+  iconFilename: string | null;
 }) => {
   const src = iconFilenameToURL(job, iconFilename);
 

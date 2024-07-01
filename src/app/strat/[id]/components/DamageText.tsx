@@ -15,14 +15,7 @@ const BothTankBuster = (props: DamageTextProps) => {
   return (
     <>
       <div className="space-x-1 pr-6">
-        <span
-          className="font-bold pointer-events-auto"
-          onClick={() => {
-            console.log('clicked');
-          }}
-        >
-          T1+T2
-        </span>
+        <span className="font-bold pointer-events-auto">T1+T2</span>
       </div>
       <span className="tabular-nums font-bold">{currentDamage}</span>
       <span className="text-muted-foreground tabular-nums text-xs my-auto">{defaultDamage}</span>
@@ -138,7 +131,7 @@ const Unknown = () => <div className="space-x-1 pr-6">머지 버그인듯</div>;
 export const DamageText = ({
   damages,
 }: {
-  damages: ArrayElement<Exclude<StrategyDataType['raids'], null>['gimmicks']>['damages']; // eslint-disable-line
+  damages: ArrayElement<Exclude<StrategyDataType['raids'], null>['gimmicks']>['damages'];
 }) => {
   return (
     <>
