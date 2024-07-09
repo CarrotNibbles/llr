@@ -99,8 +99,6 @@ const DraggableBox = ({
 
     const snappedUseAt = newUseAtCalced !== null ? snapToStep(newUseAtCalced) : oldUseAt;
 
-    console.log(newUseAt, newUseAtCalced, snappedUseAt);
-
     void animate(yMotionValue, snappedUseAt * pixelPerFrame);
 
     if (newUseAtCalced === null) return;
