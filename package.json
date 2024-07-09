@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "proto_build": "npx buf generate protos/stratsync.proto",
+    "proto_build": "pnpm buf generate protos/stratsync.proto",
     "dev": "next dev",
-    "build": "npx buf generate protos/stratsync.proto && next build",
+    "build": "pnpm buf generate protos/stratsync.proto && next build",
     "start": "next start"
   },
   "dependencies": {
@@ -37,6 +37,9 @@
     "clsx": "^2.1.0",
     "cmdk": "^0.2.1",
     "framer-motion": "^11.0.6",
+    "hash-wasm": "^4.11.0",
+    "immer": "^10.1.1",
+    "input-otp": "^1.2.4",
     "next": "14.1.0",
     "next-themes": "^0.2.1",
     "react": "^18",
@@ -50,7 +53,8 @@
     "tailwind-scrollbar-hide": "^1.1.7",
     "tailwindcss-animate": "^1.0.7",
     "uid-ts": "^0.0.3",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "zustand": "^4.5.4"
   },
   "devDependencies": {
     "@biomejs/biome": "1.8.3",

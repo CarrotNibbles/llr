@@ -26,14 +26,12 @@ const HeadSubColumn = ({
       className={`flex flex-shrink-0 ${columnWidth} ${columnWidthLarge} overflow-hidden justify-center items-end relative`}
     >
       <Tooltip>
-        <div className="aspect-square relative w-full">
-          <TooltipTrigger asChild>
-            <Button variant="ghost" className="w-auto h-auto cursor-default">
-              {src && <Image src={src} alt={name} layout="fill" objectFit="contain" />}
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent className="pointer-events-none">{name}</TooltipContent>
-        </div>
+        <TooltipTrigger asChild>
+          <div className="aspect-square relative w-full">
+            {src && <Image src={src} alt={name} layout="fill" objectFit="contain" />}
+          </div>
+        </TooltipTrigger>
+        <TooltipContent className="pointer-events-none">{name}</TooltipContent>
       </Tooltip>
     </div>
   );

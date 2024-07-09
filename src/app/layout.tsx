@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
-import RecoilRootProvider from '@/components/RecoilRootProvider';
-import { ThemeProvider } from '@/components/ThemeProvider';
+import RecoilRootProvider from '@/components/providers/RecoilRootProvider';
+import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 

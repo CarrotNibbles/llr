@@ -28,28 +28,28 @@ export const clamp = (num: number, min?: number, max?: number) => myMax(myMin(nu
 
 export const gimmickTextColor = {
   AutoAttack: 'text-zinc-500',
-  Raidwide: 'text-blue-600 dark:text-blue-500',
-  Tankbuster: 'text-rose-600 dark:text-rose-500',
-  Hybrid: 'text-violet-600 dark:text-violet-500',
-  Avoidable: 'text-green-600 dark:text-green-500',
+  Raidwide: 'text-blue-600 dark:text-blue-400',
+  Tankbuster: 'text-rose-600 dark:text-rose-400',
+  Hybrid: 'text-violet-600 dark:text-violet-400',
+  Avoidable: 'text-green-600 dark:text-green-400',
   Enrage: 'text-zinc-900 dark:text-zinc-100',
 } satisfies Record<Enums<'gimmick_type'>, string>;
 
 export const gimmickBorderColor = {
   AutoAttack: 'border-zinc-500',
-  Raidwide: 'border-blue-600 dark:border-blue-500',
-  Tankbuster: 'border-rose-600 dark:border-rose-500',
-  Hybrid: 'border-violet-600 dark:border-violet-500',
-  Avoidable: 'border-green-600 dark:border-green-500',
+  Raidwide: 'border-blue-600 dark:border-blue-400',
+  Tankbuster: 'border-rose-600 dark:border-rose-400',
+  Hybrid: 'border-violet-600 dark:border-violet-400',
+  Avoidable: 'border-green-600 dark:border-green-400',
   Enrage: 'border-zinc-900 dark:border-zinc-100',
 } satisfies Record<Enums<'gimmick_type'>, string>;
 
 export const gimmickBackgroundColor = {
   AutoAttack: 'bg-zinc-500',
-  Raidwide: 'bg-blue-600 dark:bg-blue-500',
-  Tankbuster: 'bg-rose-600 dark:bg-rose-500',
-  Hybrid: 'bg-violet-600 dark:bg-violet-500',
-  Avoidable: 'bg-green-600 dark:bg-green-500',
+  Raidwide: 'bg-blue-600 dark:bg-blue-400',
+  Tankbuster: 'bg-rose-600 dark:bg-rose-400',
+  Hybrid: 'bg-violet-600 dark:bg-violet-400',
+  Avoidable: 'bg-green-600 dark:bg-green-400',
   Enrage: 'bg-zinc-900 dark:bg-zinc-100',
 } satisfies Record<Enums<'gimmick_type'>, string>;
 

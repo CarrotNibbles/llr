@@ -5,25 +5,20 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
-import {
-  buildClientDeleteStrategyPlayerEntryQuery,
-  buildClientInsertStrategyPlayerEntryQuery,
-  buildClientUpdateStrategyPlayerEntryQuery,
-} from '@/lib/queries/client';
 import type { ActionDataType, StrategyDataType } from '@/lib/queries/server';
-import { createClient } from '@/lib/supabase/client';
 import { type ArrayElement, clamp, usePixelPerFrame } from '@/lib/utils';
 import { animate, motion, useMotionValue } from 'framer-motion';
-import { type MouseEventHandler, useEffect, useState } from 'react';
+import { type MouseEventHandler, useEffect, useState, use } from 'react';
 import { columnWidth, columnWidthLarge, timeStep } from './coreAreaConstants';
+import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 
 const contextMenuWidth = 16;
 const contextMenuWidthLarge = 32;
 
 const snapToStep = (currentUseAt: number) => {
-  if (currentUseAt < 0) currentUseAt = 0;
+  const clampedUseAt = currentUseAt > 0 ? currentUseAt : 0;
 
-  return timeStep * Math.round(currentUseAt / timeStep);
+  return timeStep * Math.round(clampedUseAt / timeStep);
 };
 
 const overlaps = (currentUseAt: number, otherUseAt: number, cooldown: number) =>
@@ -36,9 +31,9 @@ const evaluateOverlap = (currentUseAt: number, prevUseAt: number, otherUseAt: nu
 
 function buildHelperFunctions(raidDuration: number, cooldown: number) {
   const removeOverlap = (currentUseAt: number, prevUseAt: number, otherUseAts: number[]) => {
-    otherUseAts = otherUseAts.toSorted((a, b) => a - b);
+    const sortedOtherUseAts = otherUseAts.toSorted((a, b) => a - b);
 
-    const overlapIndex = otherUseAts.reduce(
+    const overlapIndex = sortedOtherUseAts.reduce(
       (acc, curr, index) =>
         Math.abs(curr - currentUseAt) < acc.value ? { value: Math.abs(curr - currentUseAt), index } : acc,
       { value: cooldown, index: -1 },
@@ -47,14 +42,14 @@ function buildHelperFunctions(raidDuration: number, cooldown: number) {
     if (overlapIndex === -1) return currentUseAt;
 
     const newUseAt =
-      evaluateOverlap(currentUseAt, prevUseAt, otherUseAts[overlapIndex], cooldown) === 'up'
-        ? otherUseAts[overlapIndex] - cooldown
-        : otherUseAts[overlapIndex] + cooldown;
+      evaluateOverlap(currentUseAt, prevUseAt, sortedOtherUseAts[overlapIndex], cooldown) === 'up'
+        ? sortedOtherUseAts[overlapIndex] - cooldown
+        : sortedOtherUseAts[overlapIndex] + cooldown;
 
     if (
       newUseAt >= 0 &&
       newUseAt <= raidDuration &&
-      otherUseAts.every((otherUseAt) => !overlaps(newUseAt, otherUseAt, cooldown))
+      sortedOtherUseAts.every((otherUseAt) => !overlaps(newUseAt, otherUseAt, cooldown))
     )
       return newUseAt;
 
@@ -68,37 +63,31 @@ function buildHelperFunctions(raidDuration: number, cooldown: number) {
 }
 
 const DraggableBox = ({
-  useAt,
-  setUseAt,
-  deleteBox,
+  entry,
   otherUseAts,
   raidDuration,
   durations,
   cooldown,
-  id,
-  actionId,
-  playerId,
 }: {
-  useAt: number;
-  setUseAt: (useAt: number) => void;
-  deleteBox: () => void;
+  entry: ArrayElement<ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries']>;
   otherUseAts: number[];
   raidDuration: number;
   durations: number[];
   cooldown: number;
-  id: string;
-  actionId: string;
-  playerId: string;
 }) => {
+  const { use_at: useAt, id: entryId, action: actionId, player: playerId } = entry;
+
+  const { upsertEntry, deleteEntry, elevated } = useStratSyncStore((state) => state);
   const [isLocked, setIsLocked] = useState(false);
   const pixelPerFrame = usePixelPerFrame();
   const yMotionValue = useMotionValue(useAt * pixelPerFrame);
   const { snapAndRemoveOverlap } = buildHelperFunctions(raidDuration, cooldown);
   const [primaryDuration, ...otherDurations] = [...new Set(durations)].toSorted((a, b) => a - b);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     yMotionValue.set(useAt * pixelPerFrame);
-  }, [yMotionValue, pixelPerFrame, useAt]);
+  }, [pixelPerFrame, useAt]);
 
   const onDragEnd = async () => {
     // AdjustPosition
@@ -108,32 +97,34 @@ const DraggableBox = ({
     const newUseAt = clamp(yMotionValue.get() / pixelPerFrame, 0, raidDuration);
     const newUseAtCalced = snapAndRemoveOverlap(newUseAt, useAt, otherUseAts);
 
-    if (newUseAtCalced === null) {
-      void animate(yMotionValue, oldUseAt * pixelPerFrame);
-      setUseAt(oldUseAt);
-    } else {
-      void animate(yMotionValue, snapToStep(newUseAtCalced) * pixelPerFrame);
-      setUseAt(snapToStep(newUseAtCalced));
-    }
+    const snappedUseAt = newUseAtCalced !== null ? snapToStep(newUseAtCalced) : oldUseAt;
 
-    // Supabase update
-    await buildClientUpdateStrategyPlayerEntryQuery(createClient(), {
-      id,
-      use_at: newUseAtCalced ?? newUseAt,
-      action: actionId,
-      player: playerId,
-    });
+    console.log(newUseAt, newUseAtCalced, snappedUseAt);
+
+    void animate(yMotionValue, snappedUseAt * pixelPerFrame);
+
+    if (newUseAtCalced === null) return;
+
+    upsertEntry(
+      {
+        id: entryId,
+        action: actionId,
+        player: playerId,
+        useAt: snappedUseAt,
+      },
+      false,
+    );
   };
 
   return (
     <ContextMenu>
-      <ContextMenuTrigger className="relative">
+      <ContextMenuTrigger className="relative" disabled={!elevated}>
         <motion.div
-          drag={isLocked ? false : 'y'}
+          drag={isLocked || !elevated ? false : 'y'}
           dragMomentum={false}
           onDragEnd={onDragEnd}
-          className={`${columnWidth} ${columnWidthLarge} h-0 absolute active:z-[5]`}
-          style={{ y: yMotionValue, cursor: isLocked ? 'not-allowed' : 'grab' }}
+          className={`${columnWidth} ${columnWidthLarge} h-0 absolute z-[5]`}
+          style={{ y: yMotionValue, cursor: isLocked || !elevated ? 'not-allowed' : 'grab' }}
         >
           <div
             className={`relative ${columnWidth} ${columnWidthLarge} rounded-sm overflow-hidden bg-zinc-200 dark:bg-zinc-700 shadow-inner`}
@@ -163,15 +154,15 @@ const DraggableBox = ({
             setIsLocked(checked);
           }}
         >
-          Lock
+          잠금
         </ContextMenuCheckboxItem>
         <ContextMenuItem
           inset
           onClick={() => {
-            deleteBox();
+            deleteEntry(entryId, false);
           }}
         >
-          Delete
+          삭제
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
@@ -189,13 +180,10 @@ const EditSubColumn = ({
   entries: ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries'];
   playerId: string;
 }) => {
-  const [boxValues, setBoxValues] = useState<Array<{ useAt: number; key: string }>>(
-    entries.map((entry) => ({ useAt: entry.use_at, key: entry.id })),
-  );
+  const { upsertEntry } = useStratSyncStore((state) => state);
+  const boxValues = entries.map((entry) => ({ useAt: entry.use_at, id: entry.id }));
   const pixelPerFrame = usePixelPerFrame();
   const { snapAndRemoveOverlap } = buildHelperFunctions(raidDuration, action.cooldown);
-
-  const supabase = createClient();
 
   const createBox: MouseEventHandler<HTMLDivElement> = async (evt) => {
     const cursorY = evt.clientY - evt.currentTarget.getBoundingClientRect().top;
@@ -213,24 +201,14 @@ const EditSubColumn = ({
     );
 
     if (useAtCalced !== null) {
-      // Supabase insert
-      const response = await buildClientInsertStrategyPlayerEntryQuery(supabase, {
-        action: action.id,
-        use_at: useAtCalced,
-        player: playerId,
-      });
-
-      const insertedId = response.data?.[0]?.id ?? '';
-
-      setBoxValues(
-        [
-          ...boxValues,
-          {
-            useAt: useAtCalced,
-            // 흑마법 (쿼리횟수 줄이기)
-            key: insertedId,
-          },
-        ].toSorted((a, b) => a.useAt - b.useAt),
+      upsertEntry(
+        {
+          id: crypto.randomUUID(),
+          action: action.id,
+          player: playerId,
+          useAt: useAtCalced,
+        },
+        false,
       );
     }
   };
@@ -238,36 +216,21 @@ const EditSubColumn = ({
   return (
     <div
       className={`flex flex-shrink-0 ${columnWidth} ${columnWidthLarge} overflow-hidden hover:bg-muted`}
-      style={{ height: raidDuration * pixelPerFrame }}
-      onClick={createBox}
+      style={{ height: `${raidDuration * pixelPerFrame + 60}px` }}
+      // onClick={createBox}
     >
       {...boxValues.map((boxValue, index) => (
         <DraggableBox
-          key={boxValue.key}
+          key={boxValue.id}
+          entry={entries[index]}
           raidDuration={raidDuration}
           durations={action.mitigations.map(({ duration }) => duration)}
           cooldown={action.cooldown}
-          useAt={boxValue.useAt}
-          setUseAt={(useAt) => {
-            setBoxValues(
-              boxValues
-                .map((oldValue) => (oldValue.key === boxValue.key ? { useAt, key: boxValue.key } : oldValue))
-                .toSorted((a, b) => a.useAt - b.useAt),
-            );
-          }}
-          deleteBox={async () => {
-            setBoxValues(
-              boxValues.filter((oldValue) => oldValue.key !== boxValue.key).toSorted((a, b) => a.useAt - b.useAt),
-            );
-            // Supabase delete
-            await buildClientDeleteStrategyPlayerEntryQuery(supabase, boxValue.useAt, action.id);
-          }}
           otherUseAts={boxValues.filter((_, j) => j !== index).map((boxValue) => boxValue.useAt)}
-          id={boxValue.key}
-          actionId={action.id}
-          playerId={playerId}
         />
       ))}
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+      <div className="relative top-0 left-0 w-full h-full" onClick={createBox} />
     </div>
   );
 };
