@@ -48,7 +48,7 @@ export const CoreArea = (props: CoreAreaProps) => {
   return (
     <ScrollSync>
       <ResizablePanelGroup direction="horizontal" className="relative flex w-screen flex-grow overflow-hidden">
-        <ResizablePanel defaultSize={20} minSize={4} className="border-r">
+        <ResizablePanel defaultSize={20} minSize={4} className="border-r -z-50">
           <div className="min-h-20 h-20 border-b" />
         </ResizablePanel>
         <ResizableHandle className="w-0" withHandle />
@@ -87,7 +87,7 @@ export const CoreArea = (props: CoreAreaProps) => {
           </ScrollSyncPane>
         </ResizablePanel>
         <ScrollSyncPane group="y">
-          <div className="absolute top-20 left-0 w-screen h-[calc(100%-5rem)] pointer-events-none overflow-y-scroll scrollbar-hide">
+          <div className="absolute top-20 left-0 w-screen h-[calc(100%-5rem)] overflow-y-scroll scrollbar-hide">
             <GimmickOverlay
               resizePanelSize={resizePanelSize}
               raidDuration={strategyData.raids?.duration ?? 0}

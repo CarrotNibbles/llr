@@ -182,6 +182,7 @@ const EditSubColumn = ({
   const boxValues = entries.map((entry) => ({ useAt: entry.use_at, id: entry.id }));
   const pixelPerFrame = usePixelPerFrame();
   const { snapAndRemoveOverlap } = buildHelperFunctions(raidDuration, action.cooldown);
+  const { elevated } = useStratSyncStore((state) => state);
 
   const createBox: MouseEventHandler<HTMLDivElement> = async (evt) => {
     const cursorY = evt.clientY - evt.currentTarget.getBoundingClientRect().top;
@@ -228,7 +229,11 @@ const EditSubColumn = ({
         />
       ))}
       {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
-      <div className="relative top-0 left-0 w-full h-full" onClick={createBox} />
+      <div
+        className="relative top-0 left-0 w-full h-full"
+        onClick={createBox}
+        style={{ cursor: !elevated ? 'not-allowed' : 'pointer' }}
+      />
     </div>
   );
 };

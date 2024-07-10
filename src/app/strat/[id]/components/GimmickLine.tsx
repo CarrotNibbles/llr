@@ -39,7 +39,7 @@ export const GimmickSubLine = ({
   Math.abs(time - primaryTime) * pixelPerFrame > 5 && (
     <>
       <div
-        className={`absolute border-0 border-t ${borderColor} right-0 ${lineType} z-10`}
+        className={`absolute border-0 border-t ${borderColor} right-0 ${lineType} z-10 pointer-events-none`}
         style={{
           top: `${time * pixelPerFrame}px`,
           width: `${resizePanelSize}vw`,
@@ -47,7 +47,7 @@ export const GimmickSubLine = ({
       />
       {Math.abs(time - primaryTime) * pixelPerFrame > 10 && (
         <div
-          className={`absolute ${textColor} text-xs z-10 right-0`}
+          className={`absolute ${textColor} text-xs z-10 right-0 pointer-events-none`}
           style={{
             top: `${pixelPerFrame * time}px`,
           }}
@@ -102,9 +102,7 @@ const GimmicksNames = React.forwardRef<
   );
 });
 
-export type GimmickLineProps = ArrayElement<
-  Exclude<StrategyDataType['raids'], null>['gimmicks']
-> & {
+export type GimmickLineProps = ArrayElement<Exclude<StrategyDataType['raids'], null>['gimmicks']> & {
   displayDamage: boolean;
   damageDisplayGimmick?: ArrayElement<Exclude<StrategyDataType['raids'], null>['gimmicks']>;
   mergedGimmicks: MergedGimmick[];
@@ -162,7 +160,7 @@ const GimmickLine = React.forwardRef<
         />
       )}
       <div
-        className={`absolute border-0 ${borderWidth} ${borderColor} w-[98dvw] right-0 z-10`}
+        className={`absolute border-0 ${borderWidth} ${borderColor} w-[98dvw] right-0 z-10 pointer-events-none`}
         style={{ top: `${prepareAt * pixelPerFrame}px` }}
       />
       <div
@@ -175,7 +173,7 @@ const GimmickLine = React.forwardRef<
               {mergedGimmicks.length > 0 && (
                 <GimmicksNames
                   mergedGimmicks={mergedGimmicks}
-                  className={cn(titleWeight, gimmickType === 'Enrage' && 'mt-1', 'pointer-events-auto')}
+                  className={cn(titleWeight, gimmickType === 'Enrage' && 'mt-1', 'cursor-pointer')}
                 />
               )}
             </HoverCardTrigger>
@@ -189,7 +187,7 @@ const GimmickLine = React.forwardRef<
                     <div className="grid text-sm gap-x-2 gap-y-1" style={{ gridTemplateColumns: 'auto auto auto' }}>
                       <DamageText damages={mergedGimmick.damages} />
                     </div>
-                    {index !== mergedGimmicks.length - 1 && <Separator />}
+                    {index !== mergedGimmicks.length - 1 && <Separator className="mt-1" />}
                   </div>
                 ))}
             </HoverCardContent>
