@@ -68,7 +68,7 @@ export const CoreArea = (props: CoreAreaProps) => {
                   job={playerStrategy.job}
                   order={playerStrategy.order}
                   actions={availableActions.filter(({ job }) => job === playerStrategy.job)}
-                  key={`column-${playerStrategy.id}`}
+                  key={`headcolumn-${playerStrategy.id}`}
                 />
               ))}
             </div>
@@ -81,7 +81,7 @@ export const CoreArea = (props: CoreAreaProps) => {
                     raidDuration={raidDuration}
                     playerStrategy={playerStrategy}
                     actions={availableActions.filter(({ job }) => job === playerStrategy.job)}
-                    key={`column-${playerStrategy.id}`}
+                    key={`editcolumn-${playerStrategy.id}`}
                   />
                 ))}
               </div>

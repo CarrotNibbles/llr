@@ -1,3 +1,4 @@
+import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import {
   ContextMenu,
   ContextMenuCheckboxItem,
@@ -8,9 +9,8 @@ import {
 import type { ActionDataType, StrategyDataType } from '@/lib/queries/server';
 import { type ArrayElement, clamp, usePixelPerFrame } from '@/lib/utils';
 import { animate, motion, useMotionValue } from 'framer-motion';
-import { type MouseEventHandler, useEffect, useState, use } from 'react';
+import { type MouseEventHandler, useEffect, useState } from 'react';
 import { columnWidth, columnWidthLarge, timeStep } from './coreAreaConstants';
-import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 
 const contextMenuWidth = 16;
 const contextMenuWidthLarge = 32;
@@ -251,7 +251,7 @@ export const EditColumn = ({ raidDuration, playerStrategy, actions }: EditColumn
     <div className="flex px-1 space-x-1 border-r-[1px]" style={{ height: raidDuration * pixelPerFrame }}>
       {actions.map((action) => (
         <EditSubColumn
-          key={`subcolumn-${action.id}`}
+          key={`subcolumn-${playerStrategy.id}-${action.id}`}
           raidDuration={raidDuration}
           action={action}
           entries={playerStrategy.strategy_player_entries.filter(({ action: actionId }) => actionId === action.id)}

@@ -110,7 +110,7 @@ export const HeadColumn = ({
                   <div className="flex space-x-2">
                     {jobLayout.map((row, i) => (
                       <div
-                        key={`job-col-${
+                        key={`job-col-${playerId}-${
                           // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                           i
                         }`}
@@ -159,7 +159,7 @@ export const HeadColumn = ({
       <div className="flex space-x-1">
         {actions.map((action) => (
           <HeadSubColumn
-            key={`subcolumn-header-${action.id}`}
+            key={`subcolumn-header-${playerId}-${action.id}`}
             job={job}
             name={action.name}
             iconFilename={action.icon_filename}

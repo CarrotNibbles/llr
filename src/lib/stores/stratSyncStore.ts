@@ -58,6 +58,8 @@ const handleUpsertDamageOption = (damageOption: PlainMessage<DamageOption>) =>
 const handleUpsertEntry = (entry: PlainMessage<Entry>) =>
   produce((state: StratSyncStore) => {
     for (const player of state.strategyData.strategy_players) {
+      if (player.id !== entry.player) continue;
+
       player.strategy_player_entries = [
         ...player.strategy_player_entries.filter((e) => e.id !== entry.id),
         {
