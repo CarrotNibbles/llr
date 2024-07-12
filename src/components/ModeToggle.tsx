@@ -2,18 +2,17 @@
 
 import { MoonIcon, SunIcon } from '@radix-ui/react-icons';
 import { useTheme } from 'next-themes';
-import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+  DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu';
 
 export function ModeToggle() {
-  const { setTheme } = useTheme();
+  const { theme, systemTheme, setTheme } = useTheme();
 
   return (
     <DropdownMenu>
@@ -25,27 +24,30 @@ export function ModeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem
+        <DropdownMenuCheckboxItem
+          checked={theme === 'light'}
           onClick={() => {
             setTheme('light');
           }}
         >
           Light
-        </DropdownMenuItem>
-        <DropdownMenuItem
+        </DropdownMenuCheckboxItem>
+        <DropdownMenuCheckboxItem
+          checked={theme === 'dark'}
           onClick={() => {
             setTheme('dark');
           }}
         >
           Dark
-        </DropdownMenuItem>
-        <DropdownMenuItem
+        </DropdownMenuCheckboxItem>
+        <DropdownMenuCheckboxItem
+          checked={theme === 'system'}
           onClick={() => {
             setTheme('system');
           }}
         >
           System
-        </DropdownMenuItem>
+        </DropdownMenuCheckboxItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
