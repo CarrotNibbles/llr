@@ -102,6 +102,7 @@ export const HeadColumn = ({
           <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
             <AlertDialog>
               <PopoverTrigger className={elevated ? 'cursor-pointer' : 'cursor-not-allowed'} disabled={!elevated}>
+                <span className="sr-only">Change job {job}</span>
                 <JobIcon job={job} role={getRole(job, order)} className={`${columnWidth} ${columnWidthLarge}`} />
               </PopoverTrigger>
               <PopoverContent className="w-auto">
@@ -122,15 +123,15 @@ export const HeadColumn = ({
                               disabled={job === newJob}
                               className={job === newJob ? 'cursor-not-allowed' : undefined}
                             >
+                              <span className="sr-only">Change job to {job}</span>
                               <JobIcon job={newJob} role={getRole(newJob, order)} className="w-6 h-6" />
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>
                                 <AlertDialogTitle>직업 변경 확인</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  직업을 변경할 경우 현재 직업의 전략이 초기화됩니다.
-                                  다시 직업을 변경하더라도 이전 직업의 전략은 복구되지 않습니다.
-                                  계속하시겠습니까?
+                                  직업을 변경할 경우 현재 직업의 전략이 초기화됩니다. 다시 직업을 변경하더라도 이전
+                                  직업의 전략은 복구되지 않습니다. 계속하시겠습니까?
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>

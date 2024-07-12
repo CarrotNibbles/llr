@@ -51,7 +51,7 @@ export const CoreArea = (props: CoreAreaProps) => {
         <ResizablePanel defaultSize={20} minSize={4} className="border-r -z-50">
           <div className="min-h-20 h-20 border-b" />
         </ResizablePanel>
-        <ResizableHandle className="w-0" withHandle />
+        <ResizableHandle className="w-0" withHandle/>
         <ResizablePanel
           defaultSize={80}
           maxSize={96}

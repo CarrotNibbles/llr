@@ -37,6 +37,7 @@ export const FilterMenu = () => {
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon">
+          <span className="sr-only">Adjust display filter</span>
           <Icons.filter />
         </Button>
       </PopoverTrigger>
@@ -67,7 +68,7 @@ export const FilterMenu = () => {
   );
 };
 
-const EditDialog = () => {
+const ElevationDialog = () => {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const { elevated, elevate } = useStratSyncStore((state) => state);
@@ -116,10 +117,12 @@ const EditDialog = () => {
       <DialogTrigger asChild>
         {elevated ? (
           <Button size="icon">
+            <span className="sr-only">Strategy unlocked</span>
             <LockOpen2Icon />
           </Button>
         ) : (
           <Button variant="ghost" size="icon">
+            <span className="sr-only">Unlock this strategy</span>
             <LockClosedIcon />
           </Button>
         )}
@@ -190,7 +193,7 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
         <ZoomInIcon className="w-5 h-5" />
         <ZoomSlider className="ml-0" />
         <div className="flex">
-          <EditDialog />
+          <ElevationDialog />
           <Button
             variant="ghost"
             size="icon"
@@ -207,6 +210,7 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
               }
             }}
           >
+            <span className="sr-only">Share this strategy</span>
             <Share1Icon />
           </Button>
           {/* <Button variant="ghost" size="icon">
