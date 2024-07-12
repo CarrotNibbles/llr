@@ -95,7 +95,7 @@ const RaidWide = (props: DamageTextProps) => {
   return (
     <>
       <div className="space-x-1 pr-6">
-        <span className="font-bold">전체</span>
+        <span className="font-bold">광역</span>
       </div>
       <span className="tabular-nums font-bold">{currentDamage}</span>
       <span className="text-muted-foreground tabular-nums text-xs my-auto">{defaultDamage}</span>
