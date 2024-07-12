@@ -21,11 +21,6 @@ import {
 import { useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 
-const iconFilenameToURL = (job: Enums<'job'> | null, iconFilename: string | null) => {
-  if (!job || !iconFilename) return null;
-  return `https://jbgcbfblivbtdnhbkfab.supabase.co/storage/v1/object/public/icons/${job}/${iconFilename}.png`;
-};
-
 const HeadSubColumn = ({
   job,
   name,
@@ -35,7 +30,7 @@ const HeadSubColumn = ({
   name: string;
   iconFilename: string | null;
 }) => {
-  const src = iconFilenameToURL(job, iconFilename);
+  const src = job && iconFilename ? `/icons/action/${job}/${iconFilename}.png` : null;
 
   return (
     <div
@@ -61,7 +56,7 @@ const ROLE_ICON_STYLE = {
 } satisfies Record<Role, string>;
 
 export const JobIcon = ({ className, job, role }: { className?: string; job: Enums<'job'> | null; role: Role }) => {
-  const src = `/icons/${job ?? 'BLANK'}.svg`;
+  const src = `/icons/job/${job ?? 'BLANK'}.svg`;
 
   return (
     <>
