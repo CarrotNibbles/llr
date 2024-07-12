@@ -10,8 +10,7 @@ service StratSync {
     rpc UpsertDamageOption (UpsertDamageOptionRequest) returns (google.protobuf.Empty);
     rpc UpsertEntry (UpsertEntryRequest) returns (google.protobuf.Empty);
     rpc DeleteEntry (DeleteEntryRequest) returns (google.protobuf.Empty);
-    rpc InsertPlayer (InsertPlayerRequest) returns (google.protobuf.Empty);
-    rpc DeletePlayer (DeletePlayerRequest) returns (google.protobuf.Empty);
+    rpc UpdatePlayerJob (UpdatePlayerJobRequest) returns (google.protobuf.Empty);
 }
 
 message SubscriptionRequest {
@@ -26,7 +25,8 @@ message DamageOption {
 
 message Player {
     string id = 1;
-    string job = 2;
+    optional string job = 2;
+    int32 order = 3;
 }
 
 message Entry {
@@ -63,14 +63,10 @@ message DeleteEntryRequest {
     string id = 2;
 }
 
-message InsertPlayerRequest {
-    string token = 1;
-    Player player = 2;
-}
-
-message DeletePlayerRequest {
+message UpdatePlayerJobRequest {
     string token = 1;
     string id = 2;
+    optional string job = 3;
 }
 
 message UpsertDamageOptionEvent {
@@ -85,12 +81,9 @@ message DeleteEntryEvent {
     string id = 1;
 }
 
-message InsertPlayerEvent {
-    Player player = 1;
-}
-
-message DeletePlayerEvent {
+message UpdatePlayerJobEvent {
     string id = 1;
+    optional string job = 2;
 }
 
 message EventResponse {
@@ -99,7 +92,6 @@ message EventResponse {
         UpsertDamageOptionEvent upsert_damage_option_event = 2;
         UpsertEntryEvent upsert_entry_event = 3;
         DeleteEntryEvent delete_entry_event = 4;
-        InsertPlayerEvent insert_player_event = 5;
-        DeletePlayerEvent delete_player_event = 6;
+        UpdatePlayerJobEvent update_player_job_event = 5;
     }
 }

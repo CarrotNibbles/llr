@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "proto_build": "pnpm buf generate protos/stratsync.proto",
+    "schema_build": "supabase gen types typescript --project-id jbgcbfblivbtdnhbkfab > src/lib/database.types.ts",
+    "proto_build": "pnpm buf generate protos/stratsync.proto && perl -pi -e 's/.js//g' src/lib/proto/stratsync_connect.ts",
     "dev": "next dev",
-    "build": "pnpm buf generate protos/stratsync.proto && next build",
+    "build": "pnpm proto_build && pnpm schema_build && next build",
     "start": "next start"
   },
   "dependencies": {
@@ -13,6 +14,7 @@
     "@connectrpc/connect": "^1.4.0",
     "@connectrpc/connect-web": "^1.4.0",
     "@hookform/resolvers": "^3.3.4",
+    "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-aspect-ratio": "^1.0.3",
     "@radix-ui/react-context-menu": "^2.1.5",
     "@radix-ui/react-dialog": "^1.0.5",
@@ -47,6 +49,7 @@
     "react-hook-form": "^7.51.0",
     "react-resizable-panels": "^2.0.11",
     "react-scroll-sync": "^0.11.2",
+    "react-svg": "^16.1.34",
     "recoil": "^0.7.7",
     "recoil-persist": "^5.1.0",
     "tailwind-merge": "^2.2.1",

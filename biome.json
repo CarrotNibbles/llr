@@ -23,7 +23,8 @@
 			"**/postcss.config.js",
 			"**/tailwind.config.ts",
 			"src/components/ui/**",
-			"**/database.types.ts"
+			"**/database.types.ts",
+			"components/icons.tsx"
 		]
 	},
 	"javascript": {

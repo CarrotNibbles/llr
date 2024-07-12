@@ -1,11 +1,11 @@
+import type { PlainMessage } from '@bufbuild/protobuf';
+import { sha384 } from 'hash-wasm';
 import { produce } from 'immer';
 import { createStore } from 'zustand';
 import type { Enums } from '../database.types';
 import type { DamageOption, Entry, EventResponse, Player } from '../proto/stratsync_pb';
 import type { StrategyDataType } from '../queries/server';
-import { StratSyncClientFactory, createStratSyncClient, type StratSyncClient } from '../stratSyncClient';
-import { sha384 } from 'hash-wasm';
-import type { PlainMessage } from '@bufbuild/protobuf';
+import { type StratSyncClient, StratSyncClientFactory } from '../stratSyncClient';
 
 export type StratSyncState = {
   strategy: string;
@@ -22,8 +22,7 @@ export type StratSyncActions = {
   upsertDamageOption: (damageOption: PlainMessage<DamageOption>, local: boolean) => void;
   upsertEntry: (entry: PlainMessage<Entry>, local: boolean) => void;
   deleteEntry: (id: string, local: boolean) => void;
-  insertPlayer: (player: PlainMessage<Player>, local: boolean) => void;
-  deletePlayer: (id: string, local: boolean) => void;
+  updatePlayerJob: (id: string, job: string | undefined, local: boolean) => void;
 };
 
 export type StratSyncStore = StratSyncState & StratSyncActions;
@@ -78,19 +77,15 @@ const handleDeleteEntry = (id: string) =>
     }
   });
 
-const handleInsertPlayer = (player: PlainMessage<Player>) =>
+const handleUpdatePlayerJob = (id: string, job: string | undefined) =>
   produce((state: StratSyncStore) => {
-    state.strategyData.strategy_players.push({
-      id: player.id,
-      job: player.job as Enums<'job'>,
-      strategy: state.strategy,
-      strategy_player_entries: [],
-    });
-  });
-
-const handleDeletePlayer = (id: string) =>
-  produce((state: StratSyncStore) => {
-    state.strategyData.strategy_players = state.strategyData.strategy_players.filter((p) => p.id !== id);
+    for (const p of state.strategyData.strategy_players) {
+      if (p.id === id) {
+        p.job = job ? (job as Enums<'job'>) : null;
+        p.strategy_player_entries = [];
+        break;
+      }
+    }
   });
 
 export const createStratSyncStore = (initState: Partial<StratSyncState>) => {
@@ -116,6 +111,7 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) => {
           state.strategyData.strategy_players = event.value.players.map((player) => ({
             id: player.id,
             job: player.job as Enums<'job'>,
+            order: player.order,
             strategy: strategy,
             strategy_player_entries: event.value.entries
               .filter((e) => e.player === player.id)
@@ -150,37 +146,26 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) => {
 
         if (event.case === 'upsertDamageOptionEvent') {
           if (event.value.damageOption) {
-            const damageOption = event.value.damageOption;
+            const { damageOption } = event.value;
             set((state: StratSyncStore) => handleUpsertDamageOption(damageOption)(state));
           }
         }
 
         if (event.case === 'upsertEntryEvent') {
           if (event.value.entry) {
-            const entry = event.value.entry;
+            const { entry } = event.value;
             set((state: StratSyncStore) => handleUpsertEntry(entry)(state));
           }
         }
 
         if (event.case === 'deleteEntryEvent') {
-          if (event.value.id) {
-            const id = event.value.id;
-            set((state: StratSyncStore) => handleDeleteEntry(id)(state));
-          }
+          const { id } = event.value;
+          set((state: StratSyncStore) => handleDeleteEntry(id)(state));
         }
 
-        if (event.case === 'insertPlayerEvent') {
-          if (event.value.player) {
-            const player = event.value.player;
-            set((state: StratSyncStore) => handleInsertPlayer(player)(state));
-          }
-        }
-
-        if (event.case === 'deletePlayerEvent') {
-          if (event.value.id) {
-            const id = event.value.id;
-            set((state: StratSyncStore) => handleDeletePlayer(id)(state));
-          }
+        if (event.case === 'updatePlayerJobEvent') {
+          const { id, job } = event.value;
+          set((state: StratSyncStore) => handleUpdatePlayerJob(id, job)(state));
         }
       }
     },
@@ -226,19 +211,13 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) => {
         if (!local) state.client.deleteEntry({ token: state.token, id });
         return updatedState;
       }),
-    insertPlayer: (player: PlainMessage<Player>, local = false) =>
+    updatePlayerJob(id: string, job: string | undefined, local = false) {
       set((state: StratSyncStore) => {
         if (!state.client || !state.token || !state.elevated) return state;
-        const updatedState = handleInsertPlayer(player)(state);
-        if (!local) state.client.insertPlayer({ token: state.token, player });
+        const updatedState = handleUpdatePlayerJob(id, job)(state);
+        if (!local) state.client.updatePlayerJob({ token: state.token, id, job });
         return updatedState;
-      }),
-    deletePlayer: (id: string, local = false) =>
-      set((state: StratSyncStore) => {
-        if (!state.client || !state.token || !state.elevated) return state;
-        const updatedState = handleDeletePlayer(id)(state);
-        if (!local) state.client.deletePlayer({ token: state.token, id });
-        return updatedState;
-      }),
+      });
+    },
   }));
 };

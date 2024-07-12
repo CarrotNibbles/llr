@@ -102,9 +102,14 @@ export class Player extends Message<Player> {
   id = "";
 
   /**
-   * @generated from field: string job = 2;
+   * @generated from field: optional string job = 2;
    */
-  job = "";
+  job?: string;
+
+  /**
+   * @generated from field: int32 order = 3;
+   */
+  order = 0;
 
   constructor(data?: PartialMessage<Player>) {
     super();
@@ -115,7 +120,8 @@ export class Player extends Message<Player> {
   static readonly typeName = "stratsync.Player";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "job", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "job", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    { no: 3, name: "order", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Player {
@@ -418,52 +424,9 @@ export class DeleteEntryRequest extends Message<DeleteEntryRequest> {
 }
 
 /**
- * @generated from message stratsync.InsertPlayerRequest
+ * @generated from message stratsync.UpdatePlayerJobRequest
  */
-export class InsertPlayerRequest extends Message<InsertPlayerRequest> {
-  /**
-   * @generated from field: string token = 1;
-   */
-  token = "";
-
-  /**
-   * @generated from field: stratsync.Player player = 2;
-   */
-  player?: Player;
-
-  constructor(data?: PartialMessage<InsertPlayerRequest>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stratsync.InsertPlayerRequest";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 2, name: "player", kind: "message", T: Player },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): InsertPlayerRequest {
-    return new InsertPlayerRequest().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): InsertPlayerRequest {
-    return new InsertPlayerRequest().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): InsertPlayerRequest {
-    return new InsertPlayerRequest().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: InsertPlayerRequest | PlainMessage<InsertPlayerRequest> | undefined, b: InsertPlayerRequest | PlainMessage<InsertPlayerRequest> | undefined): boolean {
-    return proto3.util.equals(InsertPlayerRequest, a, b);
-  }
-}
-
-/**
- * @generated from message stratsync.DeletePlayerRequest
- */
-export class DeletePlayerRequest extends Message<DeletePlayerRequest> {
+export class UpdatePlayerJobRequest extends Message<UpdatePlayerJobRequest> {
   /**
    * @generated from field: string token = 1;
    */
@@ -474,32 +437,38 @@ export class DeletePlayerRequest extends Message<DeletePlayerRequest> {
    */
   id = "";
 
-  constructor(data?: PartialMessage<DeletePlayerRequest>) {
+  /**
+   * @generated from field: optional string job = 3;
+   */
+  job?: string;
+
+  constructor(data?: PartialMessage<UpdatePlayerJobRequest>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stratsync.DeletePlayerRequest";
+  static readonly typeName = "stratsync.UpdatePlayerJobRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "job", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): DeletePlayerRequest {
-    return new DeletePlayerRequest().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdatePlayerJobRequest {
+    return new UpdatePlayerJobRequest().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): DeletePlayerRequest {
-    return new DeletePlayerRequest().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UpdatePlayerJobRequest {
+    return new UpdatePlayerJobRequest().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): DeletePlayerRequest {
-    return new DeletePlayerRequest().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UpdatePlayerJobRequest {
+    return new UpdatePlayerJobRequest().fromJsonString(jsonString, options);
   }
 
-  static equals(a: DeletePlayerRequest | PlainMessage<DeletePlayerRequest> | undefined, b: DeletePlayerRequest | PlainMessage<DeletePlayerRequest> | undefined): boolean {
-    return proto3.util.equals(DeletePlayerRequest, a, b);
+  static equals(a: UpdatePlayerJobRequest | PlainMessage<UpdatePlayerJobRequest> | undefined, b: UpdatePlayerJobRequest | PlainMessage<UpdatePlayerJobRequest> | undefined): boolean {
+    return proto3.util.equals(UpdatePlayerJobRequest, a, b);
   }
 }
 
@@ -615,76 +584,45 @@ export class DeleteEntryEvent extends Message<DeleteEntryEvent> {
 }
 
 /**
- * @generated from message stratsync.InsertPlayerEvent
+ * @generated from message stratsync.UpdatePlayerJobEvent
  */
-export class InsertPlayerEvent extends Message<InsertPlayerEvent> {
-  /**
-   * @generated from field: stratsync.Player player = 1;
-   */
-  player?: Player;
-
-  constructor(data?: PartialMessage<InsertPlayerEvent>) {
-    super();
-    proto3.util.initPartial(data, this);
-  }
-
-  static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stratsync.InsertPlayerEvent";
-  static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "player", kind: "message", T: Player },
-  ]);
-
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): InsertPlayerEvent {
-    return new InsertPlayerEvent().fromBinary(bytes, options);
-  }
-
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): InsertPlayerEvent {
-    return new InsertPlayerEvent().fromJson(jsonValue, options);
-  }
-
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): InsertPlayerEvent {
-    return new InsertPlayerEvent().fromJsonString(jsonString, options);
-  }
-
-  static equals(a: InsertPlayerEvent | PlainMessage<InsertPlayerEvent> | undefined, b: InsertPlayerEvent | PlainMessage<InsertPlayerEvent> | undefined): boolean {
-    return proto3.util.equals(InsertPlayerEvent, a, b);
-  }
-}
-
-/**
- * @generated from message stratsync.DeletePlayerEvent
- */
-export class DeletePlayerEvent extends Message<DeletePlayerEvent> {
+export class UpdatePlayerJobEvent extends Message<UpdatePlayerJobEvent> {
   /**
    * @generated from field: string id = 1;
    */
   id = "";
 
-  constructor(data?: PartialMessage<DeletePlayerEvent>) {
+  /**
+   * @generated from field: optional string job = 2;
+   */
+  job?: string;
+
+  constructor(data?: PartialMessage<UpdatePlayerJobEvent>) {
     super();
     proto3.util.initPartial(data, this);
   }
 
   static readonly runtime: typeof proto3 = proto3;
-  static readonly typeName = "stratsync.DeletePlayerEvent";
+  static readonly typeName = "stratsync.UpdatePlayerJobEvent";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "job", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
   ]);
 
-  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): DeletePlayerEvent {
-    return new DeletePlayerEvent().fromBinary(bytes, options);
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpdatePlayerJobEvent {
+    return new UpdatePlayerJobEvent().fromBinary(bytes, options);
   }
 
-  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): DeletePlayerEvent {
-    return new DeletePlayerEvent().fromJson(jsonValue, options);
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UpdatePlayerJobEvent {
+    return new UpdatePlayerJobEvent().fromJson(jsonValue, options);
   }
 
-  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): DeletePlayerEvent {
-    return new DeletePlayerEvent().fromJsonString(jsonString, options);
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UpdatePlayerJobEvent {
+    return new UpdatePlayerJobEvent().fromJsonString(jsonString, options);
   }
 
-  static equals(a: DeletePlayerEvent | PlainMessage<DeletePlayerEvent> | undefined, b: DeletePlayerEvent | PlainMessage<DeletePlayerEvent> | undefined): boolean {
-    return proto3.util.equals(DeletePlayerEvent, a, b);
+  static equals(a: UpdatePlayerJobEvent | PlainMessage<UpdatePlayerJobEvent> | undefined, b: UpdatePlayerJobEvent | PlainMessage<UpdatePlayerJobEvent> | undefined): boolean {
+    return proto3.util.equals(UpdatePlayerJobEvent, a, b);
   }
 }
 
@@ -721,16 +659,10 @@ export class EventResponse extends Message<EventResponse> {
     case: "deleteEntryEvent";
   } | {
     /**
-     * @generated from field: stratsync.InsertPlayerEvent insert_player_event = 5;
+     * @generated from field: stratsync.UpdatePlayerJobEvent update_player_job_event = 5;
      */
-    value: InsertPlayerEvent;
-    case: "insertPlayerEvent";
-  } | {
-    /**
-     * @generated from field: stratsync.DeletePlayerEvent delete_player_event = 6;
-     */
-    value: DeletePlayerEvent;
-    case: "deletePlayerEvent";
+    value: UpdatePlayerJobEvent;
+    case: "updatePlayerJobEvent";
   } | { case: undefined; value?: undefined } = { case: undefined };
 
   constructor(data?: PartialMessage<EventResponse>) {
@@ -745,8 +677,7 @@ export class EventResponse extends Message<EventResponse> {
     { no: 2, name: "upsert_damage_option_event", kind: "message", T: UpsertDamageOptionEvent, oneof: "event" },
     { no: 3, name: "upsert_entry_event", kind: "message", T: UpsertEntryEvent, oneof: "event" },
     { no: 4, name: "delete_entry_event", kind: "message", T: DeleteEntryEvent, oneof: "event" },
-    { no: 5, name: "insert_player_event", kind: "message", T: InsertPlayerEvent, oneof: "event" },
-    { no: 6, name: "delete_player_event", kind: "message", T: DeletePlayerEvent, oneof: "event" },
+    { no: 5, name: "update_player_job_event", kind: "message", T: UpdatePlayerJobEvent, oneof: "event" },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): EventResponse {

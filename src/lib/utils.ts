@@ -90,3 +90,29 @@ export const weightedCompareFunction =
     compareFn1(item1, item2) === 0 ? compareFn2(item1, item2) : compareFn1(item1, item2);
 
 export const maxDisplayCount = 3;
+
+export type Role = 'Tank' | 'Healer' | 'DPS' | 'Others';
+
+export const getRole = (job: Enums<'job'> | null, order: number): Role => {
+  if (job === null || job === 'LB') {
+    if (1 <= order && order <= 2) return 'Tank';
+    if (3 <= order && order <= 4) return 'Healer';
+    if (5 <= order && order <= 8) return 'DPS';
+    return 'Others';
+  }
+
+  switch (job) {
+    case 'PLD':
+    case 'WAR':
+    case 'DRK':
+    case 'GNB':
+      return 'Tank';
+    case 'WHM':
+    case 'SCH':
+    case 'AST':
+    case 'SGE':
+      return 'Healer';
+    default:
+      return 'DPS';
+  }
+};

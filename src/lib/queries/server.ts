@@ -16,7 +16,7 @@ export const buildStrategyCardDataQuery = (supabase: ReturnType<typeof createCli
 export type StrategyCardDataType = QueryData<ReturnType<typeof buildStrategyCardDataQuery>>;
 
 export const buildStrategyDataQuery = async (supabase: ReturnType<typeof createClient>, strategyId: string) => {
-  return supabase
+  const res = await supabase
     .from('strategies')
     .select(
       `*, 
@@ -25,6 +25,12 @@ export const buildStrategyDataQuery = async (supabase: ReturnType<typeof createC
     )
     .eq('id', strategyId)
     .maybeSingle();
+
+  if (res.data) {
+    res.data.strategy_players.sort((a, b) => a.order - b.order);
+  }
+
+  return res;
 };
 
 export type StrategyDataType = QueryData<ReturnType<typeof buildStrategyDataQuery>>;
