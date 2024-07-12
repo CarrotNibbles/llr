@@ -128,7 +128,8 @@ export const HeadColumn = ({
                               <AlertDialogHeader>
                                 <AlertDialogTitle>직업 변경 확인</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                  직업을 변경할 경우 해당 직업의 전략이 초기화됩니다. 이 작업은 취소할 수 없습니다.
+                                  직업을 변경할 경우 현재 직업의 전략이 초기화됩니다.
+                                  다시 직업을 변경하더라도 이전 직업의 전략은 복구되지 않습니다.
                                   계속하시겠습니까?
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
