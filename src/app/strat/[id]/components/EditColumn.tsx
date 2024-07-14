@@ -258,6 +258,13 @@ export const EditColumn = ({ raidDuration, playerStrategy, actions }: EditColumn
           playerId={playerStrategy.id}
         />
       ))}
+      {actions.length === 0 && (
+        <>
+          <div className={`${columnWidth} ${columnWidthLarge}`} />
+          <div className={`${columnWidth} ${columnWidthLarge}`} />
+          <div className={`${columnWidth} ${columnWidthLarge}`} />
+        </>
+      )}
     </div>
   );
 };

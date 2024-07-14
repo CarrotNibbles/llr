@@ -81,7 +81,7 @@ export const HeadColumn = ({
 
   const [popoverOpen, setPopoverOpen] = useState(false);
 
-  const jobLayout = [
+  const JOB_LAYOUT = [
     ['PLD', 'WAR', 'DRK', 'GNB'],
     ['WHM', 'SCH', 'AST', 'SGE'],
     ['MNK', 'DRG', 'NIN', 'SAM', 'RPR', 'VPR'],
@@ -104,7 +104,7 @@ export const HeadColumn = ({
                 <div className="space-y-3">
                   <div className="text-xs font-bold">직업 변경</div>
                   <div className="flex space-x-2">
-                    {jobLayout.map((row, i) => (
+                    {JOB_LAYOUT.map((row, i) => (
                       <div
                         key={`job-col-${playerId}-${
                           // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
@@ -162,6 +162,26 @@ export const HeadColumn = ({
             iconFilename={action.icon_filename}
           />
         ))}
+
+        {actions.length === 0 && (
+          <>
+            <div
+              className={`flex flex-shrink-0 ${columnWidth} ${columnWidthLarge} overflow-hidden justify-center items-end relative`}
+            >
+              <div className="aspect-square relative w-full" />
+            </div>
+            <div
+              className={`flex flex-shrink-0 ${columnWidth} ${columnWidthLarge} overflow-hidden justify-center items-end relative`}
+            >
+              <div className="aspect-square relative w-full" />
+            </div>
+            <div
+              className={`flex flex-shrink-0 ${columnWidth} ${columnWidthLarge} overflow-hidden justify-center items-end relative`}
+            >
+              <div className="aspect-square relative w-full" />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

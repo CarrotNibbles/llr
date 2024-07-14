@@ -112,7 +112,7 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) => {
 
           state.strategyData.strategy_players = event.value.players.map((player) => ({
             id: player.id,
-            job: player.job as Enums<'job'>,
+            job: player.job ? (player.job as Enums<'job'>) : null,
             order: player.order,
             strategy: strategy,
             strategy_player_entries: event.value.entries
