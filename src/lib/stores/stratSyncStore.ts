@@ -11,6 +11,7 @@ export type StratSyncState = {
   strategy: string;
   token?: string;
   elevated: boolean;
+  connectionAborted: boolean;
   eventStream?: AsyncIterable<EventResponse>;
   client?: StratSyncClient;
   strategyData: StrategyDataType;
@@ -19,6 +20,7 @@ export type StratSyncState = {
 export type StratSyncActions = {
   connect: (strategy: string) => Promise<void>;
   elevate: (password: string) => Promise<boolean>;
+  abort: () => void;
   upsertDamageOption: (damageOption: PlainMessage<DamageOption>, local: boolean) => void;
   upsertEntry: (entry: PlainMessage<Entry>, local: boolean) => void;
   deleteEntry: (id: string, local: boolean) => void;
@@ -30,6 +32,7 @@ export type StratSyncStore = StratSyncState & StratSyncActions;
 const defaultState = {
   strategy: '',
   elevated: false,
+  connectionAborted: false,
   strategyData: {} as StrategyDataType,
 };
 
@@ -95,81 +98,96 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) => {
     ...defaultState,
     ...initState,
     connect: async (strategy: string) => {
-      if (StratSyncClientFactory.instance) return;
+      try {
+        if (StratSyncClientFactory.instance) return;
 
-      const client = new StratSyncClientFactory().client;
-      const eventStream = client.event({ strategy });
-      const { event } = (await eventStream[Symbol.asyncIterator]().next()).value as EventResponse;
+        const client = new StratSyncClientFactory().client;
+        const eventStream = client.event({ strategy });
+        const { event } = (await eventStream[Symbol.asyncIterator]().next()).value as EventResponse;
 
-      set(
-        produce((state: StratSyncStore) => {
-          if (event.case !== 'initializationEvent') return;
+        set(
+          produce((state: StratSyncStore) => {
+            if (event.case !== 'initializationEvent') return;
 
-          state.client = client;
-          state.eventStream = eventStream;
-          state.strategy = strategy;
-          state.token = event.value.token;
+            state.client = client;
+            state.eventStream = eventStream;
+            state.strategy = strategy;
+            state.token = event.value.token;
 
-          state.strategyData.strategy_players = event.value.players.map((player) => ({
-            id: player.id,
-            job: player.job ? (player.job as Enums<'job'>) : null,
-            order: player.order,
-            strategy: strategy,
-            strategy_player_entries: event.value.entries
-              .filter((e) => e.player === player.id)
-              .map((e) => ({
-                action: e.action,
-                id: e.id,
-                player: e.player,
-                use_at: e.useAt,
-              })),
-          }));
+            state.strategyData.strategy_players = event.value.players.map((player) => ({
+              id: player.id,
+              job: player.job ? (player.job as Enums<'job'>) : null,
+              order: player.order,
+              strategy: strategy,
+              strategy_player_entries: event.value.entries
+                .filter((e) => e.player === player.id)
+                .map((e) => ({
+                  action: e.action,
+                  id: e.id,
+                  player: e.player,
+                  use_at: e.useAt,
+                })),
+            }));
 
-          for (const gimmick of state.strategyData.raids?.gimmicks ?? []) {
-            for (const damage of gimmick.damages) {
-              damage.strategy_damage_options = event.value.damageOptions
-                .filter((d) => d.damage === damage.id)
-                .map((d) => ({
-                  damage: d.damage,
-                  num_shared: d.numShared ?? null,
-                  primary_target: d.primaryTarget ?? null,
-                  strategy: strategy,
-                }));
+            for (const gimmick of state.strategyData.raids?.gimmicks ?? []) {
+              for (const damage of gimmick.damages) {
+                damage.strategy_damage_options = event.value.damageOptions
+                  .filter((d) => d.damage === damage.id)
+                  .map((d) => ({
+                    damage: d.damage,
+                    num_shared: d.numShared ?? null,
+                    primary_target: d.primaryTarget ?? null,
+                    strategy: strategy,
+                  }));
+              }
+            }
+          }),
+        );
+
+        for await (const { event } of eventStream) {
+          if (event.case === 'initializationEvent') {
+            // This should never happen, but just in case
+            throw new Error('Received initialization event after initial connection');
+          }
+
+          if (event.case === 'upsertDamageOptionEvent') {
+            if (event.value.damageOption) {
+              const { damageOption } = event.value;
+              set((state: StratSyncStore) => handleUpsertDamageOption(damageOption)(state));
             }
           }
+
+          if (event.case === 'upsertEntryEvent') {
+            if (event.value.entry) {
+              const { entry } = event.value;
+              set((state: StratSyncStore) => handleUpsertEntry(entry)(state));
+            }
+          }
+
+          if (event.case === 'deleteEntryEvent') {
+            const { id } = event.value;
+            set((state: StratSyncStore) => handleDeleteEntry(id)(state));
+          }
+
+          if (event.case === 'updatePlayerJobEvent') {
+            const { id, job } = event.value;
+            set((state: StratSyncStore) => handleUpdatePlayerJob(id, job)(state));
+          }
+        }
+      } catch (e) {
+        set(
+          produce((state: StratSyncStore) => {
+            state.connectionAborted = true;
+          }),
+        );
+      }
+    },
+    abort: () => {
+      set(
+        produce((state: StratSyncStore) => {
+          state.connectionAborted = true;
         }),
       );
-
-      for await (const { event } of eventStream) {
-        if (event.case === 'initializationEvent') {
-          // This should never happen, but just in case
-          throw new Error('Received initialization event after initial connection');
-        }
-
-        if (event.case === 'upsertDamageOptionEvent') {
-          if (event.value.damageOption) {
-            const { damageOption } = event.value;
-            set((state: StratSyncStore) => handleUpsertDamageOption(damageOption)(state));
-          }
-        }
-
-        if (event.case === 'upsertEntryEvent') {
-          if (event.value.entry) {
-            const { entry } = event.value;
-            set((state: StratSyncStore) => handleUpsertEntry(entry)(state));
-          }
-        }
-
-        if (event.case === 'deleteEntryEvent') {
-          const { id } = event.value;
-          set((state: StratSyncStore) => handleDeleteEntry(id)(state));
-        }
-
-        if (event.case === 'updatePlayerJobEvent') {
-          const { id, job } = event.value;
-          set((state: StratSyncStore) => handleUpdatePlayerJob(id, job)(state));
-        }
-      }
     },
     elevate: async (password: string) => {
       if (!get().client || !get().token) return false;
