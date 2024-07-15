@@ -6,9 +6,9 @@ import {
   type MergedGimmick,
   type SuperMergedGimmick,
   cn,
-  gimmickBorderColor,
-  gimmickTextColor,
-  maxDisplayCount,
+  GIMMICK_BORDER_STYLE,
+  GIMMICK_TEXT_STYLE,
+  MAX_DISPLAY_COUNT,
   usePixelPerFrame,
 } from '@/lib/utils';
 import React from 'react';
@@ -88,15 +88,15 @@ const GimmicksNames = React.forwardRef<
 
   return (
     <div className={cn('flex text-md', className)}>
-      {superMergedGimmicks.slice(0, maxDisplayCount).map((superMergedGimmick, idx, array) => (
-        <div key={superMergedGimmick.id} className={cn(gimmickTextColor[superMergedGimmick.type], 'mr-1')}>
+      {superMergedGimmicks.slice(0, MAX_DISPLAY_COUNT).map((superMergedGimmick, idx, array) => (
+        <div key={superMergedGimmick.id} className={cn(GIMMICK_TEXT_STYLE[superMergedGimmick.type], 'mr-1')}>
           {superMergedGimmick.name}
           {superMergedGimmick.mergeCount >= 2 && `×${superMergedGimmick.mergeCount}`}
           {idx !== array.length - 1 && ','}
         </div>
       ))}
       {superMergedGimmicks.length > 3 && (
-        <div className={gimmickTextColor.AutoAttack}>외 {superMergedGimmicks.length - 3}</div>
+        <div className={GIMMICK_TEXT_STYLE.AutoAttack}>외 {superMergedGimmicks.length - 3}</div>
       )}
     </div>
   );
@@ -128,8 +128,8 @@ const GimmickLine = React.forwardRef<
     resizePanelSize,
   } = props;
   const pixelPerFrame = usePixelPerFrame();
-  const textColor = gimmickTextColor[gimmickType];
-  const borderColor = gimmickBorderColor[gimmickType];
+  const textColor = GIMMICK_TEXT_STYLE[gimmickType];
+  const borderColor = GIMMICK_BORDER_STYLE[gimmickType];
   const borderWidth = gimmickType === 'Enrage' ? 'border-t-4' : 'border-t-2';
   const titleWeight = gimmickType === 'Enrage' ? 'font-extrabold' : 'font-bold';
 
@@ -181,7 +181,7 @@ const GimmickLine = React.forwardRef<
               {mergedGimmicks.length > 0 &&
                 mergedGimmicks.map((mergedGimmick, index) => (
                   <div key={mergedGimmick.id} className={cn(className, 'space-y-1 mb-1')}>
-                    <div className={cn(gimmickTextColor[mergedGimmick.type], 'text-xs', 'font-bold')}>
+                    <div className={cn(GIMMICK_TEXT_STYLE[mergedGimmick.type], 'text-xs', 'font-bold')}>
                       {mergedGimmick.name}
                     </div>
                     <div className="grid text-sm gap-x-2 gap-y-1" style={{ gridTemplateColumns: 'auto auto auto' }}>

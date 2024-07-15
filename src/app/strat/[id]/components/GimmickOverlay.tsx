@@ -5,8 +5,8 @@ import { useFilterState } from '@/lib/states';
 import {
   type ArrayElement,
   type MergedGimmick,
-  mergePixelThresholdDefault,
-  mergePixelThresholdIncremental,
+  MERGE_THRESHOLD_DEFAULT,
+  MERGE_THRESHOLD_INCREMENTAL,
   usePixelPerFrame,
 } from '@/lib/utils';
 import React from 'react';
@@ -61,15 +61,15 @@ const GimmickOverlay = React.forwardRef<
       if (
         i + 1 >= gimmicksWithMerged.length ||
         (gimmicksWithMerged[i + 1].prepare_at - gimmicksWithMerged[i].prepare_at) * pixelPerFrame >=
-          mergePixelThresholdDefault +
-            mergePixelThresholdIncremental * (gimmicksWithMerged[i].damageDisplayGimmick?.damages.length ?? 0) ||
+          MERGE_THRESHOLD_DEFAULT +
+            MERGE_THRESHOLD_INCREMENTAL * (gimmicksWithMerged[i].damageDisplayGimmick?.damages.length ?? 0) ||
         gimmicksWithMerged[i + 1].type === 'Enrage'
       )
         continue;
 
       if (
         (gimmicksWithMerged[i + 1].prepare_at - gimmicksWithMerged[i].prepare_at) * pixelPerFrame >=
-        mergePixelThresholdDefault
+        MERGE_THRESHOLD_DEFAULT
       ) {
         let j = i;
         let stopMerge = false;
@@ -77,8 +77,8 @@ const GimmickOverlay = React.forwardRef<
         while (
           j + 1 < gimmicksWithMerged.length &&
           (gimmicksWithMerged[j + 1].prepare_at - gimmicksWithMerged[j].prepare_at) * pixelPerFrame <
-            mergePixelThresholdDefault +
-              mergePixelThresholdIncremental * (gimmicksWithMerged[i].damageDisplayGimmick?.damages.length ?? 0) &&
+            MERGE_THRESHOLD_DEFAULT +
+              MERGE_THRESHOLD_INCREMENTAL * (gimmicksWithMerged[i].damageDisplayGimmick?.damages.length ?? 0) &&
           gimmicksWithMerged[i + 1].type !== 'Enrage'
         ) {
           if (

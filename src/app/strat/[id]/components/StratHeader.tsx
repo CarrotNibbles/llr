@@ -12,7 +12,7 @@ import { Toggle } from '@/components/ui/toggle';
 import { useToast } from '@/components/ui/use-toast';
 import type { Enums } from '@/lib/database.types';
 import { useFilterState } from '@/lib/states';
-import { cn, gimmickBackgroundColor, gimmickTypeName } from '@/lib/utils';
+import { cn, GIMMICK_BACKGROUND_STYLE, GIMMICK_TYPE_NAME } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { HeartIcon, LockClosedIcon, LockOpen2Icon, Share1Icon, ZoomInIcon } from '@radix-ui/react-icons';
 import React, { useEffect, useState } from 'react';
@@ -57,8 +57,8 @@ export const FilterMenu = () => {
                 setFilterState(new Map(filterState).set(gimmickType, pressed));
               }}
             >
-              <div className={cn('rounded-sm mr-2 w-[8px] h-[8px]', gimmickBackgroundColor[gimmickType])} />
-              <div className="text-xs">{gimmickTypeName[gimmickType]}</div>
+              <div className={cn('rounded-sm mr-2 w-[8px] h-[8px]', GIMMICK_BACKGROUND_STYLE[gimmickType])} />
+              <div className="text-xs">{GIMMICK_TYPE_NAME[gimmickType]}</div>
             </Toggle>
           ))}
         </div>

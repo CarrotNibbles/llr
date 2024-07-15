@@ -22,11 +22,11 @@ export const usePixelPerFrame = () => {
 
 const notNullOrUndefined = <ValueType>(value: ValueType | undefined): value is ValueType =>
   value !== null && value !== undefined;
-const myMin = (...values: Array<number | undefined>) => Math.min(...values.filter(notNullOrUndefined));
-const myMax = (...values: Array<number | undefined>) => Math.max(...values.filter(notNullOrUndefined));
-export const clamp = (num: number, min?: number, max?: number) => myMax(myMin(num, max), min);
+const filteredMin = (...values: Array<number | undefined>) => Math.min(...values.filter(notNullOrUndefined));
+const filteredMax = (...values: Array<number | undefined>) => Math.max(...values.filter(notNullOrUndefined));
+export const clamp = (num: number, min?: number, max?: number) => filteredMax(filteredMin(num, max), min);
 
-export const gimmickTextColor = {
+export const GIMMICK_TEXT_STYLE = {
   AutoAttack: 'text-zinc-500',
   Raidwide: 'text-blue-600 dark:text-blue-400',
   Tankbuster: 'text-rose-600 dark:text-rose-400',
@@ -35,7 +35,7 @@ export const gimmickTextColor = {
   Enrage: 'text-zinc-900 dark:text-zinc-100',
 } satisfies Record<Enums<'gimmick_type'>, string>;
 
-export const gimmickBorderColor = {
+export const GIMMICK_BORDER_STYLE = {
   AutoAttack: 'border-zinc-500',
   Raidwide: 'border-blue-600 dark:border-blue-400',
   Tankbuster: 'border-rose-600 dark:border-rose-400',
@@ -44,7 +44,7 @@ export const gimmickBorderColor = {
   Enrage: 'border-zinc-900 dark:border-zinc-100',
 } satisfies Record<Enums<'gimmick_type'>, string>;
 
-export const gimmickBackgroundColor = {
+export const GIMMICK_BACKGROUND_STYLE = {
   AutoAttack: 'bg-zinc-500',
   Raidwide: 'bg-blue-600 dark:bg-blue-400',
   Tankbuster: 'bg-rose-600 dark:bg-rose-400',
@@ -53,7 +53,7 @@ export const gimmickBackgroundColor = {
   Enrage: 'bg-zinc-900 dark:bg-zinc-100',
 } satisfies Record<Enums<'gimmick_type'>, string>;
 
-export const gimmickTypeName = {
+export const GIMMICK_TYPE_NAME = {
   AutoAttack: '자동 공격',
   Raidwide: '광역 공격',
   Tankbuster: '탱커버스터',
@@ -62,9 +62,9 @@ export const gimmickTypeName = {
   Enrage: '전멸기',
 } satisfies Record<Enums<'gimmick_type'>, string>;
 
-export const timeStep = 30;
-export const mergePixelThresholdDefault = 28;
-export const mergePixelThresholdIncremental = 20;
+export const TIME_STEP = 30;
+export const MERGE_THRESHOLD_DEFAULT = 28;
+export const MERGE_THRESHOLD_INCREMENTAL = 20;
 
 export type MergedGimmick = {
   id: string;
@@ -89,18 +89,11 @@ export const weightedCompareFunction =
   (item1: ValueType, item2: ValueType): number =>
     compareFn1(item1, item2) === 0 ? compareFn2(item1, item2) : compareFn1(item1, item2);
 
-export const maxDisplayCount = 3;
+export const MAX_DISPLAY_COUNT = 3;
 
 export type Role = 'Tank' | 'Healer' | 'DPS' | 'Others';
 
-export const getRole = (job: Enums<'job'> | null, order: number): Role => {
-  if (job === null || job === 'LB') {
-    if (1 <= order && order <= 2) return 'Tank';
-    if (3 <= order && order <= 4) return 'Healer';
-    if (5 <= order && order <= 8) return 'DPS';
-    return 'Others';
-  }
-
+export const getRawRole = (job: Enums<'job'>): Role => {
   switch (job) {
     case 'PLD':
     case 'WAR':
@@ -115,4 +108,15 @@ export const getRole = (job: Enums<'job'> | null, order: number): Role => {
     default:
       return 'DPS';
   }
+};
+
+export const getRole = (job: Enums<'job'> | null, order: number): Role => {
+  if (job === null || job === 'LB') {
+    if (1 <= order && order <= 2) return 'Tank';
+    if (3 <= order && order <= 4) return 'Healer';
+    if (5 <= order && order <= 8) return 'DPS';
+    return 'Others';
+  }
+
+  return getRawRole(job);
 };
