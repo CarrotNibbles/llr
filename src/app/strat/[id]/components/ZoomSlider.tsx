@@ -7,12 +7,16 @@ import { cn, getZoom } from '@/lib/utils';
 type SliderProps = React.ComponentProps<typeof DefaultSlider>;
 
 export function ZoomSlider({ className, ...props }: SliderProps) {
-  const [_, setZoom] = useZoomState();
+  const [zoom, setZoom] = useZoomState();
   return (
     <DefaultSlider
       defaultValue={[5]}
       onValueChange={(value) => {
-        setZoom(getZoom(value[0]));
+        const newZoom = getZoom(value[0]);
+        setZoom({
+          value: newZoom,
+          changeRatio: newZoom / zoom.value,
+        });
       }}
       max={15}
       min={0}

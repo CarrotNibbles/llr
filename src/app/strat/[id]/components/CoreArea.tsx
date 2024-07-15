@@ -4,21 +4,31 @@ import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import type { ActionDataType } from '@/lib/queries/server';
 import { usePixelPerFrame } from '@/lib/utils';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import { EditColumn } from './EditColumn';
 import { GimmickOverlay } from './GimmickOverlay';
 import { HeadColumn } from './HeadColumn';
+import { useZoomState } from '@/lib/states';
 
 export type CoreAreaProps = {
   actionData: ActionDataType;
 };
 
 export const CoreArea = (props: CoreAreaProps) => {
+  const [zoom, _] = useZoomState();
   const [resizePanelSize, setResizePanelSize] = useState(20);
   const pixelPerFrame = usePixelPerFrame();
 
   const strategyData = useStratSyncStore((state) => state.strategyData);
+
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.scrollTop *= zoom.changeRatio;
+    }
+  }, [zoom]);
 
   const raidDuration = strategyData.raids?.duration ?? 0;
   const raidLevel = strategyData.raids?.level ?? 0;
@@ -51,7 +61,7 @@ export const CoreArea = (props: CoreAreaProps) => {
         <ResizablePanel defaultSize={20} minSize={4} className="border-r -z-50">
           <div className="min-h-20 h-20 border-b" />
         </ResizablePanel>
-        <ResizableHandle className="w-0" withHandle/>
+        <ResizableHandle className="w-0" withHandle />
         <ResizablePanel
           defaultSize={80}
           maxSize={96}
@@ -88,7 +98,7 @@ export const CoreArea = (props: CoreAreaProps) => {
             </div>
           </ScrollSyncPane>
         </ResizablePanel>
-        <ScrollSyncPane group="y">
+        <ScrollSyncPane group="y" innerRef={ref}>
           <div className="absolute top-20 left-0 w-screen h-[calc(100%-5rem)] overflow-y-scroll scrollbar-hide">
             <GimmickOverlay
               resizePanelSize={resizePanelSize}

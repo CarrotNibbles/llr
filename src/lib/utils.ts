@@ -17,7 +17,7 @@ export const usePixelPerFrame = () => {
   const [zoom, _] = useZoomState();
   const pixelPerFrameDefault = 0.2;
 
-  return pixelPerFrameDefault * zoom;
+  return pixelPerFrameDefault * zoom.value;
 };
 
 const notNullOrUndefined = <ValueType>(value: ValueType | undefined): value is ValueType =>

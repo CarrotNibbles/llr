@@ -1,13 +1,19 @@
 import { atom } from 'recoil';
 import { useCheckedRecoilState } from '.';
 
-type ZoomType = number;
+type ZoomState = {
+  value: number;
+  changeRatio: number;
+};
 
-const defaultZoom: ZoomType = 1;
+const defaultState: ZoomState = {
+  value: 1,
+  changeRatio: 1,
+};
 
-const zoomState = atom<ZoomType>({
+const zoomState = atom<ZoomState>({
   key: 'zoomState',
-  default: defaultZoom,
+  default: defaultState,
 });
 
-export const useZoomState = () => useCheckedRecoilState<ZoomType>(zoomState, defaultZoom);
+export const useZoomState = () => useCheckedRecoilState<ZoomState>(zoomState, defaultState);
