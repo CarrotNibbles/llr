@@ -26,13 +26,16 @@ const useTank: () => [string, string] | [string, undefined] | [undefined, undefi
   return [tanks[0], tanks[1]];
 };
 
+const ACTIVE_OPTION_STYLE = 'font-bold';
+const INACTIVE_OPTION_STYLE = 'text-muted-foreground text-xs';
+
 const BothTankBuster = (props: DamageTextProps) => {
   const { defaultDamage, currentDamage } = props;
 
   return (
     <>
       <div className="space-x-1 pr-6">
-        <span className="font-bold pointer-events-auto">T1+T2</span>
+        <span className={ACTIVE_OPTION_STYLE}>T1+T2</span>
       </div>
       <span className="tabular-nums font-bold">{currentDamage}</span>
       <span className="text-muted-foreground tabular-nums text-xs my-auto">{defaultDamage}</span>
@@ -51,11 +54,13 @@ const SingleTankBuster = (props: DamageTextProps) => {
 
   return (
     <>
-      <div className="space-x-1 pr-6">
+      <div className="space-x-1 pr-6 min-w-16">
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
         <span
-          className={cn(activeOption === 0 ? 'font-bold' : 'text-muted-foreground', cursorStyle)}
+          className={cn(activeOption === 0 ? ACTIVE_OPTION_STYLE : INACTIVE_OPTION_STYLE, cursorStyle)}
           onClick={() => {
+            if (activeOption === 0) return;
+
             upsertDamageOption(
               {
                 damage: props.damageId,
@@ -69,8 +74,10 @@ const SingleTankBuster = (props: DamageTextProps) => {
         </span>
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
         <span
-          className={cn(activeOption === 1 ? 'font-bold' : 'text-muted-foreground', cursorStyle)}
+          className={cn(activeOption === 1 ? ACTIVE_OPTION_STYLE : INACTIVE_OPTION_STYLE, cursorStyle)}
           onClick={() => {
+            if (activeOption === 1) return;
+
             upsertDamageOption(
               {
                 damage: props.damageId,
@@ -100,11 +107,13 @@ const ShareTankBuster = (props: DamageTextProps) => {
 
   return (
     <>
-      <div className="space-x-1 pr-6">
+      <div className="space-x-1 pr-6 min-w-28">
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
         <span
-          className={cn(activeOption === 0 ? 'font-bold' : 'text-muted-foreground', cursorStyle)}
+          className={cn(activeOption === 0 ? ACTIVE_OPTION_STYLE : INACTIVE_OPTION_STYLE, cursorStyle)}
           onClick={() => {
+            if (activeOption === 0) return;
+
             upsertDamageOption(
               {
                 damage: props.damageId,
@@ -117,8 +126,10 @@ const ShareTankBuster = (props: DamageTextProps) => {
         </span>
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
         <span
-          className={cn(activeOption === 1 ? 'font-bold' : 'text-muted-foreground', cursorStyle)}
+          className={cn(activeOption === 1 ? ACTIVE_OPTION_STYLE : INACTIVE_OPTION_STYLE, cursorStyle)}
           onClick={() => {
+            if (activeOption === 1) return;
+
             upsertDamageOption(
               {
                 damage: props.damageId,
@@ -132,8 +143,10 @@ const ShareTankBuster = (props: DamageTextProps) => {
         </span>
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
         <span
-          className={cn(activeOption === 2 ? 'font-bold' : 'text-muted-foreground', cursorStyle)}
+          className={cn(activeOption === 2 ? ACTIVE_OPTION_STYLE : INACTIVE_OPTION_STYLE, cursorStyle)}
           onClick={() => {
+            if (activeOption === 2) return;
+
             upsertDamageOption(
               {
                 damage: props.damageId,
@@ -157,7 +170,7 @@ const ShareAllRaidWide = (props: DamageTextProps) => {
   return (
     <>
       <div className="space-x-1 pr-6">
-        <span className="font-bold">쉐어</span>
+        <span className={ACTIVE_OPTION_STYLE}>쉐어</span>
       </div>
       <span className="tabular-nums font-bold">{currentDamage}</span>
       <span className="text-muted-foreground tabular-nums text-xs my-auto">{defaultDamage}</span>
@@ -170,7 +183,7 @@ const RaidWide = (props: DamageTextProps) => {
   return (
     <>
       <div className="space-x-1 pr-6">
-        <span className="font-bold">광역</span>
+        <span className={ACTIVE_OPTION_STYLE}>광역</span>
       </div>
       <span className="tabular-nums font-bold">{currentDamage}</span>
       <span className="text-muted-foreground tabular-nums text-xs my-auto">{defaultDamage}</span>
@@ -181,20 +194,48 @@ const RaidWide = (props: DamageTextProps) => {
 const ShareHalfRaidWide = (props: DamageTextProps) => {
   const { defaultDamage, currentDamage, numShared } = props;
 
+  const { upsertDamageOption, elevated } = useStratSyncStore((state) => state);
+
+  const activeOption = numShared === 3 ? 0 : 1;
+  const cursorStyle = elevated ? 'cursor-pointer' : 'cursor-not-allowed';
+
   return (
     <>
-      <div className="space-x-1 pr-6">
-        {numShared === 3 ? (
-          <>
-            <span className="text-muted-foreground">4+4</span>
-            <span className="font-bold">3+5</span>
-          </>
-        ) : (
-          <>
-            <span className="font-bold">4+4</span>
-            <span className="text-muted-foreground">3+5</span>
-          </>
-        )}
+      <div className="space-x-1 pr-6 min-w-20">
+        {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+        <span
+          className={cn(activeOption === 0 ? ACTIVE_OPTION_STYLE : INACTIVE_OPTION_STYLE, cursorStyle)}
+          onClick={() => {
+            if (activeOption === 0) return;
+
+            upsertDamageOption(
+              {
+                damage: props.damageId,
+                numShared: 3,
+              },
+              false,
+            );
+          }}
+        >
+          4+4
+        </span>
+        {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+        <span
+          className={cn(activeOption === 1 ? ACTIVE_OPTION_STYLE : INACTIVE_OPTION_STYLE, cursorStyle)}
+          onClick={() => {
+            if (activeOption === 1) return;
+
+            upsertDamageOption(
+              {
+                damage: props.damageId,
+                numShared: 4,
+              },
+              false,
+            );
+          }}
+        >
+          3+5
+        </span>
       </div>
       <span className="tabular-nums font-bold">{currentDamage}</span>
       <span className="text-muted-foreground tabular-nums text-xs my-auto">{defaultDamage}</span>
