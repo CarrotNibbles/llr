@@ -27,7 +27,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/app/strat/[id]/components"
+    "src/app/[lang]/strat/[id]/components"
   ],
   "exclude": ["node_modules"]
 }
