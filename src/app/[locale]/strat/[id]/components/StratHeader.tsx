@@ -42,7 +42,7 @@ export const FilterMenu = () => {
           <Icons.filter />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-64 p-3">
+      <PopoverContent className="w-72 p-3">
         {/* <div className="flex justify-between">
           <div className="text-xs w-full mb-[2px] ml-1">표시할 공격</div>
           <MixerHorizontalIcon />
