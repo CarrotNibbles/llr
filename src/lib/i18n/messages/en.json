@@ -28,7 +28,7 @@
         "Raidwide": "Raid-Wide",
         "Tankbuster": "Tankbuster",
         "Hybrid": "Others",
-        "Avoidable": "Avoidable",
+        "Avoidable": "AoE",
         "Enrage": "Enrage"
       },
       "EditPermission": {
@@ -41,9 +41,9 @@
         "Password": "Password"
       },
       "Share": {
-        "Success": "Copied to clipboard!",
-        "FailureTitle": "Error",
-        "FailureDescription": "There was an error copying the link to clipboard."
+        "Success": "Link copied to clipboard!",
+        "FailureTitle": "There was an Error",
+        "FailureDescription": "An error occurred while copying the link to clipboard."
       }
     },
     "StratSyncProvider": {
