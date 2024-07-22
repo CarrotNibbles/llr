@@ -32,7 +32,6 @@
         "Enrage": "전멸기"
       },
       "EditPermission": {
-        "EditPermission": "수정 권한",
         "Description": "이 전략의 수정 권한을 얻기 위한 비밀번호를 입력해주세요.",
         "Acquire": "수정 권한 획득",
         "Submit": "제출",
