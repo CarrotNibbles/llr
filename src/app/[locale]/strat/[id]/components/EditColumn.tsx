@@ -11,6 +11,7 @@ import { type ArrayElement, clamp, usePixelPerFrame } from '@/lib/utils';
 import { animate, motion, useMotionValue } from 'framer-motion';
 import { type MouseEventHandler, useEffect, useState } from 'react';
 import { columnWidth, columnWidthLarge, timeStep } from './coreAreaConstants';
+import { useTranslations } from 'next-intl';
 
 const contextMenuWidth = 16;
 const contextMenuWidthLarge = 32;
@@ -76,6 +77,7 @@ const DraggableBox = ({
   cooldown: number;
 }) => {
   const { use_at: useAt, id: entryId, action: actionId, player: playerId } = entry;
+  const t = useTranslations("StratPage.EditColumn");
 
   const { upsertEntry, deleteEntry, elevated } = useStratSyncStore((state) => state);
   const [isLocked, setIsLocked] = useState(false);
@@ -152,7 +154,7 @@ const DraggableBox = ({
             setIsLocked(checked);
           }}
         >
-          잠금
+          {t("Lock")}
         </ContextMenuCheckboxItem>
         <ContextMenuItem
           inset
@@ -160,7 +162,7 @@ const DraggableBox = ({
             deleteEntry(entryId, false);
           }}
         >
-          삭제
+          {t("Delete")}
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>

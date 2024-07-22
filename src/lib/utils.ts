@@ -2,7 +2,6 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import type { Enums, Tables } from "./database.types";
 import { useZoomState } from "./states";
-import { readFile } from "fs/promises";
 
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
@@ -73,15 +72,6 @@ export const GIMMICK_BACKGROUND_STYLE = {
   Hybrid: "bg-violet-600 dark:bg-violet-400",
   Avoidable: "bg-green-600 dark:bg-green-400",
   Enrage: "bg-zinc-900 dark:bg-zinc-100",
-} satisfies Record<Enums<"gimmick_type">, string>;
-
-export const GIMMICK_TYPE_NAME = {
-  AutoAttack: "자동 공격",
-  Raidwide: "광역 공격",
-  Tankbuster: "탱커버스터",
-  Hybrid: "기타",
-  Avoidable: "회피 가능",
-  Enrage: "전멸기",
 } satisfies Record<Enums<"gimmick_type">, string>;
 
 export const TIME_STEP = 30;

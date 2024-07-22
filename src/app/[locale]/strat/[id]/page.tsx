@@ -6,11 +6,12 @@ import { createClient } from "@/lib/supabase/server";
 import { CoreArea } from "./components/CoreArea";
 import { StratHeader } from "./components/StratHeader";
 import { StratSyncProvider } from "./components/StratSyncProvider";
+import type { Locale } from "@/lib/i18n";
 
 export default async function StratPage({
-  params: { id, lang },
+  params: { id, locale },
 }: Readonly<{
-  params: { id: string; lang: string };
+  params: { id: string; locale: Locale };
 }>) {
   const supabase = createClient();
 

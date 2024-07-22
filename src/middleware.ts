@@ -1,7 +1,7 @@
 import { withUpdateSession } from "@/lib/supabase/middleware";
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
+import type { MiddleWareFactory, MyNextMiddleware } from "./lib/types";
 import { withInternationalization } from "./lib/i18n/middleware";
-import { MiddleWareFactory, MyNextMiddleware } from "./lib/types";
 
 export const defaultMiddleware = (request: NextRequest) =>
   NextResponse.next({
@@ -16,9 +16,10 @@ const chainMiddlewares = (withMiddlewares: MiddleWareFactory[]) =>
     defaultMiddleware
   );
 
+// Due to internal implementation detail of withInternationalization, it should always be the first middleware in the list
 export const middleware = chainMiddlewares([
-  withUpdateSession,
   withInternationalization,
+  withUpdateSession,
 ]);
 
 export const config = {

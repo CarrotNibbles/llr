@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { UserSignInForm } from "@/app/[lang]/signin/components/UserSignInForm";
+import { UserSignupForm } from "@/app/[locale]/signup/components/UserSignUpForm";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -10,14 +10,14 @@ export const metadata: Metadata = {
   description: "Authentication forms built using the components.",
 };
 
-export default function SignInPage({
+export default function SignUpPage({
   params: { lang },
 }: Readonly<{
   params: { lang: string };
 }>) {
   return (
     <>
-      <div className="relative hidden min-h-screen flex-col items-center justify-center md:grid">
+      <div className="relative min-h-screen flex-col items-center justify-center grid">
         <Link
           href="/examples/authentication"
           className={cn(
@@ -36,7 +36,7 @@ export default function SignInPage({
               Enter your email below to create your account
             </p>
           </div>
-          <UserSignInForm />
+          <UserSignupForm />
           <p className="px-8 text-center text-sm text-muted-foreground">
             By clicking continue, you agree to our{" "}
             <Link

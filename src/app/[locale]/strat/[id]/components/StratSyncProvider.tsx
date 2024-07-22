@@ -11,6 +11,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import type { StrategyDataType } from '@/lib/queries/server';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState, type ReactNode } from 'react';
 
 export type StratSyncProviderProps = {
@@ -20,6 +21,7 @@ export type StratSyncProviderProps = {
 
 const StratSyncLoader = (props: { strategy: string }) => {
   const { connect, abort, connectionAborted } = useStratSyncStore((state) => state);
+  const t = useTranslations("StratPage.StratSyncProvider");
 
   useEffect(() => {
     connect(props.strategy);
@@ -37,9 +39,9 @@ const StratSyncLoader = (props: { strategy: string }) => {
     <AlertDialog open={connectionAborted}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>연결 오류</AlertDialogTitle>
+          <AlertDialogTitle>{t("ErrorTitle")}</AlertDialogTitle>
           <AlertDialogDescription>
-            서버와의 연결이 끊어졌습니다. 페이지를 새로고침하여 다시 시도해주세요.
+            {t("ErrorDescription")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -48,7 +50,7 @@ const StratSyncLoader = (props: { strategy: string }) => {
               window.location.reload();
             }}
           >
-            새로고침
+            {t("Refresh")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

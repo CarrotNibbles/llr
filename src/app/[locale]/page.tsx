@@ -1,12 +1,14 @@
 'use client';
 
 import { useUserState } from '@/lib/states';
+import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
-import { Suspense, useState } from 'react';
+import { useState } from 'react';
 
 export default function Home(): React.ReactElement {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [user, setUser] = useUserState();
+  const t = useTranslations("common");
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">

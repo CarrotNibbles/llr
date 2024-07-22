@@ -1,0 +1,56 @@
+{
+  "StratPage": {
+    "CoreArea": {},
+    "DamageText": {
+      "DamageOption": {
+        "Share": "쉐어",
+        "RaidWide": "광역",
+        "Unknown": "???"
+      }
+    },
+    "EditColumn": {
+      "Lock": "잠금",
+      "Delete": "삭제"
+    },
+    "HeadColumn": {
+      "JobChange": {
+        "JobChange": "직업 변경",
+        "ConfirmTitle": "직업 변경 확인",
+        "Confirm": "직업 변경",
+        "Cancel": "취소",
+        "Warning": "직업을 변경할 경우 현재 직업의 전략이 초기화됩니다. 다시 직업을 변경하더라도 이전 직업의 전략은 복구되지 않습니다. 계속하시겠습니까?",
+        "Complete": "직업 변경이 완료되었습니다."
+      }
+    },
+    "StratHeader": {
+      "GimmickType": {
+        "AutoAttack": "자동 공격",
+        "Raidwide": "광역 공격",
+        "Tankbuster": "탱커버스터",
+        "Hybrid": "기타",
+        "Avoidable": "회피 가능",
+        "Enrage": "전멸기"
+      },
+      "EditPermission": {
+        "EditPermission": "수정 권한",
+        "Description": "이 전략의 수정 권한을 얻기 위한 비밀번호를 입력해주세요.",
+        "Acquire": "수정 권한 획득",
+        "Submit": "제출",
+        "Success": "수정 권한을 획득하였습니다.",
+        "Failure": "비밀번호를 확인해주세요.",
+        "Complete": "수정 권한 획득이 완료되었습니다.",
+        "Password": "비밀번호"
+      },
+      "Share": {
+        "Success": "클립보드에 링크가 복사되었습니다!",
+        "FailureTitle": "오류가 발생했습니다.",
+        "FailureDescription": "클립보드에 복사하는 중 오류가 발생하였습니다."
+      },
+      "StratSyncProvider": {
+        "ErrorTitle": "연결 오류",
+        "ErrorDescription": "서버와의 연결이 끊어졌습니다. 페이지를 새로고침하여 다시 시도해주세요.",
+        "Refresh": "새로고침"
+      }
+    }
+  }
+}

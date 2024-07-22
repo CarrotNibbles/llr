@@ -1,54 +1,51 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
-	"formatter": {
-		"enabled": true,
-		"formatWithErrors": false,
-		"indentStyle": "space",
-		"indentWidth": 2,
-		"lineEnding": "lf",
-		"lineWidth": 120,
-		"attributePosition": "auto"
-	},
-	"organizeImports": {
-		"enabled": true
-	},
-	"linter": {
-		"enabled": true,
-		"rules": {
-			"recommended": true
-		},
-		"ignore": [
-			"src/lib/proto/*.ts",
-			"src/lib/proto/*.js",
-			"**/postcss.config.js",
-			"**/tailwind.config.ts",
-			"src/components/ui/**",
-			"**/database.types.ts",
-			"components/icons.tsx"
-		]
-	},
-	"javascript": {
-		"formatter": {
-			"jsxQuoteStyle": "double",
-			"quoteProperties": "asNeeded",
-			"trailingCommas": "all",
-			"semicolons": "always",
-			"arrowParentheses": "always",
-			"bracketSpacing": true,
-			"bracketSameLine": false,
-			"quoteStyle": "single",
-			"attributePosition": "auto"
-		}
-	},
-	"overrides": [
-		{
-			"include": [
-				"*.ts",
-				"*.tsx"
-			],
-			"linter": {
-				"rules": {}
-			}
-		}
-	]
+  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineEnding": "lf",
+    "lineWidth": 120,
+    "attributePosition": "auto"
+  },
+  "organizeImports": {
+    "enabled": true
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true
+    },
+    "ignore": [
+      "src/lib/proto/*.ts",
+      "src/lib/proto/*.js",
+      "**/postcss.config.js",
+      "**/tailwind.config.ts",
+      "src/components/ui/**",
+      "**/database.types.ts",
+      "components/icons.tsx"
+    ]
+  },
+  "javascript": {
+    "formatter": {
+      "jsxQuoteStyle": "double",
+      "quoteProperties": "asNeeded",
+      "trailingCommas": "all",
+      "semicolons": "always",
+      "arrowParentheses": "always",
+      "bracketSpacing": true,
+      "bracketSameLine": false,
+      "quoteStyle": "single",
+      "attributePosition": "auto"
+    }
+  },
+  "overrides": [
+    {
+      "include": ["*.ts", "*.tsx"],
+      "linter": {
+        "rules": {}
+      }
+    }
+  ]
 }
