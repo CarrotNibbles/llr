@@ -1,14 +1,14 @@
+import { NextRequest, NextResponse } from "next/server";
 import { MiddleWareFactory } from "../types";
-import acceptLanguage from "accept-language";
 import {
   ACCEPT_LANGUAGE,
+  acceptLanguageParser,
   FALLBACK_LANGUAGE,
   isSupportedLanguage,
   LANGUAGE_COOKIE_NAME,
   REFERER,
   SUPPORTED_LANGUAGES,
-} from "./languages";
-import { NextRequest, NextResponse } from "next/server";
+} from "./settings";
 
 const getLanguage = (request: NextRequest) => {
   if (request.cookies.has(LANGUAGE_COOKIE_NAME)) {
@@ -17,9 +17,6 @@ const getLanguage = (request: NextRequest) => {
   }
 
   if (request.headers.has(ACCEPT_LANGUAGE)) {
-    const acceptLanguageParser = acceptLanguage.create();
-    acceptLanguageParser.languages([...SUPPORTED_LANGUAGES]);
-
     const languageFromHeader = acceptLanguageParser.get(
       request.headers.get(ACCEPT_LANGUAGE)!
     );
