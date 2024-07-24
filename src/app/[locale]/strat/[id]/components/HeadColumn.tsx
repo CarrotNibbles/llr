@@ -111,6 +111,7 @@ export const HeadColumn = ({
 
   const [popoverOpen, setPopoverOpen] = useState(false);
   const t = useTranslations("StratPage.HeadColumn");
+  const tAction = useTranslations("StratPage.Actions");
 
   const JOB_LAYOUT = [
     ["PLD", "WAR", "DRK", "GNB"],
@@ -216,7 +217,7 @@ export const HeadColumn = ({
           <HeadSubColumn
             key={`subcolumn-header-${playerId}-${action.id}`}
             job={job}
-            name={action.name}
+            name={tAction(action.icon_filename)}
             iconFilename={action.icon_filename}
           />
         ))}
