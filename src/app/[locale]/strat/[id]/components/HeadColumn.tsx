@@ -1,21 +1,5 @@
 import { useStratSyncStore } from "@/components/providers/StratSyncStoreProvider";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import type { Enums } from "@/lib/database.types";
-import type { ActionDataType } from "@/lib/queries/server";
-import { type Role, cn, getRole } from "@/lib/utils";
-import Image from "next/legacy/image";
-import { ReactSVG } from "react-svg";
-import { columnWidth, columnWidthLarge } from "./coreAreaConstants";
-import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -26,9 +10,25 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useState } from "react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
+import type { Enums } from "@/lib/database.types";
+import type { ActionDataType } from "@/lib/queries/server";
+import { type Role, cn, getRole } from "@/lib/utils";
 import { useTranslations } from "next-intl";
+import Image from "next/legacy/image";
+import { useState } from "react";
+import { ReactSVG } from "react-svg";
+import { columnWidth, columnWidthLarge } from "./coreAreaConstants";
 
 const HeadSubColumn = ({
   job,
@@ -143,7 +143,9 @@ export const HeadColumn = ({
               </PopoverTrigger>
               <PopoverContent className="w-auto">
                 <div className="space-y-3">
-                  <div className="text-xs font-bold">{t("JobChange.JobChange")}</div>
+                  <div className="text-xs font-bold">
+                    {t("JobChange.JobChange")}
+                  </div>
                   <div className="flex space-x-2">
                     {JOB_LAYOUT.map((row, i) => (
                       <div
@@ -182,7 +184,9 @@ export const HeadColumn = ({
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
                               <AlertDialogFooter>
-                                <AlertDialogCancel>{t("JobChange.Cancel")}</AlertDialogCancel>
+                                <AlertDialogCancel>
+                                  {t("JobChange.Cancel")}
+                                </AlertDialogCancel>
                                 <AlertDialogAction
                                   onClick={() => {
                                     updatePlayerJob(
@@ -192,8 +196,7 @@ export const HeadColumn = ({
                                     );
                                     setPopoverOpen(false);
                                     toast({
-                                      description:
-                                        t("JobChange.Complete"),
+                                      description: t("JobChange.Complete"),
                                     });
                                   }}
                                 >
