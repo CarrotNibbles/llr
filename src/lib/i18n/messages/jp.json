@@ -46,6 +46,9 @@
         "FailureDescription": "リンクをクリップボードにコピー中にエラーが発生しました。"
       }
     },
+    "GimmickLine": {
+      "Etc": "外{count}"
+    },
     "StratSyncProvider": {
       "ErrorTitle": "接続切断",
       "ErrorDescription": "サーバーへの接続が失われました。ページを再読み込みして、もう一度お試しください。",

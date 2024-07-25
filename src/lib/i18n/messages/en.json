@@ -46,6 +46,9 @@
         "FailureDescription": "An error occurred while copying the link to clipboard."
       }
     },
+    "GimmickLine": {
+      "Etc": "and {count} more"
+    },
     "StratSyncProvider": {
       "ErrorTitle": "Connection Lost",
       "ErrorDescription": "Lost connection to the server. Please refresh the page and try again.",

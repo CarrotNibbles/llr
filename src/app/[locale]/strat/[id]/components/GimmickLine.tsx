@@ -42,26 +42,31 @@ export const GimmickSubLine = ({
 }: GimmickSubLineProps) => {
   const tGimmicks = useTranslations("StratPage.Gimmicks");
 
-  return time && Math.abs(time - primaryTime) * pixelPerFrame > 5 && (
-    <>
-      <div
-        className={`absolute border-0 border-t ${borderColor} right-0 ${lineType} z-10 pointer-events-none`}
-        style={{
-          top: `${time * pixelPerFrame}px`,
-          width: `${resizePanelSize}vw`,
-        }}
-      />
-      {Math.abs(time - primaryTime) * pixelPerFrame > 10 && (
+  return (
+    time &&
+    Math.abs(time - primaryTime) * pixelPerFrame > 5 && (
+      <>
         <div
-          className={`absolute ${textColor} text-xs z-10 right-0 pointer-events-none`}
+          className={`absolute border-0 border-t ${borderColor} right-0 ${lineType} z-10 pointer-events-none`}
           style={{
-            top: `${pixelPerFrame * time}px`,
+            top: `${time * pixelPerFrame}px`,
+            width: `${resizePanelSize}vw`,
           }}
-        >
-          <div className="text-xs font-thin right-0">{tGimmicks(translation_key)}</div>
-        </div>
-      )}
-    </>
+        />
+        {Math.abs(time - primaryTime) * pixelPerFrame > 10 && (
+          <div
+            className={`absolute ${textColor} text-xs z-10 right-0 pointer-events-none`}
+            style={{
+              top: `${pixelPerFrame * time}px`,
+            }}
+          >
+            <div className="text-xs font-thin right-0">
+              {tGimmicks(translation_key)}
+            </div>
+          </div>
+        )}
+      </>
+    )
   );
 };
 
@@ -71,6 +76,7 @@ type GimmicksNamesProps = React.ComponentPropsWithRef<"div"> & {
 
 const GimmicksNames = React.forwardRef<HTMLDivElement, GimmicksNamesProps>(
   ({ className, mergedGimmicks }, ref) => {
+    const t = useTranslations("StratPage.GimmickLine");
     const tGimmicks = useTranslations("StratPage.Gimmicks");
 
     const superMergeGimmicks = (mergedGimmicks: MergedGimmick[]) => {
@@ -111,9 +117,9 @@ const GimmicksNames = React.forwardRef<HTMLDivElement, GimmicksNamesProps>(
               {idx !== array.length - 1 && ","}
             </div>
           ))}
-        {superMergedGimmicks.length > 3 && (
+        {superMergedGimmicks.length > MAX_DISPLAY_COUNT && (
           <div className={GIMMICK_TEXT_STYLE.AutoAttack}>
-            외 {superMergedGimmicks.length - 3}
+            {t("Etc", { count: superMergedGimmicks.length - 3 })}
           </div>
         )}
       </div>

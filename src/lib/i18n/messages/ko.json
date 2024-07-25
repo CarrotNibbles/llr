@@ -46,6 +46,9 @@
         "FailureDescription": "클립보드에 복사하는 중 오류가 발생하였습니다."
       }
     },
+    "GimmickLine": {
+      "Etc": "외 {count}"
+    },
     "StratSyncProvider": {
       "ErrorTitle": "연결 오류",
       "ErrorDescription": "서버와의 연결이 끊어졌습니다. 페이지를 새로고침하여 다시 시도해주세요.",
