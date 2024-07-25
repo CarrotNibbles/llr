@@ -4,9 +4,9 @@ import type { StrategyDataType } from '@/lib/queries/server';
 import { useFilterState } from '@/lib/states';
 import {
   type ArrayElement,
-  type MergedGimmick,
   MERGE_THRESHOLD_DEFAULT,
   MERGE_THRESHOLD_INCREMENTAL,
+  type MergedGimmick,
   usePixelPerFrame,
 } from '@/lib/utils';
 import React from 'react';

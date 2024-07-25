@@ -1,6 +1,6 @@
 'use client';
 
-import { fail } from 'assert';
+import { fail } from 'node:assert';
 import { Button } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -206,7 +206,7 @@ const CreateButton = React.forwardRef<
             </div>
           </form>
         </Form>
-        <DialogFooter></DialogFooter>
+        <DialogFooter />
       </DialogContent>
     </Dialog>
   );

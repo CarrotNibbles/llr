@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import type { StrategyDataType } from '@/lib/queries/server';
 import { useTranslations } from 'next-intl';
-import { useEffect, useState, type ReactNode } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 
 export type StratSyncProviderProps = {
   children: ReactNode;
@@ -21,7 +21,7 @@ export type StratSyncProviderProps = {
 
 const StratSyncLoader = (props: { strategy: string }) => {
   const { connect, abort, connectionAborted } = useStratSyncStore((state) => state);
-  const t = useTranslations("StratPage.StratSyncProvider");
+  const t = useTranslations('StratPage.StratSyncProvider');
 
   useEffect(() => {
     connect(props.strategy);
@@ -39,10 +39,8 @@ const StratSyncLoader = (props: { strategy: string }) => {
     <AlertDialog open={connectionAborted}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{t("ErrorTitle")}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {t("ErrorDescription")}
-          </AlertDialogDescription>
+          <AlertDialogTitle>{t('ErrorTitle')}</AlertDialogTitle>
+          <AlertDialogDescription>{t('ErrorDescription')}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogAction
@@ -50,7 +48,7 @@ const StratSyncLoader = (props: { strategy: string }) => {
               window.location.reload();
             }}
           >
-            {t("Refresh")}
+            {t('Refresh')}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

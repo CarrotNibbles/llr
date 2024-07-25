@@ -32,7 +32,7 @@ export const FilterMenu = () => {
     'Enrage',
   ];
   const [filterState, setFilterState] = useFilterState();
-  const t = useTranslations("StratPage.StratHeader.GimmickType");
+  const t = useTranslations('StratPage.StratHeader.GimmickType');
 
   return (
     <Popover>
@@ -73,7 +73,7 @@ const ElevationDialog = () => {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const { elevated, elevate } = useStratSyncStore((state) => state);
-  const t = useTranslations("StratPage.StratHeader.EditPermission");
+  const t = useTranslations('StratPage.StratHeader.EditPermission');
 
   const formSchema = z.object({
     pin: z.string(),
@@ -101,16 +101,16 @@ const ElevationDialog = () => {
     const res = await elevate(values.pin);
 
     if (res) {
-      toast({ description: t("Success") });
+      toast({ description: t('Success') });
 
       setOpen(false);
     } else {
       toast({
         variant: 'destructive',
-        description: t("Failure"),
+        description: t('Failure'),
       });
 
-      form.setError('pin', { message: t("Failure") });
+      form.setError('pin', { message: t('Failure') });
     }
   });
 
@@ -131,10 +131,10 @@ const ElevationDialog = () => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{t("Acquire")}</DialogTitle>
+          <DialogTitle>{t('Acquire')}</DialogTitle>
         </DialogHeader>
         {elevated ? (
-          <p className="text-sm text-muted-foreground">{t("Complete")}</p>
+          <p className="text-sm text-muted-foreground">{t('Complete')}</p>
         ) : (
           <Form {...form}>
             <form onSubmit={onSubmit}>
@@ -143,7 +143,7 @@ const ElevationDialog = () => {
                 name="pin"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("Password")}</FormLabel>
+                    <FormLabel>{t('Password')}</FormLabel>
                     <FormControl>
                       <InputOTP maxLength={8} onComplete={onSubmit} {...field}>
                         <InputOTPGroup>
@@ -159,14 +159,14 @@ const ElevationDialog = () => {
                         </InputOTPGroup>
                       </InputOTP>
                     </FormControl>
-                    <FormDescription>{t("Description")}</FormDescription>
+                    <FormDescription>{t('Description')}</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
               <DialogFooter>
-                <Button type="submit">{t("Submit")}</Button>
+                <Button type="submit">{t('Submit')}</Button>
               </DialogFooter>
             </form>
           </Form>
@@ -182,8 +182,8 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
     // const [lastTitle, setLastTitle] = useState(name);
 
     const { name, raids, likes } = useStratSyncStore((state) => state.strategyData);
-    const t = useTranslations("StratPage.StratHeader")
-    const tRaids = useTranslations("StratPage.Raids");
+    const t = useTranslations('StratPage.StratHeader');
+    const tRaids = useTranslations('StratPage.Raids');
 
     return (
       <div
@@ -204,12 +204,12 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
             onClick={async () => {
               try {
                 await window.navigator.clipboard.writeText(window.location.href);
-                toast({ description: t("Share.Success") });
+                toast({ description: t('Share.Success') });
               } catch {
                 toast({
                   variant: 'destructive',
-                  title: t("Share.FailureTitle"),
-                  description: t("Share.FailureDescription"),
+                  title: t('Share.FailureTitle'),
+                  description: t('Share.FailureDescription'),
                 });
               }
             }}

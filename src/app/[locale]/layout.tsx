@@ -1,7 +1,7 @@
-import type { Locale } from "@/lib/i18n";
-import { getMessages } from "next-intl/server";
-import { NextIntlClientProvider } from "next-intl";
-import type React from "react";
+import type { Locale } from '@/lib/i18n';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
+import type React from 'react';
 
 export default async function LocaleLayout({
   children,
@@ -12,9 +12,5 @@ export default async function LocaleLayout({
 }) {
   const messages = await getMessages();
 
-  return (
-    <NextIntlClientProvider messages={messages}>
-      {children}
-    </NextIntlClientProvider>
-  );
+  return <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>;
 }

@@ -7,7 +7,9 @@
     "proto_build": "pnpm buf generate protos/stratsync.proto && perl -pi -e 's/.js//g' src/lib/proto/stratsync_connect.ts",
     "dev": "next dev",
     "build": "pnpm proto_build && pnpm schema_build && next build",
-    "start": "next start"
+    "start": "next start",
+    "fix": "pnpm biome check --fix",
+    "fix_unsafe": "pnpm biome check --fix --unsafe"
   },
   "dependencies": {
     "@bufbuild/protobuf": "^1.8.0",

@@ -1,7 +1,7 @@
 'use client';
 
 import { type StratSyncStore, createStratSyncStore } from '@/lib/stores/stratSyncStore';
-import { type ReactNode, createContext, useRef, useContext } from 'react';
+import { type ReactNode, createContext, useContext, useRef } from 'react';
 import { useStore } from 'zustand';
 
 export type StratSyncStoreApi = ReturnType<typeof createStratSyncStore>;

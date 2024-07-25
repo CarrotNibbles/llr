@@ -8,7 +8,7 @@ import { useState } from 'react';
 export default function Home(): React.ReactElement {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [user, setUser] = useUserState();
-  const t = useTranslations("common");
+  const t = useTranslations('common');
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">

@@ -1,5 +1,9 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+  "files": {
+    "include": ["./src/**/*.ts", "./src/**/*.tsx"],
+    "ignore": ["src/lib/proto/**", "src/components/ui/**", "src/components/icons.tsx", "src/lib/database.types.ts"]
+  },
   "formatter": {
     "enabled": true,
     "formatWithErrors": false,
@@ -16,16 +20,7 @@
     "enabled": true,
     "rules": {
       "recommended": true
-    },
-    "ignore": [
-      "src/lib/proto/*.ts",
-      "src/lib/proto/*.js",
-      "**/postcss.config.js",
-      "**/tailwind.config.ts",
-      "src/components/ui/**",
-      "**/database.types.ts",
-      "components/icons.tsx"
-    ]
+    }
   },
   "javascript": {
     "formatter": {
@@ -39,13 +34,5 @@
       "quoteStyle": "single",
       "attributePosition": "auto"
     }
-  },
-  "overrides": [
-    {
-      "include": ["*.ts", "*.tsx"],
-      "linter": {
-        "rules": {}
-      }
-    }
-  ]
+  }
 }
