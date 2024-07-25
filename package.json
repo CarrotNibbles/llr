@@ -8,6 +8,7 @@
     "dev": "next dev",
     "build": "pnpm proto_build && pnpm schema_build && next build",
     "start": "next start",
+    "check": "pnpm biome check",
     "fix": "pnpm biome check --fix",
     "fix_unsafe": "pnpm biome check --fix --unsafe"
   },
