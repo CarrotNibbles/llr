@@ -17,6 +17,7 @@ import {
 } from "@/lib/utils";
 import React from "react";
 import { DamageText } from "./DamageText";
+import { useTranslations } from "next-intl";
 
 type GimmickSubLineProps = {
   time: number;
@@ -25,7 +26,7 @@ type GimmickSubLineProps = {
   textColor: string;
   borderColor: string;
   resizePanelSize: number;
-  name: string;
+  translationKey: string;
   lineType: string;
 };
 
@@ -36,11 +37,12 @@ export const GimmickSubLine = ({
   textColor,
   borderColor,
   resizePanelSize,
-  name,
+  translationKey: translation_key,
   lineType,
-}: GimmickSubLineProps) =>
-  time &&
-  Math.abs(time - primaryTime) * pixelPerFrame > 5 && (
+}: GimmickSubLineProps) => {
+  const tGimmicks = useTranslations("StratPage.Gimmicks");
+
+  return time && Math.abs(time - primaryTime) * pixelPerFrame > 5 && (
     <>
       <div
         className={`absolute border-0 border-t ${borderColor} right-0 ${lineType} z-10 pointer-events-none`}
@@ -56,11 +58,12 @@ export const GimmickSubLine = ({
             top: `${pixelPerFrame * time}px`,
           }}
         >
-          <div className="text-xs font-thin right-0">{name}</div>
+          <div className="text-xs font-thin right-0">{tGimmicks(translation_key)}</div>
         </div>
       )}
     </>
   );
+};
 
 type GimmicksNamesProps = React.ComponentPropsWithRef<"div"> & {
   mergedGimmicks: MergedGimmick[];
@@ -68,14 +71,16 @@ type GimmicksNamesProps = React.ComponentPropsWithRef<"div"> & {
 
 const GimmicksNames = React.forwardRef<HTMLDivElement, GimmicksNamesProps>(
   ({ className, mergedGimmicks }, ref) => {
+    const tGimmicks = useTranslations("StratPage.Gimmicks");
+
     const superMergeGimmicks = (mergedGimmicks: MergedGimmick[]) => {
       const superMergedGimmicks: SuperMergedGimmick[] = [];
 
       for (const mergedGimmick of mergedGimmicks) {
         if (
           superMergedGimmicks.length === 0 ||
-          superMergedGimmicks[superMergedGimmicks.length - 1].name !==
-            mergedGimmick.name ||
+          superMergedGimmicks[superMergedGimmicks.length - 1].translationKey !==
+            mergedGimmick.translationKey ||
           superMergedGimmicks[superMergedGimmicks.length - 1].type !==
             mergedGimmick.type
         )
@@ -100,7 +105,7 @@ const GimmicksNames = React.forwardRef<HTMLDivElement, GimmicksNamesProps>(
                 "mr-1"
               )}
             >
-              {superMergedGimmick.name}
+              {tGimmicks(superMergedGimmick.translationKey)}
               {superMergedGimmick.mergeCount >= 2 &&
                 `×${superMergedGimmick.mergeCount}`}
               {idx !== array.length - 1 && ","}
@@ -133,9 +138,10 @@ const GimmickLine = React.forwardRef<
     className?: string;
   } & React.ComponentPropsWithoutRef<"div">
 >(({ className, ...props }, ref) => {
+  const tGimmicks = useTranslations("StratPage.Gimmicks");
   const {
     damages,
-    name,
+    translation_key: translationKey,
     type: gimmickType,
     prepare_at: prepareAt,
     cast_at: castAt,
@@ -160,7 +166,7 @@ const GimmickLine = React.forwardRef<
           textColor={textColor}
           borderColor={borderColor}
           resizePanelSize={resizePanelSize}
-          name={name}
+          translationKey={translationKey}
           lineType="border-dashed"
           pixelPerFrame={pixelPerFrame}
         />
@@ -172,7 +178,7 @@ const GimmickLine = React.forwardRef<
           textColor={textColor}
           borderColor={borderColor}
           resizePanelSize={resizePanelSize}
-          name={name}
+          translationKey={translationKey}
           lineType=""
           pixelPerFrame={pixelPerFrame}
         />
@@ -213,7 +219,7 @@ const GimmickLine = React.forwardRef<
                         "font-bold"
                       )}
                     >
-                      {mergedGimmick.name}
+                      {tGimmicks(mergedGimmick.translationKey)}
                     </div>
                     <div
                       className="grid text-sm gap-x-2 gap-y-1"

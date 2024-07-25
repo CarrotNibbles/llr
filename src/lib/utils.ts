@@ -80,7 +80,7 @@ export const MERGE_THRESHOLD_INCREMENTAL = 20;
 
 export type MergedGimmick = {
   id: string;
-  name: string;
+  translationKey: string;
   damages: Array<
     Tables<"damages"> & {
       strategy_damage_options: Array<Tables<"strategy_damage_options">>;

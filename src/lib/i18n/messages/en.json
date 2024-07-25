@@ -134,7 +134,37 @@
       "succor": "Succor"
     },
     "Raids": {
+      "P10S": "Anabaseios: The Tenth Circle (Savage)",
       "P11S": "Anabaseios: The Eleventh Circle (Savage)"
+    },
+    "Gimmicks": {
+      "auto_attack": "Auto Attack",
+      "ultima": "Ultima",
+      "soul_grasp": "Soul Grasp",
+      "dividing_wings": "Dividing Wings",
+      "steel_web": "Steel Web",
+      "wicked_step": "Wicked Step",
+      "bury": "Bury",
+      "silkspit": "Silkspit",
+      "pandaemoniac_meltdown": "Pandæmoniac Meltdown",
+      "daemoniac_bonds": "Dæmoniac Bonds",
+      "tetradaemoniac_bonds": "Tetradæmoniac Bonds",
+      "peal_of_condemnation": "Peal of Condemnation",
+      "duodaemoniac_bonds": "Duodæmoniac Bonds",
+      "harrowing_hell": "Harrowing Hell",
+      "unmitigated_explosion": "Unmitigated Explosion",
+      "cannonspawn": "Cannonspawn",
+      "pandaemonium_holy_circle": "Circles of Pandæmonium/Pandæmon's Holy",
+      "circles_of_pandaemonium": "Circles of Pandæmonium",
+      "pandaemons_holy": "Pandæmon's Holy",
+      "entangling_web": "Entangling Web",
+      "pandaemonium_pillars": "Pandæmonium Pillars",
+      "pandaemoniac_turrets": "Pandæmonium Turrets",
+      "pandaemoniac_ray": "Pandæmonium Ray",
+      "parted_plumes": "Parted Plumes",
+      "temp_jade": "Jade?",
+      "temp_landing": "Landing?",
+      "temp_judgement": "Judgement?"
     }
   }
 }

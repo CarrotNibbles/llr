@@ -134,10 +134,37 @@
       "succor": "사기고양책"
     },
     "Raids": {
-      "P11S": "마의 전당 판데모니움: 천옥편(영웅) 2"
+      "P10S": "마의 전당 판데모니움: 천옥편(영웅) 2",
+      "P11S": "마의 전당 판데모니움: 천옥편(영웅) 3"
     },
     "Gimmicks": {
-
+      "auto_attack": "공격",
+      "ultima": "알테마",
+      "soul_grasp": "영혼 장악",
+      "dividing_wings": "날개 분리",
+      "steel_web": "강력 거미줄",
+      "wicked_step": "뾰족다리",
+      "bury": "충격",
+      "silkspit": "거미줄 뱉기",
+      "pandaemoniac_meltdown": "판데모니움 멜튼",
+      "daemoniac_bonds": "판데모니움 결속",
+      "tetradaemoniac_bonds": "판데모니움 사중 결속",
+      "peal_of_condemnation": "형벌 선포",
+      "duodaemoniac_bonds": "판데모니움 이중 결속",
+      "harrowing_hell": "판데모니움 격돌",
+      "unmitigated_explosion": "대폭발",
+      "cannonspawn": "산탄포",
+      "pandaemonium_holy_circle": "판데모니움 홀리/고리",
+      "pandaemons_holy": "판데모니움 홀리",
+      "circles_of_pandaemonium": "판데모니움 고리",
+      "entangling_web": "거대 거미줄",
+      "pandaemonium_pillars": "판데모니움 기둥",
+      "pandaemoniac_turrets": "판데모니움 포탑",
+      "pandaemoniac_ray": "판데모니움 광선",
+      "parted_plumes": "깃털 분리",
+      "temp_jade": "제이드 통로",
+      "temp_landing": "착지",
+      "temp_judgement": "천벌 선포"
     }
   }
 }

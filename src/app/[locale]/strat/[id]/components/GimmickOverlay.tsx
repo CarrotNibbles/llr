@@ -45,7 +45,7 @@ const GimmickOverlay = React.forwardRef<
     for (let i = 0; i < gimmicksWithMerged.length; i++) {
       gimmicksWithMerged[i].mergedGimmicks.push({
         id: gimmicksWithMerged[i].id,
-        name: gimmicksWithMerged[i].name,
+        translationKey: gimmicksWithMerged[i].translation_key,
         damages: gimmicksWithMerged[i].damages,
         type: gimmicksWithMerged[i].type,
       });
