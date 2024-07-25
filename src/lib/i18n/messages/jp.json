@@ -51,7 +51,6 @@
       "ErrorDescription": "サーバーへの接続が失われました。ページを再読み込みして、もう一度お試しください。",
       "Refresh": "再読み込み"
     },
-    
     "Actions": {
       "macrocosmos": "マクロコスモス",
       "neutral_sect": "ニュートラルセクト",
@@ -133,6 +132,12 @@
       "eukrasian_prognosis": "エウクラシア・プログノシス",
       "eukrasian_prognosis_ii": "エウクラシア・プログノシスII",
       "succor": "士気高揚の策"
+    },
+    "Raids": {
+      "P11S": "パンデモニウム零式 天獄編 3層 (解説)"
+    },
+    "Gimmicks": {
+
     }
   }
 }

@@ -44,12 +44,12 @@
         "Success": "클립보드에 링크가 복사되었습니다!",
         "FailureTitle": "오류가 발생했습니다.",
         "FailureDescription": "클립보드에 복사하는 중 오류가 발생하였습니다."
-      },
-      "StratSyncProvider": {
-        "ErrorTitle": "연결 오류",
-        "ErrorDescription": "서버와의 연결이 끊어졌습니다. 페이지를 새로고침하여 다시 시도해주세요.",
-        "Refresh": "새로고침"
       }
+    },
+    "StratSyncProvider": {
+      "ErrorTitle": "연결 오류",
+      "ErrorDescription": "서버와의 연결이 끊어졌습니다. 페이지를 새로고침하여 다시 시도해주세요.",
+      "Refresh": "새로고침"
     },
     "Actions": {
       "macrocosmos": "대우주",
@@ -132,6 +132,12 @@
       "eukrasian_prognosis": "정상건강: 예후",
       "eukrasian_prognosis_ii": "Eukrasian Prognosis II",
       "succor": "사기고양책"
+    },
+    "Raids": {
+      "P11S": "마의 전당 판데모니움: 천옥편(영웅) 2"
+    },
+    "Gimmicks": {
+
     }
   }
 }

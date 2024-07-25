@@ -73,7 +73,7 @@ const ElevationDialog = () => {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const { elevated, elevate } = useStratSyncStore((state) => state);
-  const t = useTranslations("StratPage.StratHeader.EditPermission")
+  const t = useTranslations("StratPage.StratHeader.EditPermission");
 
   const formSchema = z.object({
     pin: z.string(),
@@ -183,6 +183,7 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
 
     const { name, raids, likes } = useStratSyncStore((state) => state.strategyData);
     const t = useTranslations("StratPage.StratHeader")
+    const tRaids = useTranslations("StratPage.Raids");
 
     return (
       <div
@@ -191,7 +192,7 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
         {...props}
       >
         <EditableText initialText={name} className="font-bold" />
-        <div className="text-muted-foreground">{raids?.name}</div>
+        <div className="text-muted-foreground">{tRaids(raids?.translation_key)}</div>
         <div className="flex-grow" />
         <ZoomInIcon className="w-5 h-5" />
         <ZoomSlider className="ml-0" />
