@@ -1,0 +1,173 @@
+{
+  "StratPage": {
+    "CoreArea": {},
+    "DamageText": {
+      "DamageOption": {
+        "Share": "Stack",
+        "RaidWide": "Raid-wide",
+        "Unknown": "???"
+      }
+    },
+    "EditColumn": {
+      "Lock": "Lock",
+      "Delete": "Delete"
+    },
+    "HeadColumn": {
+      "JobChange": {
+        "JobChange": "Change Job",
+        "ConfirmTitle": "Confirm Job Change",
+        "Confirm": "Change Job",
+        "Cancel": "Cancel",
+        "Warning": "Once you change the selected job, the strategy for the previous job will be permanently lost. Even if you change back to the previous job, the strategy will not be restored. Do you still wish to continue?",
+        "Complete": "Job Change Complete"
+      }
+    },
+    "StratHeader": {
+      "GimmickType": {
+        "AutoAttack": "Auto Attack",
+        "Raidwide": "Raid-Wide",
+        "Tankbuster": "Tankbuster",
+        "Hybrid": "Others",
+        "Avoidable": "AoE",
+        "Enrage": "Enrage"
+      },
+      "EditPermission": {
+        "Description": "Please enter the password to edit this strategy.",
+        "Acquire": "Acquire Edit Permission",
+        "Submit": "Submit",
+        "Success": "Acquired edit permission.",
+        "Failure": "Please confirm your password.",
+        "Complete": "Acquired edit permission.",
+        "Password": "Password"
+      },
+      "Share": {
+        "Success": "Link copied to clipboard!",
+        "FailureTitle": "There was an Error",
+        "FailureDescription": "An error occurred while copying the link to clipboard."
+      }
+    },
+    "GimmickLine": {
+      "Etc": "and {count} more"
+    },
+    "StratSyncProvider": {
+      "ErrorTitle": "Connection Lost",
+      "ErrorDescription": "Lost connection to the server. Please refresh the page and try again.",
+      "Refresh": "Refresh"
+    },
+    "Actions": {
+      "macrocosmos": "Macrocosmos",
+      "neutral_sect": "Neutral Sect",
+      "sun_sign": "Sun Sign",
+      "earthly_star": "Earthly Star",
+      "collective_unconscious": "Collective Unconscious",
+      "horoscope": "Horoscope",
+      "celestial_opposition": "Celestial Opposition",
+      "addle": "Addle",
+      "troubadour": "Troubadour",
+      "natures_minne": "Nature's Minne",
+      "curing_waltz": "Curing Waltz",
+      "improvisation": "Improvisation",
+      "shield_samba": "Shield Samba",
+      "feint": "Feint",
+      "reprisal": "Reprisal",
+      "dark_missionary": "Dark Missionary",
+      "the_blackest_night": "The Blackest Night",
+      "oblation": "Oblation",
+      "rampart": "Rampart",
+      "dark_mind": "Dark Mind",
+      "shadow_wall": "Shadow Wall",
+      "shadowed_vigil": "Shadowed Vigil",
+      "living_dead": "Living Dead",
+      "heart_of_light": "Heart of Light",
+      "heart_of_stone": "Heart of Stone",
+      "heart_of_corundum": "Heart of Corundum",
+      "camouflage": "Camouflage",
+      "nebula": "Nebula",
+      "great_nebula": "Great Nebula",
+      "aurora": "Aurora",
+      "superbolide": "Superbolide",
+      "limit_break": "Limit Break",
+      "dismantle": "Dismantle",
+      "tactician": "Tactician",
+      "mantra": "Mantra",
+      "tempera_grassa": "Tempera Grassa",
+      "divine_veil": "Divine Veil",
+      "passage_of_arms": "Passage of Arms",
+      "sheltron": "Sheltron",
+      "holy_sheltron": "Holy Sheltron",
+      "bulwark": "Bulwark",
+      "sentinel": "Sentinel",
+      "guardian": "Guardian",
+      "hallowed_ground": "Hallowed Ground",
+      "magick_barrier": "Magick Barrier",
+      "arcane_crest": "Arcane Crest",
+      "seraphism": "Seraphism",
+      "expedient": "Expedient",
+      "summon_seraph": "Summon Seraph",
+      "recitation": "비책",
+      "deployment_tactics": "전개전술",
+      "sacred_soil": "야전치유진",
+      "fey_illumination": "요정의 광휘",
+      "dissipation": "에테르 전환",
+      "philosophia": "Philosophia",
+      "zoe": "Zoe",
+      "pneuma": "Pneuma",
+      "panhaima": "Panhaima",
+      "holos": "Holos",
+      "kerachole": "Kerachole",
+      "physis_ii": "Physis 2",
+      "shake_it_off": "Shake it Off",
+      "raw_intuition": "Raw Intuition",
+      "bloodwhetting": "Bloodwhetting",
+      "thrill_of_battle": "Thrill of Battle",
+      "vengeance": "Vengeance",
+      "damnation": "Damnation",
+      "equilibrium": "Equilibrium",
+      "holmgang": "Holmgang",
+      "liturgy_of_the_bell": "Liturgy of the Bell",
+      "temperance": "Temperance",
+      "divine_caress": "Divine Caress",
+      "plenary_indulgence": "Plenary Indulgence",
+      "asylum": "Asylum",
+      "assize": "Assize",
+      "concitation": "Concitation",
+      "verraise": "Verraise",
+      "eukrasian_prognosis": "Eukrasian Prognosis",
+      "eukrasian_prognosis_ii": "Eukrasian Prognosis II",
+      "succor": "Succor"
+    },
+    "Raids": {
+      "P10S": "Anabaseios: The Tenth Circle (Savage)",
+      "P11S": "Anabaseios: The Eleventh Circle (Savage)"
+    },
+    "Gimmicks": {
+      "auto_attack": "Auto Attack",
+      "ultima": "Ultima",
+      "soul_grasp": "Soul Grasp",
+      "dividing_wings": "Dividing Wings",
+      "steel_web": "Steel Web",
+      "wicked_step": "Wicked Step",
+      "bury": "Bury",
+      "silkspit": "Silkspit",
+      "pandaemoniac_meltdown": "Pandæmoniac Meltdown",
+      "daemoniac_bonds": "Dæmoniac Bonds",
+      "tetradaemoniac_bonds": "Tetradæmoniac Bonds",
+      "peal_of_condemnation": "Peal of Condemnation",
+      "duodaemoniac_bonds": "Duodæmoniac Bonds",
+      "harrowing_hell": "Harrowing Hell",
+      "unmitigated_explosion": "Unmitigated Explosion",
+      "cannonspawn": "Cannonspawn",
+      "pandaemonium_holy_circle": "Circles of Pandæmonium/Pandæmon's Holy",
+      "circles_of_pandaemonium": "Circles of Pandæmonium",
+      "pandaemons_holy": "Pandæmon's Holy",
+      "entangling_web": "Entangling Web",
+      "pandaemonium_pillars": "Pandæmonium Pillars",
+      "pandaemoniac_turrets": "Pandæmonium Turrets",
+      "pandaemoniac_ray": "Pandæmonium Ray",
+      "parted_plumes": "Parted Plumes",
+      "temp_jade": "Jade?",
+      "temp_landing": "Landing?",
+      "temp_judgement": "Judgement?"
+    }
+  }
+}

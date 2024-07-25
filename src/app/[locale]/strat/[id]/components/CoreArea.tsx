@@ -1,15 +1,19 @@
-'use client';
+"use client";
 
-import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
-import type { ActionDataType } from '@/lib/queries/server';
-import { usePixelPerFrame } from '@/lib/utils';
-import { useEffect, useRef, useState } from 'react';
-import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
-import { EditColumn } from './EditColumn';
-import { GimmickOverlay } from './GimmickOverlay';
-import { HeadColumn } from './HeadColumn';
-import { useZoomState } from '@/lib/states';
+import { useStratSyncStore } from "@/components/providers/StratSyncStoreProvider";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
+import type { ActionDataType } from "@/lib/queries/server";
+import { useZoomState } from "@/lib/states";
+import { usePixelPerFrame } from "@/lib/utils";
+import { useEffect, useRef, useState } from "react";
+import { ScrollSync, ScrollSyncPane } from "react-scroll-sync";
+import { EditColumn } from "./EditColumn";
+import { GimmickOverlay } from "./GimmickOverlay";
+import { HeadColumn } from "./HeadColumn";
 
 export type CoreAreaProps = {
   actionData: ActionDataType;
@@ -45,19 +49,30 @@ export const CoreArea = (props: CoreAreaProps) => {
       if (available_level > raidLevel) return false;
       if (superseding_level && superseding_level <= raidLevel) return false;
       if (updated_version > strategyData.version) return false;
-      if (updated_version === strategyData.version && updated_subversion > strategyData.subversion) return false;
+      if (
+        updated_version === strategyData.version &&
+        updated_subversion > strategyData.subversion
+      )
+        return false;
       if (deleted_version && deleted_subversion) {
         if (deleted_version < strategyData.version) return false;
-        if (deleted_version === strategyData.version && deleted_subversion <= strategyData.subversion) return false;
+        if (
+          deleted_version === strategyData.version &&
+          deleted_subversion <= strategyData.subversion
+        )
+          return false;
       }
 
       return true;
-    },
+    }
   );
 
   return (
     <ScrollSync>
-      <ResizablePanelGroup direction="horizontal" className="relative flex w-screen flex-grow overflow-hidden">
+      <ResizablePanelGroup
+        direction="horizontal"
+        className="relative flex w-screen flex-grow overflow-hidden"
+      >
         <ResizablePanel defaultSize={20} minSize={4} className="border-r -z-50">
           <div className="min-h-20 h-20 border-b" />
         </ResizablePanel>
@@ -77,20 +92,27 @@ export const CoreArea = (props: CoreAreaProps) => {
                   playerId={playerStrategy.id}
                   job={playerStrategy.job}
                   order={playerStrategy.order}
-                  actions={availableActions.filter(({ job }) => job === playerStrategy.job)}
+                  actions={availableActions.filter(
+                    ({ job }) => job === playerStrategy.job
+                  )}
                   key={`headcolumn-${playerStrategy.id}`}
                 />
               ))}
             </div>
           </ScrollSyncPane>
-          <ScrollSyncPane group={['x', 'y']}>
+          <ScrollSyncPane group={["x", "y"]}>
             <div className="overflow-scroll overscroll-none">
-              <div className="flex flex-grow relative" style={{ height: `${raidDuration * pixelPerFrame + 60}px` }}>
+              <div
+                className="flex flex-grow relative"
+                style={{ height: `${raidDuration * pixelPerFrame + 60}px` }}
+              >
                 {strategyData.strategy_players.map((playerStrategy) => (
                   <EditColumn
                     raidDuration={raidDuration}
                     playerStrategy={playerStrategy}
-                    actions={availableActions.filter(({ job }) => job === playerStrategy.job)}
+                    actions={availableActions.filter(
+                      ({ job }) => job === playerStrategy.job
+                    )}
                     key={`editcolumn-${playerStrategy.id}`}
                   />
                 ))}

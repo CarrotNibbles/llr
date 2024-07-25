@@ -1,0 +1,173 @@
+{
+  "StratPage": {
+    "CoreArea": {},
+    "DamageText": {
+      "DamageOption": {
+        "Share": "쉐어",
+        "RaidWide": "광역",
+        "Unknown": "???"
+      }
+    },
+    "EditColumn": {
+      "Lock": "잠금",
+      "Delete": "삭제"
+    },
+    "HeadColumn": {
+      "JobChange": {
+        "JobChange": "직업 변경",
+        "ConfirmTitle": "직업 변경 확인",
+        "Confirm": "직업 변경",
+        "Cancel": "취소",
+        "Warning": "직업을 변경할 경우 현재 직업의 전략이 초기화됩니다. 다시 직업을 변경하더라도 이전 직업의 전략은 복구되지 않습니다. 계속하시겠습니까?",
+        "Complete": "직업 변경이 완료되었습니다."
+      }
+    },
+    "StratHeader": {
+      "GimmickType": {
+        "AutoAttack": "자동 공격",
+        "Raidwide": "광역 공격",
+        "Tankbuster": "탱커버스터",
+        "Hybrid": "기타",
+        "Avoidable": "회피 가능",
+        "Enrage": "전멸기"
+      },
+      "EditPermission": {
+        "Description": "이 전략의 수정 권한을 얻기 위한 비밀번호를 입력해주세요.",
+        "Acquire": "수정 권한 획득",
+        "Submit": "제출",
+        "Success": "수정 권한을 획득하였습니다.",
+        "Failure": "비밀번호를 확인해주세요.",
+        "Complete": "수정 권한 획득이 완료되었습니다.",
+        "Password": "비밀번호"
+      },
+      "Share": {
+        "Success": "클립보드에 링크가 복사되었습니다!",
+        "FailureTitle": "오류가 발생했습니다.",
+        "FailureDescription": "클립보드에 복사하는 중 오류가 발생하였습니다."
+      }
+    },
+    "GimmickLine": {
+      "Etc": "외 {count}"
+    },
+    "StratSyncProvider": {
+      "ErrorTitle": "연결 오류",
+      "ErrorDescription": "서버와의 연결이 끊어졌습니다. 페이지를 새로고침하여 다시 시도해주세요.",
+      "Refresh": "새로고침"
+    },
+    "Actions": {
+      "macrocosmos": "대우주",
+      "neutral_sect": "하루별읽기",
+      "sun_sign": "Sun Sign",
+      "earthly_star": "지상의 별",
+      "collective_unconscious": "운명의 수레바퀴",
+      "horoscope": "별점운",
+      "celestial_opposition": "천궁의 반목",
+      "addle": "정신 교란",
+      "troubadour": "방랑하는 음악가",
+      "natures_minne": "대지신의 연가",
+      "curing_waltz": "치유의 왈츠",
+      "improvisation": "즉흥 연기",
+      "shield_samba": "수세의 삼바",
+      "feint": "견제",
+      "reprisal": "앙갚음",
+      "dark_missionary": "어둠의 포교자",
+      "the_blackest_night": "흑야",
+      "oblation": "헌신",
+      "rampart": "철벽 방어",
+      "dark_mind": "어두운 감정",
+      "shadow_wall": "그림자 방벽",
+      "shadowed_vigil": "Shadowed Vigil",
+      "living_dead": "산송장",
+      "heart_of_light": "빛의 심장",
+      "heart_of_stone": "돌의 심장",
+      "heart_of_corundum": "강옥의 심장",
+      "camouflage": "위장술",
+      "nebula": "성운",
+      "great_nebula": "Great Nebula",
+      "aurora": "오로라",
+      "superbolide": "폭발 유성",
+      "limit_break": "리미트 브레이크",
+      "dismantle": "무기 파괴",
+      "tactician": "책략가",
+      "mantra": "만트라",
+      "tempera_grassa": "Tempera Grassa",
+      "divine_veil": "신성한 보호막",
+      "passage_of_arms": "결연한 수호자",
+      "sheltron": "방벽",
+      "holy_sheltron": "신성한 방벽",
+      "bulwark": "방패 각성",
+      "sentinel": "경계",
+      "guardian": "Guardian",
+      "hallowed_ground": "천하무적",
+      "magick_barrier": "바매직",
+      "arcane_crest": "신비의 문장",
+      "seraphism": "Seraphism",
+      "expedient": "질풍노도계",
+      "summon_seraph": "세라핌 소환",
+      "recitation": "비책",
+      "deployment_tactics": "전개전술",
+      "sacred_soil": "야전치유진",
+      "fey_illumination": "요정의 광휘",
+      "dissipation": "에테르 전환",
+      "philosophia": "Philosophia",
+      "zoe": "생명력",
+      "pneuma": "프네우마",
+      "panhaima": "온혈액",
+      "holos": "전체론",
+      "kerachole": "케이라콜레",
+      "physis_ii": "퓌시스 2",
+      "shake_it_off": "뿌리치기",
+      "raw_intuition": "윈초의 직감",
+      "bloodwhetting": "원초의 혈기",
+      "thrill_of_battle": "전투의 짜릿함",
+      "vengeance": "보복",
+      "damnation": "Damnation",
+      "equilibrium": "평정심",
+      "holmgang": "일대일 결투",
+      "liturgy_of_the_bell": "예배종",
+      "temperance": "절제",
+      "divine_caress": "Divine Caress",
+      "plenary_indulgence": "대사면",
+      "asylum": "성소",
+      "assize": "심판",
+      "concitation": "Concitation",
+      "verraise": "버레이즈",
+      "eukrasian_prognosis": "정상건강: 예후",
+      "eukrasian_prognosis_ii": "Eukrasian Prognosis II",
+      "succor": "사기고양책"
+    },
+    "Raids": {
+      "P10S": "마의 전당 판데모니움: 천옥편(영웅) 2",
+      "P11S": "마의 전당 판데모니움: 천옥편(영웅) 3"
+    },
+    "Gimmicks": {
+      "auto_attack": "공격",
+      "ultima": "알테마",
+      "soul_grasp": "영혼 장악",
+      "dividing_wings": "날개 분리",
+      "steel_web": "강력 거미줄",
+      "wicked_step": "뾰족다리",
+      "bury": "충격",
+      "silkspit": "거미줄 뱉기",
+      "pandaemoniac_meltdown": "판데모니움 멜튼",
+      "daemoniac_bonds": "판데모니움 결속",
+      "tetradaemoniac_bonds": "판데모니움 사중 결속",
+      "peal_of_condemnation": "형벌 선포",
+      "duodaemoniac_bonds": "판데모니움 이중 결속",
+      "harrowing_hell": "판데모니움 격돌",
+      "unmitigated_explosion": "대폭발",
+      "cannonspawn": "산탄포",
+      "pandaemonium_holy_circle": "판데모니움 홀리/고리",
+      "pandaemons_holy": "판데모니움 홀리",
+      "circles_of_pandaemonium": "판데모니움 고리",
+      "entangling_web": "거대 거미줄",
+      "pandaemonium_pillars": "판데모니움 기둥",
+      "pandaemoniac_turrets": "판데모니움 포탑",
+      "pandaemoniac_ray": "판데모니움 광선",
+      "parted_plumes": "깃털 분리",
+      "temp_jade": "제이드 통로",
+      "temp_landing": "착지",
+      "temp_judgement": "천벌 선포"
+    }
+  }
+}

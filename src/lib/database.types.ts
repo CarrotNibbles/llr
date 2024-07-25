@@ -23,6 +23,7 @@ export type Database = {
           priority: number
           stacks: number
           superseding_level: number | null
+          translation_key: string
           updated_subversion: number
           updated_version: number
         }
@@ -39,6 +40,7 @@ export type Database = {
           priority: number
           stacks?: number
           superseding_level?: number | null
+          translation_key?: string
           updated_subversion: number
           updated_version: number
         }
@@ -55,6 +57,7 @@ export type Database = {
           priority?: number
           stacks?: number
           superseding_level?: number | null
+          translation_key?: string
           updated_subversion?: number
           updated_version?: number
         }
@@ -106,6 +109,7 @@ export type Database = {
           prepare_at: number
           raid: string
           resolve_at: number | null
+          translation_key: string
           type: Database["public"]["Enums"]["gimmick_type"]
         }
         Insert: {
@@ -115,6 +119,7 @@ export type Database = {
           prepare_at: number
           raid: string
           resolve_at?: number | null
+          translation_key?: string
           type?: Database["public"]["Enums"]["gimmick_type"]
         }
         Update: {
@@ -124,6 +129,7 @@ export type Database = {
           prepare_at?: number
           raid?: string
           resolve_at?: number | null
+          translation_key?: string
           type?: Database["public"]["Enums"]["gimmick_type"]
         }
         Relationships: [
@@ -183,6 +189,7 @@ export type Database = {
           item_level: number
           level: number
           name: string
+          translation_key: string
         }
         Insert: {
           category?: Database["public"]["Enums"]["raid_category"]
@@ -192,6 +199,7 @@ export type Database = {
           item_level: number
           level: number
           name?: string
+          translation_key?: string
         }
         Update: {
           category?: Database["public"]["Enums"]["raid_category"]
@@ -201,6 +209,7 @@ export type Database = {
           item_level?: number
           level?: number
           name?: string
+          translation_key?: string
         }
         Relationships: []
       }

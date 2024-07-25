@@ -7,19 +7,20 @@ import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Toggle } from '@/components/ui/toggle';
 import { useToast } from '@/components/ui/use-toast';
 import type { Enums } from '@/lib/database.types';
 import { useFilterState } from '@/lib/states';
-import { cn, GIMMICK_BACKGROUND_STYLE, GIMMICK_TYPE_NAME } from '@/lib/utils';
+import { GIMMICK_BACKGROUND_STYLE, cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { HeartIcon, LockClosedIcon, LockOpen2Icon, Share1Icon, ZoomInIcon } from '@radix-ui/react-icons';
+import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { ZoomSlider } from './ZoomSlider';
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp';
 
 export const FilterMenu = () => {
   const GimmickTypes: Array<Enums<'gimmick_type'>> = [
@@ -31,6 +32,7 @@ export const FilterMenu = () => {
     'Enrage',
   ];
   const [filterState, setFilterState] = useFilterState();
+  const t = useTranslations("StratPage.StratHeader.GimmickType");
 
   return (
     <Popover>
@@ -40,7 +42,7 @@ export const FilterMenu = () => {
           <Icons.filter />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-60 p-3">
+      <PopoverContent className="w-72 p-3">
         {/* <div className="flex justify-between">
           <div className="text-xs w-full mb-[2px] ml-1">표시할 공격</div>
           <MixerHorizontalIcon />
@@ -58,7 +60,7 @@ export const FilterMenu = () => {
               }}
             >
               <div className={cn('rounded-sm mr-2 w-[8px] h-[8px]', GIMMICK_BACKGROUND_STYLE[gimmickType])} />
-              <div className="text-xs">{GIMMICK_TYPE_NAME[gimmickType]}</div>
+              <div className="text-xs">{t(gimmickType)}</div>
             </Toggle>
           ))}
         </div>
@@ -71,6 +73,7 @@ const ElevationDialog = () => {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const { elevated, elevate } = useStratSyncStore((state) => state);
+  const t = useTranslations("StratPage.StratHeader.EditPermission");
 
   const formSchema = z.object({
     pin: z.string(),
@@ -98,16 +101,16 @@ const ElevationDialog = () => {
     const res = await elevate(values.pin);
 
     if (res) {
-      toast({ description: '수정 권한을 획득하였습니다.' });
+      toast({ description: t("Success") });
 
       setOpen(false);
     } else {
       toast({
         variant: 'destructive',
-        description: '비밀번호를 확인해주세요.',
+        description: t("Failure"),
       });
 
-      form.setError('pin', { message: '비밀번호를 확인해주세요.' });
+      form.setError('pin', { message: t("Failure") });
     }
   });
 
@@ -128,10 +131,10 @@ const ElevationDialog = () => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>수정 권한 획득</DialogTitle>
+          <DialogTitle>{t("Acquire")}</DialogTitle>
         </DialogHeader>
         {elevated ? (
-          <p className="text-sm text-muted-foreground">수정 권한 획득이 완료되었습니다.</p>
+          <p className="text-sm text-muted-foreground">{t("Complete")}</p>
         ) : (
           <Form {...form}>
             <form onSubmit={onSubmit}>
@@ -140,7 +143,7 @@ const ElevationDialog = () => {
                 name="pin"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>비밀번호</FormLabel>
+                    <FormLabel>{t("Password")}</FormLabel>
                     <FormControl>
                       <InputOTP maxLength={8} onComplete={onSubmit} {...field}>
                         <InputOTPGroup>
@@ -156,14 +159,14 @@ const ElevationDialog = () => {
                         </InputOTPGroup>
                       </InputOTP>
                     </FormControl>
-                    <FormDescription>이 전략의 수정 권한을 얻기 위한 비밀번호를 입력해주세요.</FormDescription>
+                    <FormDescription>{t("Description")}</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
 
               <DialogFooter>
-                <Button type="submit">제출</Button>
+                <Button type="submit">{t("Submit")}</Button>
               </DialogFooter>
             </form>
           </Form>
@@ -179,6 +182,8 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
     // const [lastTitle, setLastTitle] = useState(name);
 
     const { name, raids, likes } = useStratSyncStore((state) => state.strategyData);
+    const t = useTranslations("StratPage.StratHeader")
+    const tRaids = useTranslations("StratPage.Raids");
 
     return (
       <div
@@ -187,7 +192,7 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
         {...props}
       >
         <EditableText initialText={name} className="font-bold" />
-        <div className="text-muted-foreground">{raids?.name}</div>
+        <div className="text-muted-foreground">{tRaids(raids?.translation_key)}</div>
         <div className="flex-grow" />
         <ZoomInIcon className="w-5 h-5" />
         <ZoomSlider className="ml-0" />
@@ -199,12 +204,12 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
             onClick={async () => {
               try {
                 await window.navigator.clipboard.writeText(window.location.href);
-                toast({ description: '클립보드에 링크가 복사되었습니다!' });
+                toast({ description: t("Share.Success") });
               } catch {
                 toast({
                   variant: 'destructive',
-                  title: '오류가 발생했습니다.',
-                  description: '클립보드에 복사하는 중 오류가 발생하였습니다.',
+                  title: t("Share.FailureTitle"),
+                  description: t("Share.FailureDescription"),
                 });
               }
             }}

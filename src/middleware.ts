@@ -1,21 +1,29 @@
-import { updateSession } from '@/lib/supabase/middleware';
-import type { NextRequest } from 'next/server';
+import { withUpdateSession } from "@/lib/supabase/middleware";
+import { type NextRequest, NextResponse } from "next/server";
+import type { MiddleWareFactory, MyNextMiddleware } from "./lib/types";
+import { withInternationalization } from "./lib/i18n/middleware";
 
-export async function middleware(request: NextRequest) {
-  const response = await updateSession(request);
+export const defaultMiddleware = (request: NextRequest) =>
+  NextResponse.next({
+    request: {
+      headers: request.headers,
+    },
+  });
 
-  return response;
-}
+const chainMiddlewares = (withMiddlewares: MiddleWareFactory[]) =>
+  withMiddlewares.reduce<MyNextMiddleware>(
+    (previousMiddleware, withMiddleware) => withMiddleware(previousMiddleware),
+    defaultMiddleware
+  );
+
+// Due to internal implementation detail of withInternationalization, it should always be the first middleware in the list
+export const middleware = chainMiddlewares([
+  withInternationalization,
+  withUpdateSession,
+]);
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
-     */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    "/((?!_next/static|_next/image|favicon\\.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

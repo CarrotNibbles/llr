@@ -1,0 +1,173 @@
+{
+  "StratPage": {
+    "CoreArea": {},
+    "DamageText": {
+      "DamageOption": {
+        "Share": "頭割り",
+        "RaidWide": "全体",
+        "Unknown": "???"
+      }
+    },
+    "EditColumn": {
+      "Lock": "ロック",
+      "Delete": "削除"
+    },
+    "HeadColumn": {
+      "JobChange": {
+        "JobChange": "ジョブチェンジ",
+        "ConfirmTitle": "ジョブチェンジの確認",
+        "Confirm": "ジョブチェンジ",
+        "Cancel": "キャンセル",
+        "Warning": "選択したジョブを変更すると、以前のジョブの戦略は永久に失われます。以前のジョブに戻しても、戦略は復元されません。それでも続けますか？",
+        "Complete": "ジョブチェンジが完了しました"
+      }
+    },
+    "StratHeader": {
+      "GimmickType": {
+        "AutoAttack": "AA",
+        "Raidwide": "全体攻撃",
+        "Tankbuster": "タンクバスター",
+        "Hybrid": "そのた",
+        "Avoidable": "AoE",
+        "Enrage": "時間切れ"
+      },
+      "EditPermission": {
+        "Description": "この戦略を編集するには、パスワードを入力してください。",
+        "Acquire": "編集権限取得",
+        "Submit": "提出",
+        "Success": "編集権限が取得されました。",
+        "Failure": "パスワードを確認してください。",
+        "Complete": "編集権限が取得されました。",
+        "Password": "パスワード"
+      },
+      "Share": {
+        "Success": "リンクがクリップボードにコピーされました！",
+        "FailureTitle": "エラーが発生しました",
+        "FailureDescription": "リンクをクリップボードにコピー中にエラーが発生しました。"
+      }
+    },
+    "GimmickLine": {
+      "Etc": "外{count}"
+    },
+    "StratSyncProvider": {
+      "ErrorTitle": "接続切断",
+      "ErrorDescription": "サーバーへの接続が失われました。ページを再読み込みして、もう一度お試しください。",
+      "Refresh": "再読み込み"
+    },
+    "Actions": {
+      "macrocosmos": "マクロコスモス",
+      "neutral_sect": "ニュートラルセクト",
+      "sun_sign": "サンサイン",
+      "earthly_star": "アーサリースター",
+      "collective_unconscious": "運命の輪",
+      "horoscope": "ホロスコープ",
+      "celestial_opposition": "星天対抗",
+      "addle": "アドル",
+      "troubadour": "トルバドゥール",
+      "natures_minne": "地神のミンネ",
+      "curing_waltz": "癒やしのワルツ",
+      "improvisation": "インプロビゼーション",
+      "shield_samba": "守りのサンバ",
+      "feint": "牽制",
+      "reprisal": "リプライザル",
+      "dark_missionary": "ダークミッショナリー",
+      "the_blackest_night": "ブラックナイト",
+      "oblation": "オブレーション",
+      "rampart": "ランパート",
+      "dark_mind": "ダークマインド",
+      "shadow_wall": "シャドウウォール",
+      "shadowed_vigil": "シャドウヴィジル",
+      "living_dead": "リビングデッド",
+      "heart_of_light": "ハート・オブ・ライト",
+      "heart_of_stone": "ハート・オブ・ストーン",
+      "heart_of_corundum": "ハート・オブ・コランダム",
+      "camouflage": "カモフラージュ",
+      "nebula": "ネビュラ",
+      "great_nebula": "グレートネビュラ",
+      "aurora": "オーロラ",
+      "superbolide": "ボーライド",
+      "limit_break": "リミットブレイク",
+      "dismantle": "リミットブレイク",
+      "tactician": "タクティシャン",
+      "mantra": "マントラ",
+      "tempera_grassa": "テンペラグラッサ",
+      "divine_veil": "ディヴァインヴェール",
+      "passage_of_arms": "パッセージ・オブ・アームズ",
+      "sheltron": "シェルトロン",
+      "holy_sheltron": "ホーリーシェルトロン",
+      "bulwark": "ブルワーク",
+      "sentinel": "センチネル",
+      "guardian": "エクストリームガード",
+      "hallowed_ground": "インビンシブル",
+      "magick_barrier": "バマジク",
+      "arcane_crest": "アルケインクレスト",
+      "seraphism": "セラフィズム",
+      "expedient": "疾風怒濤の計",
+      "summon_seraph": "サモン・セラフィム",
+      "recitation": "秘策",
+      "deployment_tactics": "展開戦術",
+      "sacred_soil": "野戦治療の陣",
+      "fey_illumination": "フェイイルミネーション",
+      "dissipation": "転化",
+      "philosophia": "フィロソフィア",
+      "zoe": "ゾーエ",
+      "pneuma": "プネウマ",
+      "panhaima": "パンハイマ",
+      "holos": "ホーリズム",
+      "kerachole": "ケーラコレ",
+      "physis_ii": "ピュシスII",
+      "shake_it_off": "シェイクオフ",
+      "raw_intuition": "原初の直感",
+      "bloodwhetting": "原初の血気",
+      "thrill_of_battle": "スリル・オブ・バトル",
+      "vengeance": "ヴェンジェンス",
+      "damnation": "ダムネーション",
+      "equilibrium": "エクリブリウム",
+      "holmgang": "ホルムギャング",
+      "liturgy_of_the_bell": "リタージー・オブ・ベル",
+      "temperance": "テンパランス",
+      "divine_caress": "ディヴァインカレス",
+      "plenary_indulgence": "インドゥルゲンティア",
+      "asylum": "アサイラム",
+      "assize": "アサイズ",
+      "concitation": "意気軒昂の策",
+      "verraise": "ヴァルレイズ",
+      "eukrasian_prognosis": "エウクラシア・プログノシス",
+      "eukrasian_prognosis_ii": "エウクラシア・プログノシスII",
+      "succor": "士気高揚の策"
+    },
+    "Raids": {
+      "P10S": "万魔殿パンデモニウム：天獄編２(解説)",
+      "P11S": "万魔殿パンデモニウム：天獄編３(解説)"
+    },
+    "Gimmicks": {
+      "auto_attack": "攻击",
+      "ultima": "알테마",
+      "soul_grasp": "영혼 장악",
+      "dividing_wings": "날개 분리",
+      "steel_web": "강력 거미줄",
+      "wicked_step": "뾰족다리",
+      "bury": "충격",
+      "silkspit": "攻击",
+      "pandaemoniac_meltdown": "판데모니움 멜튼",
+      "daemoniac_bonds": "판데모니움 결속",
+      "tetradaemoniac_bonds": "판데모니움 사중 결속",
+      "peal_of_condemnation": "형벌 선포",
+      "duodaemoniac_bonds": "판데모니움 이중 결속",
+      "harrowing_hell": "판데모니움 격돌",
+      "unmitigated_explosion": "대폭발",
+      "cannonspawn": "산탄포",
+      "pandaemonium_holy_circle": "판데모니움 홀리/고리",
+      "pandaemons_holy": "판데모니움 홀리",
+      "circles_of_pandaemonium": "판데모니움 고리",
+      "entangling_web": "거대 거미줄",
+      "pandaemonium_pillars": "판데모니움 기둥",
+      "pandaemoniac_turrets": "판데모니움 포탑",
+      "pandaemoniac_ray": "판데모니움 광선",
+      "parted_plumes": "깃털 분리",
+      "temp_jade": "제이드 통로",
+      "temp_landing": "착지",
+      "temp_judgement": "천벌 선포"
+    }
+  }
+}
