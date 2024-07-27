@@ -5,6 +5,7 @@ import RecoilRootProvider from '@/components/providers/RecoilRootProvider';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
+import { StaticDataProvider } from '@/components/providers/StaticDataProvider';
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',
@@ -43,14 +44,16 @@ export default function RootLayout({
 }>): React.ReactElement {
   return (
     <RecoilRootProvider>
-      <html lang={lang}>
-        <body className={cn('min-h-screen bg-background font-sans antialiased', pretendard.variable)}>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-            {children}
-            <Toaster />
-          </ThemeProvider>
-        </body>
-      </html>
+      <StaticDataProvider>
+        <html lang={lang}>
+          <body className={cn('min-h-screen bg-background font-sans antialiased', pretendard.variable)}>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+              {children}
+              <Toaster />
+            </ThemeProvider>
+          </body>
+        </html>
+      </StaticDataProvider>
     </RecoilRootProvider>
   );
 }
