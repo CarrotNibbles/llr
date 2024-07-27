@@ -17,6 +17,7 @@
     "@connectrpc/connect": "^1.4.0",
     "@connectrpc/connect-web": "^1.4.0",
     "@hookform/resolvers": "^3.3.4",
+    "@js-sdsl/ordered-set": "^4.4.2",
     "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-aspect-ratio": "^1.0.3",
     "@radix-ui/react-context-menu": "^2.1.5",
