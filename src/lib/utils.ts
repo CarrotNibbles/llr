@@ -83,8 +83,9 @@ export const weightedCompareFunction =
 export const MAX_DISPLAY_COUNT = 3;
 
 export type Role = 'Tank' | 'Healer' | 'DPS' | 'Others';
+export type DiversedRole = 'Tank' | 'Healer' | 'Ranged' | 'Melee' | 'Caster';
 
-export const getRawRole = (job: Enums<'job'>): Role => {
+export const getRole = (job: Enums<'job'>): Role => {
   switch (job) {
     case 'PLD':
     case 'WAR':
@@ -96,12 +97,41 @@ export const getRawRole = (job: Enums<'job'>): Role => {
     case 'AST':
     case 'SGE':
       return 'Healer';
+    case 'LB':
+      return 'Others';
     default:
       return 'DPS';
   }
 };
 
-export const getRole = (job: Enums<'job'> | null, order: number): Role => {
+export const getDiversedRole = (job: Exclude<Enums<'job'>, 'LB'>): DiversedRole => {
+  switch (job) {
+    case 'PLD':
+    case 'WAR':
+    case 'DRK':
+    case 'GNB':
+      return 'Tank';
+    case 'WHM':
+    case 'SCH':
+    case 'AST':
+    case 'SGE':
+      return 'Healer';
+    case 'BRD':
+    case 'MCH':
+    case 'DNC':
+      return 'Ranged';
+    case 'BLM':
+    case 'RDM':
+    case 'SMN':
+    case 'PCT':
+    case 'BLU':
+      return 'Caster';
+    default:
+      return 'Melee';
+  }
+};
+
+export const getOrderedRole = (job: Enums<'job'> | null, order: number): Role => {
   if (job === null || job === 'LB') {
     if (1 <= order && order <= 2) return 'Tank';
     if (3 <= order && order <= 4) return 'Healer';
@@ -109,5 +139,5 @@ export const getRole = (job: Enums<'job'> | null, order: number): Role => {
     return 'Others';
   }
 
-  return getRawRole(job);
+  return getRole(job);
 };
