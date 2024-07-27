@@ -93,8 +93,8 @@ const handleUpdatePlayerJob = (id: string, job: string | undefined) =>
     }
   });
 
-export const createStratSyncStore = (initState: Partial<StratSyncState>) => {
-  return createStore<StratSyncStore>()((set, get) => ({
+export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
+  createStore<StratSyncStore>()((set, get) => ({
     ...defaultState,
     ...initState,
     connect: async (strategy: string) => {
@@ -240,4 +240,3 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) => {
       });
     },
   }));
-};

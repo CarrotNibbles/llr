@@ -7,10 +7,12 @@ import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Toggle } from '@/components/ui/toggle';
 import { useToast } from '@/components/ui/use-toast';
+import { useEstimations } from '@/lib/calc/hooks';
 import type { Enums } from '@/lib/database.types';
 import { useFilterState } from '@/lib/states';
 import { GIMMICK_BACKGROUND_STYLE, cn } from '@/lib/utils';
@@ -176,12 +178,96 @@ const ElevationDialog = () => {
   );
 };
 
+export const StratInfo = () => {
+  const { name, raids, version, subversion, strategy_players } = useStratSyncStore((state) => state.strategyData);
+  const estimations = useEstimations();
+  const tRaids = useTranslations('StratPage.Raids');
+
+  const playerCount = strategy_players.filter((player) => player.job != null && player.job !== 'LB').length;
+
+  const infos = [
+    {
+      style: 'col-span-2',
+      title: 'Strategy Title',
+      value: name,
+    },
+    {
+      style: 'col-span-2',
+      title: 'Duty',
+      value: tRaids(raids?.translation_key),
+    },
+    {
+      style: 'col-span-2',
+      title: 'FFXIV Patch',
+      value: `${version}.${subversion} - Dawntrail`,
+    },
+    {
+      title: 'Level Sync',
+      value: raids?.level,
+    },
+    {
+      title: 'Item Level Sync',
+      value: raids?.item_level,
+    },
+    {
+      title: 'Player Count',
+      value: playerCount,
+    },
+    {
+      title: 'Party Bonus',
+      value: `${Math.round(estimations.partyBonus * 100 - 100)}%`,
+    },
+    {
+      title: 'HP* (Tank)',
+      value: estimations.hpTank,
+    },
+    {
+      title: 'HP* (Healer)',
+      value: estimations.hpHealer,
+    },
+    {
+      title: '100p Healing* (Tank)',
+      value: `${Math.round(estimations.potencyCoefficientTank * 100)}`,
+    },
+    {
+      title: '100p Healing* (Healer)',
+      value: `${Math.round(estimations.potencyCoefficientHealer * 100)}`,
+    },
+  ];
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <h3 className="font-bold cursor-pointer">{name}</h3>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Information</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-y-2 gap-x-8" style={{ gridTemplateColumns: 'auto auto' }}>
+            {infos.map((info) => (
+              <div key={info.title} className={cn('flex space-x-2 justify-between', info.style)}>
+                <div className="text-muted-foreground">{info.title}</div>
+                <div className="font-semibold">{info.value}</div>
+              </div>
+            ))}
+          </div>
+          <div className="text-sm text-muted-foreground text-justify">
+            * HP and healing values are rough estimates.
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & React.ComponentPropsWithoutRef<'div'>>(
   ({ className, ...props }, ref) => {
     const { toast } = useToast();
     // const [lastTitle, setLastTitle] = useState(name);
 
-    const { name, raids, likes } = useStratSyncStore((state) => state.strategyData);
+    const { raids, likes } = useStratSyncStore((state) => state.strategyData);
     const t = useTranslations('StratPage.StratHeader');
     const tRaids = useTranslations('StratPage.Raids');
 
@@ -191,7 +277,7 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
         className={cn('rounded-none border-b flex space-x-4 py-2 px-4 items-center', className)}
         {...props}
       >
-        <EditableText initialText={name} className="font-bold" />
+        <StratInfo />
         <div className="text-muted-foreground">{tRaids(raids?.translation_key)}</div>
         <div className="flex-grow" />
         <ZoomInIcon className="w-5 h-5" />

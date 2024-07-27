@@ -15,7 +15,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useToast } from '@/components/ui/use-toast';
 import type { Enums } from '@/lib/database.types';
 import type { ActionDataType } from '@/lib/queries/server';
-import { type Role, cn, getRole } from '@/lib/utils';
+import { type Role, cn, getOrderedRole } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
 import { useState } from 'react';
@@ -114,7 +114,7 @@ export const HeadColumn = ({
             <AlertDialog>
               <PopoverTrigger className={elevated ? 'cursor-pointer' : 'cursor-not-allowed'} disabled={!elevated}>
                 <span className="sr-only">Change job {job}</span>
-                <JobIcon job={job} role={getRole(job, order)} className={`${columnWidth} ${columnWidthLarge}`} />
+                <JobIcon job={job} role={getOrderedRole(job, order)} className={`${columnWidth} ${columnWidthLarge}`} />
               </PopoverTrigger>
               <PopoverContent className="w-auto">
                 <div className="space-y-3">
@@ -135,7 +135,7 @@ export const HeadColumn = ({
                               className={job === newJob ? 'cursor-not-allowed' : undefined}
                             >
                               <span className="sr-only">Change job to {job}</span>
-                              <JobIcon job={newJob} role={getRole(newJob, order)} className="w-6 h-6" />
+                              <JobIcon job={newJob} role={getOrderedRole(newJob, order)} className="w-6 h-6" />
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>

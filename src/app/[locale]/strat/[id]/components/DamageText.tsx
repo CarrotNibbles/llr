@@ -1,8 +1,9 @@
 'use client';
 
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
+import { useMitigatedDamages, useTank } from '@/lib/calc/hooks';
 import type { StrategyDataType } from '@/lib/queries/server';
-import { type ArrayElement, cn, getRawRole } from '@/lib/utils';
+import { type ArrayElement, cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 
 type DamageTextProps = {
@@ -11,20 +12,6 @@ type DamageTextProps = {
   currentDamage: number;
   primaryTarget?: string;
   numShared?: number;
-};
-
-const useTank: () => [string, string] | [string, undefined] | [undefined, undefined] = () => {
-  const {
-    strategyData: { strategy_players },
-  } = useStratSyncStore((state) => state);
-
-  const tanks = strategy_players
-    .filter((player) => player.job && getRawRole(player.job) === 'Tank')
-    .map((player) => player.id);
-
-  if (tanks.length === 0) return [undefined, undefined];
-  if (tanks.length === 1) return [tanks[0], undefined];
-  return [tanks[0], tanks[1]];
 };
 
 const ACTIVE_OPTION_STYLE = 'font-bold';
@@ -39,7 +26,7 @@ const BothTankBuster = (props: DamageTextProps) => {
         <span className={ACTIVE_OPTION_STYLE}>T1+T2</span>
       </div>
       <span className="tabular-nums font-bold">{currentDamage}</span>
-      <span className="text-muted-foreground tabular-nums text-xs my-auto">{defaultDamage}</span>
+      <span className="text-muted-foreground tabular-nums text-xs my-auto">{defaultDamage / 2}</span>
     </>
   );
 };
@@ -118,6 +105,7 @@ const ShareTankBuster = (props: DamageTextProps) => {
             upsertDamageOption(
               {
                 damage: props.damageId,
+                numShared: 2,
               },
               false,
             );
@@ -135,6 +123,7 @@ const ShareTankBuster = (props: DamageTextProps) => {
               {
                 damage: props.damageId,
                 primaryTarget: mainTank,
+                numShared: 1,
               },
               false,
             );
@@ -152,6 +141,7 @@ const ShareTankBuster = (props: DamageTextProps) => {
               {
                 damage: props.damageId,
                 primaryTarget: offTank,
+                numShared: 1,
               },
               false,
             );
@@ -161,7 +151,9 @@ const ShareTankBuster = (props: DamageTextProps) => {
         </span>
       </div>
       <span className="tabular-nums font-bold">{currentDamage}</span>
-      <span className="text-muted-foreground tabular-nums text-xs my-auto">{defaultDamage}</span>
+      <span className="text-muted-foreground tabular-nums text-xs my-auto">
+        {defaultDamage / (activeOption === 0 ? 2 : 1)}
+      </span>
     </>
   );
 };
@@ -176,7 +168,7 @@ const ShareAllRaidWide = (props: DamageTextProps) => {
         <span className={ACTIVE_OPTION_STYLE}>{t('DamageOption.Share')}</span>
       </div>
       <span className="tabular-nums font-bold">{currentDamage}</span>
-      <span className="text-muted-foreground tabular-nums text-xs my-auto">{defaultDamage}</span>
+      <span className="text-muted-foreground tabular-nums text-xs my-auto">{defaultDamage / 8}</span>
     </>
   );
 };
@@ -216,7 +208,7 @@ const ShareHalfRaidWide = (props: DamageTextProps) => {
             upsertDamageOption(
               {
                 damage: props.damageId,
-                numShared: 3,
+                numShared: 4,
               },
               false,
             );
@@ -233,7 +225,7 @@ const ShareHalfRaidWide = (props: DamageTextProps) => {
             upsertDamageOption(
               {
                 damage: props.damageId,
-                numShared: 4,
+                numShared: 3,
               },
               false,
             );
@@ -243,7 +235,9 @@ const ShareHalfRaidWide = (props: DamageTextProps) => {
         </span>
       </div>
       <span className="tabular-nums font-bold">{currentDamage}</span>
-      <span className="text-muted-foreground tabular-nums text-xs my-auto">{defaultDamage}</span>
+      <span className="text-muted-foreground tabular-nums text-xs my-auto">
+        {defaultDamage / (activeOption === 0 ? 4 : 3)}
+      </span>
     </>
   );
 };
@@ -275,13 +269,15 @@ export const DamageText = ({
 }: {
   damages: ArrayElement<Exclude<StrategyDataType['raids'], null>['gimmicks']>['damages'];
 }) => {
+  const mitigatedDamages = useMitigatedDamages();
+
   return (
     <>
       {damages.map((damage) => {
         const textProps = {
           damageId: damage.id,
           defaultDamage: damage.combined_damage,
-          currentDamage: 90000,
+          currentDamage: mitigatedDamages[damage.id] ?? damage.combined_damage,
           primaryTarget: damage.strategy_damage_options?.[0]?.primary_target ?? undefined,
           numShared: damage.strategy_damage_options?.[0]?.num_shared ?? undefined,
         };
