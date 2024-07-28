@@ -23,6 +23,21 @@
       }
     },
     "StratHeader": {
+      "StratInfo": {
+        "DialogTitle": "Information",
+        "StrategyTitle": "Strategy Title",
+        "Duty": "Duty",
+        "FFXIVPatch": "FFXIV Patch",
+        "LevelSync": "Level Sync",
+        "ItemLevelSync": "Item Level Sync",
+        "PlayerCount": "Player Count",
+        "PartyBonus": "Party Bonus",
+        "HPTank": "HP* (Tank)",
+        "HPHealer": "HP* (Healer)",
+        "HealingTank": "400p Healing* (Tank)",
+        "HealingHealer": "400p Healing* (Healer)",
+        "Disclaimer": "* HP and healing values are rough estimates."
+      },
       "GimmickType": {
         "AutoAttack": "Auto Attack",
         "Raidwide": "Raid-Wide",
@@ -104,11 +119,11 @@
       "seraphism": "Seraphism",
       "expedient": "Expedient",
       "summon_seraph": "Summon Seraph",
-      "recitation": "비책",
-      "deployment_tactics": "전개전술",
-      "sacred_soil": "야전치유진",
-      "fey_illumination": "요정의 광휘",
-      "dissipation": "에테르 전환",
+      "recitation": "Recitation",
+      "deployment_tactics": "Deployment Tactics",
+      "sacred_soil": "Sacred Soil",
+      "fey_illumination": "Fey Illumination",
+      "dissipation": "Dissipiation",
       "philosophia": "Philosophia",
       "zoe": "Zoe",
       "pneuma": "Pneuma",
@@ -139,6 +154,51 @@
     "Raids": {
       "P10S": "Anabaseios: The Tenth Circle (Savage)",
       "P11S": "Anabaseios: The Eleventh Circle (Savage)"
+    },
+    "FFXIVPatches": {
+      "2": {
+        "0": "A Realm Reborn",
+        "1": "A Realm Awoken",
+        "2": "Through the Maelstrom",
+        "3": "Defenders of Eorzea",
+        "4": "Dreams of Ice",
+        "5": "Before the Fall"
+      },
+      "3": {
+        "0": "Heavensward",
+        "1": "As Goes Light, So Goes Darkness",
+        "2": "The Gears of Change",
+        "3": "Revenge of the Horde",
+        "4": "Soul Surrender",
+        "5": "The Far Edge of Fate"
+      },
+      "4": {
+        "0": "Stormblood",
+        "1": "The Legend Returns",
+        "2": "Rise of a New Sun",
+        "3": "Under the Moonlight",
+        "4": "Prelude in Violet",
+        "5": "A Requiem for Heroes"
+      },
+      "5": {
+        "0": "Shadowbringers",
+        "1": "Vows of Virtue, Deeds of Cruelty",
+        "2": "Echoes of a Fallen Star",
+        "3": "Reflections in Crystal",
+        "4": "Futures Rewritten",
+        "5": "Death Unto Dawn"
+      },
+      "6": {
+        "0": "Endwalker",
+        "1": "Newfound Adventure",
+        "2": "Buried Memory",
+        "3": "Gods Revel, Lands Tremble",
+        "4": "The Dark Throne",
+        "5": "Growing Light"
+      },
+      "7": {
+        "0": "Dawntrail"
+      }
     },
     "Gimmicks": {
       "auto_attack": "Auto Attack",

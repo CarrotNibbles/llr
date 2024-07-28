@@ -181,57 +181,59 @@ const ElevationDialog = () => {
 export const StratInfo = () => {
   const { name, raids, version, subversion, strategy_players } = useStratSyncStore((state) => state.strategyData);
   const estimations = useEstimations();
+  const t = useTranslations('StratPage.StratHeader.StratInfo');
   const tRaids = useTranslations('StratPage.Raids');
+  const tPatches = useTranslations('StratPage.FFXIVPatches');
 
   const playerCount = strategy_players.filter((player) => player.job != null && player.job !== 'LB').length;
 
   const infos = [
     {
       style: 'col-span-2',
-      title: 'Strategy Title',
+      title: t('StrategyTitle'),
       value: name,
     },
     {
       style: 'col-span-2',
-      title: 'Duty',
+      title: t('Duty'),
       value: tRaids(raids?.translation_key),
     },
     {
       style: 'col-span-2',
-      title: 'FFXIV Patch',
-      value: `${version}.${subversion} - Dawntrail`,
+      title: t('FFXIVPatch'),
+      value: `${version}.${subversion} - ${tPatches(`${version}.${subversion}`)}`,
     },
     {
-      title: 'Level Sync',
+      title: t('LevelSync'),
       value: raids?.level,
     },
     {
-      title: 'Item Level Sync',
+      title: t('ItemLevelSync'),
       value: raids?.item_level,
     },
     {
-      title: 'Player Count',
+      title: t('PlayerCount'),
       value: playerCount,
     },
     {
-      title: 'Party Bonus',
+      title: t('PartyBonus'),
       value: `${Math.round(estimations.partyBonus * 100 - 100)}%`,
     },
     {
-      title: 'HP* (Tank)',
+      title: t('HPTank'),
       value: estimations.hpTank,
     },
     {
-      title: 'HP* (Healer)',
+      title: t('HPHealer'),
       value: estimations.hpHealer,
     },
     {
-      title: '100p Healing* (Tank)',
-      value: `${Math.round(estimations.potencyCoefficientTank * 100)}`,
+      title: t('HealingTank'),
+      value: `${Math.round(estimations.potencyCoefficientTank * 400)}`,
     },
     {
-      title: '100p Healing* (Healer)',
-      value: `${Math.round(estimations.potencyCoefficientHealer * 100)}`,
+      title: t('HealingHealer'),
+      value: `${Math.round(estimations.potencyCoefficientHealer * 400)}`,
     },
   ];
 
@@ -242,7 +244,7 @@ export const StratInfo = () => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Information</DialogTitle>
+          <DialogTitle>{t('DialogTitle')}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-y-2 gap-x-8" style={{ gridTemplateColumns: 'auto auto' }}>
@@ -253,9 +255,7 @@ export const StratInfo = () => {
               </div>
             ))}
           </div>
-          <div className="text-sm text-muted-foreground text-justify">
-            * HP and healing values are rough estimates.
-          </div>
+          <div className="text-sm text-muted-foreground text-justify">{t('Disclaimer')}</div>
         </div>
       </DialogContent>
     </Dialog>
