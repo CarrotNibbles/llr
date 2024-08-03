@@ -95,6 +95,28 @@ const resolveDamage = (
   return { absorbed, remaining };
 };
 
+const semanticKeyTransform = (key: string): string => {
+  const HEALER_BASIC_BARRIERS = [
+    'succor',
+    'concitation',
+    'deployment_tactics',
+    'eukrasian_prognosis',
+    'eukrasian_prognosis_ii',
+  ];
+
+  const RANGED_PARTY_MITIGATION = ['troubadour', 'tactician', 'shield_samba'];
+
+  if (HEALER_BASIC_BARRIERS.includes(key)) {
+    return 'healer_basic_barrier';
+  }
+
+  if (RANGED_PARTY_MITIGATION.includes(key)) {
+    return 'ranged_party_mitigation';
+  }
+
+  return key;
+};
+
 export const useMitigatedDamages = () => {
   type DamageApplied = {
     id: string;
@@ -114,6 +136,7 @@ export const useMitigatedDamages = () => {
   type MitigationTimeline = {
     at: number;
     by: string;
+    via: string;
     role: Role;
     gcd: boolean;
     mitigation: Tables<'mitigations'>;
@@ -124,6 +147,7 @@ export const useMitigatedDamages = () => {
     | ({ type: 'MITIGATION_ACQUIRE' } & MitigationTimeline);
 
   type ActiveEffectSet = OrderedSet<{ at: number; effect: Effect }>;
+  type ActiveEffectSetIterator = ReturnType<ActiveEffectSet['begin']>;
 
   const { actionData } = useStaticDataStore((state) => state);
   const [mainTank, offTank] = useTank();
@@ -170,23 +194,26 @@ export const useMitigatedDamages = () => {
 
     for (const player of strategyData.strategy_players) {
       for (const entry of player.strategy_player_entries) {
-        const gcd = actionRecord[entry.action].is_gcd;
-        const mitigations = actionRecord[entry.action].mitigations;
-
         if (player.job === null) {
           throw new Error('ERROR: Job must be defined');
         }
 
-        for (const mitigation of mitigations ?? []) {
+        const job = player.job;
+        const gcd = actionRecord[entry.action].is_gcd;
+        const mitigations = actionRecord[entry.action].mitigations;
+        const semanticKey = semanticKeyTransform(actionRecord[entry.action].semantic_key);
+
+        mitigations.forEach((mitigation, index) => {
           timeline.push({
             type: 'MITIGATION_ACQUIRE',
             at: entry.use_at,
             by: player.id,
-            role: getRole(player.job),
+            via: `${semanticKey}.${index}`,
+            role: getRole(job),
             gcd,
             mitigation,
           });
-        }
+        });
       }
     }
 
@@ -216,6 +243,11 @@ export const useMitigatedDamages = () => {
     );
     const activeRaidwideEffects = new OrderedSet<{ at: number; effect: Effect }>([], effectComparator);
 
+    const effectIteratorMapPersonal = Object.fromEntries(
+      playerIds.map((playerId) => [playerId, new Map<string, ActiveEffectSetIterator>()]),
+    );
+    const effectIteratorMapRaidwide = new Map<string, ActiveEffectSetIterator>();
+
     const personalEffect: Record<string, Effect> = Object.fromEntries(
       playerIds.map((playerId) => [playerId, IDENTITY_EFFECT]),
     );
@@ -224,8 +256,52 @@ export const useMitigatedDamages = () => {
     const mitigatedDamages: Record<string, number> = {};
 
     for (const timelineEntry of timeline) {
-      const removeExpiredEffects = (activeEffectSet: ActiveEffectSet, effect: Effect) => {
-        let resultEffect = effect;
+      const gainEffect = (
+        expire_at: number,
+        effect: Effect,
+        activeEffectSet: ActiveEffectSet,
+        effectCumulated: Effect,
+        effectIteratorMap: Map<string, ActiveEffectSetIterator>,
+        via: string,
+      ) => {
+        let resultEffect = effectCumulated;
+
+        let activeEffect = IDENTITY_EFFECT;
+        const activeEffectIterator = effectIteratorMap.get(via);
+        if (activeEffectIterator?.isAccessible()) {
+          activeEffect = activeEffectIterator.pointer.effect;
+        }
+
+        if (
+          activeEffect.physical < effect.physical ||
+          activeEffect.magical < effect.magical ||
+          activeEffect.barrier > effect.barrier ||
+          activeEffect.invuln > effect.invuln ||
+          activeEffect.activeAmp > effect.activeAmp ||
+          activeEffect.passiveAmp > effect.passiveAmp
+        ) {
+          // update not occurs for the weaker effect
+          return resultEffect;
+        }
+
+        resultEffect = addEffect(resultEffect, inverseEffect(activeEffect));
+        if (activeEffectIterator?.isAccessible()) {
+          activeEffectSet.eraseElementByIterator(activeEffectIterator);
+        }
+
+        resultEffect = addEffect(resultEffect, effect);
+        activeEffectSet.insert({ at: expire_at, effect });
+
+        const insertedIterator = activeEffectSet.find({ at: expire_at, effect });
+        if (insertedIterator) {
+          effectIteratorMap.set(via, insertedIterator);
+        }
+
+        return resultEffect;
+      };
+
+      const removeExpiredEffects = (activeEffectSet: ActiveEffectSet, effectCumulated: Effect) => {
+        let resultEffect = effectCumulated;
 
         while (true) {
           const frontIterator = activeEffectSet.begin();
@@ -235,7 +311,6 @@ export const useMitigatedDamages = () => {
           }
 
           resultEffect = addEffect(resultEffect, inverseEffect(frontIterator.pointer.effect));
-
           activeEffectSet.eraseElementByIterator(frontIterator);
         }
 
@@ -393,11 +468,23 @@ export const useMitigatedDamages = () => {
         }
 
         if (is_raidwide) {
-          raidwideEffect = addEffect(raidwideEffect, effect);
-          activeRaidwideEffects.insert({ at: timelineEntry.at + duration, effect });
+          raidwideEffect = gainEffect(
+            timelineEntry.at + duration,
+            effect,
+            activeRaidwideEffects,
+            raidwideEffect,
+            effectIteratorMapRaidwide,
+            timelineEntry.via,
+          );
         } else {
-          personalEffect[timelineEntry.by] = addEffect(personalEffect[timelineEntry.by], effect);
-          activePersonalEffects[timelineEntry.by].insert({ at: timelineEntry.at + duration, effect });
+          personalEffect[timelineEntry.by] = gainEffect(
+            timelineEntry.at + duration,
+            effect,
+            activePersonalEffects[timelineEntry.by],
+            personalEffect[timelineEntry.by],
+            effectIteratorMapPersonal[timelineEntry.by],
+            timelineEntry.via,
+          );
         }
       }
     }
