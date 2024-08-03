@@ -121,8 +121,7 @@ const GimmickLine = React.forwardRef<
 >(({ className, ...props }, ref) => {
   const tGimmicks = useTranslations('StratPage.Gimmicks');
   const {
-    damages,
-    translation_key: translationKey,
+    semantic_key: translationKey,
     type: gimmickType,
     prepare_at: prepareAt,
     cast_at: castAt,

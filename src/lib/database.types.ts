@@ -15,15 +15,14 @@ export type Database = {
           cooldown: number
           deleted_subversion: number | null
           deleted_version: number | null
-          icon_filename: string | null
           id: string
           is_gcd: boolean
           job: Database["public"]["Enums"]["job"]
           name: string
           priority: number
+          semantic_key: string
           stacks: number
           superseding_level: number | null
-          translation_key: string
           updated_subversion: number
           updated_version: number
         }
@@ -32,15 +31,14 @@ export type Database = {
           cooldown: number
           deleted_subversion?: number | null
           deleted_version?: number | null
-          icon_filename?: string | null
           id?: string
           is_gcd: boolean
           job?: Database["public"]["Enums"]["job"]
           name?: string
           priority: number
+          semantic_key?: string
           stacks?: number
           superseding_level?: number | null
-          translation_key?: string
           updated_subversion: number
           updated_version: number
         }
@@ -49,15 +47,14 @@ export type Database = {
           cooldown?: number
           deleted_subversion?: number | null
           deleted_version?: number | null
-          icon_filename?: string | null
           id?: string
           is_gcd?: boolean
           job?: Database["public"]["Enums"]["job"]
           name?: string
           priority?: number
+          semantic_key?: string
           stacks?: number
           superseding_level?: number | null
-          translation_key?: string
           updated_subversion?: number
           updated_version?: number
         }
@@ -109,7 +106,7 @@ export type Database = {
           prepare_at: number
           raid: string
           resolve_at: number | null
-          translation_key: string
+          semantic_key: string
           type: Database["public"]["Enums"]["gimmick_type"]
         }
         Insert: {
@@ -119,7 +116,7 @@ export type Database = {
           prepare_at: number
           raid: string
           resolve_at?: number | null
-          translation_key?: string
+          semantic_key?: string
           type?: Database["public"]["Enums"]["gimmick_type"]
         }
         Update: {
@@ -129,7 +126,7 @@ export type Database = {
           prepare_at?: number
           raid?: string
           resolve_at?: number | null
-          translation_key?: string
+          semantic_key?: string
           type?: Database["public"]["Enums"]["gimmick_type"]
         }
         Relationships: [
@@ -138,6 +135,36 @@ export type Database = {
             columns: ["raid"]
             isOneToOne: false
             referencedRelation: "raids"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      likes: {
+        Row: {
+          liked_by: string
+          strategy: string
+        }
+        Insert: {
+          liked_by: string
+          strategy: string
+        }
+        Update: {
+          liked_by?: string
+          strategy?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "likes_liked_by_fkey"
+            columns: ["liked_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "likes_strategy_fkey"
+            columns: ["strategy"]
+            isOneToOne: false
+            referencedRelation: "strategies"
             referencedColumns: ["id"]
           },
         ]
@@ -189,7 +216,7 @@ export type Database = {
           item_level: number
           level: number
           name: string
-          translation_key: string
+          semantic_key: string
         }
         Insert: {
           category?: Database["public"]["Enums"]["raid_category"]
@@ -199,7 +226,7 @@ export type Database = {
           item_level: number
           level: number
           name?: string
-          translation_key?: string
+          semantic_key?: string
         }
         Update: {
           category?: Database["public"]["Enums"]["raid_category"]
@@ -209,7 +236,7 @@ export type Database = {
           item_level?: number
           level?: number
           name?: string
-          translation_key?: string
+          semantic_key?: string
         }
         Relationships: []
       }

@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "schema_build": "supabase gen types typescript --project-id jbgcbfblivbtdnhbkfab > src/lib/database.types.ts",
-    "proto_build": "pnpm buf generate protos/stratsync.proto && perl -pi -e 's/.js//g' src/lib/proto/stratsync_connect.ts",
+    "schema_gen": "supabase gen types --lang=typescript --project-id jbgcbfblivbtdnhbkfab > src/lib/database.types.ts",
+    "proto_gen": "pnpm buf generate protos/stratsync.proto && perl -pi -e 's/.js//g' src/lib/proto/stratsync_connect.ts",
     "dev": "next dev",
-    "build": "pnpm proto_build && pnpm schema_build && next build",
+    "build": "pnpm proto_gen && pnpm schema_gen && next build",
     "start": "next start",
     "check": "pnpm biome check",
     "fix": "pnpm biome check --fix",

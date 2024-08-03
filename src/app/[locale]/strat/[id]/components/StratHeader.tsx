@@ -196,7 +196,7 @@ export const StratInfo = () => {
     {
       style: 'col-span-2',
       title: t('Duty'),
-      value: tRaids(raids?.translation_key),
+      value: tRaids(raids?.semantic_key),
     },
     {
       style: 'col-span-2',
@@ -278,7 +278,7 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
         {...props}
       >
         <StratInfo />
-        <div className="text-muted-foreground">{tRaids(raids?.translation_key)}</div>
+        <div className="text-muted-foreground">{tRaids(raids?.semantic_key)}</div>
         <div className="flex-grow" />
         <ZoomInIcon className="w-5 h-5" />
         <ZoomSlider className="ml-0" />

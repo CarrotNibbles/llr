@@ -173,8 +173,8 @@ export const HeadColumn = ({
           <HeadSubColumn
             key={`subcolumn-header-${playerId}-${action.id}`}
             job={job}
-            name={tActions(action.translation_key)}
-            iconFilename={action.icon_filename}
+            name={tActions(action.semantic_key)}
+            iconFilename={action.semantic_key}
           />
         ))}
 
