@@ -2,10 +2,10 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import RecoilRootProvider from '@/components/providers/RecoilRootProvider';
+import { StaticDataProvider } from '@/components/providers/StaticDataProvider';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
-import { StaticDataProvider } from '@/components/providers/StaticDataProvider';
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',

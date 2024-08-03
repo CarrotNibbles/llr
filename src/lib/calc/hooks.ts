@@ -1,10 +1,10 @@
-import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
-import { estimateAll } from './estimations';
-import { type ArrayElement, getDiversedRole, getRole, type Role } from '../utils';
 import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvider';
-import type { Tables } from '../database.types';
-import { ElementType, useMemo } from 'react';
+import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { OrderedSet } from '@js-sdsl/ordered-set';
+import { ElementType, useMemo } from 'react';
+import type { Tables } from '../database.types';
+import { type ArrayElement, type Role, getDiversedRole, getRole } from '../utils';
+import { estimateAll } from './estimations';
 
 export const useTank: () => [string, string] = () => {
   const {
