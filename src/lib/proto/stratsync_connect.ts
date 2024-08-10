@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { DeleteEntryRequest, ElevationRequest, EventResponse, SubscriptionRequest, UpdatePlayerJobRequest, UpsertDamageOptionRequest, UpsertEntryRequest } from "./stratsync_pb";
+import { ClearOtherSessionsRequest, DeleteEntryRequest, ElevationRequest, EventResponse, SubscriptionRequest, UpdatePlayerJobRequest, UpsertDamageOptionRequest, UpsertEntryRequest } from "./stratsync_pb";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -20,6 +20,15 @@ export const StratSync = {
       I: SubscriptionRequest,
       O: EventResponse,
       kind: MethodKind.ServerStreaming,
+    },
+    /**
+     * @generated from rpc stratsync.StratSync.ClearOtherSessions
+     */
+    clearOtherSessions: {
+      name: "ClearOtherSessions",
+      I: ClearOtherSessionsRequest,
+      O: Empty,
+      kind: MethodKind.Unary,
     },
     /**
      * @generated from rpc stratsync.StratSync.Elevate

@@ -245,6 +245,7 @@ export type Database = {
           author: string
           created_at: string
           id: string
+          is_editable: boolean
           is_public: boolean
           likes: number
           modified_at: string
@@ -258,6 +259,7 @@ export type Database = {
           author?: string
           created_at?: string
           id?: string
+          is_editable?: boolean
           is_public?: boolean
           likes?: number
           modified_at?: string
@@ -271,6 +273,7 @@ export type Database = {
           author?: string
           created_at?: string
           id?: string
+          is_editable?: boolean
           is_public?: boolean
           likes?: number
           modified_at?: string

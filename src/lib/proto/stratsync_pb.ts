@@ -252,6 +252,43 @@ export class InitializationEvent extends Message<InitializationEvent> {
 }
 
 /**
+ * @generated from message stratsync.ClearOtherSessionsRequest
+ */
+export class ClearOtherSessionsRequest extends Message<ClearOtherSessionsRequest> {
+  /**
+   * @generated from field: string token = 1;
+   */
+  token = "";
+
+  constructor(data?: PartialMessage<ClearOtherSessionsRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "stratsync.ClearOtherSessionsRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ClearOtherSessionsRequest {
+    return new ClearOtherSessionsRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ClearOtherSessionsRequest {
+    return new ClearOtherSessionsRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ClearOtherSessionsRequest {
+    return new ClearOtherSessionsRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ClearOtherSessionsRequest | PlainMessage<ClearOtherSessionsRequest> | undefined, b: ClearOtherSessionsRequest | PlainMessage<ClearOtherSessionsRequest> | undefined): boolean {
+    return proto3.util.equals(ClearOtherSessionsRequest, a, b);
+  }
+}
+
+/**
  * @generated from message stratsync.ElevationRequest
  */
 export class ElevationRequest extends Message<ElevationRequest> {
