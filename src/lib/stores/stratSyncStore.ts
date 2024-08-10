@@ -6,6 +6,7 @@ import type { Enums } from '../database.types';
 import type { DamageOption, Entry, EventResponse, Player } from '../proto/stratsync_pb';
 import type { StrategyDataType } from '../queries/server';
 import { type StratSyncClient, StratSyncClientFactory } from '../stratSyncClient';
+import { createClient } from '../supabase/client';
 
 export type StratSyncState = {
   strategy: string;
@@ -93,6 +94,12 @@ const handleUpdatePlayerJob = (id: string, job: string | undefined) =>
     }
   });
 
+const getAuthorizationHeader = async () => {
+  const supabase = createClient();
+  const access_token = (await supabase.auth.getSession()).data?.session?.access_token;
+  return access_token ? { Authorization: `Bearer ${access_token}` } : undefined;
+};
+
 export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
   createStore<StratSyncStore>()((set, get) => ({
     ...defaultState,
@@ -102,7 +109,7 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
         if (StratSyncClientFactory.instance) return;
 
         const client = new StratSyncClientFactory().client;
-        const eventStream = client.event({ strategy });
+        const eventStream = client.event({ strategy }, { headers: await getAuthorizationHeader() });
         const { event } = (await eventStream[Symbol.asyncIterator]().next()).value as EventResponse;
 
         set(
@@ -175,6 +182,8 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
           }
         }
       } catch (e) {
+        console.error(e);
+
         set(
           produce((state: StratSyncStore) => {
             state.connectionAborted = true;
