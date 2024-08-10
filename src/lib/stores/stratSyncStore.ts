@@ -21,6 +21,7 @@ export type StratSyncState = {
 export type StratSyncActions = {
   connect: (strategy: string) => Promise<void>;
   elevate: (password: string) => Promise<boolean>;
+  clearOtherSessions: () => Promise<boolean>;
   abort: () => void;
   upsertDamageOption: (damageOption: PlainMessage<DamageOption>, local: boolean) => void;
   upsertEntry: (entry: PlainMessage<Entry>, local: boolean) => void;
@@ -197,6 +198,17 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
           state.connectionAborted = true;
         }),
       );
+    },
+    clearOtherSessions: async () => {
+      if (!get().client || !get().token) return false;
+
+      try {
+        await get().client?.clearOtherSessions({ token: get().token });
+
+        return true;
+      } catch {
+        return false;
+      }
     },
     elevate: async (password: string) => {
       if (!get().client || !get().token) return false;
