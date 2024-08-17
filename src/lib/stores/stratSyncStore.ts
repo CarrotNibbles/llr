@@ -20,6 +20,7 @@ export type StratSyncState = {
 };
 
 export type StratSyncActions = {
+  updateStrategyData: (data: Partial<StrategyDataType>) => void;
   connect: (strategy: string, isAuthor: boolean, editable: boolean) => Promise<void>;
   elevate: (password: string) => Promise<boolean>;
   clearOtherSessions: () => Promise<boolean>;
@@ -196,6 +197,13 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
           }),
         );
       }
+    },
+    updateStrategyData: (data: Partial<StrategyDataType>) => {
+      set(
+        produce((state: StratSyncStore) => {
+          state.strategyData = { ...state.strategyData, ...data };
+        }),
+      );
     },
     abort: () => {
       set(

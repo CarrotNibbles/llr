@@ -11,8 +11,9 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import type { StrategyDataType } from '@/lib/queries/server';
+import { createClient } from '@/lib/supabase/client';
 import { useTranslations } from 'next-intl';
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect } from 'react';
 
 export type StratSyncProviderProps = {
   children: ReactNode;
@@ -22,7 +23,8 @@ export type StratSyncProviderProps = {
 };
 
 const StratSyncLoader = (props: { strategy: string; isAuthor: boolean; editable: boolean }) => {
-  const { connect, abort, connectionAborted } = useStratSyncStore((state) => state);
+  const supabase = createClient();
+  const { connect, abort, connectionAborted, updateStrategyData } = useStratSyncStore((state) => state);
   const t = useTranslations('StratPage.StratSyncProvider');
 
   useEffect(() => {
@@ -36,6 +38,28 @@ const StratSyncLoader = (props: { strategy: string; isAuthor: boolean; editable:
       window.removeEventListener('offline', abort);
     };
   }, [abort]);
+
+  useEffect(() => {
+    const channel = supabase
+      .channel(`strat:${props.strategy}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'strategies',
+          filter: `id=eq.${props.strategy}`,
+        },
+        (payload) => {
+          updateStrategyData(payload.new);
+        },
+      )
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [supabase.channel, props.strategy, updateStrategyData]);
 
   return (
     <AlertDialog open={connectionAborted}>
