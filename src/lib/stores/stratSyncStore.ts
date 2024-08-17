@@ -12,6 +12,7 @@ export type StratSyncState = {
   strategy: string;
   token?: string;
   elevated: boolean;
+  elevatable: boolean;
   connectionAborted: boolean;
   eventStream?: AsyncIterable<EventResponse>;
   client?: StratSyncClient;
@@ -19,7 +20,7 @@ export type StratSyncState = {
 };
 
 export type StratSyncActions = {
-  connect: (strategy: string) => Promise<void>;
+  connect: (strategy: string, isAuthor: boolean, editable: boolean) => Promise<void>;
   elevate: (password: string) => Promise<boolean>;
   clearOtherSessions: () => Promise<boolean>;
   abort: () => void;
@@ -34,6 +35,7 @@ export type StratSyncStore = StratSyncState & StratSyncActions;
 const defaultState = {
   strategy: '',
   elevated: false,
+  elevatable: false,
   connectionAborted: false,
   strategyData: {} as StrategyDataType,
 };
@@ -105,7 +107,7 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
   createStore<StratSyncStore>()((set, get) => ({
     ...defaultState,
     ...initState,
-    connect: async (strategy: string) => {
+    connect: async (strategy: string, isAuthor: boolean, editable: boolean) => {
       try {
         if (StratSyncClientFactory.instance) return;
 
@@ -121,6 +123,9 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
             state.eventStream = eventStream;
             state.strategy = strategy;
             state.token = event.value.token;
+
+            state.elevatable = !isAuthor && editable;
+            state.elevated = isAuthor;
 
             state.strategyData.strategy_players = event.value.players.map((player) => ({
               id: player.id,

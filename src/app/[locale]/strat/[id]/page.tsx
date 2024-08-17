@@ -12,15 +12,27 @@ export default async function StratPage({
 }>) {
   const supabase = createClient();
 
-  const { data: strategyData, error: strategyDataQueryError } = await buildStrategyDataQuery(supabase, id);
-  const { data: actionData, error: actionDataQueryError } = await buildActionDataQuery(supabase);
+  const [
+    { data: strategyData, error: strategyDataQueryError },
+    { data: actionData, error: actionDataQueryError },
+    { data: userResponse, error: getUserResponseError },
+  ] = await Promise.all([
+    buildStrategyDataQuery(supabase, id),
+    buildActionDataQuery(supabase),
+    supabase.auth.getUser(),
+  ]);
 
   if (strategyDataQueryError || strategyData === null) throw strategyDataQueryError;
   if (actionDataQueryError || actionData === null) throw actionDataQueryError;
+  if (getUserResponseError || userResponse === null) throw getUserResponseError;
 
   return (
     <div className="flex flex-col max-h-screen h-screen">
-      <StratSyncProvider strategyData={strategyData}>
+      <StratSyncProvider
+        strategyData={strategyData}
+        isAuthor={userResponse?.user.id === strategyData.author}
+        editable={strategyData.is_editable}
+      >
         <StratHeader />
         <CoreArea actionData={actionData} />
       </StratSyncProvider>

@@ -1,13 +1,11 @@
 'use client';
 
-import { EditableText } from '@/components/EditableText';
 import { ModeToggle } from '@/components/ModeToggle';
 import { Icons } from '@/components/icons';
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Toggle } from '@/components/ui/toggle';
@@ -267,7 +265,10 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
     const { toast } = useToast();
     // const [lastTitle, setLastTitle] = useState(name);
 
-    const { raids, likes } = useStratSyncStore((state) => state.strategyData);
+    const {
+      elevatable,
+      strategyData: { raids, likes },
+    } = useStratSyncStore((state) => state);
     const t = useTranslations('StratPage.StratHeader');
     const tRaids = useTranslations('StratPage.Raids');
 
@@ -283,7 +284,7 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
         <ZoomInIcon className="w-5 h-5" />
         <ZoomSlider className="ml-0" />
         <div className="flex">
-          <ElevationDialog />
+          {elevatable && <ElevationDialog />}
           <Button
             variant="ghost"
             size="icon"

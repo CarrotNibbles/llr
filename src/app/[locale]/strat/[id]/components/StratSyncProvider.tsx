@@ -17,15 +17,17 @@ import { type ReactNode, useEffect, useState } from 'react';
 export type StratSyncProviderProps = {
   children: ReactNode;
   strategyData: StrategyDataType;
+  isAuthor: boolean;
+  editable: boolean;
 };
 
-const StratSyncLoader = (props: { strategy: string }) => {
+const StratSyncLoader = (props: { strategy: string; isAuthor: boolean; editable: boolean }) => {
   const { connect, abort, connectionAborted } = useStratSyncStore((state) => state);
   const t = useTranslations('StratPage.StratSyncProvider');
 
   useEffect(() => {
-    connect(props.strategy);
-  }, [connect, props.strategy]);
+    connect(props.strategy, props.isAuthor, props.editable);
+  }, [connect, props.strategy, props.isAuthor, props.editable]);
 
   useEffect(() => {
     window.addEventListener('offline', abort);
@@ -58,8 +60,14 @@ const StratSyncLoader = (props: { strategy: string }) => {
 
 export function StratSyncProvider(props: StratSyncProviderProps) {
   return (
-    <StratSyncStoreProvider initState={{ strategyData: props.strategyData }}>
-      <StratSyncLoader strategy={props.strategyData.id} />
+    <StratSyncStoreProvider
+      initState={{ strategyData: props.strategyData, elevatable: !props.isAuthor && props.strategyData.is_editable }}
+    >
+      <StratSyncLoader
+        strategy={props.strategyData.id}
+        isAuthor={props.isAuthor}
+        editable={props.strategyData.is_editable}
+      />
       {props.children}
     </StratSyncStoreProvider>
   );
