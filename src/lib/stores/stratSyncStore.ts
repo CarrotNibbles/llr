@@ -11,6 +11,7 @@ import { createClient } from '../supabase/client';
 export type StratSyncState = {
   strategy: string;
   token?: string;
+  isAuthor: boolean;
   elevated: boolean;
   elevatable: boolean;
   connectionAborted: boolean;
@@ -36,6 +37,7 @@ export type StratSyncStore = StratSyncState & StratSyncActions;
 const defaultState = {
   strategy: '',
   elevated: false,
+  isAuthor: false,
   elevatable: false,
   connectionAborted: false,
   strategyData: {} as StrategyDataType,
@@ -125,6 +127,7 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
             state.strategy = strategy;
             state.token = event.value.token;
 
+            state.isAuthor = isAuthor;
             state.elevatable = !isAuthor && editable;
             state.elevated = isAuthor;
 
@@ -214,6 +217,7 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
     },
     clearOtherSessions: async () => {
       if (!get().client || !get().token) return false;
+      if (!get().isAuthor) return false;
 
       try {
         await get().client?.clearOtherSessions({ token: get().token });

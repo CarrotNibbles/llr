@@ -85,7 +85,11 @@ const StratSyncLoader = (props: { strategy: string; isAuthor: boolean; editable:
 export function StratSyncProvider(props: StratSyncProviderProps) {
   return (
     <StratSyncStoreProvider
-      initState={{ strategyData: props.strategyData, elevatable: !props.isAuthor && props.strategyData.is_editable }}
+      initState={{
+        strategyData: props.strategyData,
+        isAuthor: props.isAuthor,
+        elevatable: !props.isAuthor && props.strategyData.is_editable,
+      }}
     >
       <StratSyncLoader
         strategy={props.strategyData.id}
