@@ -172,7 +172,7 @@ const GimmickLine = React.forwardRef<
         style={{ top: `${prepareAt * pixelPerFrame}px` }}
       >
         <div className="space-y-1">
-          <HoverCard>
+          <HoverCard openDelay={300}>
             <HoverCardTrigger>
               {mergedGimmicks.length > 0 && (
                 <GimmicksNames

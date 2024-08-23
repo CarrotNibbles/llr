@@ -28,7 +28,7 @@ export const CoreArea = (props: CoreAreaProps) => {
     if (ref.current) {
       ref.current.scrollTop *= zoom.changeRatio;
     }
-  }, [zoom]);
+  }, [zoom.changeRatio]);
 
   const raidDuration = strategyData.raids?.duration ?? 0;
   const raidLevel = strategyData.raids?.level ?? 0;
