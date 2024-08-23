@@ -4,13 +4,13 @@
   "private": true,
   "scripts": {
     "schema_gen": "supabase gen types --lang=typescript --project-id jbgcbfblivbtdnhbkfab > src/lib/database.types.ts",
-    "proto_gen": "pnpm buf generate protos/stratsync.proto && perl -pi -e 's/.js//g' src/lib/proto/stratsync_connect.ts",
+    "proto_gen": "bun buf generate protos/stratsync.proto && perl -pi -e 's/.js//g' src/lib/proto/stratsync_connect.ts",
     "dev": "next dev",
-    "build": "pnpm proto_gen && pnpm schema_gen && next build",
+    "build": "bun proto_gen && bun schema_gen && next build",
     "start": "next start",
-    "check": "pnpm biome check",
-    "fix": "pnpm biome check --fix",
-    "fix_unsafe": "pnpm biome check --fix --unsafe"
+    "check": "bun biome check",
+    "fix": "bun biome check --fix",
+    "fix_unsafe": "bun biome check --fix --unsafe"
   },
   "dependencies": {
     "@bufbuild/protobuf": "^1.8.0",
@@ -51,8 +51,8 @@
     "next": "14.1.0",
     "next-intl": "^3.17.2",
     "next-themes": "^0.2.1",
-    "react": "^18",
-    "react-dom": "^18",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-hook-form": "^7.51.0",
     "react-resizable-panels": "^2.0.11",
     "react-scroll-sync": "^0.11.2",
@@ -71,14 +71,14 @@
     "@bufbuild/buf": "^1.30.0",
     "@bufbuild/protoc-gen-es": "^1.8.0",
     "@connectrpc/protoc-gen-connect-es": "^1.4.0",
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/node": "^20.11.20",
+    "@types/react": "^18.2.58",
+    "@types/react-dom": "^18.2.19",
     "@types/react-scroll-sync": "^0.9.0",
-    "autoprefixer": "^10.0.1",
+    "autoprefixer": "^10.4.17",
     "lorem-ipsum": "^2.0.8",
-    "postcss": "^8",
-    "tailwindcss": "^3.3.0",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
     "typescript": "^5.3.3"
   }
 }
