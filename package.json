@@ -4,13 +4,13 @@
   "private": true,
   "scripts": {
     "schema_gen": "supabase gen types --lang=typescript --project-id jbgcbfblivbtdnhbkfab > src/lib/database.types.ts",
-    "proto_gen": "bun buf generate protos/stratsync.proto && perl -pi -e 's/.js//g' src/lib/proto/stratsync_connect.ts",
+    "proto_gen": "buf generate protos/stratsync.proto && perl -pi -e 's/.js//g' src/lib/proto/stratsync_connect.ts",
     "dev": "next dev",
     "build": "bun proto_gen && bun schema_gen && next build",
     "start": "next start",
-    "check": "bun biome check",
-    "fix": "bun biome check --fix",
-    "fix_unsafe": "bun biome check --fix --unsafe"
+    "check": "biome check",
+    "fix": "biome check --fix",
+    "fix_unsafe": "biome check --fix --unsafe"
   },
   "dependencies": {
     "@bufbuild/protobuf": "^1.8.0",
