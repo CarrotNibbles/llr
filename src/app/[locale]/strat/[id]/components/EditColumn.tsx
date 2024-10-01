@@ -88,7 +88,7 @@ const DraggableBox = ({
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    yMotionValue.set(useAt * pixelPerFrame);
+    void animate(yMotionValue, useAt * pixelPerFrame);
   }, [pixelPerFrame, useAt]);
 
   const onDragEnd = async () => {
@@ -218,7 +218,6 @@ const EditSubColumn = ({
     <div
       className={`flex flex-shrink-0 ${columnWidth} ${columnWidthLarge} overflow-hidden hover:bg-muted`}
       style={{ height: `${raidDuration * pixelPerFrame + 60}px` }}
-      // onClick={createBox}
     >
       {...boxValues.map((boxValue, index) => (
         <DraggableBox
