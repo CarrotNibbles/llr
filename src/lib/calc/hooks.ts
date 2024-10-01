@@ -1,6 +1,6 @@
 import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvider';
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
-import { OrderedSet } from '@js-sdsl/ordered-set';
+import { OrderedMap } from '@js-sdsl/ordered-map';
 import { ElementType, useMemo } from 'react';
 import type { Tables } from '../database.types';
 import { type ArrayElement, type Role, getDiversedRole, getRole } from '../utils';
@@ -146,8 +146,8 @@ export const useMitigatedDamages = () => {
     | ({ type: 'DAMAGE_PREPARE' } & DamageTimeline)
     | ({ type: 'MITIGATION_ACQUIRE' } & MitigationTimeline);
 
-  type ActiveEffectSet = OrderedSet<{ at: number; effect: Effect }>;
-  type ActiveEffectSetIterator = ReturnType<ActiveEffectSet['begin']>;
+  type ActiveEffectMapKey = { at: number; _auto_incrementing_key: number };
+  type ActiveEffectMap = OrderedMap<ActiveEffectMapKey, Effect>;
 
   const { actionData } = useStaticDataStore((state) => state);
   const [mainTank, offTank] = useTank();
@@ -163,6 +163,12 @@ export const useMitigatedDamages = () => {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   return useMemo(() => {
+    let INCREMENTING_KEY = 0;
+    const generateKey = (at: number) => ({
+      at,
+      _auto_incrementing_key: INCREMENTING_KEY++,
+    })
+
     const playerIds = strategyData.strategy_players.map((player) => player.id);
 
     const timeline: TimelineType[] = [];
@@ -208,7 +214,7 @@ export const useMitigatedDamages = () => {
             type: 'MITIGATION_ACQUIRE',
             at: entry.use_at,
             by: player.id,
-            via: `${semanticKey}.${index}`,
+            via: `${semanticKey}.${mitigation.type}`,
             role: getRole(job),
             gcd,
             mitigation,
@@ -219,15 +225,10 @@ export const useMitigatedDamages = () => {
 
     timeline.sort((lhs, rhs) => lhs.at - rhs.at);
 
-    const effectComparator = (lhs: { at: number; effect: Effect }, rhs: { at: number; effect: Effect }) => {
+    const effectMapComparator = (lhs: ActiveEffectMapKey, rhs: ActiveEffectMapKey) => {
       const compares = [
         lhs.at - rhs.at,
-        lhs.effect.physical - rhs.effect.physical,
-        lhs.effect.magical - rhs.effect.magical,
-        lhs.effect.barrier - rhs.effect.barrier,
-        lhs.effect.invuln - rhs.effect.invuln,
-        lhs.effect.activeAmp - rhs.effect.activeAmp,
-        lhs.effect.passiveAmp - rhs.effect.passiveAmp,
+        lhs._auto_incrementing_key - rhs._auto_incrementing_key,
       ];
 
       for (const compare of compares) {
@@ -238,15 +239,15 @@ export const useMitigatedDamages = () => {
 
       return 0;
     };
-    const activePersonalEffects: Record<string, ActiveEffectSet> = Object.fromEntries(
-      playerIds.map((playerId) => [playerId, new OrderedSet<{ at: number; effect: Effect }>([], effectComparator)]),
+    const activePersonalEffects: Record<string, ActiveEffectMap> = Object.fromEntries(
+      playerIds.map((playerId) => [playerId, new OrderedMap<ActiveEffectMapKey, Effect>([], effectMapComparator)]),
     );
-    const activeRaidwideEffects = new OrderedSet<{ at: number; effect: Effect }>([], effectComparator);
+    const activeRaidwideEffects = new OrderedMap<ActiveEffectMapKey, Effect>([], effectMapComparator);
 
     const effectIteratorMapPersonal = Object.fromEntries(
-      playerIds.map((playerId) => [playerId, new Map<string, ActiveEffectSetIterator>()]),
+      playerIds.map((playerId) => [playerId, new Map<string, ActiveEffectMapKey>()]),
     );
-    const effectIteratorMapRaidwide = new Map<string, ActiveEffectSetIterator>();
+    const effectIteratorMapRaidwide = new Map<string, ActiveEffectMapKey>();
 
     const personalEffect: Record<string, Effect> = Object.fromEntries(
       playerIds.map((playerId) => [playerId, IDENTITY_EFFECT]),
@@ -255,98 +256,95 @@ export const useMitigatedDamages = () => {
 
     const mitigatedDamages: Record<string, number> = {};
 
-    for (const timelineEntry of timeline) {
-      const gainEffect = (
-        expire_at: number,
-        effect: Effect,
-        activeEffectSet: ActiveEffectSet,
-        effectCumulated: Effect,
-        effectIteratorMap: Map<string, ActiveEffectSetIterator>,
-        via: string,
-      ) => {
-        let resultEffect = effectCumulated;
+    const gainEffect = (
+      expire_at: number,
+      effect: Effect,
+      activeEffectMap: ActiveEffectMap,
+      effectCumulated: Effect,
+      effectKeyMap: Map<string, ActiveEffectMapKey>,
+      via: string,
+    ) => {
+      let resultEffect = effectCumulated;
 
-        let activeEffect = IDENTITY_EFFECT;
-        const activeEffectIterator = effectIteratorMap.get(via);
-        if (activeEffectIterator?.isAccessible()) {
-          activeEffect = activeEffectIterator.pointer.effect;
-        }
-
-        if (
-          activeEffect.physical < effect.physical ||
-          activeEffect.magical < effect.magical ||
-          activeEffect.barrier > effect.barrier ||
-          activeEffect.invuln > effect.invuln ||
-          activeEffect.activeAmp > effect.activeAmp ||
-          activeEffect.passiveAmp > effect.passiveAmp
-        ) {
-          // update not occurs for the weaker effect
-          return resultEffect;
-        }
-
-        resultEffect = addEffect(resultEffect, inverseEffect(activeEffect));
-        if (activeEffectIterator?.isAccessible()) {
-          activeEffectSet.eraseElementByIterator(activeEffectIterator);
-        }
-
-        resultEffect = addEffect(resultEffect, effect);
-        activeEffectSet.insert({ at: expire_at, effect });
-
-        const insertedIterator = activeEffectSet.find({ at: expire_at, effect });
-        if (insertedIterator) {
-          effectIteratorMap.set(via, insertedIterator);
-        }
-
-        return resultEffect;
-      };
-
-      const removeExpiredEffects = (activeEffectSet: ActiveEffectSet, effectCumulated: Effect) => {
-        let resultEffect = effectCumulated;
-
-        while (true) {
-          const frontIterator = activeEffectSet.begin();
-
-          if (frontIterator.equals(activeEffectSet.end()) || frontIterator.pointer.at > timelineEntry.at) {
-            break;
-          }
-
-          resultEffect = addEffect(resultEffect, inverseEffect(frontIterator.pointer.effect));
-          activeEffectSet.eraseElementByIterator(frontIterator);
-        }
-
-        return resultEffect;
-      };
-
-      for (const playerId of playerIds) {
-        personalEffect[playerId] = removeExpiredEffects(activePersonalEffects[playerId], personalEffect[playerId]);
+      let activeEffect = IDENTITY_EFFECT;
+      const activeEffectKey = effectKeyMap.get(via);
+      if (activeEffectKey) {
+        activeEffect = activeEffectMap.getElementByKey(activeEffectKey) ?? IDENTITY_EFFECT;
       }
-      raidwideEffect = removeExpiredEffects(activeRaidwideEffects, raidwideEffect);
 
-      const handleAbsorption = (activeEffectSet: ActiveEffectSet, absorbed: number, effect: Effect) => {
-        let remainingAbsorption = absorbed;
+      if (
+        activeEffect.physical < effect.physical ||
+        activeEffect.magical < effect.magical ||
+        activeEffect.barrier > effect.barrier ||
+        activeEffect.invuln > effect.invuln ||
+        activeEffect.activeAmp > effect.activeAmp ||
+        activeEffect.passiveAmp > effect.passiveAmp
+      ) {
+        // update not occurs for the weaker effect
+        return resultEffect;
+      }
 
-        const iter = activeEffectSet.begin();
-        while (!iter.equals(activeEffectSet.end()) && remainingAbsorption > 0) {
-          const current = iter.pointer;
+      resultEffect = addEffect(resultEffect, inverseEffect(activeEffect));
+      if (activeEffectKey) {
+        activeEffectMap.eraseElementByKey(activeEffectKey);
+      }
 
-          if (current.effect.barrier > 0) {
-            const absorption = Math.min(remainingAbsorption, current.effect.barrier);
-            remainingAbsorption -= absorption;
-            current.effect.barrier -= absorption;
-          }
+      const keyToInsert = generateKey(expire_at);
+      resultEffect = addEffect(resultEffect, effect);
+      activeEffectMap.setElement(keyToInsert, effect);
+      effectKeyMap.set(via, keyToInsert);
 
-          iter.next();
+      return resultEffect;
+    };
+
+    const removeExpiredEffects = (at: number, activeEffectMap: ActiveEffectMap, effectCumulated: Effect) => {
+      let resultEffect = effectCumulated;
+
+      while (true) {
+        const frontIterator = activeEffectMap.begin();
+
+        if (frontIterator.equals(activeEffectMap.end()) || frontIterator.pointer[0].at > at) {
+          break;
         }
 
-        if (remainingAbsorption > 0) {
-          throw new Error(`ERROR: Damage absorbed more than barrier, remaining: ${remainingAbsorption}`);
+        resultEffect = addEffect(resultEffect, inverseEffect(frontIterator.pointer[1]));
+
+        activeEffectMap.eraseElementByIterator(frontIterator);
+      }
+
+      return resultEffect;
+    };
+
+    const handleAbsorption = (activeEffectMap: ActiveEffectMap, absorbed: number, effect: Effect) => {
+      let remainingAbsorption = absorbed;
+
+      const iter = activeEffectMap.begin();
+      while (!iter.equals(activeEffectMap.end()) && remainingAbsorption > 0) {
+        const currentNode = iter.pointer;
+
+        if (currentNode[1].barrier > 0) {
+          const absorption = Math.min(remainingAbsorption, currentNode[1].barrier);
+          remainingAbsorption -= absorption;
+          currentNode[1].barrier -= absorption;
         }
 
-        return {
-          ...effect,
-          barrier: effect.barrier - absorbed,
-        };
+        iter.next();
+      }
+
+      if (remainingAbsorption > 0) {
+        throw new Error(`Damage absorbed more than barrier, remaining: ${remainingAbsorption}`);
+      }
+
+      return {
+        ...effect,
+        barrier: effect.barrier - absorbed,
       };
+    };
+    for (const timelineEntry of timeline) {
+      for (const playerId of playerIds) {
+        personalEffect[playerId] = removeExpiredEffects(timelineEntry.at, activePersonalEffects[playerId], personalEffect[playerId]);
+      }
+      raidwideEffect = removeExpiredEffects(timelineEntry.at, activeRaidwideEffects, raidwideEffect);
 
       if (timelineEntry.type === 'DAMAGE_PREPARE') {
         const { damageApplied } = timelineEntry;
