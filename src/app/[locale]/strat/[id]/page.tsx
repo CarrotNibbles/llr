@@ -15,7 +15,7 @@ export default async function StratPage({
   const [
     { data: strategyData, error: strategyDataQueryError },
     { data: actionData, error: actionDataQueryError },
-    { data: userResponse, error: getUserResponseError },
+    { data: userResponse },
   ] = await Promise.all([
     buildStrategyDataQuery(supabase, id),
     buildActionDataQuery(supabase),
@@ -24,13 +24,12 @@ export default async function StratPage({
 
   if (strategyDataQueryError || strategyData === null) throw strategyDataQueryError;
   if (actionDataQueryError || actionData === null) throw actionDataQueryError;
-  if (getUserResponseError || userResponse === null) throw getUserResponseError;
 
   return (
     <div className="flex flex-col max-h-screen h-screen">
       <StratSyncProvider
         strategyData={strategyData}
-        isAuthor={userResponse?.user.id === strategyData.author}
+        isAuthor={userResponse?.user?.id === strategyData.author}
         editable={strategyData.is_editable}
       >
         <StratHeader />

@@ -102,7 +102,7 @@ const handleUpdatePlayerJob = (id: string, job: string | undefined) =>
 
 const getAuthorizationHeader = async () => {
   const supabase = createClient();
-  const access_token = (await supabase.auth.getSession()).data?.session?.access_token;
+  const access_token = (await supabase.auth.getSession())?.data?.session?.access_token;
   return access_token ? { Authorization: `Bearer ${access_token}` } : undefined;
 };
 
