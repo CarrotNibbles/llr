@@ -11,6 +11,7 @@ export const getZoom = (zoomState: number) => {
   return [0.3, 0.5, 2 / 3, 0.8, 0.9, 1, 1.1, 1.2, 4 / 3, 1.5, 1.7, 2, 2.4, 3, 4, 5][zoomState];
 };
 
+export type NonEmptyArray<T> = [T, ...T[]];
 export type ArrayElement<T> = T extends Array<infer R> ? R : never;
 
 export const usePixelPerFrame = () => {
@@ -25,6 +26,40 @@ const notNullOrUndefined = <ValueType>(value: ValueType | undefined): value is V
 const filteredMin = (...values: Array<number | undefined>) => Math.min(...values.filter(notNullOrUndefined));
 const filteredMax = (...values: Array<number | undefined>) => Math.max(...values.filter(notNullOrUndefined));
 export const clamp = (num: number, min?: number, max?: number) => filteredMax(filteredMin(num, max), min);
+
+export const ALL_PATCHES = [
+  {version: 2, subversion: 0},
+  {version: 2, subversion: 1},
+  {version: 2, subversion: 2},
+  {version: 2, subversion: 3},
+  {version: 2, subversion: 4},
+  {version: 2, subversion: 5},
+  {version: 3, subversion: 0},
+  {version: 3, subversion: 1},
+  {version: 3, subversion: 2},
+  {version: 3, subversion: 3},
+  {version: 3, subversion: 4},
+  {version: 3, subversion: 5},
+  {version: 4, subversion: 0},
+  {version: 4, subversion: 1},
+  {version: 4, subversion: 2},
+  {version: 4, subversion: 3},
+  {version: 4, subversion: 4},
+  {version: 4, subversion: 5},
+  {version: 5, subversion: 0},
+  {version: 5, subversion: 1},
+  {version: 5, subversion: 2},
+  {version: 5, subversion: 3},
+  {version: 5, subversion: 4},
+  {version: 5, subversion: 5},
+  {version: 6, subversion: 0},
+  {version: 6, subversion: 1},
+  {version: 6, subversion: 2},
+  {version: 6, subversion: 3},
+  {version: 6, subversion: 4},
+  {version: 6, subversion: 5},
+  {version: 7, subversion: 0},
+]
 
 export const GIMMICK_TEXT_STYLE = {
   AutoAttack: 'text-zinc-500',

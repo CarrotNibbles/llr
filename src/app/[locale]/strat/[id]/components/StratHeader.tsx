@@ -13,16 +13,19 @@ import { useToast } from '@/components/ui/use-toast';
 import { useEstimations } from '@/lib/calc/hooks';
 import type { Enums } from '@/lib/database.types';
 import { useFilterState } from '@/lib/states';
-import { GIMMICK_BACKGROUND_STYLE, cn } from '@/lib/utils';
+import { ALL_PATCHES, GIMMICK_BACKGROUND_STYLE, cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { HeartIcon, LockClosedIcon, LockOpen2Icon, Share1Icon, ZoomInIcon } from '@radix-ui/react-icons';
+import { GearIcon, HeartIcon, LockClosedIcon, LockOpen2Icon, Share1Icon, ZoomInIcon } from '@radix-ui/react-icons';
 import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { ZoomSlider } from './ZoomSlider';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-export const FilterMenu = () => {
+const FilterMenu = () => {
   const GimmickTypes: Array<Enums<'gimmick_type'>> = [
     'AutoAttack',
     'Avoidable',
@@ -176,7 +179,7 @@ const ElevationDialog = () => {
   );
 };
 
-export const StratInfo = () => {
+const StratInfo = () => {
   const { name, raids, version, subversion, strategy_players } = useStratSyncStore((state) => state.strategyData);
   const estimations = useEstimations();
   const t = useTranslations('StratPage.StratHeader.StratInfo');
@@ -260,6 +263,164 @@ export const StratInfo = () => {
   );
 };
 
+const StratSettings = () => {
+  const {
+    name,
+    is_public: isPublic,
+    is_editable: isEditable,
+    version,
+    subversion,
+  } = useStratSyncStore((state) => state.strategyData);
+  const t = useTranslations('StratPage.StratHeader.StratSettings');
+  const tPatches = useTranslations('StratPage.FFXIVPatches');
+
+  const formSchema = z.object({
+    name: z.string().min(1),
+    isPublic: z.boolean(),
+    isEditable: z.boolean(),
+    patch: z.string().regex(/^[234567]\.[012345]$/),
+    password: z
+      .string()
+      .regex(/^\d{8}$/)
+      .optional(),
+  });
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name,
+      isPublic,
+      isEditable,
+      patch: `${version}.${subversion}`,
+    },
+  });
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button variant="ghost" size="icon">
+          <span className="sr-only">Settings</span>
+          <GearIcon />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t('Title')}</DialogTitle>
+        </DialogHeader>
+        <Form {...form}>
+          <form className="space-y-6">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('Name')}</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="isPublic"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex flex-row items-center justify-between">
+                    <div>
+                      <FormLabel>{t('isPublic')}</FormLabel>
+                      <FormDescription>{t('isPublicDescription')}</FormDescription>
+                      <FormMessage />
+                    </div>
+
+                    <FormControl>
+                      <Switch className="my-0" checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="isEditable"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex flex-row items-center justify-between">
+                    <div>
+                      <FormLabel>{t('isEditable')}</FormLabel>
+                      <FormDescription>{t('isEditableDescription')}</FormDescription>
+                      <FormMessage />
+                    </div>
+
+                    <FormControl>
+                      <Switch className="my-0" checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="patch"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('Patch')}</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder={t('PatchPlaceholder')} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {ALL_PATCHES.map(({ version, subversion }) => (
+                        <SelectItem key={`select-patch-${version}.${subversion}`} value={`${version}.${subversion}`}>
+                          {`${version}.${subversion}`} - {tPatches(`${version}.${subversion}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>{t('PatchDescription')}</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('Password')}</FormLabel>
+                  <FormControl>
+                    <InputOTP maxLength={8} {...field}>
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} />
+                        <InputOTPSlot index={1} />
+                        <InputOTPSlot index={2} />
+                        <InputOTPSlot index={3} />
+                        <InputOTPSeparator />
+                        <InputOTPSlot index={4} />
+                        <InputOTPSlot index={5} />
+                        <InputOTPSlot index={6} />
+                        <InputOTPSlot index={7} />
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </FormControl>
+                  <FormDescription>{t('PasswordDescription')}</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
+        <DialogFooter>
+          <Button type="submit">Save</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & React.ComponentPropsWithoutRef<'div'>>(
   ({ className, ...props }, ref) => {
     const { toast } = useToast();
@@ -267,6 +428,7 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
 
     const {
       elevatable,
+      isAuthor,
       strategyData: { raids, likes },
     } = useStratSyncStore((state) => state);
     const t = useTranslations('StratPage.StratHeader');
@@ -285,6 +447,7 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
         <ZoomSlider className="ml-0" />
         <div className="flex">
           {elevatable && <ElevationDialog />}
+          {isAuthor && <StratSettings />}
           <Button
             variant="ghost"
             size="icon"

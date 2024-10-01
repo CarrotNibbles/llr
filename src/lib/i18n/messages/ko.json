@@ -27,7 +27,7 @@
         "DialogTitle": "정보",
         "StrategyTitle": "전략 제목",
         "Duty": "임무명",
-        "FFXIVPatch": "파이널판타지14 패치",
+        "FFXIVPatch": "기준 패치 버전",
         "LevelSync": "레벨 조율",
         "ItemLevelSync": "아이템 레벨 조율",
         "PlayerCount": "플레이어 수",
@@ -59,6 +59,19 @@
         "Success": "클립보드에 링크가 복사되었습니다!",
         "FailureTitle": "오류가 발생했습니다.",
         "FailureDescription": "클립보드에 복사하는 중 오류가 발생하였습니다."
+      },
+      "StratSettings": {
+        "Title": "설정",
+        "Name": "전략명",
+        "isPublic": "전략 공개",
+        "isPublicDescription": "전략을 공개하면 다른 사용자가 검색하여 볼 수 있습니다.",
+        "isEditable": "수정 가능",
+        "isEditableDescription": "비밀번호로 전략을 수정할 수 있도록 설정합니다.",
+        "Patch": "기준 패치 버전",
+        "PatchPlaceholder": "패치 버전을 선택해주세요.",
+        "PatchDescription": "기준이 될 패치 버전을 선택합니다.",
+        "Password": "비밀번호",
+        "PasswordDescription": "전략을 수정하기 위한 비밀번호를 설정하거나 변경합니다. 변경 시 현재 세션 이외의 연결이 해제됩니다."
       }
     },
     "GimmickLine": {
