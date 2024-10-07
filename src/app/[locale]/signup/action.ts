@@ -27,7 +27,12 @@ export async function discordSignIn() {
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'discord',
+    options: {
+      redirectTo: `${process.env.HOST_URI}/auth/callback`,
+    },
   });
+
+  if (data.url) redirect(data.url);
 
   if (error) {
     console.error('Error signing in with Discord:', error);
@@ -35,5 +40,4 @@ export async function discordSignIn() {
   }
 
   revalidatePath('/', 'layout');
-  redirect('/');
 }
