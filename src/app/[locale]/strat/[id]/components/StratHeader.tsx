@@ -21,6 +21,7 @@ import { ALL_PATCHES, GIMMICK_BACKGROUND_STYLE, cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Turnstile, type TurnstileInstance } from '@marsidev/react-turnstile';
 import {
+  ExclamationTriangleIcon,
   GearIcon,
   HeartFilledIcon,
   HeartIcon,
@@ -34,6 +35,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { ZoomSlider } from './ZoomSlider';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const FilterMenu = () => {
   const GimmickTypes: Array<Enums<'gimmick_type'>> = [
@@ -326,12 +328,42 @@ const StratSettings = () => {
                 <FormItem>
                   <FormLabel>{t('Name')}</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <Input {...field} placeholder={name} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="patch"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('Patch')}</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder={t('PatchPlaceholder')} />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {ALL_PATCHES.map(({ version, subversion }) => (
+                        <SelectItem key={`select-patch-${version}.${subversion}`} value={`${version}.${subversion}`}>
+                          {`${version}.${subversion}`} - {tPatches(`${version}.${subversion}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription>{t('PatchDescription')}</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Alert>
+              <ExclamationTriangleIcon className="h-4 w-4" />
+              <AlertTitle>{t('AlertTitle')}</AlertTitle>
+              <AlertDescription>{t('AlertDescription')}</AlertDescription>
+            </Alert>
             <FormField
               control={form.control}
               name="isPublic"
@@ -372,31 +404,6 @@ const StratSettings = () => {
             />
             <FormField
               control={form.control}
-              name="patch"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('Patch')}</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder={t('PatchPlaceholder')} />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {ALL_PATCHES.map(({ version, subversion }) => (
-                        <SelectItem key={`select-patch-${version}.${subversion}`} value={`${version}.${subversion}`}>
-                          {`${version}.${subversion}`} - {tPatches(`${version}.${subversion}`)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormDescription>{t('PatchDescription')}</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
               name="password"
               render={({ field }) => (
                 <FormItem>
@@ -416,7 +423,6 @@ const StratSettings = () => {
                       </InputOTPGroup>
                     </InputOTP>
                   </FormControl>
-                  <FormDescription>{t('PasswordDescription')}</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -424,7 +430,12 @@ const StratSettings = () => {
           </form>
         </Form>
         <DialogFooter>
-          <Button type="submit">{t('Save')}</Button>
+          <div className="flex flex-row justify-between w-full">
+            <Button variant="link" className="text-muted-foreground text-xs my-auto font-regular p-0">
+              {t('DeleteStrategy')}
+            </Button>
+            <Button type="submit">{t('Save')}</Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

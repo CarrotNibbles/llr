@@ -70,8 +70,10 @@
         "Patch": "Base Patch Version",
         "PatchPlaceholder": "Please select a patch version.",
         "PatchDescription": "Select the base patch version.",
-        "Password": "Password",
-        "PasswordDescription": "Set or change the password for editing the strategy. Changing it will disconnect all other sessions except for the current one.",
+        "Password": "Edit Password",
+        "DeleteStrategy": "Delete Strategy",
+        "AlertTitle": "Warning",
+        "AlertDescription": "If you change the settings to be more restrictive, other sessions will be disconnected.",
         "Save": "Save"
       },
       "LikeButton": {
