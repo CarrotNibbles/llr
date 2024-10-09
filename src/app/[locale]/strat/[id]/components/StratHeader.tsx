@@ -424,7 +424,7 @@ const StratSettings = () => {
           </form>
         </Form>
         <DialogFooter>
-          <Button type="submit">Save</Button>
+          <Button type="submit">{t('Save')}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

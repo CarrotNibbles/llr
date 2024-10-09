@@ -71,7 +71,8 @@
         "PatchPlaceholder": "패치 버전을 선택해주세요.",
         "PatchDescription": "기준이 될 패치 버전을 선택합니다.",
         "Password": "비밀번호",
-        "PasswordDescription": "전략을 수정하기 위한 비밀번호를 설정하거나 변경합니다. 변경 시 현재 세션 이외의 연결이 해제됩니다."
+        "PasswordDescription": "전략을 수정하기 위한 비밀번호를 설정하거나 변경합니다. 변경 시 현재 세션 이외의 연결이 해제됩니다.",
+        "Save": "저장"
       },
       "LikeButton": {
         "Liked": "좋아요가 추가되었습니다.",

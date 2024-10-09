@@ -71,7 +71,8 @@
         "PatchPlaceholder": "Please select a patch version.",
         "PatchDescription": "Select the base patch version.",
         "Password": "Password",
-        "PasswordDescription": "Set or change the password for editing the strategy. Changing it will disconnect all other sessions except for the current one."
+        "PasswordDescription": "Set or change the password for editing the strategy. Changing it will disconnect all other sessions except for the current one.",
+        "Save": "Save"
       },
       "LikeButton": {
         "Liked": "Like added.",
