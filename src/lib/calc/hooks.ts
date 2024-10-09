@@ -167,7 +167,7 @@ export const useMitigatedDamages = () => {
     const generateKey = (at: number) => ({
       at,
       _auto_incrementing_key: INCREMENTING_KEY++,
-    })
+    });
 
     const playerIds = strategyData.strategy_players.map((player) => player.id);
 
@@ -226,10 +226,7 @@ export const useMitigatedDamages = () => {
     timeline.sort((lhs, rhs) => lhs.at - rhs.at);
 
     const effectMapComparator = (lhs: ActiveEffectMapKey, rhs: ActiveEffectMapKey) => {
-      const compares = [
-        lhs.at - rhs.at,
-        lhs._auto_incrementing_key - rhs._auto_incrementing_key,
-      ];
+      const compares = [lhs.at - rhs.at, lhs._auto_incrementing_key - rhs._auto_incrementing_key];
 
       for (const compare of compares) {
         if (compare !== 0) {
@@ -342,7 +339,11 @@ export const useMitigatedDamages = () => {
     };
     for (const timelineEntry of timeline) {
       for (const playerId of playerIds) {
-        personalEffect[playerId] = removeExpiredEffects(timelineEntry.at, activePersonalEffects[playerId], personalEffect[playerId]);
+        personalEffect[playerId] = removeExpiredEffects(
+          timelineEntry.at,
+          activePersonalEffects[playerId],
+          personalEffect[playerId],
+        );
       }
       raidwideEffect = removeExpiredEffects(timelineEntry.at, activeRaidwideEffects, raidwideEffect);
 
