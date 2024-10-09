@@ -29,6 +29,7 @@ export default async function StratPage({
     <div className="flex flex-col max-h-screen h-screen">
       <StratSyncProvider
         strategyData={strategyData}
+        userId={userResponse?.user?.id}
         isAuthor={userResponse?.user?.id === strategyData.author}
         editable={strategyData.is_editable}
       >

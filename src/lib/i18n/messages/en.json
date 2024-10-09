@@ -59,6 +59,29 @@
         "Success": "Link copied to clipboard!",
         "FailureTitle": "There was an Error",
         "FailureDescription": "An error occurred while copying the link to clipboard."
+      },
+      "StratSettings": {
+        "Title": "Settings",
+        "Name": "Strategy Name",
+        "isPublic": "Public Strategy",
+        "isPublicDescription": "If you make the strategy public, other users can search and view it.",
+        "isEditable": "Editable",
+        "isEditableDescription": "Allows the strategy to be edited with a password.",
+        "Patch": "Base Patch Version",
+        "PatchPlaceholder": "Please select a patch version.",
+        "PatchDescription": "Select the base patch version.",
+        "Password": "Password",
+        "PasswordDescription": "Set or change the password for editing the strategy. Changing it will disconnect all other sessions except for the current one."
+      },
+      "LikeButton": {
+        "Liked": "Like added.",
+        "Unliked": "Like removed.",
+        "CaptchaFailed": "Failed to verify CAPTCHA.",
+        "StrategyNotFound": "Strategy not found.",
+        "AlreadyLiked": "A like has already been added from the same IP within the last 24 hours.",
+        "Error": "An error occurred while adding the like.",
+        "CaptchaHeading": "CAPTCHA Verification",
+        "CaptchaLoading": "Loading CAPTCHA..."
       }
     },
     "GimmickLine": {

@@ -19,6 +19,7 @@
     "@hookform/resolvers": "^3.9.0",
     "@js-sdsl/ordered-map": "^4.4.2",
     "@js-sdsl/ordered-set": "^4.4.2",
+    "@marsidev/react-turnstile": "^1.0.2",
     "@radix-ui/react-alert-dialog": "^1.1.1",
     "@radix-ui/react-aspect-ratio": "^1.1.0",
     "@radix-ui/react-context-menu": "^2.2.1",
