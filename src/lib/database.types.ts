@@ -60,6 +60,32 @@ export type Database = {
         }
         Relationships: []
       }
+      anon_likes: {
+        Row: {
+          created_at: string
+          ip_addr: string
+          strategy: string
+        }
+        Insert: {
+          created_at?: string
+          ip_addr: string
+          strategy?: string
+        }
+        Update: {
+          created_at?: string
+          ip_addr?: string
+          strategy?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anon_likes_strategy_fkey"
+            columns: ["strategy"]
+            isOneToOne: false
+            referencedRelation: "strategies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       damages: {
         Row: {
           combined_damage: number
@@ -139,31 +165,27 @@ export type Database = {
           },
         ]
       }
-      likes: {
+      like_counts: {
         Row: {
-          liked_by: string
+          anon_likes: number
           strategy: string
+          user_likes: number
         }
         Insert: {
-          liked_by: string
-          strategy: string
+          anon_likes?: number
+          strategy?: string
+          user_likes?: number
         }
         Update: {
-          liked_by?: string
+          anon_likes?: number
           strategy?: string
+          user_likes?: number
         }
         Relationships: [
           {
-            foreignKeyName: "likes_liked_by_fkey"
-            columns: ["liked_by"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "likes_strategy_fkey"
+            foreignKeyName: "like_counts_strategy_fkey"
             columns: ["strategy"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "strategies"
             referencedColumns: ["id"]
           },
@@ -247,7 +269,6 @@ export type Database = {
           id: string
           is_editable: boolean
           is_public: boolean
-          likes: number
           modified_at: string
           name: string
           password: string
@@ -261,7 +282,6 @@ export type Database = {
           id?: string
           is_editable?: boolean
           is_public?: boolean
-          likes?: number
           modified_at?: string
           name?: string
           password: string
@@ -275,7 +295,6 @@ export type Database = {
           id?: string
           is_editable?: boolean
           is_public?: boolean
-          likes?: number
           modified_at?: string
           name?: string
           password?: string
@@ -408,12 +427,47 @@ export type Database = {
           },
         ]
       }
+      user_likes: {
+        Row: {
+          liked_by: string
+          strategy: string
+        }
+        Insert: {
+          liked_by: string
+          strategy: string
+        }
+        Update: {
+          liked_by?: string
+          strategy?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "likes_liked_by_fkey"
+            columns: ["liked_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "likes_strategy_fkey"
+            columns: ["strategy"]
+            isOneToOne: false
+            referencedRelation: "strategies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      update_modified_at: {
+        Args: {
+          strategy_id: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       damage_target: "Raidwide" | "Tankbuster"
