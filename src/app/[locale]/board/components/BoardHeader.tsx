@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { StarFilledIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
 import type React from 'react';
-import { ProfilePopover } from './ProfilePopover';
+import { ProfileDropdown } from './ProfileDropdown';
 
 type BoardHeaderProps = React.HTMLAttributes<HTMLDivElement> & {};
 
@@ -21,7 +21,7 @@ export const BoardHeader: React.FC<BoardHeaderProps> = async ({ className, ...pr
     <div
       ref={ref}
       className={cn(
-        'rounded-none min-w-full border-b flex space-x-4 py-2 px-4 h-15 items-center justify-center',
+        'rounded-none min-w-full border-b flex py-2 h-15 items-center justify-center',
         className,
       )}
       {...props}
@@ -33,7 +33,7 @@ export const BoardHeader: React.FC<BoardHeaderProps> = async ({ className, ...pr
         </Link>
         <div className="text-xs font-extralight self-end">or something idkwhatitwasok</div>
         <div className="flex-grow" />
-        {user === null ? <SignInButton /> : <ProfilePopover />}
+        {user === null ? <SignInButton /> : <ProfileDropdown />}
       </div>
     </div>
   );
