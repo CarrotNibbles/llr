@@ -2,6 +2,7 @@
 
 import { buildRaidsDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
+import { BoardHeader } from './components/BoardHeader';
 
 export default async function BoardPage({
   params: { lang },
@@ -15,6 +16,7 @@ export default async function BoardPage({
 
   return (
     <div>
+      <BoardHeader />
       <div className="flex flex-row">
       </div>
     </div>
