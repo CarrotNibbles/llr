@@ -26,7 +26,7 @@ export const BoardHeader: React.FC<BoardHeaderProps> = async ({ className, ...pr
       )}
       {...props}
     >
-      <div className="w-full max-w-screen-xl flex items-center">
+      <div className="w-full max-w-screen-xl px-4 flex items-center">
         <Link href="/" className="flex items-end gap-x-3">
           <StarFilledIcon className="mr h-7 w-7" />
           <div className="text-xl font-extrabold">Live, Laugh, Raid</div>

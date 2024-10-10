@@ -19,7 +19,7 @@ export default async function BoardPage({
   return (
     <div className='flex flex-col items-center'>
       <BoardHeader />
-      <div className="flex flex-col w-full max-w-screen-xl">
+      <div className="flex flex-col w-full max-w-screen-xl px-4">
         <BoardSubHeader raidsData={raidsData} />
       </div>
     </div>
