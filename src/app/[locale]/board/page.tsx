@@ -3,6 +3,8 @@
 import { buildRaidsDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
 import { BoardHeader } from './components/BoardHeader';
+import { BoardSubHeader } from './components/BoardSubHeader';
+import { Separator } from '@/components/ui/separator';
 
 export default async function BoardPage({
   params: { lang },
@@ -15,9 +17,10 @@ export default async function BoardPage({
   if (raidsDataQueryError || raidsData === null) throw raidsDataQueryError;
 
   return (
-    <div>
+    <div className='flex flex-col items-center'>
       <BoardHeader />
-      <div className="flex flex-row">
+      <div className="flex flex-col w-full max-w-screen-xl">
+        <BoardSubHeader raidsData={raidsData} />
       </div>
     </div>
   );
