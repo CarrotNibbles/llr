@@ -70,8 +70,21 @@
         "Patch": "기준 패치 버전",
         "PatchPlaceholder": "패치 버전을 선택해주세요.",
         "PatchDescription": "기준이 될 패치 버전을 선택합니다.",
-        "Password": "비밀번호",
-        "PasswordDescription": "전략을 수정하기 위한 비밀번호를 설정하거나 변경합니다. 변경 시 현재 세션 이외의 연결이 해제됩니다."
+        "Password": "수정 비밀번호",
+        "DeleteStrategy": "전략 삭제하기",
+        "AlertTitle": "주의",
+        "AlertDescription": "다음 설정을 보다 제한되게 설정할 경우, 다른 세션의 연결이 해제됩니다.",
+        "Save": "저장"
+      },
+      "LikeButton": {
+        "Liked": "좋아요가 추가되었습니다.",
+        "Unliked": "좋아요가 취소되었습니다.",
+        "CaptchaFailed": "CAPTCHA 확인에 실패하였습니다.",
+        "StrategyNotFound": "전략을 찾을 수 없습니다.",
+        "AlreadyLiked": "이미 24시간 이내에 같은 IP에서 좋아요를 추가하셨습니다.",
+        "Error": "좋아요를 추가하는 중 오류가 발생하였습니다.",
+        "CaptchaHeading": "CAPTCHA 확인",
+        "CaptchaLoading": "CAPTCHA를 로드하는 중입니다..."
       }
     },
     "GimmickLine": {

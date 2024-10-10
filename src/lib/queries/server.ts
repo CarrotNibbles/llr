@@ -19,7 +19,9 @@ export const buildStrategyDataQuery = async (supabase: ReturnType<typeof createC
   const res = await supabase
     .from('strategies')
     .select(
-      `*, 
+      `*,
+      like_counts(*),
+      user_likes(*),
       strategy_players(*, strategy_player_entries(*)),
       raids!inner(*, gimmicks(*, damages(*, strategy_damage_options(*))))`,
     )

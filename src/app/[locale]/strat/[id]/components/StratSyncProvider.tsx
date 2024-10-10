@@ -10,6 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import type { Tables } from '@/lib/database.types';
 import type { StrategyDataType } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/client';
 import { useTranslations } from 'next-intl';
@@ -18,6 +19,7 @@ import { type ReactNode, useEffect } from 'react';
 export type StratSyncProviderProps = {
   children: ReactNode;
   strategyData: StrategyDataType;
+  userId?: string;
   isAuthor: boolean;
   editable: boolean;
 };
@@ -51,7 +53,47 @@ const StratSyncLoader = (props: { strategy: string; isAuthor: boolean; editable:
           filter: `id=eq.${props.strategy}`,
         },
         (payload) => {
+          console.log('strat update', payload);
           updateStrategyData(payload.new);
+        },
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'like_counts',
+          filter: `strategy=eq.${props.strategy}`,
+        },
+        (payload) => {
+          console.log('like_counts update', payload);
+          updateStrategyData({ like_counts: payload.new as Tables<'like_counts'> });
+        },
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'user_likes',
+          filter: `strategy=eq.${props.strategy}`,
+        },
+        (payload) => {
+          console.log('user_likes insert', payload);
+          updateStrategyData({ user_likes: [payload.new as Tables<'user_likes'>] });
+        },
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'user_likes',
+          filter: `strategy=eq.${props.strategy}`,
+        },
+        (payload) => {
+          console.log('user_likes delete', payload);
+          updateStrategyData({ user_likes: [] });
         },
       )
       .subscribe();
@@ -86,9 +128,11 @@ export function StratSyncProvider(props: StratSyncProviderProps) {
   return (
     <StratSyncStoreProvider
       initState={{
-        strategyData: props.strategyData,
+        strategy: props.strategyData.id,
+        userId: props.userId,
         isAuthor: props.isAuthor,
         elevatable: !props.isAuthor && props.strategyData.is_editable,
+        strategyData: props.strategyData,
       }}
     >
       <StratSyncLoader

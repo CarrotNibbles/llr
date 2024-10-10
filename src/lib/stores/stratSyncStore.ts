@@ -11,6 +11,7 @@ import { createClient } from '../supabase/client';
 export type StratSyncState = {
   strategy: string;
   token?: string;
+  userId?: string;
   isAuthor: boolean;
   elevated: boolean;
   elevatable: boolean;
