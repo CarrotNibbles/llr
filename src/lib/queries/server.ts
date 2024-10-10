@@ -9,11 +9,17 @@ export const buildActionDataQuery = (supabase: ReturnType<typeof createClient>) 
 
 export type ActionDataType = QueryData<ReturnType<typeof buildActionDataQuery>>;
 
-export const buildStrategyCardDataQuery = (supabase: ReturnType<typeof createClient>, raidId: string) => {
-  return supabase.from('strategies').select('*, strategy_players(*)').eq('raid', raidId);
-};
+export const buildStrategiesDataQuery = (supabase: ReturnType<typeof createClient>) => {
+  return supabase
+    .from('strategies')
+    .select(
+    `*,
+    like_counts(*), 
+    strategy_players(*)`
+  );
+}; // TODO: Change select columns
 
-export type StrategyCardDataType = QueryData<ReturnType<typeof buildStrategyCardDataQuery>>;
+export type StrategiesDataType = QueryData<ReturnType<typeof buildStrategiesDataQuery>>;
 
 export const buildStrategyDataQuery = async (supabase: ReturnType<typeof createClient>, strategyId: string) => {
   const res = await supabase
