@@ -30,13 +30,13 @@ const formSchema = z.object({
   }),
 });
 
-export type CreateButtonProps = {
+export type CreateButtonProps = React.ComponentPropsWithoutRef<'div'> & {
   raidsData: RaidsDataType;
 };
 
 const CreateButton = React.forwardRef<
   HTMLDivElement,
-  CreateButtonProps & { className?: string } & React.ComponentPropsWithoutRef<'div'>
+  CreateButtonProps
 >(({ raidsData, className }, ref) => {
   const [isLoading, setIsLoading] = useState(false);
   const [failMessage, setFailMessage] = useState<string | undefined>(undefined);
