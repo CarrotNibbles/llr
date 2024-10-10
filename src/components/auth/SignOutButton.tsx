@@ -4,9 +4,9 @@ import { signOut } from '@/lib/auth/action';
 import type React from 'react';
 import { useState } from 'react';
 import { Icons } from '../icons';
-import { Button } from '../ui/button';
+import { Button, type ButtonProps } from '../ui/button';
 
-type SignOutButtonProps = React.HTMLAttributes<HTMLButtonElement> & {};
+type SignOutButtonProps = ButtonProps & {};
 
 export const SignOutButton: React.FC<SignOutButtonProps> = ({ className, ...props }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -20,7 +20,6 @@ export const SignOutButton: React.FC<SignOutButtonProps> = ({ className, ...prop
   return (
     <Button
       className={className}
-      variant="default"
       type="button"
       disabled={isLoading}
       onClick={onDiscordSubmit}
