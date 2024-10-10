@@ -11,6 +11,9 @@ export async function discordSignIn() {
     provider: 'discord',
     options: {
       redirectTo: `${process.env.HOST_URI}/auth/callback`,
+      queryParams: {
+        prompt: 'none'
+      }
     },
   });
 
