@@ -27,7 +27,11 @@ export const BoardHeader: React.FC<BoardHeaderProps> = async ({ className, ...pr
       {...props}
     >
       <div className="w-full max-w-screen-xl flex items-center">
-        <Icons.ffxiv className="mr h-8 w-8" />
+        <Link href="/" className="flex items-end gap-x-3">
+          <StarFilledIcon className="mr h-7 w-7" />
+          <div className="text-xl font-extrabold">Live, Laugh, Raid</div>
+        </Link>
+        <div className="text-xs font-extralight self-end">or something idkwhatitwasok</div>
         <div className="flex-grow" />
         {user === null ? <SignInButton /> : <ProfilePopover />}
       </div>
