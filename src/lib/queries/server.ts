@@ -9,15 +9,21 @@ export const buildActionDataQuery = (supabase: ReturnType<typeof createClient>) 
 
 export type ActionDataType = QueryData<ReturnType<typeof buildActionDataQuery>>;
 
-export const buildStrategiesDataQuery = (supabase: ReturnType<typeof createClient>) => {
-  return supabase
+export const buildStrategiesDataQuery = async (supabase: ReturnType<typeof createClient>) => {
+  const res = await supabase
     .from('strategies')
     .select(
-    `*,
-    like_counts(*), 
-    strategy_players(*)`
-  );
-}; // TODO: Change select columns
+      `id, name, version, subversion, modified_at, created_at,
+      raids(name),
+      like_counts(user_likes, anon_likes), 
+      strategy_players(id, job, order)`,
+    )
+    .eq('is_public', true);
+
+  if (res.data) for (const strategy of res.data) strategy.strategy_players.sort((a, b) => a.order - b.order);
+
+  return res;
+};
 
 export type StrategiesDataType = QueryData<ReturnType<typeof buildStrategiesDataQuery>>;
 
@@ -34,9 +40,7 @@ export const buildStrategyDataQuery = async (supabase: ReturnType<typeof createC
     .eq('id', strategyId)
     .maybeSingle();
 
-  if (res.data) {
-    res.data.strategy_players.sort((a, b) => a.order - b.order);
-  }
+  if (res.data) res.data.strategy_players.sort((a, b) => a.order - b.order);
 
   return res;
 };

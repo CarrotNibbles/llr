@@ -1,6 +1,7 @@
+import { JobIcon } from '@/components/JobIcon';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import type { StrategiesDataType } from '@/lib/queries/server';
-import { cn, type ArrayElement } from '@/lib/utils';
+import { type ArrayElement, getOrderedRole } from '@/lib/utils';
 import Link from 'next/link';
 import type React from 'react';
 
@@ -14,19 +15,32 @@ export const StrategyRow: React.FC<StrategyRowProps> = async ({ strategyData, cl
 
   return (
     <TableRow className={className} {...props}>
-      <TableCell className="p-0">
+      <TableCell className="px-2 py-1">
         <Link href={`/strat/${strategyData.id}`} className="w-full h-full block p-2">
-          {strategyData.name}
-          <ul className="flex">
-            {strategyData.strategy_players.map((player) => (
-              <li key={player.id}>{player.job}</li>
-            ))}
-          </ul>
+          <div className="flex flex-grow flex-col">
+            <h2 className="text-lg font-bold">{strategyData.name}</h2>
+            <div className='text-sm text-neutral-400'>{strategyData.raids?.name}</div>
+            <div className="flex gap-x-1 mt-2">
+              {strategyData.strategy_players.map((player) => (
+                <JobIcon
+                  job={player.job}
+                  role={getOrderedRole(player.job, player.order)}
+                  key={player.id}
+                  className="w-6 h-6"
+                />
+              ))}
+            </div>
+          </div>
         </Link>
       </TableCell>
       <TableCell className="p-0">
         <Link href={`/strat/${strategyData.id}`} className="w-full h-full block p-2">
           {strategyData.created_at}
+        </Link>
+      </TableCell>
+      <TableCell className="p-0">
+        <Link href={`/strat/${strategyData.id}`} className="w-full h-full block p-2">
+          {strategyData.modified_at}
         </Link>
       </TableCell>
       <TableCell className="p-0">
