@@ -1,4 +1,5 @@
 import { JobIcon } from '@/components/JobIcon';
+import { LocalizedDate } from '@/components/LocalizedDate';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import type { StrategiesDataType } from '@/lib/queries/server';
 import { type ArrayElement, getOrderedRole } from '@/lib/utils';
@@ -19,7 +20,7 @@ export const StrategyRow: React.FC<StrategyRowProps> = async ({ strategyData, cl
         <Link href={`/strat/${strategyData.id}`} className="w-full h-full block p-2">
           <div className="flex flex-grow flex-col">
             <h2 className="text-lg font-bold">{strategyData.name}</h2>
-            <div className='text-sm text-neutral-400'>{strategyData.raids?.name}</div>
+            <div className="text-sm text-neutral-400">{strategyData.raids?.name}</div>
             <div className="flex gap-x-1 mt-2">
               {strategyData.strategy_players.map((player) => (
                 <JobIcon
@@ -35,17 +36,21 @@ export const StrategyRow: React.FC<StrategyRowProps> = async ({ strategyData, cl
       </TableCell>
       <TableCell className="p-0">
         <Link href={`/strat/${strategyData.id}`} className="w-full h-full block p-2">
-          {strategyData.created_at}
+          <div className="flex justify-center">
+            <LocalizedDate dateISOString={strategyData.created_at} />
+          </div>
         </Link>
       </TableCell>
       <TableCell className="p-0">
         <Link href={`/strat/${strategyData.id}`} className="w-full h-full block p-2">
-          {strategyData.modified_at}
+          <div className="flex justify-center">
+            <LocalizedDate dateISOString={strategyData.modified_at} />
+          </div>
         </Link>
       </TableCell>
       <TableCell className="p-0">
         <Link href={`/strat/${strategyData.id}`} className="w-full h-full block p-2">
-          {likeCount}
+          <div className="flex justify-center">{likeCount}</div>
         </Link>
       </TableCell>
     </TableRow>
@@ -65,9 +70,16 @@ export const StrategyTable: React.FC<StrategyTableProps> = async ({
     <Table className={className} {...props}>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-2/3">Strats</TableHead>
-          <TableHead>Created</TableHead>
-          <TableHead>Likes</TableHead>
+          <TableHead>Strats</TableHead>
+          <TableHead className="w-32 max-w-[5%]">
+            <div className="flex justify-center">Created At</div>
+          </TableHead>
+          <TableHead className="w-32">
+            <div className="flex justify-center">Modified At</div>
+          </TableHead>
+          <TableHead className="w-16">
+            <div className="flex justify-center">Likes</div>
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
