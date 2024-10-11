@@ -9,6 +9,8 @@ import React from 'react';
 
 type LocalizedDateProp = React.HTMLAttributes<HTMLSpanElement> & {
   dateISOString: string;
+  useDifference?: boolean;
+  dateFormat: string
 };
 
 const localeMap: Record<Locale, DateFNSLocale> = {
@@ -18,7 +20,7 @@ const localeMap: Record<Locale, DateFNSLocale> = {
 };
 
 export const LocalizedDate = React.forwardRef<HTMLSpanElement, LocalizedDateProp>(
-  ({ dateISOString, className, ...props }, ref) => {
+  ({ dateISOString, useDifference, dateFormat, className, ...props }, ref) => {
     const localeString = useLocale();
     const locale = localeMap[localeString as Locale] ?? enUS;
 
@@ -26,9 +28,9 @@ export const LocalizedDate = React.forwardRef<HTMLSpanElement, LocalizedDateProp
 
     return (
       <span className={cn(className, 'capitalize')} {...props} ref={ref}>
-        {differenceInMonths(Date.now(), date) < 1
+        {differenceInMonths(Date.now(), date) < 1 && useDifference
           ? formatDistanceToNowStrict(date, { addSuffix: true, locale })
-          : format(date, 'yyyy-MM-dd', { locale })}
+          : format(date, dateFormat, { locale })}
       </span>
     );
   },
