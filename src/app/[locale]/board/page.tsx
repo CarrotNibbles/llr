@@ -21,9 +21,9 @@ export default async function BoardPage({
   return (
     <div className="flex flex-col items-center">
       <BoardHeader />
-      <div className="flex flex-col w-full max-w-screen-xl px-4">
+      <div className="flex flex-col w-full max-w-screen-xl px-4 py-1">
         <BoardSubHeader raidsData={raidsData} />
-        <div className="px-4">
+        <div className="px-4 mt-2">
           <StrategyTable strategiesData={strategiesData} />
         </div>
       </div>

@@ -8,6 +8,7 @@ import { StarFilledIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
 import type React from 'react';
 import { ProfileDropdown } from './ProfileDropdown';
+import { ModeToggle } from '@/components/ModeToggle';
 
 type BoardHeaderProps = React.HTMLAttributes<HTMLDivElement> & {};
 
@@ -20,10 +21,7 @@ export const BoardHeader: React.FC<BoardHeaderProps> = async ({ className, ...pr
   return (
     <div
       ref={ref}
-      className={cn(
-        'rounded-none min-w-full border-b flex py-2 h-15 items-center justify-center',
-        className,
-      )}
+      className={cn('rounded-none min-w-full border-b flex py-2 h-15 items-center justify-center', className)}
       {...props}
     >
       <div className="w-full max-w-screen-xl px-4 flex items-center">
@@ -33,7 +31,11 @@ export const BoardHeader: React.FC<BoardHeaderProps> = async ({ className, ...pr
         </Link>
         <div className="text-xs font-extralight self-end">or something idkwhatitwasok</div>
         <div className="flex-grow" />
-        {user === null ? <SignInButton /> : <ProfileDropdown />}
+        <div className='flex gap-x-4'>
+          {user === null && <SignInButton />}
+          <ModeToggle />
+          {user !== null && <ProfileDropdown />}
+        </div>
       </div>
     </div>
   );

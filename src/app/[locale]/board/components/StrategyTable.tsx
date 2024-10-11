@@ -2,7 +2,7 @@ import { JobIcon } from '@/components/JobIcon';
 import { LocalizedDate } from '@/components/LocalizedDate';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import type { StrategiesDataType } from '@/lib/queries/server';
-import { type ArrayElement, getOrderedRole } from '@/lib/utils';
+import { type ArrayElement, cn, getOrderedRole } from '@/lib/utils';
 import Link from 'next/link';
 import type React from 'react';
 
@@ -16,21 +16,23 @@ export const StrategyRow: React.FC<StrategyRowProps> = async ({ strategyData, cl
 
   return (
     <TableRow className={className} {...props}>
-      <TableCell className="px-2 py-1">
+      <TableCell className="p-2">
         <Link href={`/strat/${strategyData.id}`} className="w-full h-full block p-2">
           <div className="flex flex-grow flex-col">
             <h2 className="text-lg font-bold">{strategyData.name}</h2>
-            <div className="text-sm text-neutral-400">{strategyData.raids?.name}</div>
-            <div className="flex gap-x-1 mt-2">
-              {strategyData.strategy_players.map((player) => (
-                <JobIcon
-                  job={player.job}
-                  role={getOrderedRole(player.job, player.order)}
-                  key={player.id}
-                  className="w-6 h-6"
-                />
-              ))}
-            </div>
+            <div className="text-sm text-muted-foreground">{strategyData.raids?.name}</div>
+            {strategyData.strategy_players.length !== 0 && (
+              <div className="flex gap-x-1 mt-2">
+                {strategyData.strategy_players.map((player) => (
+                  <JobIcon
+                    job={player.job}
+                    role={getOrderedRole(player.job, player.order)}
+                    key={player.id}
+                    className="w-6 h-6"
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </Link>
       </TableCell>
@@ -67,7 +69,7 @@ export const StrategyTable: React.FC<StrategyTableProps> = async ({
   ...props
 }) => {
   return (
-    <Table className={className} {...props}>
+    <Table className={cn(className, 'border-b')} {...props}>
       <TableHeader>
         <TableRow>
           <TableHead>Strats</TableHead>

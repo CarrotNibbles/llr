@@ -19,7 +19,7 @@ export const BoardSubHeader: React.FC<BoardSubHeaderProps> = async ({ raidsData,
   } = await supabase.auth.getUser();
 
   return (
-    <div ref={ref} className={cn('rounded-none flex h-12 min-w-full items-center', className)} {...props}>
+    <div ref={ref} className={cn('rounded-none flex min-w-full items-center', className)} {...props}>
       <ul className="flex gap-x-2">
         <li>
           <RaidPopover name="SAVAGE" raidsData={raidsData} />
