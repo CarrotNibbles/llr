@@ -16,7 +16,7 @@ export default async function BoardPage({
   const { data: strategiesData, error: strategiesDataQueryError } = await buildStrategiesDataQuery(supabase);
 
   if (raidsDataQueryError || raidsData === null) throw raidsDataQueryError;
-  if (strategiesDataQueryError || strategiesData === null) throw strategiesDataQueryError
+  if (strategiesDataQueryError || strategiesData === null) throw strategiesDataQueryError;
 
   return (
     <div className="flex flex-col items-center">

@@ -26,7 +26,7 @@ const formSchema = z.object({
   public: z.enum(['public', 'private'], {
     required_error: '공개 여부를 선택하세요',
   }),
-  password: z.string({ required_error: '비밀번호를 설정하세요' }).min(8).max(8)
+  password: z.string({ required_error: '비밀번호를 설정하세요' }).min(8).max(8),
 });
 
 export type CreateButtonProps = ButtonProps & {
@@ -69,7 +69,7 @@ const CreateButton = React.forwardRef<HTMLButtonElement, CreateButtonProps>(
         raid: values.raid,
         version: 0,
         subversion: 7,
-        password: values.password
+        password: values.password,
       };
       const stratResponse = await buildClientInsertStrategyQuery(supabase, stratPrototype).select('id');
 

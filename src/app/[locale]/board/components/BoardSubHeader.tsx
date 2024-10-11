@@ -1,6 +1,5 @@
 'use server';
 
-import { Icons } from '@/components/icons';
 import type { RaidsDataType } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
 import { cn } from '@/lib/utils';

@@ -1,5 +1,4 @@
 import { JobIcon } from '@/components/JobIcon';
-import { LocalizedDate } from '@/components/LocalizedDate';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import type { StrategiesDataType } from '@/lib/queries/server';
 import { type ArrayElement, cn, getOrderedRole } from '@/lib/utils';

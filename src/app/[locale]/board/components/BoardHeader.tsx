@@ -1,14 +1,13 @@
 'use server';
 
+import { ModeToggle } from '@/components/ModeToggle';
 import { SignInButton } from '@/components/auth/SignInButton';
-import { Icons } from '@/components/icons';
 import { createClient } from '@/lib/supabase/server';
 import { cn } from '@/lib/utils';
 import { StarFilledIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
 import type React from 'react';
 import { ProfileDropdown } from './ProfileDropdown';
-import { ModeToggle } from '@/components/ModeToggle';
 
 type BoardHeaderProps = React.HTMLAttributes<HTMLDivElement> & {};
 
