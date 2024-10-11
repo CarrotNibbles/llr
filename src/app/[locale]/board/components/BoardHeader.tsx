@@ -9,7 +9,7 @@ import Link from 'next/link';
 import type React from 'react';
 import { ProfileDropdown } from './ProfileDropdown';
 
-type BoardHeaderProps = React.HTMLAttributes<HTMLDivElement> & {};
+type BoardHeaderProps = Readonly<React.HTMLAttributes<HTMLDivElement> & {}>;
 
 export const BoardHeader: React.FC<BoardHeaderProps> = async ({ className, ...props }, ref) => {
   const supabase = createClient();
@@ -30,7 +30,7 @@ export const BoardHeader: React.FC<BoardHeaderProps> = async ({ className, ...pr
         </Link>
         <div className="text-xs font-extralight self-end">or something idkwhatitwasok</div>
         <div className="flex-grow" />
-        <div className='flex gap-x-4'>
+        <div className="flex gap-x-4">
           {user === null && <SignInButton />}
           <ModeToggle />
           {user !== null && <ProfileDropdown />}

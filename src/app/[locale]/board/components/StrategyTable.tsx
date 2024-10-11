@@ -6,9 +6,11 @@ import Link from 'next/link';
 import type React from 'react';
 import { ModifiedTime } from './ModifiedTime';
 
-type StrategyRowProps = React.HTMLAttributes<HTMLTableRowElement> & {
-  strategyData: ArrayElement<StrategiesDataType>;
-};
+type StrategyRowProps = Readonly<
+  React.HTMLAttributes<HTMLTableRowElement> & {
+    strategyData: ArrayElement<StrategiesDataType>;
+  }
+>;
 
 export const StrategyRow: React.FC<StrategyRowProps> = async ({ strategyData, className, ...props }) => (
   <TableRow className={className} {...props}>
@@ -61,9 +63,11 @@ export const StrategyRow: React.FC<StrategyRowProps> = async ({ strategyData, cl
   </TableRow>
 );
 
-type StrategyTableProps = React.HTMLAttributes<HTMLTableElement> & {
-  strategiesData: StrategiesDataType;
-};
+type StrategyTableProps = Readonly<
+  React.HTMLAttributes<HTMLTableElement> & {
+    strategiesData: StrategiesDataType;
+  }
+>;
 
 export const StrategyTable: React.FC<StrategyTableProps> = async ({
   strategiesData: strategyDatas,

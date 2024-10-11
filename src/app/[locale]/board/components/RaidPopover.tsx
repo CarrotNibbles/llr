@@ -9,10 +9,12 @@ import { CaretDownIcon } from '@radix-ui/react-icons';
 import { PopoverContent } from '@radix-ui/react-popover';
 import type React from 'react';
 
-type RaidFoldoutProps = React.HTMLAttributes<HTMLButtonElement> & {
-  name: string;
-  raidsData: RaidsDataType;
-};
+type RaidFoldoutProps = Readonly<
+  React.HTMLAttributes<HTMLButtonElement> & {
+    name: string;
+    raidsData: RaidsDataType;
+  }
+>;
 
 const RaidFoldout: React.FC<RaidFoldoutProps> = async ({ name, raidsData, className, ...props }, ref) => {
   return (
@@ -33,10 +35,12 @@ const RaidFoldout: React.FC<RaidFoldoutProps> = async ({ name, raidsData, classN
   );
 };
 
-type RaidPopoverProps = ButtonProps & {
-  name: string; // TODO: Change to enum
-  raidsData: RaidsDataType;
-};
+type RaidPopoverProps = Readonly<
+  ButtonProps & {
+    name: string; // TODO: Change to enum
+    raidsData: RaidsDataType;
+  }
+>;
 
 export const RaidPopover: React.FC<RaidPopoverProps> = async ({ name, raidsData, className, ...props }, ref) => {
   const raidsDataByDungeon: { dungeon: string; raidsData: RaidsDataType }[] = [{ dungeon: 'Anabesios', raidsData }];

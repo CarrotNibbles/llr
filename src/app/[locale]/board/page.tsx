@@ -6,11 +6,11 @@ import { BoardHeader } from './components/BoardHeader';
 import { BoardSubHeader } from './components/BoardSubHeader';
 import { StrategyTable } from './components/StrategyTable';
 
-export default async function BoardPage({
-  params: { lang },
-}: Readonly<{
-  params: { lang: string };
-}>) {
+type BoardPageProps = Readonly<{
+  params: { locale: string };
+}>;
+
+export default async function BoardPage({ params: { locale } }: BoardPageProps) {
   const supabase = createClient();
   const { data: raidsData, error: raidsDataQueryError } = await buildRaidsDataQuery(supabase);
   const { data: strategiesData, error: strategiesDataQueryError } = await buildStrategiesDataQuery(supabase);

@@ -7,9 +7,11 @@ import type React from 'react';
 import { CreateButton } from './CreateButton';
 import { RaidPopover } from './RaidPopover';
 
-type BoardSubHeaderProps = React.HTMLAttributes<HTMLDivElement> & {
-  raidsData: RaidsDataType;
-};
+type BoardSubHeaderProps = Readonly<
+  React.HTMLAttributes<HTMLDivElement> & {
+    raidsData: RaidsDataType;
+  }
+>;
 
 export const BoardSubHeader: React.FC<BoardSubHeaderProps> = async ({ raidsData, className, ...props }, ref) => {
   const supabase = createClient();

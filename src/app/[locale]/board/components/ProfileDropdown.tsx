@@ -14,7 +14,7 @@ import { FileTextIcon, HeartIcon, PersonIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
 import type React from 'react';
 
-type ProfileDropdownProps = ButtonProps & {};
+type ProfileDropdownProps = Readonly<ButtonProps & {}>;
 
 export const ProfileDropdown: React.FC<ProfileDropdownProps> = async ({ className, ...props }) => {
   const supabase = createClient();

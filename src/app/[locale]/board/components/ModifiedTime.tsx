@@ -2,10 +2,12 @@ import { LocalizedDate } from '@/components/LocalizedDate';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import type React from 'react';
 
-type ModifiedTimeProp = React.HTMLAttributes<HTMLDivElement> & {
-  createdAt: string;
-  modifiedAt: string;
-};
+type ModifiedTimeProp = Readonly<
+  React.HTMLAttributes<HTMLDivElement> & {
+    createdAt: string;
+    modifiedAt: string;
+  }
+>;
 
 export const ModifiedTime: React.FC<ModifiedTimeProp> = ({ createdAt, modifiedAt, className, ...props }) => {
   return (

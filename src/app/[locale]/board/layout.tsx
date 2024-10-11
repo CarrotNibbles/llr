@@ -1,9 +1,9 @@
 import { TooltipProvider } from '@/components/ui/tooltip';
 
-export default function BoardLayout({
-  children,
-}: Readonly<{
+type BoardLayoutProps = Readonly<{
   children: React.ReactNode;
-}>): React.ReactElement {
+}>;
+
+export default function BoardLayout({ children }: BoardLayoutProps): React.ReactElement {
   return <TooltipProvider>{children}</TooltipProvider>;
 }

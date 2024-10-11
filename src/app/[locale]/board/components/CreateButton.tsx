@@ -29,9 +29,11 @@ const formSchema = z.object({
   password: z.string({ required_error: '비밀번호를 설정하세요' }).min(8).max(8),
 });
 
-export type CreateButtonProps = ButtonProps & {
-  raidsData: RaidsDataType;
-};
+export type CreateButtonProps = Readonly<
+  ButtonProps & {
+    raidsData: RaidsDataType;
+  }
+>;
 
 const CreateButton = React.forwardRef<HTMLButtonElement, CreateButtonProps>(
   ({ raidsData, className, ...props }, ref) => {
