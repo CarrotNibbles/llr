@@ -2,7 +2,7 @@
 
 import type { Locale } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
-import { formatDistanceToNowStrict } from 'date-fns';
+import { differenceInMonths, format, formatDistanceToNowStrict } from 'date-fns';
 import { type Locale as DateFNSLocale, enUS, ja, ko } from 'date-fns/locale';
 import { useLocale } from 'next-intl';
 import React from 'react';
@@ -23,11 +23,12 @@ export const LocalizedDate = React.forwardRef<HTMLSpanElement, LocalizedDateProp
     const locale = localeMap[localeString as Locale] ?? enUS;
 
     const date = new Date(dateISOString);
-    const timeDifference = formatDistanceToNowStrict(date, { addSuffix: true, locale });
 
     return (
       <span className={cn(className, 'capitalize')} {...props} ref={ref}>
-        {timeDifference}
+        {differenceInMonths(Date.now(), date) < 1
+          ? formatDistanceToNowStrict(date, { addSuffix: true, locale })
+          : format(date, 'yyyy-MM-dd', { locale })}
       </span>
     );
   },
