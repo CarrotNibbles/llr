@@ -58,7 +58,7 @@ export const RaidPopover: React.FC<RaidPopoverProps> = async ({ name, raidsData,
           <CaretDownIcon className="w-6 h-6" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="border p-2 w-80">
+      <PopoverContent align="start" className="border p-2 w-80 bg-background z-10">
         <Accordion type="single" collapsible defaultValue={raidsDataByDungeon[0].dungeon}>
           {raidsDataByDungeon.map(({ dungeon, raidsData }) => (
             <RaidFoldout key={dungeon} name={dungeon} raidsData={raidsData} />
