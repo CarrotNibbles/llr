@@ -26,9 +26,12 @@ export const BoardHeader: React.FC<BoardHeaderProps> = async ({ className, ...pr
       <div className="w-full max-w-screen-xl px-4 flex items-center">
         <Link href="/" className="flex items-end gap-x-3">
           <StarFilledIcon className="mr h-7 w-7" />
-          <div className="text-xl font-extrabold">Live, Laugh, Raid</div>
+          <div className="text-xl font-extrabold">
+            <span className="hidden md:flex">Live, Laugh, Raid</span>
+            <span className="md:hidden">LLR</span>
+          </div>
         </Link>
-        <div className="text-xs font-extralight self-end">or something idkwhatitwasok</div>
+        <div className="text-xs font-extralight self-end hidden md:flex">or something idkwhatitwasok</div>
         <div className="flex-grow" />
         <div className="flex gap-x-4">
           {user === null && <SignInButton />}
