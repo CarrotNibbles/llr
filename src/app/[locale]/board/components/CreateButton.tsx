@@ -3,8 +3,9 @@
 import { Button, type ButtonProps } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -15,19 +16,11 @@ import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CaretSortIcon, CheckIcon, Pencil1Icon } from '@radix-ui/react-icons';
+import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-
-const formSchema = z.object({
-  name: z.string({ required_error: '이름을 입력하세요' }).min(2).max(50),
-  raid: z.string(),
-  public: z.enum(['public', 'private'], {
-    required_error: '공개 여부를 선택하세요',
-  }),
-  password: z.string({ required_error: '비밀번호를 설정하세요' }).min(8).max(8),
-});
 
 export type CreateButtonProps = Readonly<
   ButtonProps & {
@@ -40,8 +33,24 @@ const CreateButton = React.forwardRef<HTMLButtonElement, CreateButtonProps>(
     const [isLoading, setIsLoading] = useState(false);
     const [failMessage, setFailMessage] = useState<string | undefined>(undefined);
     const router = useRouter();
+    const t = useTranslations();
 
     const supabase = createClient();
+
+    const formSchema = z.object({
+      name: z
+        .string({ required_error: '이름을 입력하세요.' })
+        .min(2, '제목은 2글자 이상이어야 합니다.')
+        .max(50, '제목은 50글자 이하여야 합니다.'),
+      raid: z.string({ required_error: '레이드를 선택하세요.' }),
+      public: z.enum(['public', 'private'], {
+        required_error: '공개 여부를 선택하세요',
+      }),
+      password: z
+        .string({ required_error: '비밀번호를 설정하세요' })
+        .min(8, '비밀번호는 길이 8이어야 합니다.')
+        .max(8, '비밀번호는 길이 8이어야 합니다'),
+    });
 
     const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
@@ -62,15 +71,15 @@ const CreateButton = React.forwardRef<HTMLButtonElement, CreateButtonProps>(
       }
 
       const stratPrototype: Omit<Tables<'strategies'>, 'id'> = {
-        author: userResponse.data.user.id,
-        created_at: new Date().toISOString(),
-        is_editable: true,
-        is_public: values.public === 'public',
-        modified_at: new Date().toISOString(),
         name: values.name,
         raid: values.raid,
-        version: 0,
-        subversion: 7,
+        author: userResponse.data.user.id,
+        is_editable: true,
+        is_public: values.public === 'public',
+        version: 7,
+        subversion: 0,
+        created_at: new Date().toISOString(),
+        modified_at: new Date().toISOString(),
         password: values.password,
       };
       const stratResponse = await buildClientInsertStrategyQuery(supabase, stratPrototype).select('id');
@@ -78,7 +87,9 @@ const CreateButton = React.forwardRef<HTMLButtonElement, CreateButtonProps>(
       const stratId = stratResponse.data?.shift()?.id;
 
       if (!stratId) {
+        console.error(stratResponse.error);
         setFailMessage('공략 생성에 실패했습니다. 잠시 후 재시도해 주세요.');
+        setIsLoading(false);
         return;
       }
 
@@ -109,6 +120,7 @@ const CreateButton = React.forwardRef<HTMLButtonElement, CreateButtonProps>(
                     <FormControl>
                       <Input className="inline-block" id="name" placeholder="공략명을 입력하세요..." {...field} />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -169,6 +181,7 @@ const CreateButton = React.forwardRef<HTMLButtonElement, CreateButtonProps>(
                         </Command>
                       </PopoverContent>
                     </Popover>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -188,15 +201,44 @@ const CreateButton = React.forwardRef<HTMLButtonElement, CreateButtonProps>(
                         <RadioGroupItem value="public" id="public" />
                         <div className="flex flex-col">
                           <Label>전체공개</Label>
-                          <div className="text-xs">누구든지 공략을 열람할 수 있습니다.</div>
+                          <FormDescription className="mt-1">누구든지 공략을 열람할 수 있습니다.</FormDescription>
                         </div>
                         <RadioGroupItem value="private" id="private" />
                         <div className="flex flex-col">
                           <Label>비공개</Label>
-                          <div className="text-xs">작성자 및 수정 권한이 부여된 사람만 공략을 열람할 수 있습니다.</div>
+                          <FormDescription className="mt-1">
+                            작성자 및 수정 권한이 부여된 사람만 공략을 열람할 수 있습니다.
+                          </FormDescription>
                         </div>
                       </RadioGroup>
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{'비밀번호'}</FormLabel>
+                    <FormControl>
+                      <InputOTP maxLength={8} {...field}>
+                        <InputOTPGroup>
+                          <InputOTPSlot index={0} />
+                          <InputOTPSlot index={1} />
+                          <InputOTPSlot index={2} />
+                          <InputOTPSlot index={3} />
+                          <InputOTPSeparator />
+                          <InputOTPSlot index={4} />
+                          <InputOTPSlot index={5} />
+                          <InputOTPSlot index={6} />
+                          <InputOTPSlot index={7} />
+                        </InputOTPGroup>
+                      </InputOTP>
+                    </FormControl>
+                    <FormDescription>{'공략 수정 시 사용할 비밀번호 (작성자는 필요 없음)'}</FormDescription>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
