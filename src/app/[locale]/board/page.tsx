@@ -50,9 +50,10 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
         <BoardSubHeader raidsData={raidsData} />
         <div className="px-4 mt-2 mb-8">
           <StrategyTable strategiesData={strategiesData} />
-          <div className="w-full flex h-10 mt-2 relative">
+          <div className="w-full flex flex-col-reverse md:grid md:grid-cols-3 gap-y-2 mt-2">
+            <div />
             <BoardPagination currentPage={page} maxPage={maxPage} />
-            <div className="absolute flex flex-row-reverse right-0 top-0 bottom-0">
+            <div className="flex flex-row-reverse">
               <LimitCombobox currentLimit={limit} />
             </div>
           </div>
