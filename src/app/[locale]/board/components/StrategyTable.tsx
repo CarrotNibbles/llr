@@ -46,7 +46,7 @@ export const StrategyRow: React.FC<StrategyRowProps> = async ({ strategyData, cl
         <div className="px-2 py-4">{`${strategyData.version}.${strategyData.subversion}`}</div>
       </Link>
     </TableCell>
-    <TableCell className="p-0 w-0 h-0  hidden md:table-cell">
+    <TableCell className="p-0 w-0 h-0">
       <Link href={`/strat/${strategyData.id}`} className="w-full h-full flex justify-center items-center">
         <div className="px-2 py-4">
           {strategyData.like_counts === null
@@ -55,7 +55,7 @@ export const StrategyRow: React.FC<StrategyRowProps> = async ({ strategyData, cl
         </div>
       </Link>
     </TableCell>
-    <TableCell className="p-0 w-0 h-0">
+    <TableCell className="p-0 w-0 h-0  hidden md:table-cell">
       <Link href={`/strat/${strategyData.id}`} className="w-full h-full flex justify-center items-center">
         <div className="px-2 py-4 flex justify-center items-center">
           <ModifiedTime createdAt={strategyData.created_at} modifiedAt={strategyData.modified_at} />
@@ -88,7 +88,7 @@ export const StrategyTable: React.FC<StrategyTableProps> = async ({
           <TableHead className="w-16 md:w-20">
             <div className="flex justify-center">Likes</div>
           </TableHead>
-          <TableHead className="w-24 hidden md:table-cell">
+          <TableHead className="w-32 hidden md:table-cell">
             <div className="flex justify-center">Modified</div>
           </TableHead>
         </TableRow>
