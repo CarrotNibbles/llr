@@ -2,7 +2,7 @@
 
 import { type RaidsDataType, buildRaidsDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
-import { cn } from '@/lib/utils';
+import { NavRaidCategories, cn } from '@/lib/utils';
 import type React from 'react';
 import { Suspense } from 'react';
 import { CreateButton } from './CreateButton';
@@ -36,20 +36,28 @@ type BoardSubheaderContentProps = Readonly<
 
 const BOARD_SUBHEADER_CONTENT_DEFAULT_DATA: BoardSubheaderContentData = { raidsData: [] };
 const BoardSubheaderContent: React.FC<BoardSubheaderContentProps> = async ({ dataPromise, className, ...props }) => {
-  const { raidsData } = await dataPromise ?? BOARD_SUBHEADER_CONTENT_DEFAULT_DATA;
+  const supabase = createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  const { raidsData } = (await dataPromise) ?? BOARD_SUBHEADER_CONTENT_DEFAULT_DATA;
 
   return (
+    <nav>
     <div className={cn('rounded-none flex min-w-full items-center', className)} {...props}>
       <ul className="flex gap-x-2">
-        <li>
-          <RaidPopover name="SAVAGE" raidsData={raidsData} />
+          {NavRaidCategories.map((raidCategory) => (
+            <li key={raidCategory}>
+              <RaidPopover
+                name={raidCategory.toUpperCase()}
+                raidsData={raidsData.filter((raidData) => raidData.category === raidCategory)}
+              />
         </li>
-        <li>
-          <RaidPopover name="ULTIMATE" raidsData={raidsData} />
-        </li>
+          ))}
       </ul>
       <div className="flex-grow" />
       <CreateButton className="h-8" raidsData={raidsData} />
     </div>
+    </nav>
   );
 };
