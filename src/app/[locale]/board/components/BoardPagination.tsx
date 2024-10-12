@@ -20,77 +20,85 @@ type BoardPaginationProps = Readonly<
 >;
 
 export const BoardPagination: React.FC<BoardPaginationProps> = ({ currentPage, limit, className, ...props }) => {
-  const startPage = Math.max(currentPage - PAGINATION_OFFSET, 1);
-  const endPage = currentPage - PAGINATION_OFFSET >= 1 ? currentPage + PAGINATION_OFFSET : PAGINATION_TOTAL_PAGE;
+  const supabase = createClient();
+
+  const fetchData = async () => {
+    const { count: strategyCount, error: strategyCountQueryError } = await buildStrategyCountQuery(supabase);
+    if (strategyCountQueryError || strategyCount === null) throw strategyCountQueryError;
+
+    const maxPage = Math.floor((strategyCount - 1) / limit) + 1;
+    if (currentPage > maxPage) redirect(buildURL('/board', { page: maxPage, limit: DEFAULT_LIMIT }));
+
+    const startPage = Math.max(
+      currentPage + PAGINATION_OFFSET <= maxPage
+        ? currentPage - PAGINATION_OFFSET
+        : maxPage - PAGINATION_TOTAL_PAGE + 1,
+      1,
+    );
+    const endPage = Math.min(
+      currentPage - PAGINATION_OFFSET >= 1 ? currentPage + PAGINATION_OFFSET : PAGINATION_TOTAL_PAGE,
+      maxPage,
+    );
+
+    return {
+      startPage,
+      endPage,
+      maxPage,
+    };
+  };
+
+  const fetchDefaultData = async () => {
+    const startPage = Math.max(currentPage - PAGINATION_OFFSET, 1);
+    const endPage = currentPage - PAGINATION_OFFSET >= 1 ? currentPage + PAGINATION_OFFSET : PAGINATION_TOTAL_PAGE;
+
+    return {
+      startPage,
+      endPage,
+      maxPage: Number.MAX_SAFE_INTEGER,
+    };
+  };
 
   return (
     <Suspense
       fallback={
         <BoardPaginationContent
-          startPage={startPage}
-          endPage={endPage}
+          dataPromise={fetchDefaultData()}
           currentPage={currentPage}
           className={className}
           {...props}
         />
       }
     >
-      <BoardPaginationWithDataFetching currentPage={currentPage} limit={limit} className={className} {...props} />
+      <BoardPaginationContent dataPromise={fetchData()} currentPage={currentPage} className={className} {...props} />
     </Suspense>
   );
 };
 
-const BoardPaginationWithDataFetching: React.FC<BoardPaginationProps> = async ({
-  currentPage,
-  limit,
-  className,
-  ...props
-}) => {
-  const supabase = createClient();
-
-  const { count: strategyCount, error: strategyCountQueryError } = await buildStrategyCountQuery(supabase);
-  if (strategyCountQueryError || strategyCount === null) throw strategyCountQueryError;
-
-  const maxPage = Math.floor((strategyCount - 1) / limit) + 1;
-  if (currentPage > maxPage) redirect(buildURL('/board', { page: maxPage, limit: DEFAULT_LIMIT }));
-  const startPage = Math.max(
-    currentPage + PAGINATION_OFFSET <= maxPage ? currentPage - PAGINATION_OFFSET : maxPage - PAGINATION_TOTAL_PAGE + 1,
-    1,
-  );
-  const endPage = Math.min(
-    currentPage - PAGINATION_OFFSET >= 1 ? currentPage + PAGINATION_OFFSET : PAGINATION_TOTAL_PAGE,
-    maxPage,
-  );
-
-  return (
-    <BoardPaginationContent
-      startPage={startPage}
-      endPage={endPage}
-      currentPage={currentPage}
-      maxPage={maxPage}
-      className={className}
-      {...props}
-    />
-  );
-};
-
+type BoardPaginationContentData = Readonly<{
+  startPage: number;
+  endPage: number;
+  maxPage: number;
+}>;
 type BoardPaginationContentProps = Readonly<
   React.HTMLAttributes<HTMLDivElement> & {
-    startPage: number;
-    endPage: number;
     currentPage: number;
-    maxPage?: number;
+    dataPromise?: Promise<BoardPaginationContentData>;
   }
 >;
 
-const BoardPaginationContent: React.FC<BoardPaginationContentProps> = ({
-  startPage,
-  endPage,
+const BOARD_PAGINATION_CONTENT_DEFAULT_DATA: BoardPaginationContentData = {
+  startPage: 1,
+  endPage: PAGINATION_TOTAL_PAGE,
+  maxPage: Number.MAX_SAFE_INTEGER,
+};
+const BoardPaginationContent: React.FC<BoardPaginationContentProps> = async ({
   currentPage,
-  maxPage,
+  dataPromise,
   className,
   ...props
 }) => {
+  const { startPage, endPage, maxPage } = (await dataPromise) ?? BOARD_PAGINATION_CONTENT_DEFAULT_DATA;
+
   return (
     <Pagination className={className} {...props}>
       <PaginationContent>

@@ -2,7 +2,7 @@
 
 import { JobIcon } from '@/components/JobIcon';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { buildStrategiesDataQuery } from '@/lib/queries/server';
+import { buildStrategiesDataQuery, type StrategiesDataType } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
 import { cn, getOrderedRole, rangeInclusive } from '@/lib/utils';
 import Link from 'next/link';
@@ -19,7 +19,20 @@ type StrategyTableProps = Readonly<
   }
 >;
 
-export const StrategyTable: React.FC<StrategyTableProps> = async ({ page, limit, className, ...props }) => {
+export const StrategyTable: React.FC<StrategyTableProps> = ({ page, limit, className, ...props }) => {
+  const supabase = createClient();
+
+  const fetchData = async () => {
+    const { data: strategiesData, error: strategiesDataQueryError } = await buildStrategiesDataQuery(
+      supabase,
+      page,
+      limit,
+    );
+    if (strategiesDataQueryError || strategiesData === null) throw strategiesDataQueryError;
+
+    return { strategiesData };
+  };
+
   return (
     <Table className={cn(className, 'border-b')} {...props}>
       <TableHeader>
@@ -38,32 +51,27 @@ export const StrategyTable: React.FC<StrategyTableProps> = async ({ page, limit,
         </TableRow>
       </TableHeader>
       <Suspense fallback={<StrategyTableBodySkeleton limit={limit} />}>
-        <StrategyTableBodyWithDataFetching page={page} limit={limit} />
+        <StrategyTableBody dataPromise={fetchData()} />
       </Suspense>
     </Table>
   );
 };
 
+type StrategyTableBodyData = Readonly<{ strategiesData: StrategiesDataType }>;
 type StrategyTableBodyWithDataFetchingProps = Readonly<
   React.HTMLAttributes<HTMLTableSectionElement> & {
-    page: number;
-    limit: number;
+    dataPromise?: Promise<StrategyTableBodyData>;
   }
 >;
 
-const StrategyTableBodyWithDataFetching: React.FC<StrategyTableBodyWithDataFetchingProps> = async ({
-  page,
-  limit,
+const STRATEGY_TABLE_DEFAULT_DATA: StrategyTableBodyData = { strategiesData: [] };
+const StrategyTableBody: React.FC<StrategyTableBodyWithDataFetchingProps> = async ({
+  dataPromise,
   className,
   ...props
 }) => {
-  const supabase = createClient();
-  const { data: strategiesData, error: strategiesDataQueryError } = await buildStrategiesDataQuery(
-    supabase,
-    page,
-    limit,
-  );
-  if (strategiesDataQueryError || strategiesData === null) throw strategiesDataQueryError;
+  const { strategiesData } = await dataPromise ?? STRATEGY_TABLE_DEFAULT_DATA;
+
   return (
     <TableBody className={className} {...props}>
       {strategiesData.map((strategyData) => (

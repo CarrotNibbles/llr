@@ -10,29 +10,34 @@ import { RaidPopover } from './RaidPopover';
 
 type BoardSubheaderProps = Readonly<React.HTMLAttributes<HTMLDivElement>>;
 
-export const BoardSubheader: React.FC<BoardSubheaderProps> = ({ className, ...props }) => (
-  <Suspense fallback={<BoardSubheaderContent raidsData={[]} className={className} {...props} />}>
-    <BoardSubheaderContentWithDataFetching className={className} {...props} />
-  </Suspense>
-);
-
-const BoardSubheaderContentWithDataFetching: React.FC<BoardSubheaderProps> = async ({ className, ...props }) => {
+export const BoardSubheader: React.FC<BoardSubheaderProps> = ({ className, ...props }) => {
   const supabase = createClient();
 
-  const { data: raidsData, error: raidsDataQueryError } = await buildRaidsDataQuery(supabase);
+  const fecthData = async () => {
+    const { data: raidsData, error: raidsDataQueryError } = await buildRaidsDataQuery(supabase);
 
-  if (raidsDataQueryError || raidsData === null) throw raidsDataQueryError;
+    if (raidsDataQueryError || raidsData === null) throw raidsDataQueryError;
+    return { raidsData };
+  };
 
-  return <BoardSubheaderContent raidsData={raidsData} className={className} {...props} />;
+  return (
+    <Suspense fallback={<BoardSubheaderContent className={className} {...props} />}>
+      <BoardSubheaderContent dataPromise={fecthData()} className={className} {...props} />
+    </Suspense>
+  );
 };
 
+type BoardSubheaderContentData = Readonly<{ raidsData: RaidsDataType }>;
 type BoardSubheaderContentProps = Readonly<
   React.HTMLAttributes<HTMLDivElement> & {
-    raidsData: RaidsDataType;
+    dataPromise?: Promise<BoardSubheaderContentData>;
   }
 >;
 
-const BoardSubheaderContent: React.FC<BoardSubheaderContentProps> = ({ raidsData, className, ...props }) => {
+const BOARD_SUBHEADER_CONTENT_DEFAULT_DATA: BoardSubheaderContentData = { raidsData: [] };
+const BoardSubheaderContent: React.FC<BoardSubheaderContentProps> = async ({ dataPromise, className, ...props }) => {
+  const { raidsData } = await dataPromise ?? BOARD_SUBHEADER_CONTENT_DEFAULT_DATA;
+
   return (
     <div className={cn('rounded-none flex min-w-full items-center', className)} {...props}>
       <ul className="flex gap-x-2">
