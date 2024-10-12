@@ -8,6 +8,8 @@ import { BoardSubHeader } from './components/BoardSubHeader';
 import { StrategyTable } from './components/StrategyTable';
 import { redirect } from 'next/navigation';
 import { BoardPagination } from './components/BoardPagination';
+import { Button } from '@/components/ui/button';
+import { LimitCombobox } from './components/LimitCombobox';
 
 type BoardPageProps = Readonly<{
   params: { locale: string };
@@ -18,10 +20,10 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
   const supabase = createClient();
   const page = tryParseInt(searchParams.page, false);
   const limit = tryParseInt(searchParams.limit, false);
-  
+
   // Redirect to default if page or limit is not a valid number
   const limitValid = limit !== null && limit > 0;
-  const pageValid = page !== null && page > 0
+  const pageValid = page !== null && page > 0;
   if (!limitValid || !pageValid)
     redirect(buildURL('/board', { page: pageValid ? page : 1, limit: limitValid ? limit : DEFAULT_LIMIT }));
 
@@ -29,8 +31,7 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
   if (strategyCountQueryError || strategyCount === null) throw strategyCountQueryError;
 
   const maxPage = Math.floor((strategyCount - 1) / limit) + 1;
-  if (page > maxPage)
-    redirect(buildURL('/board', { page: maxPage, limit }));
+  if (page > maxPage) redirect(buildURL('/board', { page: maxPage, limit }));
 
   const { data: raidsData, error: raidsDataQueryError } = await buildRaidsDataQuery(supabase);
   if (raidsDataQueryError || raidsData === null) throw raidsDataQueryError;
@@ -47,9 +48,14 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
       <BoardHeader />
       <div className="flex flex-col w-full max-w-screen-xl px-4 py-1">
         <BoardSubHeader raidsData={raidsData} />
-        <div className="px-4 mt-2">
+        <div className="px-4 mt-2 mb-8">
           <StrategyTable strategiesData={strategiesData} />
-          <BoardPagination className="mt-4" currentPage={page} maxPage={maxPage} />
+          <div className="w-full flex h-10 mt-2 relative">
+            <BoardPagination currentPage={page} maxPage={maxPage} />
+            <div className="absolute flex flex-row-reverse right-0 top-0 bottom-0">
+              <LimitCombobox currentLimit={limit} />
+            </div>
+          </div>
         </div>
       </div>
     </div>
