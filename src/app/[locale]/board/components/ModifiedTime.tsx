@@ -13,7 +13,7 @@ export const ModifiedTime: React.FC<ModifiedTimeProp> = ({ createdAt, modifiedAt
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <LocalizedDate useDifference dateISOString={modifiedAt} dateFormat="yyyy-MM-dd" />
+        <LocalizedDate dateISOString={modifiedAt} useDifference dateFormat="yyyy-MM-dd" className="text-center" />
       </TooltipTrigger>
       <TooltipContent>
         <div>
