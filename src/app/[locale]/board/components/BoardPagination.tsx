@@ -9,7 +9,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import { buildURL, PAGINATION_OFFSET, PAGINATION_TOTAL_PAGE, rangeInclusive } from '@/lib/utils';
+import { buildURL, cn, PAGINATION_OFFSET, PAGINATION_TOTAL_PAGE, rangeInclusive } from '@/lib/utils';
 import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 import { useSearchParams } from 'next/navigation';
 import React from 'react';
@@ -40,16 +40,14 @@ export const BoardPagination = React.forwardRef<HTMLDivElement, BoardPaginationP
     return (
       <Pagination className={className} {...props} ref={ref}>
         <PaginationContent>
-          {currentPage !== 1 && (
-            <PaginationLink
-              aria-label="Go to next page"
-              size="default"
-              className="gap-1 pr-2.5"
-              href={buildUrlWithPage(currentPage - 1)}
-            >
-              <ChevronLeftIcon className="h-4 w-4" />
-            </PaginationLink>
-          )}
+          <PaginationLink
+            aria-label="Go to next page"
+            size="default"
+            className={cn('gap-1 pr-2.5', currentPage === 1 ? 'invisible' : 'visible  ')}
+            href={buildUrlWithPage(currentPage - 1)}
+          >
+            <ChevronLeftIcon className="h-4 w-4" />
+          </PaginationLink>
           {rangeInclusive(pageStart, pageEnd).map((page) => (
             <PaginationItem key={page}>
               <PaginationLink href={buildUrlWithPage(page)} isActive={page === currentPage}>
@@ -57,18 +55,16 @@ export const BoardPagination = React.forwardRef<HTMLDivElement, BoardPaginationP
               </PaginationLink>
             </PaginationItem>
           ))}
-          {currentPage !== maxPage && (
-            <PaginationItem>
-              <PaginationLink
-                aria-label="Go to next page"
-                size="default"
-                className="gap-1 pr-2.5"
-                href={buildUrlWithPage(currentPage + 1)}
-              >
-                <ChevronRightIcon className="h-4 w-4" />
-              </PaginationLink>
-            </PaginationItem>
-          )}
+          <PaginationItem>
+            <PaginationLink
+              aria-label="Go to next page"
+              size="default"
+              className={cn('gap-1 pr-2.5', currentPage === maxPage ? 'invisible' : 'visible  ')}
+              href={buildUrlWithPage(currentPage + 1)}
+            >
+              <ChevronRightIcon className="h-4 w-4" />
+            </PaginationLink>
+          </PaginationItem>
         </PaginationContent>
       </Pagination>
     );
