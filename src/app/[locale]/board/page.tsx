@@ -1,13 +1,11 @@
 'use server';
 
-import { buildRaidsDataQuery, buildStrategiesDataQuery, buildStrategyCountQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
 import { DEFAULT_LIMIT, buildURL, tryParseInt } from '@/lib/utils';
 import { redirect } from 'next/navigation';
-import { Suspense } from 'react';
 import { BoardHeader } from './components/BoardHeader';
 import { BoardPagination } from './components/BoardPagination';
-import { BoardSubHeader } from './components/BoardSubHeader';
+import { BoardSubheader } from './components/BoardSubheader';
 import { LimitCombobox } from './components/LimitCombobox';
 import { StrategyTable } from './components/StrategyTable';
 
@@ -27,15 +25,11 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
   if (!limitValid || !pageValid)
     redirect(buildURL('/board', { page: pageValid ? page : 1, limit: limitValid ? limit : DEFAULT_LIMIT }));
 
-
-  const { data: raidsData, error: raidsDataQueryError } = await buildRaidsDataQuery(supabase);
-  if (raidsDataQueryError || raidsData === null) throw raidsDataQueryError;
-
   return (
     <div className="flex flex-col items-center">
       <BoardHeader />
       <div className="flex flex-col w-full max-w-screen-xl px-4 py-1">
-        <BoardSubHeader raidsData={raidsData} />
+        <BoardSubheader/>
         <div className="px-4 mt-2 mb-8">
           <StrategyTable page={page} limit={limit} />
           <div className="w-full flex flex-col-reverse md:grid md:grid-cols-3 gap-y-2 mt-2">
