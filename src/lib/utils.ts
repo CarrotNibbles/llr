@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import type { Enums, Tables } from './database.types';
 import { useZoomState } from './states';
+import { ReadonlyURLSearchParams } from 'next/navigation';
 
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));
@@ -175,4 +176,54 @@ export const getOrderedRole = (job: Enums<'job'> | null, order: number): Role =>
   }
 
   return getRole(job);
+};
+
+export const PAGE_PARAM = 'page';
+export const LIMIT_PARAM = 'limit';
+
+export const DEFAULT_LIMIT = 5;
+export const PAGINATION_OFFSET = 2;
+export const PAGINATION_TOTAL_PAGE = PAGINATION_OFFSET * 2 + 1;
+
+export const tryParseInt = (input: string | undefined | null, allowNegative = false): number | null => {
+  if (input === undefined || input === null) return null;
+
+  // Regular expression to check for a valid integer (positive or negative)
+  const integerRegex = allowNegative ? /^-?\d+$/ : /^\d+$/;
+
+  if (integerRegex.test(input)) return Number.parseInt(input, 10);
+
+  return null;
+};
+
+export const buildURL = (
+  url: string,
+  ...searchParams: (Record<string, string | number> | (string | number)[] | URLSearchParams | ReadonlyURLSearchParams)[]
+) => {
+  const newSearchParams = new URLSearchParams();
+
+  for (const searchParam of searchParams) {
+    if (Array.isArray(searchParam)) {
+      if (searchParam.length !== 2 || typeof searchParam[0] !== 'string') continue;
+      newSearchParams.set(searchParam[0], searchParam[1].toString());
+    } else if (searchParam instanceof URLSearchParams || searchParam instanceof ReadonlyURLSearchParams) {
+      for (const [key, value] of searchParam.entries()) {
+        newSearchParams.set(key, value);
+      }
+    } else {
+      for (const key of Object.keys(searchParam)) {
+        newSearchParams.set(key, searchParam[key].toString());
+      }
+    }
+  }
+
+  return `${url}?${newSearchParams.toString()}`;
+};
+
+export const rangeInclusive = (start: number, end: number): number[] => {
+  const result: number[] = [];
+  for (let i = start; i <= end; i++) {
+    result.push(i);
+  }
+  return result;
 };
