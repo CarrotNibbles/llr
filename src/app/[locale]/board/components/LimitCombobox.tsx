@@ -16,7 +16,7 @@ type LimitComboboxProps = Readonly<
   }
 >;
 
-const LIMIT_OPTIONS = [5, 10, 15];
+const LIMIT_OPTIONS = [5, 10, 15, 20];
 
 export const LimitCombobox: React.FC<LimitComboboxProps> = ({ currentLimit, className, ...props }) => {
   const [open, setOpen] = useState(false);
@@ -35,8 +35,17 @@ export const LimitCombobox: React.FC<LimitComboboxProps> = ({ currentLimit, clas
             <CommandEmpty>Choose the number of strats to show in a page</CommandEmpty>
             <CommandGroup>
               {LIMIT_OPTIONS.map((limit) => (
-                <CommandItem className='rounded-none px-4 py-2 my-1' key={limit} value={limit.toString()}>
-                  <Link href={buildURL('/board', { page: 1, limit })} className="w-full flex gap-x-2 items-center justify-end">
+                <CommandItem
+                  className="rounded-none px-4 py-2 my-1"
+                  key={limit}
+                  value={limit.toString()}
+                  defaultValue={currentLimit}
+                  onSelect={() => setOpen(false)}
+                >
+                  <Link
+                    href={buildURL('/board', { page: 1, limit })}
+                    className="w-full flex gap-x-2 items-center justify-end"
+                  >
                     {limit} strats per page
                   </Link>
                 </CommandItem>
