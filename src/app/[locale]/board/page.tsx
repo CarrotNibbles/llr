@@ -4,12 +4,12 @@ import { buildRaidsDataQuery, buildStrategiesDataQuery, buildStrategyCountQuery 
 import { createClient } from '@/lib/supabase/server';
 import { DEFAULT_LIMIT, buildURL, tryParseInt } from '@/lib/utils';
 import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 import { BoardHeader } from './components/BoardHeader';
 import { BoardPagination } from './components/BoardPagination';
 import { BoardSubHeader } from './components/BoardSubHeader';
 import { LimitCombobox } from './components/LimitCombobox';
 import { StrategyTable } from './components/StrategyTable';
-import { Suspense } from 'react';
 
 type BoardPageProps = Readonly<{
   params: { locale: string };
@@ -27,11 +27,6 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
   if (!limitValid || !pageValid)
     redirect(buildURL('/board', { page: pageValid ? page : 1, limit: limitValid ? limit : DEFAULT_LIMIT }));
 
-  const { count: strategyCount, error: strategyCountQueryError } = await buildStrategyCountQuery(supabase);
-  if (strategyCountQueryError || strategyCount === null) throw strategyCountQueryError;
-
-  const maxPage = Math.floor((strategyCount - 1) / limit) + 1;
-  if (page > maxPage) redirect(buildURL('/board', { page: maxPage, limit }));
 
   const { data: raidsData, error: raidsDataQueryError } = await buildRaidsDataQuery(supabase);
   if (raidsDataQueryError || raidsData === null) throw raidsDataQueryError;
@@ -45,7 +40,7 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
           <StrategyTable page={page} limit={limit} />
           <div className="w-full flex flex-col-reverse md:grid md:grid-cols-3 gap-y-2 mt-2">
             <div />
-            <BoardPagination currentPage={page} maxPage={maxPage} />
+            <BoardPagination currentPage={page} limit={limit} />
             <div className="flex flex-row-reverse">
               <LimitCombobox currentLimit={limit} />
             </div>
