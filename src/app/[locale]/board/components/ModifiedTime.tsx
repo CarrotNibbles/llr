@@ -1,3 +1,5 @@
+'use server'
+
 import { LocalizedDate } from '@/components/LocalizedDate';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import type React from 'react';

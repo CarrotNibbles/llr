@@ -3,12 +3,12 @@
 import { Button, type ButtonProps } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent } from '@/components/ui/popover';
-import { buildURL, cn } from '@/lib/utils';
-import { CaretDownIcon, CaretUpIcon, CheckIcon } from '@radix-ui/react-icons';
+import { cn } from '@/lib/utils';
+import { CaretDownIcon, CaretUpIcon } from '@radix-ui/react-icons';
 import { PopoverTrigger } from '@radix-ui/react-popover';
-import Link from 'next/link';
 import type React from 'react';
 import { useState } from 'react';
+import { BoardLink } from './BoardLink';
 
 type LimitComboboxProps = Readonly<
   ButtonProps & {
@@ -42,12 +42,13 @@ export const LimitCombobox: React.FC<LimitComboboxProps> = ({ currentLimit, clas
                   defaultValue={currentLimit}
                   onSelect={() => setOpen(false)}
                 >
-                  <Link
-                    href={buildURL('/board', { page: 1, limit })}
+                  <BoardLink
+                    page={1}
+                    limit={limit}
                     className="w-full flex gap-x-2 items-center justify-end"
                   >
                     {limit} strats per page
-                  </Link>
+                  </BoardLink>
                 </CommandItem>
               ))}
             </CommandGroup>

@@ -198,13 +198,24 @@ export const tryParseInt = (input: string | undefined | null, allowNegative = fa
 
 export const buildURL = (
   url: string,
-  ...searchParams: (Record<string, string | number> | (string | number)[] | URLSearchParams | ReadonlyURLSearchParams)[]
+  ...searchParams: (
+    | Record<string, string | number | null | undefined>
+    | (string | number | null | undefined)[]
+    | URLSearchParams
+    | ReadonlyURLSearchParams
+  )[]
 ) => {
   const newSearchParams = new URLSearchParams();
 
   for (const searchParam of searchParams) {
     if (Array.isArray(searchParam)) {
-      if (searchParam.length !== 2 || typeof searchParam[0] !== 'string') continue;
+      if (
+        searchParam.length !== 2 ||
+        typeof searchParam[0] !== 'string' ||
+        searchParam[1] === null ||
+        searchParam[1] === undefined
+      )
+        continue;
       newSearchParams.set(searchParam[0], searchParam[1].toString());
     } else if (searchParam instanceof URLSearchParams || searchParam instanceof ReadonlyURLSearchParams) {
       for (const [key, value] of searchParam.entries()) {
@@ -212,6 +223,7 @@ export const buildURL = (
       }
     } else {
       for (const key of Object.keys(searchParam)) {
+        if (searchParam[key] === undefined || searchParam[key] === null) continue;
         newSearchParams.set(key, searchParam[key].toString());
       }
     }
