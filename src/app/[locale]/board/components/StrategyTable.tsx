@@ -38,20 +38,25 @@ export const StrategyTable: React.FC<StrategyTableProps> = async ({ page, limit,
         </TableRow>
       </TableHeader>
       <Suspense fallback={<StrategyTableBodySkeleton limit={limit} />}>
-        <StrategyTableBody page={page} limit={limit} />
+        <StrategyTableBodyWithDataFetching page={page} limit={limit} />
       </Suspense>
     </Table>
   );
 };
 
-type StrategyTableBodyProps = Readonly<
+type StrategyTableBodyWithDataFetchingProps = Readonly<
   React.HTMLAttributes<HTMLTableSectionElement> & {
     page: number;
     limit: number;
   }
 >;
 
-const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ page, limit, className, ...props }) => {
+const StrategyTableBodyWithDataFetching: React.FC<StrategyTableBodyWithDataFetchingProps> = async ({
+  page,
+  limit,
+  className,
+  ...props
+}) => {
   const supabase = createClient();
   const { data: strategiesData, error: strategiesDataQueryError } = await buildStrategiesDataQuery(
     supabase,
