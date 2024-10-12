@@ -460,11 +460,21 @@ const AuthenticatedLikeButton = () => {
     const supabase = createClient();
 
     if ((user_likes?.length ?? 0) > 0) {
-      await supabase.from('user_likes').delete().eq('liked_by', userId);
+      const response = await supabase.from('user_likes').delete().eq('liked_by', userId);
+
+      if (response.error) {
+        toast({ variant: 'destructive', description: t('Error') });
+        return;
+      }
 
       toast({ description: t('Unliked') });
     } else {
-      await supabase.from('user_likes').insert({ liked_by: userId, strategy: id });
+      const response = await supabase.from('user_likes').insert({ liked_by: userId, strategy: id });
+
+      if (response.error) {
+        toast({ variant: 'destructive', description: t('Error') });
+        return;
+      }
 
       toast({ description: t('Liked') });
     }
