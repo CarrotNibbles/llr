@@ -2,10 +2,9 @@
 
 import { Button, type ButtonProps } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
-import { Popover, PopoverContent } from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { CaretDownIcon, CaretUpIcon } from '@radix-ui/react-icons';
-import { PopoverTrigger } from '@radix-ui/react-popover';
 import type React from 'react';
 import { useState } from 'react';
 import { BoardLink } from './BoardLink';

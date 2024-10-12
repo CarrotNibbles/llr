@@ -2,11 +2,10 @@
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button, type ButtonProps } from '@/components/ui/button';
-import { Popover, PopoverTrigger } from '@/components/ui/popover';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import type { RaidsDataType } from '@/lib/queries/server';
 import { cn } from '@/lib/utils';
 import { CaretDownIcon } from '@radix-ui/react-icons';
-import { PopoverContent } from '@radix-ui/react-popover';
 import type React from 'react';
 
 type RaidFoldoutProps = Readonly<
@@ -58,7 +57,7 @@ export const RaidPopover: React.FC<RaidPopoverProps> = async ({ name, raidsData,
           <CaretDownIcon className="w-6 h-6" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="start" className="border p-2 w-80 bg-background z-10">
+      <PopoverContent align="start" className="border p-2 w-80">
         <Accordion type="single" collapsible defaultValue={raidsDataByDungeon[0].dungeon}>
           {raidsDataByDungeon.map(({ dungeon, raidsData }) => (
             <RaidFoldout key={dungeon} name={dungeon} raidsData={raidsData} />
