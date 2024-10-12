@@ -70,7 +70,7 @@ const StrategyTableBody: React.FC<StrategyTableBodyWithDataFetchingProps> = asyn
   className,
   ...props
 }) => {
-  const { strategiesData } = await dataPromise ?? STRATEGY_TABLE_DEFAULT_DATA;
+  const { strategiesData } = (await dataPromise) ?? STRATEGY_TABLE_DEFAULT_DATA;
 
   return (
     <TableBody className={className} {...props}>

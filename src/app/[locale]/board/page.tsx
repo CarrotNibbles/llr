@@ -3,7 +3,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { DEFAULT_LIMIT, buildURL, tryParseInt } from '@/lib/utils';
 import { redirect } from 'next/navigation';
-import { BoardHeader } from './components/BoardHeader';
 import { BoardPagination } from './components/BoardPagination';
 import { BoardSubheader } from './components/BoardSubheader';
 import { LimitCombobox } from './components/LimitCombobox';
@@ -26,18 +25,15 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
     redirect(buildURL('/board', { page: pageValid ? page : 1, limit: limitValid ? limit : DEFAULT_LIMIT }));
 
   return (
-    <div className="flex flex-col items-center">
-      <BoardHeader />
-      <div className="flex flex-col w-full max-w-screen-xl px-4 py-1">
-        <BoardSubheader/>
-        <div className="px-4 mt-2 mb-8">
-          <StrategyTable page={page} limit={limit} />
-          <div className="w-full flex flex-col-reverse md:grid md:grid-cols-3 gap-y-2 mt-2">
-            <div />
-            <BoardPagination currentPage={page} limit={limit} />
-            <div className="flex flex-row-reverse">
-              <LimitCombobox currentLimit={limit} />
-            </div>
+    <div className="flex flex-col w-full max-w-screen-xl px-4 py-1">
+      <BoardSubheader />
+      <div className="px-4 mt-2 mb-8">
+        <StrategyTable page={page} limit={limit} />
+        <div className="w-full flex flex-col-reverse md:grid md:grid-cols-3 gap-y-2 mt-2">
+          <div />
+          <BoardPagination currentPage={page} limit={limit} />
+          <div className="flex flex-row-reverse">
+            <LimitCombobox currentLimit={limit} />
           </div>
         </div>
       </div>
