@@ -5,10 +5,12 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import type React from 'react';
 
-type BoardLinkProps = Omit<React.ComponentProps<typeof Link>, 'href'> & {
-  page?: number;
-  limit?: number;
-};
+type BoardLinkProps = Readonly<
+  Omit<React.ComponentProps<typeof Link>, 'href'> & {
+    page?: number;
+    limit?: number;
+  }
+>;
 
 const BoardLink: React.FC<BoardLinkProps> = ({ page, limit, className, ...props }) => {
   const searchParams = useSearchParams();
