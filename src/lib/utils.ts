@@ -182,6 +182,8 @@ export const PAGE_PARAM = 'page';
 export const LIMIT_PARAM = 'limit';
 
 export const DEFAULT_LIMIT = 5;
+export const SEARCH_BUTTON_LIMIT = 5;
+export const SEARCH_BUTTON_MOBILE_LIMIT = 3;
 export const PAGINATION_OFFSET = 2;
 export const PAGINATION_TOTAL_PAGE = PAGINATION_OFFSET * 2 + 1;
 

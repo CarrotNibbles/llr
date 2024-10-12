@@ -52,10 +52,10 @@ const SkeletonHeightClass: Record<TailwindTextSize, string> = {
   '9xl': 'h-32',
 };
 
-type TextSkeletonProps = React.HTMLAttributes<HTMLDivElement> & {
+type TextSkeletonProps = Readonly<React.HTMLAttributes<HTMLDivElement> & {
   textSize: TailwindTextSize;
   mdTextSize?: TailwindTextSize;
-};
+}>;
 
 export const TextSkeleton: React.FC<TextSkeletonProps> = ({ textSize, mdTextSize, className, ...props }) => (
   <div

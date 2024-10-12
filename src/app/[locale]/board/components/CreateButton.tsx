@@ -234,7 +234,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
   );
 });
 
-export type CreateButtonProps = Readonly<
+type CreateButtonProps = Readonly<
   ButtonProps & {
     raidsData: RaidsDataType;
   }
