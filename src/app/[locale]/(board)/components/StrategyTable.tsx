@@ -1,38 +1,24 @@
 'use server';
 
 import { JobIcon } from '@/components/JobIcon';
+import { TextSkeleton } from '@/components/TextSkeleton';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { buildStrategiesDataQuery, type StrategiesDataType } from '@/lib/queries/server';
-import { createClient } from '@/lib/supabase/server';
-import { cn, getOrderedRole, rangeInclusive } from '@/lib/utils';
+import type { BoardStrategiesDataType } from '@/lib/queries/server';
+import { cn, DEFAULT_LIMIT, getOrderedRole, rangeInclusive } from '@/lib/utils';
 import Link from 'next/link';
 import type React from 'react';
-import { ModifiedTime } from './ModifiedTime';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Suspense } from 'react';
-import { TextSkeleton } from '@/components/TextSkeleton';
+import { ModifiedTime } from './ModifiedTime';
 
+type StrategiesTableData = Readonly<{ strategiesData: BoardStrategiesDataType }>;
 type StrategyTableProps = Readonly<
   React.HTMLAttributes<HTMLTableElement> & {
-    page: number;
-    limit: number;
+    dataPromise: Promise<StrategiesTableData>;
   }
 >;
 
-export const StrategyTable: React.FC<StrategyTableProps> = ({ page, limit, className, ...props }) => {
-  const supabase = createClient();
-
-  const fetchData = async () => {
-    const { data: strategiesData, error: strategiesDataQueryError } = await buildStrategiesDataQuery(
-      supabase,
-      page,
-      limit,
-    );
-    if (strategiesDataQueryError || strategiesData === null) throw strategiesDataQueryError;
-
-    return { strategiesData };
-  };
-
+export const StrategyTable: React.FC<StrategyTableProps> = ({ dataPromise, className, ...props }) => {
   return (
     <Table className={cn(className, 'border-b')} {...props}>
       <TableHeader>
@@ -50,26 +36,21 @@ export const StrategyTable: React.FC<StrategyTableProps> = ({ page, limit, class
           </TableHead>
         </TableRow>
       </TableHeader>
-      <Suspense fallback={<StrategyTableBodySkeleton limit={limit} />}>
-        <StrategyTableBody dataPromise={fetchData()} />
+      <Suspense fallback={<StrategyTableBodySkeleton />}>
+        <StrategyTableBody dataPromise={dataPromise} />
       </Suspense>
     </Table>
   );
 };
 
-type StrategyTableBodyData = Readonly<{ strategiesData: StrategiesDataType }>;
-type StrategyTableBodyWithDataFetchingProps = Readonly<
+type StrategyTableBodyProps = Readonly<
   React.HTMLAttributes<HTMLTableSectionElement> & {
-    dataPromise?: Promise<StrategyTableBodyData>;
+    dataPromise?: Promise<StrategiesTableData>;
   }
 >;
 
-const STRATEGY_TABLE_DEFAULT_DATA: StrategyTableBodyData = { strategiesData: [] };
-const StrategyTableBody: React.FC<StrategyTableBodyWithDataFetchingProps> = async ({
-  dataPromise,
-  className,
-  ...props
-}) => {
+const STRATEGY_TABLE_DEFAULT_DATA: StrategiesTableData = { strategiesData: [] };
+const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise, className, ...props }) => {
   const { strategiesData } = (await dataPromise) ?? STRATEGY_TABLE_DEFAULT_DATA;
 
   return (
@@ -130,15 +111,11 @@ const StrategyTableBody: React.FC<StrategyTableBodyWithDataFetchingProps> = asyn
   );
 };
 
-type StrategyTableBodySkeletonProps = Readonly<
-  React.HTMLAttributes<HTMLTableSectionElement> & {
-    limit: number;
-  }
->;
+type StrategyTableBodySkeletonProps = Readonly<React.HTMLAttributes<HTMLTableSectionElement> & {}>;
 
-const StrategyTableBodySkeleton: React.FC<StrategyTableBodySkeletonProps> = ({ limit, className, ...props }) => (
+const StrategyTableBodySkeleton: React.FC<StrategyTableBodySkeletonProps> = ({ className, ...props }) => (
   <TableBody className={className} {...props}>
-    {rangeInclusive(1, limit).map((index) => (
+    {rangeInclusive(1, DEFAULT_LIMIT).map((index) => (
       <TableRow key={index}>
         <TableCell className="p-0 h-0">
           <div className="w-full h-full flex items-center">

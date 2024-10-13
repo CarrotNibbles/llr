@@ -4,9 +4,10 @@ import { createClient } from '@/lib/supabase/server';
 import { DEFAULT_LIMIT, buildURL, tryParseInt } from '@/lib/utils';
 import { redirect } from 'next/navigation';
 import { BoardPagination } from '../components/BoardPagination';
-import { BoardSubheader } from './components/BoardSubheader';
 import { LimitCombobox } from '../components/LimitCombobox';
 import { StrategyTable } from '../components/StrategyTable';
+import { BoardStrategyTable } from './components/BoardStrategyTable';
+import { BoardSubheader } from './components/BoardSubheader';
 
 type BoardPageProps = Readonly<{
   params: { locale: string };
@@ -28,7 +29,7 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
     <div className="flex flex-col w-full max-w-screen-xl px-4 py-1">
       <BoardSubheader />
       <div className="px-4 mt-2 mb-8">
-        <StrategyTable page={page} limit={limit} />
+      <BoardStrategyTable page={page} limit={limit} />
         <div className="w-full flex flex-col-reverse md:grid md:grid-cols-3 gap-y-2 mt-2">
           <div />
           <BoardPagination currentPage={page} limit={limit} />

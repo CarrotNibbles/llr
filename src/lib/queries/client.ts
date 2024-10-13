@@ -23,7 +23,7 @@ export const buildClientDeleteStrategyQuery = (supabase: ReturnType<typeof creat
   return supabase.from('strategies').delete().eq('id', strategyId);
 };
 
-export const buildSearchStrategiesDataQuery = async (
+export const buildSearchButtonStrategiesDataQuery = async (
   supabase: ReturnType<typeof createClient>,
   q: string,
   page: number,
@@ -47,7 +47,7 @@ export const buildSearchStrategiesDataQuery = async (
   return res;
 };
 
-export type SearchStrategiesDataType = QueryData<ReturnType<typeof buildSearchStrategiesDataQuery>>
+export type SearchStrategiesDataType = QueryData<ReturnType<typeof buildSearchButtonStrategiesDataQuery>>
 
 //! Deprecated
 // // StrategyPlayer

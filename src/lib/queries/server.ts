@@ -15,7 +15,7 @@ export const buildStrategyCountQuery = async (supabase: ReturnType<typeof create
   return res;
 };
 
-export const buildStrategiesDataQuery = async (
+export const buildBoardStrategiesDataQuery = async (
   supabase: ReturnType<typeof createClient>,
   page: number,
   limit: number,
@@ -37,7 +37,31 @@ export const buildStrategiesDataQuery = async (
   return res;
 };
 
-export type StrategiesDataType = QueryData<ReturnType<typeof buildStrategiesDataQuery>>;
+export const buildSearchStrategiesDataQuery = async (
+  supabase: ReturnType<typeof createClient>,
+  q: string,
+  page: number,
+  limit: number,
+) => {
+  const res = await supabase
+    .from('strategies')
+    .select(
+      `id, name, version, subversion, modified_at, created_at,
+      raids(name),
+      like_counts(user_likes, anon_likes), 
+      strategy_players(id, job, order)`,
+    )
+    .eq('is_public', true)
+    .like('name', `%${q}%`)
+    .order('created_at', { ascending: false })
+    .range((page - 1) * limit, page * limit - 1);
+
+  if (res.data) for (const strategy of res.data) strategy.strategy_players.sort((a, b) => a.order - b.order);
+
+  return res;
+};
+
+export type BoardStrategiesDataType = QueryData<ReturnType<typeof buildBoardStrategiesDataQuery>>;
 
 export const buildStrategyDataQuery = async (supabase: ReturnType<typeof createClient>, strategyId: string) => {
   const res = await supabase
