@@ -3,7 +3,7 @@
 import { JobIcon } from '@/components/JobIcon';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button, type ButtonProps } from '@/components/ui/button';
-import { Drawer, DrawerContent, DrawerHeader, DrawerTrigger } from '@/components/ui/drawer';
+import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -13,6 +13,7 @@ import { useMediaQuery } from '@/lib/hooks/useMediaQuery';
 import { type SearchStrategiesDataType, buildSearchButtonStrategiesDataQuery } from '@/lib/queries/client';
 import { createClient } from '@/lib/supabase/client';
 import {
+  DEFAULT_LIMIT,
   SEARCH_BUTTON_LIMIT,
   SEARCH_BUTTON_MOBILE_LIMIT,
   buildURL,
@@ -29,7 +30,7 @@ import {
   MixerVerticalIcon,
 } from '@radix-ui/react-icons';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import type React from 'react';
 import { forwardRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -39,9 +40,10 @@ type SearchButtonProps = Readonly<ButtonProps & {}>;
 
 const SearchButton = forwardRef<HTMLButtonElement, SearchButtonProps>(({ className, ...props }, ref) => {
   const isDesktop = useMediaQuery('(min-width: 768px)');
+  const [isOpen, setIsOpen] = useState(false);
 
   return isDesktop ? (
-    <Popover>
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon" className={className} {...props} ref={ref}>
           <span className="sr-only">Search</span>
@@ -49,11 +51,11 @@ const SearchButton = forwardRef<HTMLButtonElement, SearchButtonProps>(({ classNa
         </Button>
       </PopoverTrigger>
       <PopoverContent className="rounded-none w-96" sideOffset={8}>
-        <SearchButtonForm limit={SEARCH_BUTTON_LIMIT} />
+        <SearchButtonForm limit={SEARCH_BUTTON_LIMIT} closeForm={() => setIsOpen(false)} />
       </PopoverContent>
     </Popover>
   ) : (
-    <Drawer>
+    <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
         <Button variant="ghost" size="icon" className={className} {...props} ref={ref}>
           <span className="sr-only">Search</span>
@@ -61,7 +63,7 @@ const SearchButton = forwardRef<HTMLButtonElement, SearchButtonProps>(({ classNa
         </Button>
       </DrawerTrigger>
       <DrawerContent className="h-4/5">
-        <SearchButtonForm limit={SEARCH_BUTTON_MOBILE_LIMIT} className="px-8 my-8" />
+        <SearchButtonForm limit={SEARCH_BUTTON_MOBILE_LIMIT} closeForm={() => setIsOpen(false)} className="px-8 my-8" />
       </DrawerContent>
     </Drawer>
   );
@@ -78,17 +80,19 @@ enum SearchState {
 type SearchButtonFormProps = Readonly<
   Omit<React.ComponentProps<'form'>, 'onSubmit'> & {
     limit: number;
+    closeForm: () => void;
   }
 >;
 
-const SearchButtonForm: React.FC<SearchButtonFormProps> = ({ limit, className, ...props }) => {
+const SearchButtonForm: React.FC<SearchButtonFormProps> = ({ limit, closeForm, className, ...props }) => {
   const supabase = createClient();
-  const [q, setQ] = useState('');
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [searchState, setSearchState] = useState(SearchState.Start);
   const [searchResult, setSearchResult] = useState<SearchStrategiesDataType>([]);
 
   const formSchema = z.object({
-    q: z.string({ required_error: '검색 문자열을 입력하세요.' }).min(5, '5글자 이상 입력해주세요.'),
+    q: z.string({ required_error: '검색 문자열을 입력하세요.' }), //.min(5, '5글자 이상 입력해주세요.'),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -101,7 +105,6 @@ const SearchButtonForm: React.FC<SearchButtonFormProps> = ({ limit, className, .
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (searchState === SearchState.Loading) return;
 
-    setQ(values.q);
     setSearchState(SearchState.Loading);
     const { data, error } = await buildSearchButtonStrategiesDataQuery(supabase, values.q, 1, limit);
     if (data === null || error) {
@@ -110,6 +113,11 @@ const SearchButtonForm: React.FC<SearchButtonFormProps> = ({ limit, className, .
     }
     setSearchResult(data);
     setSearchState(SearchState.Done);
+  };
+
+  const onDetailedClick = () => {
+    router.push(buildURL('/search', searchParams, { q: form.getValues('q'), page: 1, limit: DEFAULT_LIMIT }));
+    closeForm();
   };
 
   return (
@@ -130,7 +138,13 @@ const SearchButtonForm: React.FC<SearchButtonFormProps> = ({ limit, className, .
                       {...field}
                     />
                   </FormControl>
-                  <Button type="button" variant="ghost" size="icon" className="rounded-none m-0">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-none m-0"
+                    onClick={onDetailedClick}
+                  >
                     <MixerVerticalIcon className="w-5 h-5" />
                   </Button>
                 </div>
@@ -140,7 +154,13 @@ const SearchButtonForm: React.FC<SearchButtonFormProps> = ({ limit, className, .
           />
         </form>
       </Form>
-      <SearchButtonResult q={q} searchState={searchState} searchResult={searchResult} limit={limit} className="mt-2" />
+      <SearchButtonResult
+        q={form.getValues('q')}
+        searchState={searchState}
+        searchResult={searchResult}
+        limit={limit}
+        className="mt-2"
+      />
     </>
   );
 };
@@ -163,7 +183,7 @@ const SearchButtonResult: React.FC<SearchButtonResultProps> = ({
   className,
   ...props
 }) => {
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
 
   if (searchState === SearchState.Start) return null;
 
@@ -260,7 +280,7 @@ const SearchButtonResult: React.FC<SearchButtonResultProps> = ({
       {searchResult.length === 0 && <div>No results found</div>}
       {searchResult.length === limit && (
         <div className="mt-2">
-          <Link href={buildURL('/search', searchParams, { q })}>More...</Link>
+          <Link href={buildURL('/search', searchParams, { q, page: 1, limit: DEFAULT_LIMIT })}>More...</Link>
         </div>
       )}
     </>

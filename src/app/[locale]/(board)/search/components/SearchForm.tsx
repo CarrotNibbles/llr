@@ -9,16 +9,16 @@ import { buildURL, cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CollapsibleContent } from '@radix-ui/react-collapsible';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
-import { redirect, useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-type SearchButtonFormProps = Readonly<Omit<React.ComponentProps<'form'>, 'onSubmit'> & {}>;
+type SearchButtonFormProps = Readonly<Omit<React.ComponentProps<'form'>, 'onSubmit'> & { q: string }>;
 
-const SearchForm: React.FC<SearchButtonFormProps> = ({ className, ...props }) => {
+const SearchForm: React.FC<SearchButtonFormProps> = ({ q, className, ...props }) => {
   const searchParams = useSearchParams();
-  const router = useRouter()
+  const router = useRouter();
   const [isSearching, setIsSearching] = useState(false);
 
   const formSchema = z.object({
@@ -27,10 +27,12 @@ const SearchForm: React.FC<SearchButtonFormProps> = ({ className, ...props }) =>
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      q: '',
-    },
+    defaultValues: { q },
   });
+
+  useEffect(() => {
+    form.setValue('q', q);
+  }, [q, form]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (isSearching) return;
@@ -42,7 +44,11 @@ const SearchForm: React.FC<SearchButtonFormProps> = ({ className, ...props }) =>
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className={cn(className, 'rounded-xl px-12 py-8 mx-2 mt-4 mb-8  bg-secondary')} {...props}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className={cn(className, 'rounded-xl px-12 py-8 mx-2 mt-4 mb-8  bg-secondary')}
+        {...props}
+      >
         <FormField
           control={form.control}
           name="q"
@@ -66,10 +72,10 @@ const SearchForm: React.FC<SearchButtonFormProps> = ({ className, ...props }) =>
           )}
         />
         <Collapsible defaultOpen={true}>
-          <CollapsibleTrigger className='flex gap-x-1 items-center mt-2 ml-2'>
-              <Icons.filter /> Advanced filter
+          <CollapsibleTrigger className="flex gap-x-1 items-center mt-2 ml-2">
+            <Icons.filter /> Advanced filter
           </CollapsibleTrigger>
-          <CollapsibleContent className='mt-4'>새</CollapsibleContent>
+          <CollapsibleContent className="mt-4">새</CollapsibleContent>
         </Collapsible>
       </form>
     </Form>
