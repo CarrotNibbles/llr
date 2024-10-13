@@ -74,9 +74,11 @@ enum SearchState {
   Done = 3,
 }
 
-type SearchFormProps = Readonly<React.ComponentProps<'div'> & {
-  limit: number
-}>;
+type SearchFormProps = Readonly<
+  React.ComponentProps<'div'> & {
+    limit: number;
+  }
+>;
 
 const SearchForm: React.FC<SearchFormProps> = ({ limit, className, ...props }) => {
   const supabase = createClient();
@@ -127,7 +129,7 @@ const SearchForm: React.FC<SearchFormProps> = ({ limit, className, ...props }) =
                       {...field}
                     />
                   </FormControl>
-                  <Button type="submit" variant="ghost" size="icon" className="rounded-none m-0">
+                  <Button type='button' variant="ghost" size="icon" className="rounded-none m-0">
                     <MixerVerticalIcon className="w-5 h-5" />
                   </Button>
                 </div>
@@ -178,20 +180,18 @@ const SearchResult: React.FC<SearchResultProps> = ({ q, searchState, searchResul
             return (
               <TableRow key={index}>
                 <TableCell>
-                  <div className="w-full h-full flex items-center">
-                    <div className="w-full flex flex-col pl-4 py-4 pr-2">
-                      <div className="h-5 md:h-6 w-2/3">
-                        <Skeleton className="h-[14px] md:h-4" />
-                      </div>
-                      <div className="h-4 md:h-5 w-1/2">
-                        <Skeleton className="h-3 md:h-[14px]" />
-                      </div>
-                      <div>
-                        <div className="inline-grid grid-cols-4 sm:grid-cols-8 gap-1 mt-2">
-                          {rangeInclusive(1, 8).map((index) => (
-                            <Skeleton key={index} className="aspect-square w-5 h-5" />
-                          ))}
-                        </div>
+                  <div className="w-full flex flex-col pl-4 py-4 pr-2">
+                    <div className="h-5 md:h-6 w-2/3">
+                      <Skeleton className="h-[14px] md:h-4" />
+                    </div>
+                    <div className="h-4 md:h-5 w-1/2">
+                      <Skeleton className="h-3 md:h-[14px]" />
+                    </div>
+                    <div>
+                      <div className="inline-grid grid-cols-4 sm:grid-cols-8 gap-1 mt-2">
+                        {rangeInclusive(1, 8).map((index) => (
+                          <Skeleton key={index} className="aspect-square w-5 h-5" />
+                        ))}
                       </div>
                     </div>
                   </div>

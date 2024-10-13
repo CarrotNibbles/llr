@@ -3,10 +3,10 @@
 import { createClient } from '@/lib/supabase/server';
 import { DEFAULT_LIMIT, buildURL, tryParseInt } from '@/lib/utils';
 import { redirect } from 'next/navigation';
-import { BoardPagination } from './components/BoardPagination';
+import { BoardPagination } from '../components/BoardPagination';
 import { BoardSubheader } from './components/BoardSubheader';
-import { LimitCombobox } from './components/LimitCombobox';
-import { StrategyTable } from './components/StrategyTable';
+import { LimitCombobox } from '../components/LimitCombobox';
+import { StrategyTable } from '../components/StrategyTable';
 
 type BoardPageProps = Readonly<{
   params: { locale: string };
@@ -22,7 +22,7 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
   const limitValid = limit !== null && limit > 0;
   const pageValid = page !== null && page > 0;
   if (!limitValid || !pageValid)
-    redirect(buildURL('/board', { page: pageValid ? page : 1, limit: limitValid ? limit : DEFAULT_LIMIT }));
+    redirect(buildURL('/board', searchParams, { page: pageValid ? page : 1, limit: limitValid ? limit : DEFAULT_LIMIT }));
 
   return (
     <div className="flex flex-col w-full max-w-screen-xl px-4 py-1">

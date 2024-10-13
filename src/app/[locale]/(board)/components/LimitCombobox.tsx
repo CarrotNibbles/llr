@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { CaretDownIcon, CaretUpIcon } from '@radix-ui/react-icons';
 import type React from 'react';
 import { useState } from 'react';
-import { BoardLink } from './BoardLink';
+import { BoardLink } from '../board/components/BoardLink';
 
 type LimitComboboxProps = Readonly<
   ButtonProps & {

@@ -10,7 +10,7 @@ import type Link from 'next/link';
 import { redirect } from 'next/navigation';
 import type React from 'react';
 import { Suspense } from 'react';
-import { BoardLink } from './BoardLink';
+import { BoardLink } from '../board/components/BoardLink';
 
 type BoardPaginationProps = Readonly<
   React.HTMLAttributes<HTMLDivElement> & {
@@ -27,7 +27,6 @@ export const BoardPagination: React.FC<BoardPaginationProps> = ({ currentPage, l
     if (strategyCountQueryError || strategyCount === null) throw strategyCountQueryError;
 
     const maxPage = Math.floor((strategyCount - 1) / limit) + 1;
-    if (currentPage > maxPage) redirect(buildURL('/board', { page: maxPage, limit: DEFAULT_LIMIT }));
 
     const startPage = Math.max(
       currentPage + PAGINATION_OFFSET <= maxPage
