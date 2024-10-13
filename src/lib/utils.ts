@@ -178,9 +178,6 @@ export const getOrderedRole = (job: Enums<'job'> | null, order: number): Role =>
   return getRole(job);
 };
 
-export const PAGE_PARAM = 'page';
-export const LIMIT_PARAM = 'limit';
-
 export const DEFAULT_LIMIT = 5;
 export const SEARCH_BUTTON_LIMIT = 5;
 export const SEARCH_BUTTON_MOBILE_LIMIT = 3;
@@ -202,7 +199,7 @@ export const buildURL = (
   url: string,
   ...searchParams: (
     | Record<string, string | number | null | undefined>
-    | (string | number | null | undefined)[]
+    | [string, string | number | null | undefined]
     | URLSearchParams
     | ReadonlyURLSearchParams
   )[]
@@ -211,13 +208,7 @@ export const buildURL = (
 
   for (const searchParam of searchParams) {
     if (Array.isArray(searchParam)) {
-      if (
-        searchParam.length !== 2 ||
-        typeof searchParam[0] !== 'string' ||
-        searchParam[1] === null ||
-        searchParam[1] === undefined
-      )
-        continue;
+      if (searchParam.length !== 2 || searchParam[1] === null || searchParam[1] === undefined) continue;
       newSearchParams.set(searchParam[0], searchParam[1].toString());
     } else if (searchParam instanceof URLSearchParams || searchParam instanceof ReadonlyURLSearchParams) {
       for (const [key, value] of searchParam.entries()) {
@@ -233,6 +224,52 @@ export const buildURL = (
 
   return `${url}?${newSearchParams.toString()}`;
 };
+
+export const Q_PARAM = 'q';
+export const PAGE_PARAM = 'page';
+export const LIMIT_PARAM = 'limit';
+
+export type BoardSearchParamsRaw = Partial<{
+  [PAGE_PARAM]: string;
+  [LIMIT_PARAM]: string;
+}>;
+export type BoardSearchParamsParsed = Partial<{
+  [PAGE_PARAM]: number;
+  [LIMIT_PARAM]: number;
+}>
+export type BoardSearchParams = BoardSearchParamsRaw | BoardSearchParamsParsed
+export type BoardSearchParamKeys = keyof BoardSearchParams;
+
+export type SearchSearchParamsRaw = Partial<{
+  [Q_PARAM]: string;
+  [PAGE_PARAM]: string;
+  [LIMIT_PARAM]: string;
+}>;
+export type SearchSearchParamsParsed = Partial<{
+  [Q_PARAM]: string;
+  [PAGE_PARAM]: number;
+  [LIMIT_PARAM]: number;
+}>;
+export type SearchSearchParams = SearchSearchParamsRaw | SearchSearchParamsParsed
+export type SearchSearchParamKeys = keyof SearchSearchParams;
+
+export const buildBoardURL = (
+  ...searchParams: (
+    | BoardSearchParams
+    | [BoardSearchParamKeys, string | number | null | undefined]
+    | URLSearchParams
+    | ReadonlyURLSearchParams
+  )[]
+) => buildURL('/board', ...searchParams);
+
+export const buildSearchURL = (
+  ...searchParams: (
+    | SearchSearchParams
+    | [SearchSearchParamKeys, string | number | null | undefined]
+    | URLSearchParams
+    | ReadonlyURLSearchParams
+  )[]
+) => buildURL('/search', ...searchParams);
 
 export const rangeInclusive = (start: number, end: number): number[] => {
   const result: number[] = [];

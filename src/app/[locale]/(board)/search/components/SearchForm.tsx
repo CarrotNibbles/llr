@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { buildURL, cn } from '@/lib/utils';
+import { buildSearchURL, cn, Q_PARAM } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CollapsibleContent } from '@radix-ui/react-collapsible';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
@@ -22,7 +22,7 @@ const SearchForm: React.FC<SearchButtonFormProps> = ({ q, className, ...props })
   const [isSearching, setIsSearching] = useState(false);
 
   const formSchema = z.object({
-    q: z.string({ required_error: '검색 문자열을 입력하세요.' }), //.min(3, '3글자 이상 입력해주세요.'),
+    [Q_PARAM]: z.string({ required_error: '검색 문자열을 입력하세요.' }), //.min(3, '3글자 이상 입력해주세요.'),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -31,14 +31,14 @@ const SearchForm: React.FC<SearchButtonFormProps> = ({ q, className, ...props })
   });
 
   useEffect(() => {
-    form.setValue('q', q);
+    form.setValue(Q_PARAM, q);
   }, [q, form]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (isSearching) return;
 
     setIsSearching(true);
-    router.push(buildURL('/search', searchParams, { q: values.q }));
+    router.push(buildSearchURL(searchParams, { q: values.q }));
     setIsSearching(false);
   };
 
@@ -51,7 +51,7 @@ const SearchForm: React.FC<SearchButtonFormProps> = ({ q, className, ...props })
       >
         <FormField
           control={form.control}
-          name="q"
+          name={Q_PARAM}
           render={({ field }) => (
             <FormItem>
               <div className="flex border border-muted-foreground bg-background focus-within:outline-none focus-within:ring-1 focus-within:ring-ring">

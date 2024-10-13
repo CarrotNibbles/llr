@@ -14,12 +14,13 @@ import { type SearchStrategiesDataType, buildSearchButtonStrategiesDataQuery } f
 import { createClient } from '@/lib/supabase/client';
 import {
   DEFAULT_LIMIT,
+  Q_PARAM,
   SEARCH_BUTTON_LIMIT,
   SEARCH_BUTTON_MOBILE_LIMIT,
-  buildURL,
+  buildSearchURL,
   cn,
   getOrderedRole,
-  rangeInclusive,
+  rangeInclusive
 } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -92,14 +93,11 @@ const SearchButtonForm: React.FC<SearchButtonFormProps> = ({ limit, closeForm, c
   const [searchResult, setSearchResult] = useState<SearchStrategiesDataType>([]);
 
   const formSchema = z.object({
-    q: z.string({ required_error: '검색 문자열을 입력하세요.' }), //.min(5, '5글자 이상 입력해주세요.'),
+    [Q_PARAM]: z.string({ required_error: '검색 문자열을 입력하세요.' }), //.min(5, '5글자 이상 입력해주세요.'),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      q: '',
-    },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -116,7 +114,7 @@ const SearchButtonForm: React.FC<SearchButtonFormProps> = ({ limit, closeForm, c
   };
 
   const onDetailedClick = () => {
-    router.push(buildURL('/search', searchParams, { q: form.getValues('q'), page: 1, limit: DEFAULT_LIMIT }));
+    router.push(buildSearchURL(searchParams, { q: form.getValues(Q_PARAM), page: 1, limit: DEFAULT_LIMIT }));
     closeForm();
   };
 
@@ -126,7 +124,7 @@ const SearchButtonForm: React.FC<SearchButtonFormProps> = ({ limit, closeForm, c
         <form onSubmit={form.handleSubmit(onSubmit)} className={className} {...props}>
           <FormField
             control={form.control}
-            name="q"
+            name={Q_PARAM}
             render={({ field }) => (
               <FormItem>
                 <div className="flex border focus-within:outline-none focus-within:ring-1 focus-within:ring-ring">
@@ -155,7 +153,7 @@ const SearchButtonForm: React.FC<SearchButtonFormProps> = ({ limit, closeForm, c
         </form>
       </Form>
       <SearchButtonResult
-        q={form.getValues('q')}
+        q={form.getValues(Q_PARAM)}
         searchState={searchState}
         searchResult={searchResult}
         limit={limit}
@@ -280,7 +278,7 @@ const SearchButtonResult: React.FC<SearchButtonResultProps> = ({
       {searchResult.length === 0 && <div>No results found</div>}
       {searchResult.length === limit && (
         <div className="mt-2">
-          <Link href={buildURL('/search', searchParams, { q, page: 1, limit: DEFAULT_LIMIT })}>More...</Link>
+          <Link href={buildSearchURL(searchParams, { q, page: 1, limit: DEFAULT_LIMIT })}>More...</Link>
         </div>
       )}
     </>

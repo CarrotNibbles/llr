@@ -1,17 +1,16 @@
 'use server';
 
 import { createClient } from '@/lib/supabase/server';
-import { DEFAULT_LIMIT, buildURL, tryParseInt } from '@/lib/utils';
+import { DEFAULT_LIMIT, type SearchSearchParamsRaw, buildSearchURL, tryParseInt } from '@/lib/utils';
 import { redirect } from 'next/navigation';
 import { BoardPagination } from '../components/BoardPagination';
 import { LimitCombobox } from '../components/LimitCombobox';
-import { StrategyTable } from '../components/StrategyTable';
 import { SearchForm } from './components/SearchForm';
 import { SearchStrategyTable } from './components/SearchStrategyTable';
 
 type BoardPageProps = Readonly<{
   params: { locale: string };
-  searchParams: { q?: string; page?: string; limit?: string };
+  searchParams: SearchSearchParamsRaw;
 }>;
 
 export default async function BoardPage({ params: { locale }, searchParams }: BoardPageProps) {
@@ -25,9 +24,7 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
   const limitValid = limit !== null && limit > 0;
   const pageValid = page !== null && page > 0;
   if (qExist && (!limitValid || !pageValid))
-    redirect(
-      buildURL('/search', searchParams, { page: pageValid ? page : 1, limit: limitValid ? limit : DEFAULT_LIMIT }),
-    );
+    redirect(buildSearchURL(searchParams, { page: pageValid ? page : 1, limit: limitValid ? limit : DEFAULT_LIMIT }));
 
   return (
     <div className="flex flex-col w-full max-w-screen-xl px-4 py-1">
