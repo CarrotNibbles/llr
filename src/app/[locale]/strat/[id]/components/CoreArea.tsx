@@ -42,13 +42,16 @@ export const CoreArea = (props: CoreAreaProps) => {
       deleted_version,
       deleted_subversion,
     }) => {
+      const currentVersion = strategyData.version;
+      const currentSubversion = strategyData.subversion * 10 + 9.9;
+
       if (available_level > raidLevel) return false;
       if (superseding_level && superseding_level <= raidLevel) return false;
-      if (updated_version > strategyData.version) return false;
-      if (updated_version === strategyData.version && updated_subversion > strategyData.subversion) return false;
+      if (updated_version > currentVersion) return false;
+      if (updated_version === currentVersion && updated_subversion > currentSubversion) return false;
       if (deleted_version && deleted_subversion) {
-        if (deleted_version < strategyData.version) return false;
-        if (deleted_version === strategyData.version && deleted_subversion <= strategyData.subversion) return false;
+        if (deleted_version < currentVersion) return false;
+        if (deleted_version === currentVersion && deleted_subversion <= currentSubversion) return false;
       }
 
       return true;
