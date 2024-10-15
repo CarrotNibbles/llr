@@ -1,6 +1,7 @@
 import type { Locale } from '@/lib/i18n';
 import { buildActionDataQuery, buildStrategyDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
+import { notFound } from 'next/navigation';
 import { CoreArea } from './components/CoreArea';
 import { StratHeader } from './components/StratHeader';
 import { StratSyncProvider } from './components/StratSyncProvider';
@@ -22,8 +23,13 @@ export default async function StratPage({
     supabase.auth.getUser(),
   ]);
 
-  if (strategyDataQueryError || strategyData === null) throw strategyDataQueryError;
-  if (actionDataQueryError || actionData === null) throw actionDataQueryError;
+  if (strategyDataQueryError || actionDataQueryError || actionData === null) {
+    throw new Error('Failed to fetch data');
+  }
+
+  if (strategyData === null || strategyData.strategy_players.length === 0) {
+    notFound();
+  }
 
   return (
     <div className="flex flex-col max-h-screen h-screen">
