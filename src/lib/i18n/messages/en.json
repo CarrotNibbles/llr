@@ -74,7 +74,9 @@
         "DeleteStrategy": "Delete Strategy",
         "AlertTitle": "Warning",
         "AlertDescription": "If you change the settings to be more restrictive, other sessions will be disconnected.",
-        "Save": "Save"
+        "Save": "Save",
+        "Saved": "Saved!",
+        "Error": "An error occurred while saving the settings."
       },
       "LikeButton": {
         "Liked": "Like added.",

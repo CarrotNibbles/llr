@@ -1,5 +1,5 @@
 import type { PlainMessage } from '@bufbuild/protobuf';
-import { sha384 } from 'hash-wasm';
+import { sha256 } from 'hash-wasm';
 import { produce } from 'immer';
 import { createStore } from 'zustand';
 import type { Enums } from '../database.types';
@@ -232,7 +232,7 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
       if (!get().client || !get().token) return false;
       if (get().elevated) return true;
 
-      const hashed = await sha384(password);
+      const hashed = await sha256(password);
 
       try {
         await get().client?.elevate({
