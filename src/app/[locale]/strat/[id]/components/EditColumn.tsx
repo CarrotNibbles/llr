@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/context-menu';
 import type { ActionDataType, StrategyDataType } from '@/lib/queries/server';
 import { type ArrayElement, clamp, usePixelPerFrame } from '@/lib/utils';
-import { animate, motion, useMotionValue } from 'framer-motion';
+import { animate, AnimatePresence, motion, useMotionValue } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { type MouseEventHandler, useEffect, useState } from 'react';
 import { columnWidth, columnWidthLarge, timeStep } from './coreAreaConstants';
@@ -120,6 +120,9 @@ const DraggableBox = ({
     <ContextMenu>
       <ContextMenuTrigger className="relative" disabled={!elevated}>
         <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           drag={isLocked || !elevated ? false : 'y'}
           dragMomentum={false}
           onDragEnd={onDragEnd}
@@ -219,22 +222,24 @@ const EditSubColumn = ({
       className={`flex flex-shrink-0 ${columnWidth} ${columnWidthLarge} overflow-hidden hover:bg-muted`}
       style={{ height: `${raidDuration * pixelPerFrame + 60}px` }}
     >
-      {...boxValues.map((boxValue, index) => (
-        <DraggableBox
-          key={boxValue.id}
-          entry={entries[index]}
-          raidDuration={raidDuration}
-          durations={action.mitigations.map(({ duration }) => duration)}
-          cooldown={action.cooldown}
-          otherUseAts={boxValues.filter((_, j) => j !== index).map((boxValue) => boxValue.useAt)}
+      <AnimatePresence>
+        {...boxValues.map((boxValue, index) => (
+          <DraggableBox
+            key={boxValue.id}
+            entry={entries[index]}
+            raidDuration={raidDuration}
+            durations={action.mitigations.map(({ duration }) => duration)}
+            cooldown={action.cooldown}
+            otherUseAts={boxValues.filter((_, j) => j !== index).map((boxValue) => boxValue.useAt)}
+          />
+        ))}
+        {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+        <div
+          className="relative top-0 left-0 w-full h-full"
+          onClick={createBox}
+          style={{ cursor: !elevated ? 'not-allowed' : 'pointer' }}
         />
-      ))}
-      {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
-      <div
-        className="relative top-0 left-0 w-full h-full"
-        onClick={createBox}
-        style={{ cursor: !elevated ? 'not-allowed' : 'pointer' }}
-      />
+      </AnimatePresence>
     </div>
   );
 };
