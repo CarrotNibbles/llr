@@ -45,7 +45,7 @@ const BoardSubheaderContent: React.FC<BoardSubheaderContentProps> = async ({ dat
   return (
     <nav>
       <div className={cn('rounded-none flex min-w-full items-center', className)} {...props}>
-        <ul className="flex gap-x-2">
+        <ul className="hidden sm:flex gap-x-2">
           {navRaidCategories.map((raidCategory) => (
             <li key={raidCategory}>
               <RaidPopover

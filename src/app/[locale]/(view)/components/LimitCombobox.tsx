@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { CaretDownIcon, CaretUpIcon } from '@radix-ui/react-icons';
 import type React from 'react';
 import { useState } from 'react';
-import { BoardLink } from './ViewLink';
+import { ViewLink } from './ViewLink';
 
 type LimitComboboxProps = Readonly<
   ButtonProps & {
@@ -23,8 +23,15 @@ export const LimitCombobox: React.FC<LimitComboboxProps> = ({ currentLimit, clas
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button className={cn('rounded-none flex gap-x-2 items-center pr-2', className)} {...props} variant="outline">
-          {currentLimit} strats in page{' '}
+        <Button
+          className={cn(
+            'rounded-none flex gap-x-2 items-center text-xs sm:text-sm pl-3 pr-2 sm:pl-4 sm:pr-2',
+            className,
+          )}
+          {...props}
+          variant="outline"
+        >
+          {currentLimit} Strats in Page{' '}
           {open ? <CaretUpIcon className="w-6 h-6 mt-0.5" /> : <CaretDownIcon className="w-6 h-6" />}
         </Button>
       </PopoverTrigger>
@@ -35,19 +42,19 @@ export const LimitCombobox: React.FC<LimitComboboxProps> = ({ currentLimit, clas
             <CommandGroup>
               {LIMIT_OPTIONS.map((limit) => (
                 <CommandItem
-                  className="rounded-none my-1 p-0"
+                  className="rounded-none p-0 my-1"
                   key={limit}
                   value={limit.toString()}
                   defaultValue={currentLimit}
                   onSelect={() => setOpen(false)}
                 >
-                  <BoardLink
+                  <ViewLink
                     page={1}
                     limit={limit}
-                    className="w-full flex gap-x-2 items-center justify-end px-4 py-2"
+                    className="w-full flex gap-x-2 items-center justify-end text-xs sm:text-sm px-3 sm:px-4 py-2"
                   >
-                    {limit} strats per page
-                  </BoardLink>
+                    {limit} Strats per Page
+                  </ViewLink>
                 </CommandItem>
               ))}
             </CommandGroup>

@@ -9,7 +9,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 import type Link from 'next/link';
 import type React from 'react';
 import { Suspense } from 'react';
-import { BoardLink } from './ViewLink';
+import { ViewLink } from './ViewLink';
 
 type ViewPaginationData = Readonly<{
   startPage: number;
@@ -112,7 +112,7 @@ type PaginationLinkProps = Omit<React.ComponentProps<typeof Link>, 'href'> & {
 
 const ViewPaginationLink: React.FC<PaginationLinkProps> = ({ page, className, isActive, size = 'icon', ...props }) => {
   return (
-    <BoardLink
+    <ViewLink
       aria-current={isActive ? 'page' : undefined}
       className={cn(
         buttonVariants({

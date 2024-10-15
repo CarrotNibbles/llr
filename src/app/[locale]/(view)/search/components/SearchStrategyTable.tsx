@@ -1,16 +1,11 @@
 import { buildStrategiesDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
+import type { SearchSearchParamsParsed } from '@/lib/utils';
 import type React from 'react';
 import { StrategyTable } from '../../components/StrategyTable';
 
-type BoardStrategyTableProps = Readonly<
-  React.ComponentProps<'table'> & {
-    q: string;
-    page: number;
-    limit: number;
-  }
->;
-const SearchStrategyTable: React.FC<BoardStrategyTableProps> = ({ q, page, limit, className, ...props }) => {
+type BoardStrategyTableProps = Readonly<React.ComponentProps<'table'> & SearchSearchParamsParsed>;
+const SearchStrategyTable: React.FC<BoardStrategyTableProps> = ({ q, page, limit, sort, className, ...props }) => {
   const supabase = createClient();
 
   const fetchData = async () => {
@@ -18,6 +13,7 @@ const SearchStrategyTable: React.FC<BoardStrategyTableProps> = ({ q, page, limit
       page,
       limit,
       q,
+      sort,
     });
     if (strategiesDataQueryError || strategiesData === null) throw strategiesDataQueryError;
 

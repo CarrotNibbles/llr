@@ -2,6 +2,7 @@
 
 import type { QueryData } from '@supabase/supabase-js';
 import type { createClient } from '../supabase/server';
+import type { SortOption } from '../utils';
 
 export const buildActionDataQuery = (supabase: ReturnType<typeof createClient>) => {
   return supabase.from('actions').select('*, mitigations(*)').order('priority');
@@ -10,7 +11,7 @@ export const buildActionDataQuery = (supabase: ReturnType<typeof createClient>) 
 export type ActionDataType = QueryData<ReturnType<typeof buildActionDataQuery>>;
 
 export const buildStrategyCountQuery = async (supabase: ReturnType<typeof createClient>, params: { q?: string }) => {
-  const { q } = params
+  const { q } = params;
 
   let query = supabase.from('strategies').select('*', { count: 'estimated', head: true }).eq('is_public', true);
   if (q !== undefined) query = query.ilike('name', `%${q}%`);
@@ -21,24 +22,22 @@ export const buildStrategyCountQuery = async (supabase: ReturnType<typeof create
 
 export const buildStrategiesDataQuery = async (
   supabase: ReturnType<typeof createClient>,
-  params: { page: number; limit: number; q?: string },
+  params: { q?: string; page: number; limit: number; sort: SortOption },
 ) => {
-  const { page, limit, q } = params
+  const { q, page, limit, sort } = params;
   let query = supabase
     .from('strategies')
     .select(
       `id, name, version, subversion, modified_at, created_at,
-    raids(name),
-    like_counts(user_likes, anon_likes), 
-    strategy_players(id, job, order)`,
+      raids(name),
+      like_counts(user_likes, anon_likes), 
+      strategy_players(id, job, order)`,
     )
-    .eq('is_public', true)
-    .order('created_at', { ascending: false })
-    .range((page - 1) * limit, page * limit - 1);
+    .eq('is_public', true);
 
   if (q !== undefined) query = query.ilike('name', `%${q}%`);
 
-  const res = await query;
+  const res = await query.order('created_at', { ascending: false }).range((page - 1) * limit, page * limit - 1);
 
   if (res.data) for (const strategy of res.data) strategy.strategy_players.sort((a, b) => a.order - b.order);
 

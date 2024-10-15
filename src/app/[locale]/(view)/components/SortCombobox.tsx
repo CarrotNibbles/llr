@@ -3,21 +3,22 @@
 import { Button, type ButtonProps } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
+import { DEFAULT_LIMIT, type SortOption, cn, sortOptions } from '@/lib/utils';
 import { CaretDownIcon, CaretUpIcon } from '@radix-ui/react-icons';
 import type React from 'react';
 import { useState } from 'react';
-import { BoardLink } from './ViewLink';
+import { ViewLink } from './ViewLink';
 
 type SortComboboxProps = Readonly<
   ButtonProps & {
-    currentSort: "like" | "recent";
+    currentSort: SortOption;
   }
 >;
 
-const SORT_OPTIONS = [
-  "Most Likes", "Most Recent"
-];
+const sortOptionMap: Record<SortOption, string> = {
+  like: 'Most Likes',
+  recent: 'Most Recent',
+};
 
 export const SortCombobox: React.FC<SortComboboxProps> = ({ currentSort, className, ...props }) => {
   const [open, setOpen] = useState(false);
@@ -25,8 +26,15 @@ export const SortCombobox: React.FC<SortComboboxProps> = ({ currentSort, classNa
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button className={cn('rounded-none flex gap-x-2 items-center pr-2', className)} {...props} variant="outline">
-          {currentLimit} strats in page{' '}
+        <Button
+          className={cn(
+            'rounded-none flex gap-x-2 items-center text-xs sm:text-sm pl-3 pr-2 sm:pl-4 sm:pr-2',
+            className,
+          )}
+          {...props}
+          variant="outline"
+        >
+          {sortOptionMap[currentSort]}
           {open ? <CaretUpIcon className="w-6 h-6 mt-0.5" /> : <CaretDownIcon className="w-6 h-6" />}
         </Button>
       </PopoverTrigger>
@@ -35,21 +43,22 @@ export const SortCombobox: React.FC<SortComboboxProps> = ({ currentSort, classNa
           <CommandList>
             <CommandEmpty>Choose the number of strats to show in a page</CommandEmpty>
             <CommandGroup>
-              {LIMIT_OPTIONS.map((limit) => (
+              {sortOptions.map((sort) => (
                 <CommandItem
-                  className="rounded-none px-4 py-2 my-1"
-                  key={limit}
-                  value={limit.toString()}
-                  defaultValue={currentLimit}
+                  className="rounded-none p-0 my-1"
+                  key={sort}
+                  value={sort}
+                  defaultValue={currentSort}
                   onSelect={() => setOpen(false)}
                 >
-                  <BoardLink
+                  <ViewLink
                     page={1}
-                    limit={limit}
-                    className="w-full flex gap-x-2 items-center justify-end"
+                    limit={DEFAULT_LIMIT}
+                    sort={sort}
+                    className="w-full flex gap-x-2 items-center text-xs sm:text-sm px-3 sm:px-4 py-2"
                   >
-                    {limit} strats per page
-                  </BoardLink>
+                    {sortOptionMap[sort]}
+                  </ViewLink>
                 </CommandItem>
               ))}
             </CommandGroup>

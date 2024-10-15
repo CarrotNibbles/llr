@@ -228,30 +228,33 @@ export const buildURL = (
 export const Q_PARAM = 'q';
 export const PAGE_PARAM = 'page';
 export const LIMIT_PARAM = 'limit';
+export const SORT_PARAM = 'sort';
 
-export type BoardSearchParamsRaw = Partial<{
+export type BoardSearchParamsRaw = {
   [PAGE_PARAM]: string;
   [LIMIT_PARAM]: string;
-}>;
-export type BoardSearchParamsParsed = Partial<{
+  [SORT_PARAM]: string;
+};
+export type BoardSearchParamsParsed = {
   [PAGE_PARAM]: number;
   [LIMIT_PARAM]: number;
-}>
+  [SORT_PARAM]: SortOption
+}
 export type BoardSearchParams = BoardSearchParamsRaw | BoardSearchParamsParsed
 export type BoardSearchParamKeys = keyof BoardSearchParams;
 
-export type SearchSearchParamsRaw = BoardSearchParamsRaw & Partial<{
+export type SearchSearchParamsRaw = BoardSearchParamsRaw & {
   [Q_PARAM]: string;
-}>;
-export type SearchSearchParamsParsed = BoardSearchParamsParsed & Partial<{
+};
+export type SearchSearchParamsParsed = BoardSearchParamsParsed & {
   [Q_PARAM]: string;
-}>;
+};
 export type SearchSearchParams = SearchSearchParamsRaw | SearchSearchParamsParsed
 export type SearchSearchParamKeys = keyof SearchSearchParams;
 
 export const buildBoardURL = (
   ...searchParams: (
-    | BoardSearchParams
+    | Partial<BoardSearchParams>
     | [BoardSearchParamKeys, string | number | null | undefined]
     | URLSearchParams
     | ReadonlyURLSearchParams
@@ -260,7 +263,7 @@ export const buildBoardURL = (
 
 export const buildSearchURL = (
   ...searchParams: (
-    | SearchSearchParams
+    | Partial<SearchSearchParams>
     | [SearchSearchParamKeys, string | number | null | undefined]
     | URLSearchParams
     | ReadonlyURLSearchParams
@@ -277,3 +280,7 @@ export const rangeInclusive = (start: number, end: number): number[] => {
 
 export const navRaidCategories = ['Savage', 'Ultimate'] as const;
 export const raidCategories = ['Savage', 'Ultimate', 'Trial', 'Raid', 'Dungeon'] as const;
+
+export const sortOptions = ["like", "recent"] as const;
+export type SortOption = typeof sortOptions[number];
+export const DEFAULT_SORT: SortOption = "like"
