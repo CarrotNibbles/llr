@@ -13,7 +13,7 @@ export const buildStrategyCountQuery = async (supabase: ReturnType<typeof create
   const { q } = params
 
   let query = supabase.from('strategies').select('*', { count: 'estimated', head: true }).eq('is_public', true);
-  if (q !== undefined) query = query.like('name', `%${q}%`);
+  if (q !== undefined) query = query.ilike('name', `%${q}%`);
 
   const res = await query;
   return res;
@@ -36,7 +36,7 @@ export const buildStrategiesDataQuery = async (
     .order('created_at', { ascending: false })
     .range((page - 1) * limit, page * limit - 1);
 
-  if (q !== undefined) query = query.like('name', `%${q}%`);
+  if (q !== undefined) query = query.ilike('name', `%${q}%`);
 
   const res = await query;
 
