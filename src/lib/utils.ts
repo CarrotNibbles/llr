@@ -275,5 +275,5 @@ export const rangeInclusive = (start: number, end: number): number[] => {
   return result;
 };
 
-export const NavRaidCategories = ['Savage', 'Ultimate', 'Trial'] as const;
-export const RaidCategories = ['Savage', 'Ultimate', 'Trial', 'Raid', 'Dungeon'] as const;
+export const navRaidCategories = ['Savage', 'Ultimate'] as const;
+export const raidCategories = ['Savage', 'Ultimate', 'Trial', 'Raid', 'Dungeon'] as const;

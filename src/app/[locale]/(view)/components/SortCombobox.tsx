@@ -19,7 +19,7 @@ const SORT_OPTIONS = [
   "Most Likes", "Most Recent"
 ];
 
-export const LimitCombobox: React.FC<SortComboboxProps> = ({ currentLimit, className, ...props }) => {
+export const SortCombobox: React.FC<SortComboboxProps> = ({ currentSort, className, ...props }) => {
   const [open, setOpen] = useState(false);
 
   return (
