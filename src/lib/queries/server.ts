@@ -9,59 +9,43 @@ export const buildActionDataQuery = (supabase: ReturnType<typeof createClient>) 
 
 export type ActionDataType = QueryData<ReturnType<typeof buildActionDataQuery>>;
 
-export const buildStrategyCountQuery = async (supabase: ReturnType<typeof createClient>) => {
-  const res = await supabase.from('strategies').select('*', { count: 'estimated', head: true }).eq('is_public', true);
+export const buildStrategyCountQuery = async (supabase: ReturnType<typeof createClient>, params: { q?: string }) => {
+  const { q } = params
 
+  let query = supabase.from('strategies').select('*', { count: 'estimated', head: true }).eq('is_public', true);
+  if (q !== undefined) query = query.like('name', `%${q}%`);
+
+  const res = await query;
   return res;
 };
 
-export const buildBoardStrategiesDataQuery = async (
+export const buildStrategiesDataQuery = async (
   supabase: ReturnType<typeof createClient>,
-  page: number,
-  limit: number,
+  params: { page: number; limit: number; q?: string },
 ) => {
-  const res = await supabase
+  const { page, limit, q } = params
+  let query = supabase
     .from('strategies')
     .select(
       `id, name, version, subversion, modified_at, created_at,
-      raids(name),
-      like_counts(user_likes, anon_likes), 
-      strategy_players(id, job, order)`,
+    raids(name),
+    like_counts(user_likes, anon_likes), 
+    strategy_players(id, job, order)`,
     )
     .eq('is_public', true)
     .order('created_at', { ascending: false })
     .range((page - 1) * limit, page * limit - 1);
+
+  if (q !== undefined) query = query.like('name', `%${q}%`);
+
+  const res = await query;
 
   if (res.data) for (const strategy of res.data) strategy.strategy_players.sort((a, b) => a.order - b.order);
 
   return res;
 };
 
-export const buildSearchStrategiesDataQuery = async (
-  supabase: ReturnType<typeof createClient>,
-  q: string,
-  page: number,
-  limit: number,
-) => {
-  const res = await supabase
-    .from('strategies')
-    .select(
-      `id, name, version, subversion, modified_at, created_at,
-      raids(name),
-      like_counts(user_likes, anon_likes), 
-      strategy_players(id, job, order)`,
-    )
-    .eq('is_public', true)
-    .like('name', `%${q}%`)
-    .order('created_at', { ascending: false })
-    .range((page - 1) * limit, page * limit - 1);
-
-  if (res.data) for (const strategy of res.data) strategy.strategy_players.sort((a, b) => a.order - b.order);
-
-  return res;
-};
-
-export type BoardStrategiesDataType = QueryData<ReturnType<typeof buildBoardStrategiesDataQuery>>;
+export type BoardStrategiesDataType = QueryData<ReturnType<typeof buildStrategiesDataQuery>>;
 
 export const buildStrategyDataQuery = async (supabase: ReturnType<typeof createClient>, strategyId: string) => {
   const res = await supabase

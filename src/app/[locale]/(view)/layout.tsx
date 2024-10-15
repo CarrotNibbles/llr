@@ -1,5 +1,5 @@
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { BoardHeader } from './components/BoardHeader';
+import { ViewHeader } from './components/ViewHeader';
 
 type BoardLayoutProps = Readonly<{
   children: React.ReactNode;
@@ -9,7 +9,7 @@ export default function BoardLayout({ children }: BoardLayoutProps): React.React
   return (
     <TooltipProvider>
       <div className="flex flex-col items-center">
-        <BoardHeader />
+        <ViewHeader />
         {children}
       </div>
     </TooltipProvider>

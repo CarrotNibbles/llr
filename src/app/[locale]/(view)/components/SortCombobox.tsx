@@ -7,17 +7,19 @@ import { cn } from '@/lib/utils';
 import { CaretDownIcon, CaretUpIcon } from '@radix-ui/react-icons';
 import type React from 'react';
 import { useState } from 'react';
-import { BoardLink } from '../board/components/BoardLink';
+import { BoardLink } from './ViewLink';
 
-type LimitComboboxProps = Readonly<
+type SortComboboxProps = Readonly<
   ButtonProps & {
-    currentLimit: number;
+    currentSort: "like" | "recent";
   }
 >;
 
-const LIMIT_OPTIONS = [5, 10, 15, 20];
+const SORT_OPTIONS = [
+  "Most Likes", "Most Recent"
+];
 
-export const LimitCombobox: React.FC<LimitComboboxProps> = ({ currentLimit, className, ...props }) => {
+export const LimitCombobox: React.FC<SortComboboxProps> = ({ currentLimit, className, ...props }) => {
   const [open, setOpen] = useState(false);
 
   return (

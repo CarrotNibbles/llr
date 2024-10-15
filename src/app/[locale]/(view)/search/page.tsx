@@ -3,10 +3,11 @@
 import { createClient } from '@/lib/supabase/server';
 import { DEFAULT_LIMIT, type SearchSearchParamsRaw, buildSearchURL, tryParseInt } from '@/lib/utils';
 import { redirect } from 'next/navigation';
-import { BoardPagination } from '../components/BoardPagination';
+import { ViewPagination } from '../components/ViewPagination';
 import { LimitCombobox } from '../components/LimitCombobox';
 import { SearchForm } from './components/SearchForm';
 import { SearchStrategyTable } from './components/SearchStrategyTable';
+import { SearchPagination } from './components/SearchPagination';
 
 type BoardPageProps = Readonly<{
   params: { locale: string };
@@ -35,7 +36,7 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
             <SearchStrategyTable q={q} page={page} limit={limit} />
             <div className="w-full flex flex-col-reverse md:grid md:grid-cols-3 gap-y-2 mt-2">
               <div />
-              <BoardPagination currentPage={page} limit={limit} />
+              <SearchPagination q={q} currentPage={page} limit={limit} />
               <div className="flex flex-row-reverse">
                 <LimitCombobox currentLimit={limit} />
               </div>

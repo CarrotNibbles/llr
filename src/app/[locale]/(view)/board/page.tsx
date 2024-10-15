@@ -3,10 +3,11 @@
 import { createClient } from '@/lib/supabase/server';
 import { type BoardSearchParamsRaw, DEFAULT_LIMIT, buildBoardURL, tryParseInt } from '@/lib/utils';
 import { redirect } from 'next/navigation';
-import { BoardPagination } from '../components/BoardPagination';
+import { ViewPagination } from '../components/ViewPagination';
 import { LimitCombobox } from '../components/LimitCombobox';
 import { BoardStrategyTable } from './components/BoardStrategyTable';
 import { BoardSubheader } from './components/BoardSubheader';
+import { BoardPagination } from './components/BoardPagination';
 
 type BoardPageProps = Readonly<{
   params: { locale: string };

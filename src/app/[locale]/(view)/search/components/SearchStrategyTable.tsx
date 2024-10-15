@@ -1,4 +1,4 @@
-import { buildSearchStrategiesDataQuery } from '@/lib/queries/server';
+import { buildStrategiesDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
 import type React from 'react';
 import { StrategyTable } from '../../components/StrategyTable';
@@ -14,18 +14,17 @@ const SearchStrategyTable: React.FC<BoardStrategyTableProps> = ({ q, page, limit
   const supabase = createClient();
 
   const fetchData = async () => {
-    const { data: strategiesData, error: strategiesDataQueryError } = await buildSearchStrategiesDataQuery(
-      supabase,
-      q,
+    const { data: strategiesData, error: strategiesDataQueryError } = await buildStrategiesDataQuery(supabase, {
       page,
       limit,
-    );
+      q,
+    });
     if (strategiesDataQueryError || strategiesData === null) throw strategiesDataQueryError;
 
     return { strategiesData };
   };
 
-  return <StrategyTable dataPromise={fetchData()} />;
+  return <StrategyTable dataPromise={fetchData()} className={className} {...props} />;
 };
 SearchStrategyTable.displayName = 'SearchStrategyTable';
 

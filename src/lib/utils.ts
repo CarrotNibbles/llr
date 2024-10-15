@@ -240,15 +240,11 @@ export type BoardSearchParamsParsed = Partial<{
 export type BoardSearchParams = BoardSearchParamsRaw | BoardSearchParamsParsed
 export type BoardSearchParamKeys = keyof BoardSearchParams;
 
-export type SearchSearchParamsRaw = Partial<{
+export type SearchSearchParamsRaw = BoardSearchParamsRaw & Partial<{
   [Q_PARAM]: string;
-  [PAGE_PARAM]: string;
-  [LIMIT_PARAM]: string;
 }>;
-export type SearchSearchParamsParsed = Partial<{
+export type SearchSearchParamsParsed = BoardSearchParamsParsed & Partial<{
   [Q_PARAM]: string;
-  [PAGE_PARAM]: number;
-  [LIMIT_PARAM]: number;
 }>;
 export type SearchSearchParams = SearchSearchParamsRaw | SearchSearchParamsParsed
 export type SearchSearchParamKeys = keyof SearchSearchParams;

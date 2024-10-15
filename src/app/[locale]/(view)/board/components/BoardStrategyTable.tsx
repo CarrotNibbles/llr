@@ -1,7 +1,7 @@
 import type React from 'react';
 import { StrategyTable } from '../../components/StrategyTable';
 import { createClient } from '@/lib/supabase/server';
-import { buildBoardStrategiesDataQuery } from '@/lib/queries/server';
+import { buildStrategiesDataQuery } from '@/lib/queries/server';
 
 type BoardStrategyTableProps = Readonly<
   React.ComponentProps<'table'> & {
@@ -13,11 +13,10 @@ const BoardStrategyTable: React.FC<BoardStrategyTableProps> = ({ page, limit, cl
   const supabase = createClient();
 
   const fetchData = async () => {
-    const { data: strategiesData, error: strategiesDataQueryError } = await buildBoardStrategiesDataQuery(
-      supabase,
+    const { data: strategiesData, error: strategiesDataQueryError } = await buildStrategiesDataQuery(supabase, {
       page,
       limit,
-    );
+    });
     if (strategiesDataQueryError || strategiesData === null) throw strategiesDataQueryError;
 
     return { strategiesData };

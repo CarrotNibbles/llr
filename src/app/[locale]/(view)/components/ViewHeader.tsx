@@ -10,9 +10,9 @@ import type React from 'react';
 import { ProfileDropdown } from './ProfileDropdown';
 import { SearchButton } from './SearchButton';
 
-type BoardHeaderProps = Readonly<React.HTMLAttributes<HTMLDivElement> & {}>;
+type ViewHeaderProps = Readonly<React.HTMLAttributes<HTMLDivElement> & {}>;
 
-export const BoardHeader: React.FC<BoardHeaderProps> = async ({ className, ...props }, ref) => {
+export const ViewHeader: React.FC<ViewHeaderProps> = async ({ className, ...props }, ref) => {
   const supabase = createClient();
   const {
     data: { user },
