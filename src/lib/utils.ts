@@ -195,10 +195,21 @@ export const tryParseInt = (input: string | undefined | null, allowNegative = fa
   return null;
 };
 
+export const tryParseVersion = (input: string | undefined | null): Version | null => {
+  if (input === undefined || input === null) return null;
+
+  const versionRegex = /^\d.\d$/;
+
+  if (!versionRegex.test(input)) return null;
+
+  const [version, subversion] = input.split('.').map(Number);
+  return new Version(version, subversion);
+};
+
 export const buildURL = (
   url: string,
   ...searchParams: (
-    | Record<string, string | number | null | undefined>
+    | Record<string, string | number | Version | null | undefined>
     | [string, string | number | null | undefined]
     | URLSearchParams
     | ReadonlyURLSearchParams
@@ -208,16 +219,17 @@ export const buildURL = (
 
   for (const searchParam of searchParams) {
     if (Array.isArray(searchParam)) {
-      if (searchParam.length !== 2 || searchParam[1] === null || searchParam[1] === undefined) continue;
-      newSearchParams.set(searchParam[0], searchParam[1].toString());
+      if (searchParam.length !== 2) continue;
+      if (searchParam[1] === null || searchParam[1] === undefined) newSearchParams.delete(searchParam[0]);
+      else newSearchParams.set(searchParam[0], searchParam[1].toString());
     } else if (searchParam instanceof URLSearchParams || searchParam instanceof ReadonlyURLSearchParams) {
       for (const [key, value] of searchParam.entries()) {
         newSearchParams.set(key, value);
       }
     } else {
       for (const key of Object.keys(searchParam)) {
-        if (searchParam[key] === undefined || searchParam[key] === null) continue;
-        newSearchParams.set(key, searchParam[key].toString());
+        if (searchParam[key] === undefined || searchParam[key] === null) newSearchParams.delete(key);
+        else newSearchParams.set(key, searchParam[key].toString());
       }
     }
   }
@@ -225,25 +237,42 @@ export const buildURL = (
   return `${url}?${newSearchParams.toString()}`;
 };
 
+export class Version {
+  readonly version: number;
+  readonly subversion: number;
+
+  constructor(version: number, subversion: number) {
+    this.version = version;
+    this.subversion = subversion;
+  }
+
+  public toString() {
+    return `${this.version}.${this.subversion}`;
+  }
+}
+
 export const Q_PARAM = 'q';
 export const PAGE_PARAM = 'page';
 export const LIMIT_PARAM = 'limit';
 export const SORT_PARAM = 'sort';
 export const RAID_PARAM = 'raid';
+export const VERSION_PARAM = 'version';
 
 export type BoardSearchParamsRaw = {
   [RAID_PARAM]?: string;
+  [VERSION_PARAM]?: string;
   [PAGE_PARAM]: string;
   [LIMIT_PARAM]: string;
   [SORT_PARAM]: string;
 };
 export type BoardSearchParamsParsed = {
   [RAID_PARAM]?: string;
+  [VERSION_PARAM]?: Version;
   [PAGE_PARAM]: number;
   [LIMIT_PARAM]: number;
-  [SORT_PARAM]: SortOption
-}
-export type BoardSearchParams = BoardSearchParamsRaw | BoardSearchParamsParsed
+  [SORT_PARAM]: SortOption;
+};
+export type BoardSearchParams = BoardSearchParamsRaw | BoardSearchParamsParsed;
 export type BoardSearchParamKeys = keyof BoardSearchParams;
 
 export type SearchSearchParamsRaw = BoardSearchParamsRaw & {
@@ -252,7 +281,7 @@ export type SearchSearchParamsRaw = BoardSearchParamsRaw & {
 export type SearchSearchParamsParsed = BoardSearchParamsParsed & {
   [Q_PARAM]: string;
 };
-export type SearchSearchParams = SearchSearchParamsRaw | SearchSearchParamsParsed
+export type SearchSearchParams = SearchSearchParamsRaw | SearchSearchParamsParsed;
 export type SearchSearchParamKeys = keyof SearchSearchParams;
 
 export const buildBoardURL = (
@@ -284,6 +313,6 @@ export const rangeInclusive = (start: number, end: number): number[] => {
 export const navRaidCategories = ['Savage', 'Ultimate'] as const;
 export const raidCategories = ['Savage', 'Ultimate', 'Trial', 'Raid', 'Dungeon'] as const;
 
-export const sortOptions = ["like", "recent"] as const;
-export type SortOption = typeof sortOptions[number];
-export const DEFAULT_SORT: SortOption = "like"
+export const sortOptions = ['like', 'recent'] as const;
+export type SortOption = (typeof sortOptions)[number];
+export const DEFAULT_SORT: SortOption = 'like';

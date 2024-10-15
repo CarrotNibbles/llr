@@ -8,6 +8,7 @@ type BoardStrategyTableProps = Readonly<React.ComponentProps<'table'> & SearchSe
 const SearchStrategyTable: React.FC<BoardStrategyTableProps> = ({
   q,
   raid,
+  version,
   page,
   limit,
   sort,
@@ -20,6 +21,7 @@ const SearchStrategyTable: React.FC<BoardStrategyTableProps> = ({
     const { data: strategiesData, error: strategiesDataQueryError } = await buildStrategiesDataQuery(supabase, {
       q,
       raid,
+      version,
       page,
       limit,
       sort,

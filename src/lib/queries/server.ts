@@ -2,7 +2,7 @@
 
 import type { QueryData } from '@supabase/supabase-js';
 import type { createClient } from '../supabase/server';
-import type { SortOption } from '../utils';
+import type { SortOption, Version } from '../utils';
 
 export const buildActionDataQuery = (supabase: ReturnType<typeof createClient>) => {
   return supabase.from('actions').select('*, mitigations(*)').order('priority');
@@ -12,16 +12,17 @@ export type ActionDataType = QueryData<ReturnType<typeof buildActionDataQuery>>;
 
 export const buildStrategyCountQuery = async (
   supabase: ReturnType<typeof createClient>,
-  params: { q?: string; raid?: string },
+  params: { q?: string; raid?: string; version?: Version },
 ) => {
-  const { q, raid } = params;
+  const { q, raid, version } = params;
 
   let query = supabase
     .from('strategies')
     .select('*, raids!inner(semantic_key)', { count: 'exact', head: true })
     .eq('is_public', true);
 
-    if (raid !== undefined) query = query.eq('raids.semantic_key', raid);
+  if (raid !== undefined) query = query.eq('raids.semantic_key', raid);
+  if (version !== undefined) query = query.eq('version', version.version).eq('subversion', version.subversion);
   if (q !== undefined) query = query.ilike('name', `%${q}%`);
 
   const res = await query;
@@ -30,9 +31,16 @@ export const buildStrategyCountQuery = async (
 
 export const buildStrategiesDataQuery = async (
   supabase: ReturnType<typeof createClient>,
-  params: { q?: string; raid?: string; page: number; limit: number; sort: SortOption },
+  params: {
+    q?: string;
+    raid?: string;
+    version?: Version;
+    page: number;
+    limit: number;
+    sort: SortOption;
+  },
 ) => {
-  const { q, raid, page, limit, sort } = params;
+  const { q, raid, version, page, limit, sort } = params;
   let query = supabase
     .from('strategies')
     .select(
@@ -41,9 +49,10 @@ export const buildStrategiesDataQuery = async (
       like_counts!inner(user_likes, anon_likes), 
       strategy_players!inner(id, job, order)`,
     )
-    .eq('is_public', true)
-
+    .eq('is_public', true);
+  
   if (raid !== undefined) query = query.eq('raids.semantic_key', raid);
+  if (version !== undefined) query = query.eq('version', version.version).eq('subversion', version.subversion);
   if (q !== undefined) query = query.ilike('name', `%${q}%`);
 
   const res = await query.order('created_at', { ascending: false }).range((page - 1) * limit, page * limit - 1);

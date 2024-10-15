@@ -2,7 +2,7 @@
 
 import { buildStrategyCountQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
-import { PAGINATION_OFFSET, PAGINATION_TOTAL_PAGE } from '@/lib/utils';
+import { PAGINATION_OFFSET, PAGINATION_TOTAL_PAGE, type Version } from '@/lib/utils';
 import type React from 'react';
 import { ViewPagination } from '../../components/ViewPagination';
 
@@ -10,15 +10,28 @@ type BoardPaginationProps = Readonly<
   React.HTMLAttributes<HTMLDivElement> & {
     q: string;
     raid?: string;
+    version?: Version;
     currentPage: number;
     limit: number;
   }
 >;
-export const SearchPagination: React.FC<BoardPaginationProps> = ({ q, raid, currentPage, limit, className, ...props }) => {
+export const SearchPagination: React.FC<BoardPaginationProps> = ({
+  q,
+  raid,
+  version,
+  currentPage,
+  limit,
+  className,
+  ...props
+}) => {
   const supabase = createClient();
 
   const fetchData = async () => {
-    const { count: strategyCount, error: strategyCountQueryError } = await buildStrategyCountQuery(supabase, { q, raid });
+    const { count: strategyCount, error: strategyCountQueryError } = await buildStrategyCountQuery(supabase, {
+      q,
+      raid,
+      version,
+    });
     if (strategyCountQueryError || strategyCount === null) throw strategyCountQueryError;
 
     const maxPage = Math.floor((strategyCount - 1) / limit) + 1;
