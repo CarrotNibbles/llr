@@ -229,13 +229,16 @@ export const Q_PARAM = 'q';
 export const PAGE_PARAM = 'page';
 export const LIMIT_PARAM = 'limit';
 export const SORT_PARAM = 'sort';
+export const RAID_PARAM = 'raid';
 
 export type BoardSearchParamsRaw = {
+  [RAID_PARAM]?: string;
   [PAGE_PARAM]: string;
   [LIMIT_PARAM]: string;
   [SORT_PARAM]: string;
 };
 export type BoardSearchParamsParsed = {
+  [RAID_PARAM]?: string;
   [PAGE_PARAM]: number;
   [LIMIT_PARAM]: number;
   [SORT_PARAM]: SortOption

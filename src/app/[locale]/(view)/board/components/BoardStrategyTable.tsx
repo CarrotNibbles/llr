@@ -5,11 +5,12 @@ import type React from 'react';
 import { StrategyTable } from '../../components/StrategyTable';
 
 type BoardStrategyTableProps = Readonly<React.ComponentProps<'table'> & BoardSearchParamsParsed>;
-const BoardStrategyTable: React.FC<BoardStrategyTableProps> = ({ page, limit, sort, className, ...props }) => {
+const BoardStrategyTable: React.FC<BoardStrategyTableProps> = ({ raid, page, limit, sort, className, ...props }) => {
   const supabase = createClient();
 
   const fetchData = async () => {
     const { data: strategiesData, error: strategiesDataQueryError } = await buildStrategiesDataQuery(supabase, {
+      raid,
       page,
       limit,
       sort,
@@ -19,7 +20,7 @@ const BoardStrategyTable: React.FC<BoardStrategyTableProps> = ({ page, limit, so
     return { strategiesData };
   };
 
-  return <StrategyTable dataPromise={fetchData()} />;
+  return <StrategyTable dataPromise={fetchData()} className={className} {...props} />;
 };
 BoardStrategyTable.displayName = 'BoardStrategyTable';
 

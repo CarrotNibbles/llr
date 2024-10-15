@@ -5,14 +5,23 @@ import type React from 'react';
 import { StrategyTable } from '../../components/StrategyTable';
 
 type BoardStrategyTableProps = Readonly<React.ComponentProps<'table'> & SearchSearchParamsParsed>;
-const SearchStrategyTable: React.FC<BoardStrategyTableProps> = ({ q, page, limit, sort, className, ...props }) => {
+const SearchStrategyTable: React.FC<BoardStrategyTableProps> = ({
+  q,
+  raid,
+  page,
+  limit,
+  sort,
+  className,
+  ...props
+}) => {
   const supabase = createClient();
 
   const fetchData = async () => {
     const { data: strategiesData, error: strategiesDataQueryError } = await buildStrategiesDataQuery(supabase, {
+      q,
+      raid,
       page,
       limit,
-      q,
       sort,
     });
     if (strategiesDataQueryError || strategiesData === null) throw strategiesDataQueryError;

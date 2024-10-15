@@ -14,6 +14,7 @@ type BoardPageProps = Readonly<{
 }>;
 
 export default async function BoardPage({ params: { locale }, searchParams }: BoardPageProps) {
+  const raid = searchParams.raid;
   const page = tryParseInt(searchParams.page, false);
   const limit = tryParseInt(searchParams.limit, false);
   const sort = searchParams.sort;
@@ -36,10 +37,10 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
     <div className="flex flex-col w-full max-w-screen-xl px-4 py-1">
       <BoardSubheader />
       <div className="px-4 mt-2 mb-8">
-        <BoardStrategyTable page={page} limit={limit} sort={sort} />
+        <BoardStrategyTable raid={raid} page={page} limit={limit} sort={sort} />
         <div className="w-full flex flex-col-reverse lg:grid lg:grid-cols-3 gap-y-2 mt-2">
           <div />
-          <BoardPagination currentPage={page} limit={limit} />
+          <BoardPagination raid={raid} currentPage={page} limit={limit} />
           <div className="flex text-xs flex-row-reverse gap-x-2">
             <LimitCombobox currentLimit={limit} />
             <SortCombobox currentSort={sort} />

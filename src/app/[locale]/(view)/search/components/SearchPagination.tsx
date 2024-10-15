@@ -8,16 +8,17 @@ import { ViewPagination } from '../../components/ViewPagination';
 
 type BoardPaginationProps = Readonly<
   React.HTMLAttributes<HTMLDivElement> & {
+    q: string;
+    raid?: string;
     currentPage: number;
     limit: number;
-    q: string;
   }
 >;
-export const SearchPagination: React.FC<BoardPaginationProps> = ({ q, currentPage, limit, className, ...props }) => {
+export const SearchPagination: React.FC<BoardPaginationProps> = ({ q, raid, currentPage, limit, className, ...props }) => {
   const supabase = createClient();
 
   const fetchData = async () => {
-    const { count: strategyCount, error: strategyCountQueryError } = await buildStrategyCountQuery(supabase, { q });
+    const { count: strategyCount, error: strategyCountQueryError } = await buildStrategyCountQuery(supabase, { q, raid });
     if (strategyCountQueryError || strategyCount === null) throw strategyCountQueryError;
 
     const maxPage = Math.floor((strategyCount - 1) / limit) + 1;

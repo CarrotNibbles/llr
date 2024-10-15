@@ -4,8 +4,9 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Button, type ButtonProps } from '@/components/ui/button';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import type { RaidsDataType } from '@/lib/queries/server';
-import { cn } from '@/lib/utils';
+import { buildBoardURL, cn, DEFAULT_LIMIT, DEFAULT_SORT } from '@/lib/utils';
 import { CaretDownIcon } from '@radix-ui/react-icons';
+import Link from 'next/link';
 import type React from 'react';
 
 type RaidFoldoutProps = Readonly<
@@ -24,8 +25,10 @@ const RaidFoldout: React.FC<RaidFoldoutProps> = async ({ name, raidsData, classN
       <AccordionContent className="p-0">
         <ul>
           {raidsData.map((raidData) => (
-            <li key={raidData.id} className="p-2 text-end">
-              {raidData.name}
+            <li key={raidData.id} className="text-end mt-1">
+              <Link href={buildBoardURL({ page: 1, limit: DEFAULT_LIMIT, raid: raidData.semantic_key, sort: DEFAULT_SORT })} className='w-full h-full flex p-2 hover:underline'>
+                {raidData.name}
+              </Link>
             </li>
           ))}
         </ul>

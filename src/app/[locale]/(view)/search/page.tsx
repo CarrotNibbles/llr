@@ -15,6 +15,7 @@ type BoardPageProps = Readonly<{
 
 export default async function BoardPage({ params: { locale }, searchParams }: BoardPageProps) {
   const q = searchParams.q;
+  const raid = searchParams.raid;
   const page = tryParseInt(searchParams.page, false);
   const limit = tryParseInt(searchParams.limit, false);
   const sort = searchParams.sort;
@@ -40,10 +41,10 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
         <SearchForm q={q ?? ''} />
         {qExist && paramValid && (
           <>
-            <SearchStrategyTable q={q} page={page} limit={limit} sort={sort} />
+            <SearchStrategyTable q={q} raid={raid} page={page} limit={limit} sort={sort} />
             <div className="w-full flex flex-col-reverse xl:grid xl:grid-cols-3 gap-y-2 mt-2">
               <div />
-              <SearchPagination q={q} currentPage={page} limit={limit} />
+              <SearchPagination q={q} raid={raid} currentPage={page} limit={limit} />
               <div className="flex flex-row-reverse gap-x-2">
                 <LimitCombobox currentLimit={limit} />
                 <SortCombobox currentSort={sort} />

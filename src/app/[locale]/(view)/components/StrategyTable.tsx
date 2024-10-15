@@ -10,6 +10,7 @@ import Link from 'next/link';
 import type React from 'react';
 import { Suspense } from 'react';
 import { ModifiedTime } from './ModifiedTime';
+import { Alert } from '@/components/ui/alert';
 
 type StrategiesTableData = Readonly<{ strategiesData: BoardStrategiesDataType }>;
 type StrategyTableProps = Readonly<
@@ -52,8 +53,9 @@ type StrategyTableBodyProps = Readonly<
 const STRATEGY_TABLE_DEFAULT_DATA: StrategiesTableData = { strategiesData: [] };
 const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise, className, ...props }) => {
   const { strategiesData } = (await dataPromise) ?? STRATEGY_TABLE_DEFAULT_DATA;
-
-  return (
+  return strategiesData.length === 0 ? (
+    <Alert className="my-2 w-full">No Strategy Found For This Raid</Alert>
+  ) : (
     <TableBody className={className} {...props}>
       {strategiesData.map((strategyData) => (
         <TableRow key={strategyData.id}>

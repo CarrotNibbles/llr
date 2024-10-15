@@ -10,10 +10,18 @@ export const buildActionDataQuery = (supabase: ReturnType<typeof createClient>) 
 
 export type ActionDataType = QueryData<ReturnType<typeof buildActionDataQuery>>;
 
-export const buildStrategyCountQuery = async (supabase: ReturnType<typeof createClient>, params: { q?: string }) => {
-  const { q } = params;
+export const buildStrategyCountQuery = async (
+  supabase: ReturnType<typeof createClient>,
+  params: { q?: string; raid?: string },
+) => {
+  const { q, raid } = params;
 
-  let query = supabase.from('strategies').select('*', { count: 'estimated', head: true }).eq('is_public', true);
+  let query = supabase
+    .from('strategies')
+    .select('*, raids!inner(semantic_key)', { count: 'exact', head: true })
+    .eq('is_public', true);
+
+    if (raid !== undefined) query = query.eq('raids.semantic_key', raid);
   if (q !== undefined) query = query.ilike('name', `%${q}%`);
 
   const res = await query;
@@ -22,19 +30,20 @@ export const buildStrategyCountQuery = async (supabase: ReturnType<typeof create
 
 export const buildStrategiesDataQuery = async (
   supabase: ReturnType<typeof createClient>,
-  params: { q?: string; page: number; limit: number; sort: SortOption },
+  params: { q?: string; raid?: string; page: number; limit: number; sort: SortOption },
 ) => {
-  const { q, page, limit, sort } = params;
+  const { q, raid, page, limit, sort } = params;
   let query = supabase
     .from('strategies')
     .select(
       `id, name, version, subversion, modified_at, created_at,
-      raids(name),
-      like_counts(user_likes, anon_likes), 
-      strategy_players(id, job, order)`,
+      raids!inner(name, semantic_key),
+      like_counts!inner(user_likes, anon_likes), 
+      strategy_players!inner(id, job, order)`,
     )
-    .eq('is_public', true);
+    .eq('is_public', true)
 
+  if (raid !== undefined) query = query.eq('raids.semantic_key', raid);
   if (q !== undefined) query = query.ilike('name', `%${q}%`);
 
   const res = await query.order('created_at', { ascending: false }).range((page - 1) * limit, page * limit - 1);
