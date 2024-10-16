@@ -37,9 +37,7 @@ type BoardSubheaderContentProps = Readonly<
 const BOARD_SUBHEADER_CONTENT_DEFAULT_DATA: BoardSubheaderContentData = { raidsData: [] };
 const BoardSubheaderContent: React.FC<BoardSubheaderContentProps> = async ({ dataPromise, className, ...props }) => {
   const supabase = createClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  const { data: { user }} = await supabase.auth.getUser();
   const { raidsData } = (await dataPromise) ?? BOARD_SUBHEADER_CONTENT_DEFAULT_DATA;
 
   return (
@@ -56,7 +54,7 @@ const BoardSubheaderContent: React.FC<BoardSubheaderContentProps> = async ({ dat
           ))}
         </ul>
         <div className="flex-grow" />
-        {session && <CreateButton className="h-8" raidsData={raidsData} />}
+        {user && <CreateButton className="h-8" raidsData={raidsData} />}
       </div>
     </nav>
   );

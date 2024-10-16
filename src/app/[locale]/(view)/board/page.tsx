@@ -1,5 +1,7 @@
 'use server';
 
+import { buildMaxPageQuery, buildStrategiesDataQuery } from '@/lib/queries/server';
+import { createClient } from '@/lib/supabase/server';
 import {
   type BoardSearchParamsRaw,
   DEFAULT_LIMIT,
@@ -10,10 +12,10 @@ import {
 } from '@/lib/utils';
 import { redirect } from 'next/navigation';
 import { LimitCombobox } from '../components/LimitCombobox';
-import { BoardPagination } from './components/BoardPagination';
-import { BoardStrategyTable } from './components/BoardStrategyTable';
-import { BoardSubheader } from './components/BoardSubheader';
 import { SortCombobox } from '../components/SortCombobox';
+import { StrategyTable } from '../components/StrategyTable';
+import { ViewPagination } from '../components/ViewPagination';
+import { BoardSubheader } from './components/BoardSubheader';
 
 type BoardPageProps = Readonly<{
   params: { locale: string };
@@ -21,6 +23,8 @@ type BoardPageProps = Readonly<{
 }>;
 
 export default async function BoardPage({ params: { locale }, searchParams }: BoardPageProps) {
+  const supabase = createClient();
+
   const raid = searchParams.raid;
   const page = tryParseInt(searchParams.page, false);
   const limit = tryParseInt(searchParams.limit, false);
@@ -47,10 +51,10 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
     <div className="flex flex-col w-full max-w-screen-xl px-4 py-1">
       <BoardSubheader />
       <div className="px-4 mt-2 mb-8">
-        <BoardStrategyTable raid={raid} version={version} page={page} limit={limit} sort={sort} />
+        <StrategyTable dataPromise={buildStrategiesDataQuery(supabase, { raid, version, page, limit, sort })} />
         <div className="w-full flex flex-col-reverse lg:grid lg:grid-cols-3 gap-y-2 mt-2">
           <div />
-          <BoardPagination raid={raid} version={version} currentPage={page} limit={limit} />
+          <ViewPagination currentPage={page} dataPromise={buildMaxPageQuery(supabase, limit, { raid, version })} />
           <div className="flex text-xs flex-row-reverse gap-x-2">
             <LimitCombobox currentLimit={limit} />
             <SortCombobox currentSort={sort} />

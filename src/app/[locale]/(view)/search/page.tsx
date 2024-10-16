@@ -1,5 +1,7 @@
 'use server';
 
+import { buildMaxPageQuery, buildStrategiesDataQuery } from '@/lib/queries/server';
+import { createClient } from '@/lib/supabase/server';
 import {
   DEFAULT_LIMIT,
   DEFAULT_SORT,
@@ -11,9 +13,9 @@ import {
 import { redirect } from 'next/navigation';
 import { LimitCombobox } from '../components/LimitCombobox';
 import { SortCombobox } from '../components/SortCombobox';
+import { StrategyTable } from '../components/StrategyTable';
+import { ViewPagination } from '../components/ViewPagination';
 import { SearchForm } from './components/SearchForm';
-import { SearchPagination } from './components/SearchPagination';
-import { SearchStrategyTable } from './components/SearchStrategyTable';
 
 type BoardPageProps = Readonly<{
   params: { locale: string };
@@ -21,6 +23,8 @@ type BoardPageProps = Readonly<{
 }>;
 
 export default async function BoardPage({ params: { locale }, searchParams }: BoardPageProps) {
+  const supabase = createClient();
+
   const q = searchParams.q;
   const raid = searchParams.raid;
   const version = tryParseVersion(searchParams.version) ?? undefined;
@@ -51,10 +55,13 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
         <SearchForm q={q ?? ''} />
         {qExist && paramValid && (
           <>
-            <SearchStrategyTable q={q} raid={raid} version={version} page={page} limit={limit} sort={sort} />
+            <StrategyTable dataPromise={buildStrategiesDataQuery(supabase, { q, raid, version, page, limit, sort })} />
             <div className="w-full flex flex-col-reverse xl:grid xl:grid-cols-3 gap-y-2 mt-2">
               <div />
-              <SearchPagination q={q} raid={raid} version={version} currentPage={page} limit={limit} />
+              <ViewPagination
+                currentPage={page}
+                dataPromise={buildMaxPageQuery(supabase, limit, { q, raid, version })}
+              />
               <div className="flex flex-row-reverse gap-x-2">
                 <LimitCombobox currentLimit={limit} />
                 <SortCombobox currentSort={sort} />

@@ -3,12 +3,14 @@
 import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { Command, CommandEmpty, CommandGroup, CommandInput } from '@/components/ui/command';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { buildSearchURL, cn, Q_PARAM } from '@/lib/utils';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Q_PARAM, RAID_PARAM, buildSearchURL, cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CollapsibleContent } from '@radix-ui/react-collapsible';
-import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
+import { CaretSortIcon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -23,6 +25,7 @@ const SearchForm: React.FC<SearchButtonFormProps> = ({ q, className, ...props })
 
   const formSchema = z.object({
     [Q_PARAM]: z.string({ required_error: '검색 문자열을 입력하세요.' }), //.min(3, '3글자 이상 입력해주세요.'),
+    [RAID_PARAM]: z.string(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -38,7 +41,7 @@ const SearchForm: React.FC<SearchButtonFormProps> = ({ q, className, ...props })
     if (isSearching) return;
 
     setIsSearching(true);
-    router.push(buildSearchURL(searchParams, { q: values.q }));
+    router.push(buildSearchURL(searchParams, { ...values }));
     setIsSearching(false);
   };
 
@@ -75,7 +78,66 @@ const SearchForm: React.FC<SearchButtonFormProps> = ({ q, className, ...props })
           <CollapsibleTrigger className="flex gap-x-1 items-center mt-2 ml-2">
             <Icons.filter /> Advanced filter
           </CollapsibleTrigger>
-          <CollapsibleContent className="mt-4">새</CollapsibleContent>
+          <CollapsibleContent className="mt-4">
+            <FormField
+              control={form.control}
+              name={RAID_PARAM}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="inline-block">레이드</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className={cn(
+                            'w-full inline-grid text-left justify-between',
+                            !field.value && 'text-muted-foreground',
+                          )}
+                          style={{ gridTemplateColumns: '1fr 1rem' }}
+                        >
+                          <div className="overflow-hidden">
+                            {/* {field.value
+                              ? raidsData.find((raid) => raid.id === field.value)?.name
+                              : '레이드를 선택하세요'} */}
+                          </div>
+                          <CaretSortIcon className="ml-1 h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      align="start"
+                      className="p-0"
+                      style={{ width: 'var(--radix-popover-trigger-width)' }}
+                    >
+                      <Command>
+                        <CommandInput placeholder="레이드 검색..." className="h-9" />
+                        <CommandEmpty>레이드가 없습니다.</CommandEmpty>
+                        <CommandGroup>
+                          {/* {raidsData.map((raid) => (
+                            <CommandItem
+                              value={raid.name}
+                              key={raid.id}
+                              onSelect={() => {
+                                form.setValue('raid', raid.id);
+                              }}
+                            >
+                              {raid.name}
+                              <CheckIcon
+                                className={cn('ml-auto h-4 w-4', raid.id === field.value ? 'opacity-100' : 'opacity-0')}
+                              />
+                            </CommandItem>
+                          ))} */}
+                        </CommandGroup>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CollapsibleContent>
         </Collapsible>
       </form>
     </Form>

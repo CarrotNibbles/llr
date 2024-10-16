@@ -2,8 +2,7 @@
 
 import { type ButtonProps, buttonVariants } from '@/components/ui/button';
 import { Pagination, PaginationContent, PaginationItem } from '@/components/ui/pagination';
-import { buildStrategyCountQuery } from '@/lib/queries/server';
-import { createClient } from '@/lib/supabase/server';
+import type { buildMaxPageQuery } from '@/lib/queries/server';
 import { PAGINATION_OFFSET, PAGINATION_TOTAL_PAGE, cn, rangeInclusive } from '@/lib/utils';
 import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 import type Link from 'next/link';
@@ -11,48 +10,17 @@ import type React from 'react';
 import { Suspense } from 'react';
 import { ViewLink } from './ViewLink';
 
-type ViewPaginationData = Readonly<{
-  startPage: number;
-  endPage: number;
-  maxPage: number;
-}>;
+type ViewPaginationData = Awaited<ReturnType<typeof buildMaxPageQuery>>;
 type ViewPaginationProps = Readonly<
   React.HTMLAttributes<HTMLDivElement> & {
     currentPage: number;
-    limit: number;
     dataPromise: Promise<ViewPaginationData>;
   }
 >;
 
-export const ViewPagination: React.FC<ViewPaginationProps> = ({
-  dataPromise,
-  currentPage,
-  limit,
-  className,
-  ...props
-}) => {
-  const fetchDefaultData = async () => {
-    const startPage = Math.max(currentPage - PAGINATION_OFFSET, 1);
-    const endPage = currentPage - PAGINATION_OFFSET >= 1 ? currentPage + PAGINATION_OFFSET : PAGINATION_TOTAL_PAGE;
-
-    return {
-      startPage,
-      endPage,
-      maxPage: 1,
-    };
-  };
-
+export const ViewPagination: React.FC<ViewPaginationProps> = ({ dataPromise, currentPage, className, ...props }) => {
   return (
-    <Suspense
-      fallback={
-        <ViewPaginationContent
-          dataPromise={fetchDefaultData()}
-          currentPage={currentPage}
-          className={className}
-          {...props}
-        />
-      }
-    >
+    <Suspense fallback={<ViewPaginationContent currentPage={currentPage} className={className} {...props} />}>
       <ViewPaginationContent dataPromise={dataPromise} currentPage={currentPage} className={className} {...props} />
     </Suspense>
   );
@@ -66,9 +34,8 @@ type ViewPaginationContentProps = Readonly<
 >;
 
 const VIEW_PAGINATION_CONTENT_DEFAULT_DATA: ViewPaginationData = {
-  startPage: 1,
-  endPage: PAGINATION_TOTAL_PAGE,
-  maxPage: Number.MAX_SAFE_INTEGER,
+  data: 1,
+  error: null,
 };
 const ViewPaginationContent: React.FC<ViewPaginationContentProps> = async ({
   currentPage,
@@ -76,7 +43,18 @@ const ViewPaginationContent: React.FC<ViewPaginationContentProps> = async ({
   className,
   ...props
 }) => {
-  const { startPage, endPage, maxPage } = (await dataPromise) ?? VIEW_PAGINATION_CONTENT_DEFAULT_DATA;
+  const { data: maxPage, error } = (await dataPromise) ?? VIEW_PAGINATION_CONTENT_DEFAULT_DATA;
+
+  if (maxPage === null || error) throw error;
+
+  const startPage = Math.max(
+    currentPage + PAGINATION_OFFSET <= maxPage ? currentPage - PAGINATION_OFFSET : maxPage - PAGINATION_TOTAL_PAGE + 1,
+    1,
+  );
+  const endPage = Math.min(
+    currentPage - PAGINATION_OFFSET >= 1 ? currentPage + PAGINATION_OFFSET : PAGINATION_TOTAL_PAGE,
+    maxPage,
+  );
 
   return (
     <Pagination className={className} {...props}>

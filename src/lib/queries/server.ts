@@ -29,6 +29,18 @@ export const buildStrategyCountQuery = async (
   return res;
 };
 
+export const buildMaxPageQuery = async (
+  supabase: ReturnType<typeof createClient>,
+  limit: number,
+  params: { q?: string; raid?: string; version?: Version },
+) => {
+  const { count, error } = await buildStrategyCountQuery(supabase, params);
+  if (error) return { data: null, error };
+
+  const maxPage = Math.floor((count ?? 1 - 1) / limit) + 1;
+  return { data: maxPage, error: null };
+};
+
 export const buildStrategiesDataQuery = async (
   supabase: ReturnType<typeof createClient>,
   params: {
@@ -50,7 +62,7 @@ export const buildStrategiesDataQuery = async (
       strategy_players!inner(id, job, order)`,
     )
     .eq('is_public', true);
-  
+
   if (raid !== undefined) query = query.eq('raids.semantic_key', raid);
   if (version !== undefined) query = query.eq('version', version.version).eq('subversion', version.subversion);
   if (q !== undefined) query = query.ilike('name', `%${q}%`);

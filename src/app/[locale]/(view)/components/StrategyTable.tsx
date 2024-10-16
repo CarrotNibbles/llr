@@ -2,17 +2,17 @@
 
 import { JobIcon } from '@/components/JobIcon';
 import { TextSkeleton } from '@/components/TextSkeleton';
+import { Alert } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import type { BoardStrategiesDataType } from '@/lib/queries/server';
-import { cn, DEFAULT_LIMIT, getOrderedRole, rangeInclusive } from '@/lib/utils';
+import type { buildStrategiesDataQuery } from '@/lib/queries/server';
+import { DEFAULT_LIMIT, cn, getOrderedRole, rangeInclusive } from '@/lib/utils';
 import Link from 'next/link';
 import type React from 'react';
 import { Suspense } from 'react';
 import { ModifiedTime } from './ModifiedTime';
-import { Alert } from '@/components/ui/alert';
 
-type StrategiesTableData = Readonly<{ strategiesData: BoardStrategiesDataType }>;
+type StrategiesTableData = Awaited<ReturnType<typeof buildStrategiesDataQuery>>;
 type StrategyTableProps = Readonly<
   React.HTMLAttributes<HTMLTableElement> & {
     dataPromise: Promise<StrategiesTableData>;
@@ -50,15 +50,20 @@ type StrategyTableBodyProps = Readonly<
   }
 >;
 
-const STRATEGY_TABLE_DEFAULT_DATA: StrategiesTableData = { strategiesData: [] };
+const STRATEGY_TABLE_DEFAULT_DATA = {
+  data: [],
+  error: null,
+};
 const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise, className, ...props }) => {
-  const { strategiesData } = (await dataPromise) ?? STRATEGY_TABLE_DEFAULT_DATA;
+  const { data: strategiesData, error } = (await dataPromise) ?? STRATEGY_TABLE_DEFAULT_DATA;
+  if (strategiesData === null || error) throw error;
+
   return (
     <TableBody className={className} {...props}>
       {strategiesData.length === 0 ? (
         <TableRow>
           <TableCell colSpan={5}>
-            <Alert className='text-base py-8'>No Strategy Found</Alert>
+            <Alert className="text-base py-8">No Strategy Found</Alert>
           </TableCell>
         </TableRow>
       ) : (
