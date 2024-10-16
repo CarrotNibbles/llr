@@ -40,7 +40,7 @@ import { z } from 'zod';
 type SearchButtonProps = Readonly<ButtonProps & {}>;
 
 const SearchButton = forwardRef<HTMLButtonElement, SearchButtonProps>(({ className, ...props }, ref) => {
-  const isDesktop = useMediaQuery('(min-width: 768px)');
+  const isDesktop = useMediaQuery('(min-width: 640px)');
   const [isOpen, setIsOpen] = useState(false);
 
   return isDesktop ? (

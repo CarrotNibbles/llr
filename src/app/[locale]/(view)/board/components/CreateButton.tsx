@@ -242,7 +242,7 @@ type CreateButtonProps = Readonly<
 
 const CreateButton = React.forwardRef<HTMLButtonElement, CreateButtonProps>(
   ({ raidsData, className, ...props }, ref) => {
-    const isDesktop = useMediaQuery('(min-width: 768px)');
+    const isDesktop = useMediaQuery('(min-width: 640px)');
 
     return isDesktop ? (
       <Dialog>
