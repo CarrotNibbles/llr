@@ -12,6 +12,7 @@ import { animate, AnimatePresence, motion, useMotionValue } from 'framer-motion'
 import { useTranslations } from 'next-intl';
 import { type MouseEventHandler, useEffect, useState } from 'react';
 import { columnWidth, columnWidthLarge, timeStep } from './coreAreaConstants';
+import Image from 'next/legacy/image';
 
 const contextMenuWidth = 16;
 const contextMenuWidthLarge = 32;
@@ -64,12 +65,14 @@ function buildHelperFunctions(raidDuration: number, cooldown: number) {
 }
 
 const DraggableBox = ({
+  action,
   entry,
   otherUseAts,
   raidDuration,
   durations,
   cooldown,
 }: {
+  action: ArrayElement<ActionDataType>;
   entry: ArrayElement<ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries']>;
   otherUseAts: number[];
   raidDuration: number;
@@ -85,6 +88,8 @@ const DraggableBox = ({
   const yMotionValue = useMotionValue(useAt * pixelPerFrame);
   const { snapAndRemoveOverlap } = buildHelperFunctions(raidDuration, cooldown);
   const [primaryDuration, ...otherDurations] = [...new Set(durations)].toSorted((a, b) => a - b);
+
+  const src = `/icons/action/${action.job}/${action.semantic_key}.png`;
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -130,23 +135,40 @@ const DraggableBox = ({
           style={{ y: yMotionValue, cursor: isLocked || !elevated ? 'not-allowed' : 'grab' }}
         >
           <div
-            className={`relative ${columnWidth} ${columnWidthLarge} rounded-sm overflow-hidden bg-zinc-200 dark:bg-zinc-700 shadow-inner`}
+            className={`relative ${columnWidth} ${columnWidthLarge} overflow-hidden border-zinc-300 dark:border-zinc-700 border-b-[2px]`}
             style={{
               height: `${cooldown * pixelPerFrame}px`,
               borderWidth: isLocked ? '2px' : undefined,
               borderColor: isLocked ? 'gray' : undefined,
             }}
           >
+            <div
+              className={`absolute top-0 mx-auto ${columnWidth} ${columnWidthLarge} ml-[calc(50%-1.5px)] border-zinc-300 dark:border-zinc-700 border-l-[3px] border-dotted`}
+              style={{ height: `${cooldown * pixelPerFrame}px` }}
+            />
             {otherDurations.length > 0 && (
-              <div
-                className={`absolute top-0 ${columnWidth} ${columnWidthLarge} rounded-sm bg-zinc-300 dark:bg-zinc-600 shadow-inner`}
-                style={{ height: `${otherDurations[0] * pixelPerFrame}px` }}
-              />
+              <>
+                <div
+                  className={`absolute top-0 ${columnWidth} ${columnWidthLarge} ml-[calc(50%-1.5px)] border-zinc-400 dark:border-zinc-600 border-l-[3px] border-solid`}
+                  style={{ height: `${otherDurations[0] * pixelPerFrame}px` }}
+                />
+                <div
+                  className={`absolute top-0 ${columnWidth} ${columnWidthLarge} border-zinc-400 dark:border-zinc-600 border-b-[2px] border-solid`}
+                  style={{ height: `${otherDurations[0] * pixelPerFrame}px` }}
+                />
+              </>
             )}
             <div
-              className={`absolute top-0 ${columnWidth} ${columnWidthLarge} rounded-sm bg-zinc-400 dark:bg-zinc-500 shadow-inner`}
+              className={`absolute top-0 ${columnWidth} ${columnWidthLarge} ml-[calc(50%-1.5px)] border-zinc-500 dark:border-zinc-500 border-l-[3px] border-solid`}
               style={{ height: `${primaryDuration * pixelPerFrame}px` }}
             />
+            <div
+              className={`absolute top-0 ${columnWidth} ${columnWidthLarge} border-zinc-500 dark:border-zinc-500 border-b-[2px] border-solid`}
+              style={{ height: `${primaryDuration * pixelPerFrame}px` }}
+            />
+            <div className="aspect-square relative w-full pointer-events-none">
+              <Image src={src} alt={action.name} layout="fill" objectFit="contain" />
+            </div>
           </div>
         </motion.div>
       </ContextMenuTrigger>
@@ -226,6 +248,7 @@ const EditSubColumn = ({
         {...boxValues.map((boxValue, index) => (
           <DraggableBox
             key={boxValue.id}
+            action={action}
             entry={entries[index]}
             raidDuration={raidDuration}
             durations={action.mitigations.map(({ duration }) => duration)}
