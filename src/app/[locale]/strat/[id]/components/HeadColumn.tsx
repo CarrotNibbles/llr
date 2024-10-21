@@ -95,7 +95,7 @@ export const HeadColumn = ({
 
   const [popoverOpen, setPopoverOpen] = useState(false);
   const t = useTranslations('StratPage.HeadColumn');
-  const tActions = useTranslations('StratPage.Actions');
+  const tActions = useTranslations('Common.Actions');
 
   const JOB_LAYOUT = [
     ['PLD', 'WAR', 'DRK', 'GNB'],

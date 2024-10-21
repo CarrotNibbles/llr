@@ -23,12 +23,12 @@ export default async function StratPage({
     supabase.auth.getUser(),
   ]);
 
-  if (strategyDataQueryError || actionDataQueryError || actionData === null) {
-    throw new Error('Failed to fetch data');
-  }
-
   if (strategyData === null || strategyData.strategy_players.length === 0) {
     notFound();
+  }
+
+  if (strategyDataQueryError || actionDataQueryError || actionData === null) {
+    throw new Error('Failed to fetch data');
   }
 
   return (

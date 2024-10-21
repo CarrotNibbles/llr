@@ -36,7 +36,7 @@ export const GimmickSubLine = ({
   translationKey: translation_key,
   lineType,
 }: GimmickSubLineProps) => {
-  const tGimmicks = useTranslations('StratPage.Gimmicks');
+  const tGimmicks = useTranslations('Common.Gimmicks');
 
   return (
     time &&
@@ -70,7 +70,7 @@ type GimmicksNamesProps = React.ComponentPropsWithRef<'div'> & {
 
 const GimmicksNames = React.forwardRef<HTMLDivElement, GimmicksNamesProps>(({ className, mergedGimmicks }, ref) => {
   const t = useTranslations('StratPage.GimmickLine');
-  const tGimmicks = useTranslations('StratPage.Gimmicks');
+  const tGimmicks = useTranslations('Common.Gimmicks');
 
   const superMergeGimmicks = (mergedGimmicks: MergedGimmick[]) => {
     const superMergedGimmicks: SuperMergedGimmick[] = [];
@@ -119,7 +119,7 @@ const GimmickLine = React.forwardRef<
     className?: string;
   } & React.ComponentPropsWithoutRef<'div'>
 >(({ className, ...props }, ref) => {
-  const tGimmicks = useTranslations('StratPage.Gimmicks');
+  const tGimmicks = useTranslations('Common.Gimmicks');
   const {
     semantic_key: translationKey,
     type: gimmickType,

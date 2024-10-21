@@ -197,8 +197,8 @@ const StratInfo = () => {
   const { name, raids, version, subversion, strategy_players } = useStratSyncStore((state) => state.strategyData);
   const estimations = useEstimations();
   const t = useTranslations('StratPage.StratHeader.StratInfo');
-  const tRaids = useTranslations('StratPage.Raids');
-  const tPatches = useTranslations('StratPage.FFXIVPatches');
+  const tRaids = useTranslations('Common.Raids');
+  const tPatches = useTranslations('Common.FFXIVPatches');
 
   const playerCount = strategy_players.filter((player) => player.job != null && player.job !== 'LB').length;
 
@@ -289,7 +289,7 @@ const StratSettings = () => {
   const { clearOtherSessions } = useStratSyncStore((state) => state);
   const { toast } = useToast();
   const t = useTranslations('StratPage.StratHeader.StratSettings');
-  const tPatches = useTranslations('StratPage.FFXIVPatches');
+  const tPatches = useTranslations('Common.FFXIVPatches');
   const [open, setOpen] = useState(false);
 
   const formSchema = z.object({
@@ -650,7 +650,7 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
       strategyData: { raids },
     } = useStratSyncStore((state) => state);
     const t = useTranslations('StratPage.StratHeader');
-    const tRaids = useTranslations('StratPage.Raids');
+    const tRaids = useTranslations('Common.Raids');
 
     return (
       <div

@@ -1,74 +1,50 @@
 {
-  "StratPage": {
-    "CoreArea": {},
-    "DamageText": {
-      "DamageOption": {
-        "Share": "頭割り",
-        "RaidWide": "全体",
-        "Unknown": "???"
-      }
+  "FFXIVPatches": {
+    "2": {
+      "0": "新生エオルゼア",
+      "1": "覚醒せし者たち",
+      "2": "混沌の渦動",
+      "3": "エオルゼアの守護者",
+      "4": "氷結の幻想",
+      "5": "希望の灯火"
     },
-    "EditColumn": {
-      "Lock": "ロック",
-      "Delete": "削除"
+    "3": {
+      "0": "蒼天のイシュガルド",
+      "1": "光と闇の境界",
+      "2": "運命の歯車",
+      "3": "最後の咆哮",
+      "4": "魂を継ぐ者",
+      "5": "宿命の果て"
     },
-    "HeadColumn": {
-      "JobChange": {
-        "JobChange": "ジョブチェンジ",
-        "ConfirmTitle": "ジョブチェンジの確認",
-        "Confirm": "ジョブチェンジ",
-        "Cancel": "キャンセル",
-        "Warning": "選択したジョブを変更すると、以前のジョブの戦略は永久に失われます。以前のジョブに戻しても、戦略は復元されません。それでも続けますか？",
-        "Complete": "ジョブチェンジが完了しました"
-      }
+    "4": {
+      "0": "紅蓮の解放者",
+      "1": "英雄の帰還",
+      "2": "暁光の刻",
+      "3": "月下の華",
+      "4": "狂乱の前奏曲",
+      "5": "英雄への鎮魂歌"
     },
-    "StratHeader": {
-      "StratInfo": {
-        "DialogTitle": "情報",
-        "StrategyTitle": "戦略タイトル",
-        "Duty": "任務名",
-        "FFXIVPatch": "FFXIVパッチ",
-        "LevelSync": "レベル同期",
-        "ItemLevelSync": "アイテムレベル同期",
-        "PlayerCount": "プレイヤー数",
-        "PartyBonus": "パーティボーナス",
-        "HPTank": "HP*（タンク）",
-        "HPHealer": "HP*（ヒーラー）",
-        "HealingTank": "400p回復量*（タンク）",
-        "HealingHealer": "400p回復量*（ヒーラー）",
-        "Disclaimer": "* HPおよび単位回復力あたりの回復量はおおよその推定値です。"
-      },
-      "GimmickType": {
-        "AutoAttack": "AA",
-        "Raidwide": "全体攻撃",
-        "Tankbuster": "タンクバスター",
-        "Hybrid": "そのた",
-        "Avoidable": "AoE",
-        "Enrage": "時間切れ"
-      },
-      "EditPermission": {
-        "Description": "この戦略を編集するには、パスワードを入力してください。",
-        "Acquire": "編集権限取得",
-        "Submit": "提出",
-        "Success": "編集権限が取得されました。",
-        "Failure": "パスワードを確認してください。",
-        "Complete": "編集権限が取得されました。",
-        "Password": "パスワード"
-      },
-      "Share": {
-        "Success": "リンクがクリップボードにコピーされました！",
-        "FailureTitle": "エラーが発生しました",
-        "FailureDescription": "リンクをクリップボードにコピー中にエラーが発生しました。"
-      }
+    "5": {
+      "0": "漆黒の反逆者",
+      "1": "白き誓約、黒き密約",
+      "2": "追憶の凶星",
+      "3": "クリスタルの残光",
+      "4": "もうひとつの未来",
+      "5": "黎明の死闘"
     },
-    "GimmickLine": {
-      "Etc": "外{count}"
+    "6": {
+      "0": "暁月の終焉",
+      "1": "新たなる冒険",
+      "2": "禁断の記憶",
+      "3": "天の祝祭、地の鳴動",
+      "4": "玉座の咎人",
+      "5": "光明の起点"
     },
-    "StratSyncProvider": {
-      "ErrorTitle": "接続切断",
-      "ErrorDescription": "サーバーへの接続が失われました。ページを再読み込みして、もう一度お試しください。",
-      "Refresh": "再読み込み"
-    },
+    "7": {
+      "0": "黄金の遺産"
+    }
+  },
+  "Common": {
     "Actions": {
       "macrocosmos": "マクロコスモス",
       "neutral_sect": "ニュートラルセクト",
@@ -155,51 +131,6 @@
       "P10S": "万魔殿パンデモニウム：天獄編２(解説)",
       "P11S": "万魔殿パンデモニウム：天獄編３(解説)"
     },
-    "FFXIVPatches": {
-      "2": {
-        "0": "新生エオルゼア",
-        "1": "覚醒せし者たち",
-        "2": "混沌の渦動",
-        "3": "エオルゼアの守護者",
-        "4": "氷結の幻想",
-        "5": "希望の灯火"
-      },
-      "3": {
-        "0": "蒼天のイシュガルド",
-        "1": "光と闇の境界",
-        "2": "運命の歯車",
-        "3": "最後の咆哮",
-        "4": "魂を継ぐ者",
-        "5": "宿命の果て"
-      },
-      "4": {
-        "0": "紅蓮の解放者",
-        "1": "英雄の帰還",
-        "2": "暁光の刻",
-        "3": "月下の華",
-        "4": "狂乱の前奏曲",
-        "5": "英雄への鎮魂歌"
-      },
-      "5": {
-        "0": "漆黒の反逆者",
-        "1": "白き誓約、黒き密約",
-        "2": "追憶の凶星",
-        "3": "クリスタルの残光",
-        "4": "もうひとつの未来",
-        "5": "黎明の死闘"
-      },
-      "6": {
-        "0": "暁月の終焉",
-        "1": "新たなる冒険",
-        "2": "禁断の記憶",
-        "3": "天の祝祭、地の鳴動",
-        "4": "玉座の咎人",
-        "5": "光明の起点"
-      },
-      "7": {
-        "0": "黄金の遺産"
-      }
-    },
     "Gimmicks": {
       "auto_attack": "攻击",
       "ultima": "알테마",
@@ -228,6 +159,105 @@
       "temp_jade": "제이드 통로",
       "temp_landing": "착지",
       "temp_judgement": "천벌 선포"
+    }
+  },
+  "StratPage": {
+    "CoreArea": {},
+    "DamageText": {
+      "DamageOption": {
+        "Share": "頭割り",
+        "RaidWide": "全体",
+        "Unknown": "???"
+      }
+    },
+    "EditColumn": {
+      "Lock": "ロック",
+      "Delete": "削除"
+    },
+    "HeadColumn": {
+      "JobChange": {
+        "JobChange": "ジョブチェンジ",
+        "ConfirmTitle": "ジョブチェンジの確認",
+        "Confirm": "ジョブチェンジ",
+        "Cancel": "キャンセル",
+        "Warning": "選択したジョブを変更すると、以前のジョブの戦略は永久に失われます。以前のジョブに戻しても、戦略は復元されません。それでも続けますか？",
+        "Complete": "ジョブチェンジが完了しました"
+      }
+    },
+    "StratHeader": {
+      "StratInfo": {
+        "DialogTitle": "情報",
+        "StrategyTitle": "戦略タイトル",
+        "Duty": "任務名",
+        "FFXIVPatch": "FFXIVパッチ",
+        "LevelSync": "レベル同期",
+        "ItemLevelSync": "アイテムレベル同期",
+        "PlayerCount": "プレイヤー数",
+        "PartyBonus": "パーティボーナス",
+        "HPTank": "HP*（タンク）",
+        "HPHealer": "HP*（ヒーラー）",
+        "HealingTank": "400p回復量*（タンク）",
+        "HealingHealer": "400p回復量*（ヒーラー）",
+        "Disclaimer": "* HPおよび単位回復力あたりの回復量はおおよその推定値です。"
+      },
+      "GimmickType": {
+        "AutoAttack": "AA",
+        "Raidwide": "全体攻撃",
+        "Tankbuster": "タンクバスター",
+        "Hybrid": "そのた",
+        "Avoidable": "AoE",
+        "Enrage": "時間切れ"
+      },
+      "EditPermission": {
+        "Description": "この戦略を編集するには、パスワードを入力してください。",
+        "Acquire": "編集権限取得",
+        "Submit": "提出",
+        "Success": "編集権限が取得されました。",
+        "Failure": "パスワードを確認してください。",
+        "Complete": "編集権限が取得されました。",
+        "Password": "パスワード"
+      },
+      "Share": {
+        "Success": "リンクがクリップボードにコピーされました！",
+        "FailureTitle": "エラーが発生しました",
+        "FailureDescription": "リンクをクリップボードにコピー中にエラーが発生しました。"
+      },
+      "StratSettings": {
+        "Title": "設定",
+        "Name": "戦略名",
+        "isPublic": "戦略公開",
+        "isPublicDescription": "戦略を公開すると、他のユーザーが検索して閲覧できます。",
+        "isEditable": "編集可能",
+        "isEditableDescription": "パスワードで戦略を編集できるように設定します。",
+        "Patch": "基準パッチバージョン",
+        "PatchPlaceholder": "パッチバージョンを選択してください。",
+        "PatchDescription": "基準となるパッチバージョンを選択します。",
+        "Password": "編集用パスワード",
+        "DeleteStrategy": "戦略を削除する",
+        "AlertTitle": "注意",
+        "AlertDescription": "以下の設定をより制限された設定に変更すると、他のセッションの接続が切断されます。",
+        "Save": "保存",
+        "Saved": "保存されました。",
+        "Error": "保存中にエラーが発生しました。"
+      },
+      "LikeButton": {
+        "Liked": "いいねが追加されました。",
+        "Unliked": "いいねがキャンセルされました。",
+        "CaptchaFailed": "CAPTCHAの確認に失敗しました。",
+        "StrategyNotFound": "戦略が見つかりません。",
+        "AlreadyLiked": "すでに同じIPから24時間以内にいいねを追加しています。",
+        "Error": "いいねを追加中にエラーが発生しました。",
+        "CaptchaHeading": "CAPTCHA確認",
+        "CaptchaLoading": "CAPTCHAをロード中です..."
+      }
+    },
+    "GimmickLine": {
+      "Etc": "外{count}"
+    },
+    "StratSyncProvider": {
+      "ErrorTitle": "接続切断",
+      "ErrorDescription": "サーバーへの接続が失われました。ページを再読み込みして、もう一度お試しください。",
+      "Refresh": "再読み込み"
     }
   }
 }
