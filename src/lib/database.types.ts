@@ -169,16 +169,19 @@ export type Database = {
         Row: {
           anon_likes: number
           strategy: string
+          total_likes: number
           user_likes: number
         }
         Insert: {
           anon_likes?: number
           strategy?: string
+          total_likes?: number
           user_likes?: number
         }
         Update: {
           anon_likes?: number
           strategy?: string
+          total_likes?: number
           user_likes?: number
         }
         Relationships: [

@@ -497,7 +497,7 @@ const AuthenticatedLikeButton = () => {
 
   const t = useTranslations('StratPage.StratHeader.LikeButton');
 
-  const likes = (like_counts?.anon_likes ?? 0) + (like_counts?.user_likes ?? 0);
+  const likes = like_counts?.total_likes ?? 0;
   const Icon = (user_likes?.length ?? 0) > 0 ? HeartFilledIcon : HeartIcon;
 
   const handleLikeButtonClick = async () => {
@@ -554,7 +554,7 @@ const AnonymousLikeButton = () => {
 
   const t = useTranslations('StratPage.StratHeader.LikeButton');
 
-  const likes = (like_counts?.anon_likes ?? 0) + (like_counts?.user_likes ?? 0);
+  const likes = like_counts?.total_likes ?? 0;;
 
   useEffect(() => {
     if (likeRequested && turnstileStatus === 'success' && token) {
@@ -642,7 +642,6 @@ const AnonymousLikeButton = () => {
 const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & React.ComponentPropsWithoutRef<'div'>>(
   ({ className, ...props }, ref) => {
     const { toast } = useToast();
-    // const [lastTitle, setLastTitle] = useState(name);
 
     const {
       userId,
@@ -686,9 +685,6 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
             <span className="sr-only">Share this strategy</span>
             <Share1Icon />
           </Button>
-          {/* <Button variant="ghost" size="icon">
-            <CopyIcon />
-          </Button> */}
           <FilterMenu />
           <ModeToggle />
         </div>
