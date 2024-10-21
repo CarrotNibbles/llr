@@ -554,7 +554,7 @@ const AnonymousLikeButton = () => {
 
   const t = useTranslations('StratPage.StratHeader.LikeButton');
 
-  const likes = like_counts?.total_likes ?? 0;;
+  const likes = like_counts?.total_likes ?? 0;
 
   useEffect(() => {
     if (likeRequested && turnstileStatus === 'success' && token) {

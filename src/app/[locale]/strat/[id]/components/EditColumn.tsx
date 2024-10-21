@@ -8,11 +8,11 @@ import {
 } from '@/components/ui/context-menu';
 import type { ActionDataType, StrategyDataType } from '@/lib/queries/server';
 import { type ArrayElement, clamp, usePixelPerFrame } from '@/lib/utils';
-import { animate, AnimatePresence, motion, useMotionValue } from 'framer-motion';
+import { AnimatePresence, animate, motion, useMotionValue } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import Image from 'next/legacy/image';
 import { type MouseEventHandler, useEffect, useState } from 'react';
 import { columnWidth, columnWidthLarge, timeStep } from './coreAreaConstants';
-import Image from 'next/legacy/image';
 
 const contextMenuWidth = 16;
 const contextMenuWidthLarge = 32;
