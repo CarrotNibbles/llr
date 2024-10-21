@@ -14,7 +14,7 @@ import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
 import { type MouseEventHandler, useContext, useEffect, useState } from 'react';
 import { EntrySelectionContext } from './EntrySelectionContext';
-import { columnWidth, columnWidthLarge, timeStep } from './coreAreaConstants';
+import { columnWidth, timeStep } from './coreAreaConstants';
 
 const contextMenuWidth = 16;
 const contextMenuWidthLarge = 32;
@@ -172,6 +172,9 @@ const DraggableBox = ({ action, entry, otherUseAts, raidDuration, durations, coo
                 }
                 activeEntries.set(entryId, dragControls);
                 setActiveEntries(new Map(activeEntries));
+              } else if (holdingShift) {
+                activeEntries.delete(entryId);
+                setActiveEntries(new Map(activeEntries));
               }
 
               for (const dc of activeEntries.values()) {
@@ -179,48 +182,59 @@ const DraggableBox = ({ action, entry, otherUseAts, raidDuration, durations, coo
               }
             }
           }}
+          onPointerUp={() => {
+            if (activeEntries.get(entryId)) {
+              if (activeEntries.size === 1 && !holdingShift) {
+                activeEntries.clear();
+                setActiveEntries(new Map());
+              }
+            }
+          }}
           onDragEnd={onDragEnd}
-          className={`${columnWidth} ${columnWidthLarge} h-0 absolute z-[5] shadow-xl filter ${activeEntries.get(entryId) ? 'drop-shadow-selection' : ''}`}
+          className={`${columnWidth} h-0 absolute z-[5] shadow-xl filter ${activeEntries.get(entryId) ? 'drop-shadow-selection' : ''}`}
           style={{
             y: yMotionValue,
             cursor: draggable ? 'grab' : 'not-allowed',
             transitionProperty: 'filter',
-            transitionDuration: '0.2s',
+            transitionDuration: '0.3s',
             transitionTimingFunction: 'ease-in-out',
           }}
         >
           <div
-            className={`relative ${columnWidth} ${columnWidthLarge} overflow-hidden border-zinc-300 dark:border-zinc-700 border-b-[2px]`}
+            className={`relative ${columnWidth} overflow-hidden border-zinc-300 dark:border-zinc-700 border-b-[2px]`}
             style={{ height: `${cooldown * pixelPerFrame}px` }}
           >
             <div
-              className={`absolute top-0 mx-auto ${columnWidth} ${columnWidthLarge} ml-[calc(50%-1.5px)] border-zinc-300 dark:border-zinc-700 border-l-[3px] border-dotted`}
+              className={`absolute top-0 mx-auto ${columnWidth} ml-[calc(50%-1.5px)] border-zinc-300 dark:border-zinc-700 border-l-[3px] border-dotted`}
               style={{ height: `${cooldown * pixelPerFrame}px` }}
             />
             {otherDurations.length > 0 && (
               <>
                 <div
-                  className={`absolute top-0 ${columnWidth} ${columnWidthLarge} ml-[calc(50%-1.5px)] border-zinc-400 dark:border-zinc-600 border-l-[3px] border-solid`}
+                  className={`absolute top-0 ${columnWidth} ml-[calc(50%-1.5px)] border-zinc-400 dark:border-zinc-600 border-l-[3px] border-solid`}
                   style={{ height: `${otherDurations[0] * pixelPerFrame}px` }}
                 />
                 <div
-                  className={`absolute top-0 ${columnWidth} ${columnWidthLarge} border-zinc-400 dark:border-zinc-600 border-b-[2px] border-solid`}
+                  className={`absolute top-0 ${columnWidth} border-zinc-400 dark:border-zinc-600 border-b-[2px] border-solid`}
                   style={{ height: `${otherDurations[0] * pixelPerFrame}px` }}
                 />
               </>
             )}
             <div
-              className={`absolute top-0 ${columnWidth} ${columnWidthLarge} ml-[calc(50%-1.5px)] border-zinc-500 dark:border-zinc-500 border-l-[3px] border-solid`}
+              className={`absolute top-0 ${columnWidth} ml-[calc(50%-1.5px)] border-zinc-500 dark:border-zinc-500 border-l-[3px] border-solid`}
               style={{ height: `${primaryDuration * pixelPerFrame}px` }}
             />
             <div
-              className={`absolute top-0 ${columnWidth} ${columnWidthLarge} border-zinc-500 dark:border-zinc-500 border-b-[2px] border-solid`}
+              className={`absolute top-0 ${columnWidth} border-zinc-500 dark:border-zinc-500 border-b-[2px] border-solid`}
               style={{ height: `${primaryDuration * pixelPerFrame}px` }}
             />
             <div className="aspect-square relative w-full pointer-events-none">
               <Image
                 src={src}
                 alt={action.name}
+                onDragStart={() => {
+                  return false;
+                }}
                 layout="fill"
                 objectFit="contain"
                 className="pointer-events-none select-none"
@@ -280,9 +294,13 @@ const EditSubColumn = ({ raidDuration, action, entries, playerId }: EditSubColum
   const { snapAndRemoveOverlap } = buildHelperFunctions(raidDuration, action.cooldown);
   const { elevated } = useStratSyncStore((state) => state);
 
+  const { setActiveEntries } = useContext(EntrySelectionContext);
+
   const createBox: MouseEventHandler<HTMLDivElement> = async (evt) => {
     const cursorY = evt.clientY - evt.currentTarget.getBoundingClientRect().top;
     const cursorUseAt = cursorY / pixelPerFrame;
+
+    setActiveEntries(new Map());
 
     if (
       boxValues.some((boxValue) => cursorUseAt - boxValue.useAt >= 0 && cursorUseAt - boxValue.useAt <= action.cooldown)
@@ -321,7 +339,7 @@ const EditSubColumn = ({ raidDuration, action, entries, playerId }: EditSubColum
 
   return (
     <div
-      className={`flex flex-shrink-0 ${columnWidth} ${columnWidthLarge} overflow-hidden hover:bg-muted`}
+      className={`flex flex-shrink-0 ${columnWidth} overflow-hidden hover:bg-muted`}
       style={{ height: `${raidDuration * pixelPerFrame + 60}px` }}
     >
       <AnimatePresence>
@@ -369,9 +387,9 @@ export const EditColumn = ({ raidDuration, playerStrategy, actions }: EditColumn
       ))}
       {actions.length === 0 && (
         <>
-          <div className={`${columnWidth} ${columnWidthLarge}`} />
-          <div className={`${columnWidth} ${columnWidthLarge}`} />
-          <div className={`${columnWidth} ${columnWidthLarge}`} />
+          <div className={`${columnWidth}`} />
+          <div className={`${columnWidth}`} />
+          <div className={`${columnWidth}`} />
         </>
       )}
     </div>
