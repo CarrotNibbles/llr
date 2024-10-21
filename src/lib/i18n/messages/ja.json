@@ -161,6 +161,11 @@
       "temp_judgement": "천벌 선포"
     }
   },
+  "ErrorPage": {
+    "NotFound": "お探しのページが見つかりません。",
+    "Error": "予期しないエラーが発生しました。",
+    "GoHome": "ホームに戻る"
+  },
   "StratPage": {
     "CoreArea": {},
     "DamageText": {

@@ -161,6 +161,11 @@
       "temp_judgement": "Judgement?"
     }
   },
+  "ErrorPage": {
+    "NotFound": "The page you are looking for cannot be found.",
+    "Error": "An unexpected error has occurred.",
+    "GoHome": "Return to home"
+  },
   "StratPage": {
     "CoreArea": {},
     "DamageText": {
