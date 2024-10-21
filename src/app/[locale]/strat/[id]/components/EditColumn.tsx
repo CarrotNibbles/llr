@@ -6,12 +6,14 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
+import { useToast } from '@/components/ui/use-toast';
 import type { ActionDataType, StrategyDataType } from '@/lib/queries/server';
 import { type ArrayElement, clamp, usePixelPerFrame } from '@/lib/utils';
-import { AnimatePresence, animate, motion, useMotionValue } from 'framer-motion';
+import { AnimatePresence, animate, motion, useDragControls, useMotionValue } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
-import { type MouseEventHandler, useEffect, useState } from 'react';
+import { type MouseEventHandler, useContext, useEffect, useState } from 'react';
+import { EntrySelectionContext } from './EntrySelectionContext';
 import { columnWidth, columnWidthLarge, timeStep } from './coreAreaConstants';
 
 const contextMenuWidth = 16;
@@ -64,37 +66,60 @@ function buildHelperFunctions(raidDuration: number, cooldown: number) {
   return { removeOverlap, snapAndRemoveOverlap };
 }
 
-const DraggableBox = ({
-  action,
-  entry,
-  otherUseAts,
-  raidDuration,
-  durations,
-  cooldown,
-}: {
+type DraggableBoxProps = {
   action: ArrayElement<ActionDataType>;
   entry: ArrayElement<ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries']>;
   otherUseAts: number[];
   raidDuration: number;
   durations: number[];
   cooldown: number;
-}) => {
+};
+
+const DraggableBox = ({ action, entry, otherUseAts, raidDuration, durations, cooldown }: DraggableBoxProps) => {
   const { use_at: useAt, id: entryId, action: actionId, player: playerId } = entry;
+
+  const pixelPerFrame = usePixelPerFrame();
   const t = useTranslations('StratPage.EditColumn');
+  const src = `/icons/action/${action.job}/${action.semantic_key}.png`;
+  const { snapAndRemoveOverlap } = buildHelperFunctions(raidDuration, cooldown);
 
   const { upsertEntry, deleteEntry, elevated } = useStratSyncStore((state) => state);
-  const [isLocked, setIsLocked] = useState(false);
-  const pixelPerFrame = usePixelPerFrame();
-  const yMotionValue = useMotionValue(useAt * pixelPerFrame);
-  const { snapAndRemoveOverlap } = buildHelperFunctions(raidDuration, cooldown);
-  const [primaryDuration, ...otherDurations] = [...new Set(durations)].toSorted((a, b) => a - b);
 
-  const src = `/icons/action/${action.job}/${action.semantic_key}.png`;
+  const [holdingShift, setHoldingShift] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
+  const yMotionValue = useMotionValue(useAt * pixelPerFrame);
+
+  const { activeEntries, setActiveEntries } = useContext(EntrySelectionContext);
+  const draggable = elevated && !isLocked;
+
+  const dragControls = useDragControls();
+  const effectiveDragControls = draggable ? dragControls : undefined;
+
+  const [primaryDuration, ...otherDurations] = [...new Set(durations)].toSorted((a, b) => a - b);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     void animate(yMotionValue, useAt * pixelPerFrame);
   }, [pixelPerFrame, useAt]);
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Shift') setHoldingShift(true);
+  };
+
+  const handleKeyUp = (e: KeyboardEvent) => {
+    if (e.key === 'Shift') setHoldingShift(false);
+  };
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
 
   const onDragEnd = async () => {
     // AdjustPosition
@@ -109,6 +134,12 @@ const DraggableBox = ({
     void animate(yMotionValue, snappedUseAt * pixelPerFrame);
 
     if (newUseAtCalced === null) return;
+
+    setActiveEntries((prev) => {
+      const newActiveEntries = new Map(prev);
+      newActiveEntries.delete(entryId);
+      return newActiveEntries;
+    });
 
     upsertEntry(
       {
@@ -128,19 +159,39 @@ const DraggableBox = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          drag={isLocked || !elevated ? false : 'y'}
+          drag={draggable ? 'y' : false}
+          dragControls={effectiveDragControls}
+          dragListener={false}
           dragMomentum={false}
+          dragPropagation
+          onPointerDown={(e) => {
+            if (effectiveDragControls) {
+              if (!activeEntries.get(entryId)) {
+                if (!holdingShift) {
+                  activeEntries.clear();
+                }
+                activeEntries.set(entryId, dragControls);
+                setActiveEntries(new Map(activeEntries));
+              }
+
+              for (const dc of activeEntries.values()) {
+                dc.start(e);
+              }
+            }
+          }}
           onDragEnd={onDragEnd}
-          className={`${columnWidth} ${columnWidthLarge} h-0 absolute z-[5]`}
-          style={{ y: yMotionValue, cursor: isLocked || !elevated ? 'not-allowed' : 'grab' }}
+          className={`${columnWidth} ${columnWidthLarge} h-0 absolute z-[5] shadow-xl filter ${activeEntries.get(entryId) ? 'drop-shadow-selection' : ''}`}
+          style={{
+            y: yMotionValue,
+            cursor: draggable ? 'grab' : 'not-allowed',
+            transitionProperty: 'filter',
+            transitionDuration: '0.2s',
+            transitionTimingFunction: 'ease-in-out',
+          }}
         >
           <div
             className={`relative ${columnWidth} ${columnWidthLarge} overflow-hidden border-zinc-300 dark:border-zinc-700 border-b-[2px]`}
-            style={{
-              height: `${cooldown * pixelPerFrame}px`,
-              borderWidth: isLocked ? '2px' : undefined,
-              borderColor: isLocked ? 'gray' : undefined,
-            }}
+            style={{ height: `${cooldown * pixelPerFrame}px` }}
           >
             <div
               className={`absolute top-0 mx-auto ${columnWidth} ${columnWidthLarge} ml-[calc(50%-1.5px)] border-zinc-300 dark:border-zinc-700 border-l-[3px] border-dotted`}
@@ -167,7 +218,15 @@ const DraggableBox = ({
               style={{ height: `${primaryDuration * pixelPerFrame}px` }}
             />
             <div className="aspect-square relative w-full pointer-events-none">
-              <Image src={src} alt={action.name} layout="fill" objectFit="contain" />
+              <Image
+                src={src}
+                alt={action.name}
+                layout="fill"
+                objectFit="contain"
+                className="pointer-events-none select-none"
+                draggable={false}
+                unselectable="on"
+              />
             </div>
           </div>
         </motion.div>
@@ -177,6 +236,11 @@ const DraggableBox = ({
           checked={isLocked}
           onCheckedChange={(checked) => {
             setIsLocked(checked);
+            setActiveEntries((prev) => {
+              const newActiveEntries = new Map(prev);
+              newActiveEntries.delete(entryId);
+              return newActiveEntries;
+            });
           }}
         >
           {t('Lock')}
@@ -185,6 +249,11 @@ const DraggableBox = ({
           inset
           onClick={() => {
             deleteEntry(entryId, false);
+            setActiveEntries((prev) => {
+              const newActiveEntries = new Map(prev);
+              newActiveEntries.delete(entryId);
+              return newActiveEntries;
+            });
           }}
         >
           {t('Delete')}
@@ -194,17 +263,17 @@ const DraggableBox = ({
   );
 };
 
-const EditSubColumn = ({
-  raidDuration,
-  action,
-  entries,
-  playerId,
-}: {
+type EditSubColumnProps = {
   raidDuration: number;
   action: ArrayElement<ActionDataType>;
   entries: ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries'];
   playerId: string;
-}) => {
+};
+
+const EditSubColumn = ({ raidDuration, action, entries, playerId }: EditSubColumnProps) => {
+  const { toast } = useToast();
+  const t = useTranslations('StratPage.EditColumn');
+
   const { upsertEntry } = useStratSyncStore((state) => state);
   const boxValues = entries.map((entry) => ({ useAt: entry.use_at, id: entry.id }));
   const pixelPerFrame = usePixelPerFrame();
@@ -217,8 +286,13 @@ const EditSubColumn = ({
 
     if (
       boxValues.some((boxValue) => cursorUseAt - boxValue.useAt >= 0 && cursorUseAt - boxValue.useAt <= action.cooldown)
-    )
+    ) {
+      toast({
+        description: t('ActionOverlapError'),
+      });
+
       return false;
+    }
 
     const useAtCalced = snapAndRemoveOverlap(
       cursorUseAt,
@@ -226,17 +300,23 @@ const EditSubColumn = ({
       boxValues.map((boxValue) => boxValue.useAt),
     );
 
-    if (useAtCalced !== null) {
-      upsertEntry(
-        {
-          id: crypto.randomUUID(),
-          action: action.id,
-          player: playerId,
-          useAt: useAtCalced,
-        },
-        false,
-      );
+    if (useAtCalced === null) {
+      toast({
+        description: t('ActionOverlapError'),
+      });
+
+      return false;
     }
+
+    upsertEntry(
+      {
+        id: crypto.randomUUID(),
+        action: action.id,
+        player: playerId,
+        useAt: useAtCalced,
+      },
+      false,
+    );
   };
 
   return (

@@ -76,6 +76,9 @@ const config = {
       fontFamily: {
         sans: ['var(--font-sans)', ...fontFamily.sans],
       },
+      dropShadow: {
+        selection: '0 0 1.5px hsl(var(--muted-foreground))',
+      }
     },
   },
   plugins: [require('tailwindcss-animate'), require('tailwind-scrollbar-hide')],

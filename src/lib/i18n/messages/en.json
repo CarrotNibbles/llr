@@ -177,7 +177,8 @@
     },
     "EditColumn": {
       "Lock": "Lock",
-      "Delete": "Delete"
+      "Delete": "Delete",
+      "ActionOverlapError": "You cannot place this due to the action cooldown."
     },
     "HeadColumn": {
       "JobChange": {

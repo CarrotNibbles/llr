@@ -177,7 +177,8 @@
     },
     "EditColumn": {
       "Lock": "잠금",
-      "Delete": "삭제"
+      "Delete": "삭제",
+      "ActionOverlapError": "재사용 대기 시간으로 인해 배치할 수 없습니다."
     },
     "HeadColumn": {
       "JobChange": {

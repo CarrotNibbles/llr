@@ -40,7 +40,17 @@ const HeadSubColumn = ({
       <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>
           <div className="aspect-square relative w-full cursor-pointer">
-            {src && <Image src={src} alt={name} layout="fill" objectFit="contain" />}
+            {src && (
+              <Image
+                src={src}
+                alt={name}
+                layout="fill"
+                objectFit="contain"
+                className="pointer-events-none select-none"
+                draggable={false}
+                unselectable="on"
+              />
+            )}
           </div>
         </TooltipTrigger>
         <TooltipContent className="pointer-events-none">{name}</TooltipContent>

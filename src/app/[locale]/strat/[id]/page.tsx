@@ -40,7 +40,7 @@ export default async function StratPage({
         editable={strategyData.is_editable}
       >
         <StratHeader />
-        <CoreArea actionData={actionData} />
+        <CoreArea />
       </StratSyncProvider>
     </div>
   );
