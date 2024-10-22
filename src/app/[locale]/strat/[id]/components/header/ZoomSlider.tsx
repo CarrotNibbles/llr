@@ -2,9 +2,13 @@
 
 import { Slider as DefaultSlider } from '@/components/ui/slider';
 import { useZoomState } from '@/lib/states';
-import { cn, getZoom } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 type SliderProps = React.ComponentProps<typeof DefaultSlider>;
+
+const getZoom = (zoomState: number) => {
+  return [0.3, 0.5, 2 / 3, 0.8, 0.9, 1, 1.1, 1.2, 4 / 3, 1.5, 1.7, 2, 2.4, 3, 4, 5][zoomState];
+};
 
 export function ZoomSlider({ className, ...props }: SliderProps) {
   const [zoom, setZoom] = useZoomState();

@@ -1,4 +1,4 @@
-import { type DragControls, useDragControls } from 'framer-motion';
+import type { DragControls } from 'framer-motion';
 import { createContext } from 'react';
 
 type EntrySelectionContextType = {

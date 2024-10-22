@@ -2,8 +2,8 @@ import type { Locale } from '@/lib/i18n';
 import { buildActionDataQuery, buildStrategyDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
 import { notFound } from 'next/navigation';
-import { CoreArea } from './components/CoreArea';
 import { StratHeader } from './components/StratHeader';
+import { StratMain } from './components/StratMain';
 import { StratSyncProvider } from './components/StratSyncProvider';
 
 export default async function StratPage({
@@ -40,7 +40,7 @@ export default async function StratPage({
         editable={strategyData.is_editable}
       >
         <StratHeader />
-        <CoreArea />
+        <StratMain />
       </StratSyncProvider>
     </div>
   );

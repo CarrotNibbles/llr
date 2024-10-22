@@ -5,6 +5,7 @@ import { useMitigatedDamages, useTank } from '@/lib/calc/hooks';
 import type { StrategyDataType } from '@/lib/queries/server';
 import { type ArrayElement, cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
+import { ACTIVE_DAMAGE_OPTION_STYLE, INACTIVE_DAMAGE_OPTION_STYLE } from '../constants';
 
 type DamageTextProps = {
   damageId: string;
@@ -14,16 +15,13 @@ type DamageTextProps = {
   numShared?: number;
 };
 
-const ACTIVE_OPTION_STYLE = 'font-bold';
-const INACTIVE_OPTION_STYLE = 'text-muted-foreground text-xs';
-
 const BothTankBuster = (props: DamageTextProps) => {
   const { defaultDamage, currentDamage } = props;
 
   return (
     <>
       <div className="space-x-1 pr-6">
-        <span className={ACTIVE_OPTION_STYLE}>T1+T2</span>
+        <span className={ACTIVE_DAMAGE_OPTION_STYLE}>T1+T2</span>
       </div>
       <span className="tabular-nums font-bold">{currentDamage}</span>
       <span className="text-muted-foreground tabular-nums text-xs my-auto">{defaultDamage / 2}</span>
@@ -45,7 +43,7 @@ const SingleTankBuster = (props: DamageTextProps) => {
       <div className="space-x-1 pr-6 min-w-16">
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
         <span
-          className={cn(activeOption === 0 ? ACTIVE_OPTION_STYLE : INACTIVE_OPTION_STYLE, cursorStyle)}
+          className={cn(activeOption === 0 ? ACTIVE_DAMAGE_OPTION_STYLE : INACTIVE_DAMAGE_OPTION_STYLE, cursorStyle)}
           onClick={() => {
             if (activeOption === 0) return;
 
@@ -62,7 +60,7 @@ const SingleTankBuster = (props: DamageTextProps) => {
         </span>
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
         <span
-          className={cn(activeOption === 1 ? ACTIVE_OPTION_STYLE : INACTIVE_OPTION_STYLE, cursorStyle)}
+          className={cn(activeOption === 1 ? ACTIVE_DAMAGE_OPTION_STYLE : INACTIVE_DAMAGE_OPTION_STYLE, cursorStyle)}
           onClick={() => {
             if (activeOption === 1) return;
 
@@ -98,7 +96,7 @@ const ShareTankBuster = (props: DamageTextProps) => {
       <div className="space-x-1 pr-6 min-w-28">
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
         <span
-          className={cn(activeOption === 0 ? ACTIVE_OPTION_STYLE : INACTIVE_OPTION_STYLE, cursorStyle)}
+          className={cn(activeOption === 0 ? ACTIVE_DAMAGE_OPTION_STYLE : INACTIVE_DAMAGE_OPTION_STYLE, cursorStyle)}
           onClick={() => {
             if (activeOption === 0) return;
 
@@ -115,7 +113,7 @@ const ShareTankBuster = (props: DamageTextProps) => {
         </span>
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
         <span
-          className={cn(activeOption === 1 ? ACTIVE_OPTION_STYLE : INACTIVE_OPTION_STYLE, cursorStyle)}
+          className={cn(activeOption === 1 ? ACTIVE_DAMAGE_OPTION_STYLE : INACTIVE_DAMAGE_OPTION_STYLE, cursorStyle)}
           onClick={() => {
             if (activeOption === 1) return;
 
@@ -133,7 +131,7 @@ const ShareTankBuster = (props: DamageTextProps) => {
         </span>
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
         <span
-          className={cn(activeOption === 2 ? ACTIVE_OPTION_STYLE : INACTIVE_OPTION_STYLE, cursorStyle)}
+          className={cn(activeOption === 2 ? ACTIVE_DAMAGE_OPTION_STYLE : INACTIVE_DAMAGE_OPTION_STYLE, cursorStyle)}
           onClick={() => {
             if (activeOption === 2) return;
 
@@ -165,7 +163,7 @@ const ShareAllRaidWide = (props: DamageTextProps) => {
   return (
     <>
       <div className="space-x-1 pr-6">
-        <span className={ACTIVE_OPTION_STYLE}>{t('DamageOption.Share')}</span>
+        <span className={ACTIVE_DAMAGE_OPTION_STYLE}>{t('DamageOption.Share')}</span>
       </div>
       <span className="tabular-nums font-bold">{currentDamage}</span>
       <span className="text-muted-foreground tabular-nums text-xs my-auto">{defaultDamage / 8}</span>
@@ -180,7 +178,7 @@ const RaidWide = (props: DamageTextProps) => {
   return (
     <>
       <div className="space-x-1 pr-6">
-        <span className={ACTIVE_OPTION_STYLE}>{t('DamageOption.RaidWide')}</span>
+        <span className={ACTIVE_DAMAGE_OPTION_STYLE}>{t('DamageOption.RaidWide')}</span>
       </div>
       <span className="tabular-nums font-bold">{currentDamage}</span>
       <span className="text-muted-foreground tabular-nums text-xs my-auto">{defaultDamage}</span>
@@ -201,7 +199,7 @@ const ShareHalfRaidWide = (props: DamageTextProps) => {
       <div className="space-x-1 pr-6 min-w-20">
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
         <span
-          className={cn(activeOption === 0 ? ACTIVE_OPTION_STYLE : INACTIVE_OPTION_STYLE, cursorStyle)}
+          className={cn(activeOption === 0 ? ACTIVE_DAMAGE_OPTION_STYLE : INACTIVE_DAMAGE_OPTION_STYLE, cursorStyle)}
           onClick={() => {
             if (activeOption === 0) return;
 
@@ -218,7 +216,7 @@ const ShareHalfRaidWide = (props: DamageTextProps) => {
         </span>
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
         <span
-          className={cn(activeOption === 1 ? ACTIVE_OPTION_STYLE : INACTIVE_OPTION_STYLE, cursorStyle)}
+          className={cn(activeOption === 1 ? ACTIVE_DAMAGE_OPTION_STYLE : INACTIVE_DAMAGE_OPTION_STYLE, cursorStyle)}
           onClick={() => {
             if (activeOption === 1) return;
 

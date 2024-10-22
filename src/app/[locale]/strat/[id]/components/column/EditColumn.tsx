@@ -8,21 +8,20 @@ import {
 } from '@/components/ui/context-menu';
 import { useToast } from '@/components/ui/use-toast';
 import type { ActionDataType, StrategyDataType } from '@/lib/queries/server';
-import { type ArrayElement, clamp, usePixelPerFrame } from '@/lib/utils';
+import { type ArrayElement, clamp } from '@/lib/utils';
 import { AnimatePresence, animate, motion, useDragControls, useMotionValue } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
 import { type MouseEventHandler, useContext, useEffect, useState } from 'react';
-import { EntrySelectionContext } from './EntrySelectionContext';
-import { columnWidth, timeStep } from './coreAreaConstants';
 
-const contextMenuWidth = 16;
-const contextMenuWidthLarge = 32;
+import { usePixelPerFrame } from '@/lib/states';
+import { BOTTOM_PADDING_PX, TIME_STEP, columnWidth, contextMenuWidth } from '../constants';
+import { EntrySelectionContext } from './EntrySelectionContext';
 
 const snapToStep = (currentUseAt: number) => {
   const clampedUseAt = currentUseAt > 0 ? currentUseAt : 0;
 
-  return timeStep * Math.round(clampedUseAt / timeStep);
+  return TIME_STEP * Math.round(clampedUseAt / TIME_STEP);
 };
 
 const overlaps = (currentUseAt: number, otherUseAt: number, cooldown: number) =>
@@ -245,7 +244,7 @@ const DraggableBox = ({ action, entry, otherUseAts, raidDuration, durations, coo
           </div>
         </motion.div>
       </ContextMenuTrigger>
-      <ContextMenuContent className={`w-${contextMenuWidth} lg:w-${contextMenuWidthLarge}`}>
+      <ContextMenuContent className={`${contextMenuWidth}`}>
         <ContextMenuCheckboxItem
           checked={isLocked}
           onCheckedChange={(checked) => {
@@ -340,7 +339,7 @@ const EditSubColumn = ({ raidDuration, action, entries, playerId }: EditSubColum
   return (
     <div
       className={`flex flex-shrink-0 ${columnWidth} overflow-hidden hover:bg-muted`}
-      style={{ height: `${raidDuration * pixelPerFrame + 60}px` }}
+      style={{ height: `${raidDuration * pixelPerFrame + BOTTOM_PADDING_PX}px` }}
     >
       <AnimatePresence>
         {...boxValues.map((boxValue, index) => (
@@ -375,7 +374,10 @@ export const EditColumn = ({ raidDuration, playerStrategy, actions }: EditColumn
   const pixelPerFrame = usePixelPerFrame();
 
   return (
-    <div className="flex px-1 space-x-1 border-r-[1px]" style={{ height: raidDuration * pixelPerFrame }}>
+    <div
+      className="flex px-1 space-x-1 border-r-[1px]"
+      style={{ height: raidDuration * pixelPerFrame + BOTTOM_PADDING_PX }}
+    >
       {actions.map((action) => (
         <EditSubColumn
           key={`subcolumn-${playerStrategy.id}-${action.id}`}

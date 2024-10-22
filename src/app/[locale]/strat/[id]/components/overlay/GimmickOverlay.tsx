@@ -1,15 +1,11 @@
 'use client';
 
 import type { StrategyDataType } from '@/lib/queries/server';
-import { useFilterState } from '@/lib/states';
-import {
-  type ArrayElement,
-  MERGE_THRESHOLD_DEFAULT,
-  MERGE_THRESHOLD_INCREMENTAL,
-  type MergedGimmick,
-  usePixelPerFrame,
-} from '@/lib/utils';
+import { useFilterState, usePixelPerFrame } from '@/lib/states';
+import type { ArrayElement } from '@/lib/utils';
 import React from 'react';
+import { BOTTOM_PADDING_PX, MERGE_THRESHOLD_DEFAULT, MERGE_THRESHOLD_INCREMENTAL } from '../constants';
+import type { MergedGimmick } from '../utils';
 import { GimmickLine } from './GimmickLine';
 
 type GimmickOverlayProps = {
@@ -108,7 +104,10 @@ const GimmickOverlay = React.forwardRef<
   };
 
   return (
-    <div className="absolute top-0 left-0 w-screen" style={{ height: `${raidDuration * pixelPerFrame + 60}px` }}>
+    <div
+      className="absolute top-0 left-0 w-screen"
+      style={{ height: `${raidDuration * pixelPerFrame + BOTTOM_PADDING_PX}px` }}
+    >
       {mergeGimmicks(gimmicks).map((value) => {
         return <GimmickLine {...value} resizePanelSize={resizePanelSize} key={`gimmick-${value.id}`} />;
       })}

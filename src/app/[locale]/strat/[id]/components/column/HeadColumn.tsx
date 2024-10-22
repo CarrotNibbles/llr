@@ -20,7 +20,7 @@ import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
 import { useState } from 'react';
 import { ReactSVG } from 'react-svg';
-import { columnWidth } from './coreAreaConstants';
+import { ROLE_ICON_STYLE, columnWidth } from '../constants';
 
 const HeadSubColumn = ({
   job,
@@ -56,13 +56,6 @@ const HeadSubColumn = ({
     </div>
   );
 };
-
-const ROLE_ICON_STYLE = {
-  Tank: 'fill-blue-600 dark:fill-blue-400 border-blue-600 dark:border-blue-400',
-  Healer: 'fill-green-600 dark:fill-green-400 border-green-600 dark:border-green-400',
-  DPS: 'fill-red-600 dark:fill-red-400 border-red-600 dark:border-red-400',
-  Others: 'fill-zinc-600 dark:fill-zinc-400 border-zinc-600 dark:border-zinc-400',
-} satisfies Record<Role, string>;
 
 export const JobIcon = ({
   className,

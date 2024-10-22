@@ -1,4 +1,4 @@
-import { atom } from 'recoil';
+import { atom, selector, useRecoilValue } from 'recoil';
 import { useCheckedRecoilState } from '.';
 
 type ZoomState = {
@@ -16,4 +16,14 @@ const zoomState = atom<ZoomState>({
   default: defaultState,
 });
 
+const pixelPerFrameSelector = selector<number>({
+  key: 'pixelPerFrameSelector',
+  get: ({ get }) => {
+    const PIXEL_PER_FRAME_DEFAULT = 0.2;
+    const zoom = get(zoomState);
+    return PIXEL_PER_FRAME_DEFAULT * zoom.value;
+  },
+});
+
 export const useZoomState = () => useCheckedRecoilState<ZoomState>(zoomState, defaultState);
+export const usePixelPerFrame = () => useRecoilValue(pixelPerFrameSelector);

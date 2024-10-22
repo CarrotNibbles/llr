@@ -1,42 +1,35 @@
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Separator } from '@/components/ui/separator';
 import type { StrategyDataType } from '@/lib/queries/server';
-import {
-  type ArrayElement,
-  GIMMICK_BORDER_STYLE,
-  GIMMICK_TEXT_STYLE,
-  MAX_DISPLAY_COUNT,
-  type MergedGimmick,
-  type SuperMergedGimmick,
-  cn,
-  usePixelPerFrame,
-} from '@/lib/utils';
+import { usePixelPerFrame } from '@/lib/states';
+import { type ArrayElement, cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 import React from 'react';
+import { GIMMICK_BORDER_STYLE, GIMMICK_TEXT_STYLE, MAX_DISPLAY_COUNT } from '../constants';
+import type { MergedGimmick, SuperMergedGimmick } from '../utils';
 import { DamageText } from './DamageText';
 
 type GimmickSubLineProps = {
   time: number;
   primaryTime: number;
-  pixelPerFrame: number;
   textColor: string;
   borderColor: string;
   resizePanelSize: number;
-  translationKey: string;
+  semanticKey: string;
   lineType: string;
 };
 
-export const GimmickSubLine = ({
+const GimmickSubLine = ({
   time,
   primaryTime,
-  pixelPerFrame,
   textColor,
   borderColor,
   resizePanelSize,
-  translationKey: translation_key,
+  semanticKey,
   lineType,
 }: GimmickSubLineProps) => {
   const tGimmicks = useTranslations('Common.Gimmicks');
+  const pixelPerFrame = usePixelPerFrame();
 
   return (
     time &&
@@ -56,7 +49,7 @@ export const GimmickSubLine = ({
               top: `${pixelPerFrame * time}px`,
             }}
           >
-            <div className="text-xs font-thin right-0">{tGimmicks(translation_key)}</div>
+            <div className="text-xs font-thin right-0">{tGimmicks(semanticKey)}</div>
           </div>
         )}
       </>
@@ -121,7 +114,7 @@ const GimmickLine = React.forwardRef<
 >(({ className, ...props }, ref) => {
   const tGimmicks = useTranslations('Common.Gimmicks');
   const {
-    semantic_key: translationKey,
+    semantic_key: semanticKey,
     type: gimmickType,
     prepare_at: prepareAt,
     cast_at: castAt,
@@ -146,9 +139,8 @@ const GimmickLine = React.forwardRef<
           textColor={textColor}
           borderColor={borderColor}
           resizePanelSize={resizePanelSize}
-          translationKey={translationKey}
+          semanticKey={semanticKey}
           lineType="border-dashed"
-          pixelPerFrame={pixelPerFrame}
         />
       )}
       {resolveAt && (
@@ -158,9 +150,8 @@ const GimmickLine = React.forwardRef<
           textColor={textColor}
           borderColor={borderColor}
           resizePanelSize={resizePanelSize}
-          translationKey={translationKey}
+          semanticKey={semanticKey}
           lineType=""
-          pixelPerFrame={pixelPerFrame}
         />
       )}
       <div

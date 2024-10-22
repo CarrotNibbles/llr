@@ -3,17 +3,15 @@
 import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvider';
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
-import { useZoomState } from '@/lib/states';
-import { usePixelPerFrame } from '@/lib/utils';
-import { type DragControls, useDragControls } from 'framer-motion';
+import { usePixelPerFrame, useZoomState } from '@/lib/states';
+import type { DragControls } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
-import { EditColumn } from './EditColumn';
-import { EntrySelectionContext } from './EntrySelectionContext';
-import { GimmickOverlay } from './GimmickOverlay';
-import { HeadColumn } from './HeadColumn';
 
-export const CoreArea = () => {
+import { EditColumn, EntrySelectionContext, HeadColumn } from './column';
+import { GimmickOverlay } from './overlay';
+
+export const StratMain = () => {
   const [zoom, _] = useZoomState();
   const [resizePanelSize, setResizePanelSize] = useState(20);
   const pixelPerFrame = usePixelPerFrame();
