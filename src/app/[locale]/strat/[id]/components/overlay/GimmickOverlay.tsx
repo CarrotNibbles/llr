@@ -4,8 +4,8 @@ import type { StrategyDataType } from '@/lib/queries/server';
 import { useFilterState, usePixelPerFrame } from '@/lib/states';
 import type { ArrayElement } from '@/lib/utils';
 import React from 'react';
-import { BOTTOM_PADDING_PX, MERGE_THRESHOLD_DEFAULT, MERGE_THRESHOLD_INCREMENTAL } from '../constants';
-import type { MergedGimmick } from '../utils';
+import { BOTTOM_PADDING_PX, MERGE_THRESHOLD_DEFAULT, MERGE_THRESHOLD_INCREMENTAL } from '../../utils/constants';
+import type { MergedGimmick } from '../../utils/types';
 import { GimmickLine } from './GimmickLine';
 
 type GimmickOverlayProps = {

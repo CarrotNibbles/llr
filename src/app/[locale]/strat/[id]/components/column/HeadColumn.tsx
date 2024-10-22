@@ -20,7 +20,7 @@ import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
 import { useState } from 'react';
 import { ReactSVG } from 'react-svg';
-import { ROLE_ICON_STYLE, columnWidth } from '../constants';
+import { ROLE_ICON_STYLE, columnWidth } from '../../utils/constants';
 
 const HeadSubColumn = ({
   job,

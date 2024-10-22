@@ -7,7 +7,7 @@ import type { Enums } from '@/lib/database.types';
 import { useFilterState } from '@/lib/states';
 import { cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
-import { GIMMICK_BACKGROUND_STYLE } from '../constants';
+import { GIMMICK_BACKGROUND_STYLE } from '../../utils/constants';
 
 export const FilterMenu = () => {
   const GimmickTypes: Array<Enums<'gimmick_type'>> = [

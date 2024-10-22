@@ -5,7 +5,7 @@ import { useMitigatedDamages, useTank } from '@/lib/calc/hooks';
 import type { StrategyDataType } from '@/lib/queries/server';
 import { type ArrayElement, cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
-import { ACTIVE_DAMAGE_OPTION_STYLE, INACTIVE_DAMAGE_OPTION_STYLE } from '../constants';
+import { ACTIVE_DAMAGE_OPTION_STYLE, INACTIVE_DAMAGE_OPTION_STYLE } from '../../utils/constants';
 import type { Enums } from '@/lib/database.types';
 import Image from 'next/image';
 

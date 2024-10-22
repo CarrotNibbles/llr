@@ -5,8 +5,8 @@ import { usePixelPerFrame } from '@/lib/states';
 import { type ArrayElement, cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 import React from 'react';
-import { GIMMICK_BORDER_STYLE, GIMMICK_TEXT_STYLE, MAX_DISPLAY_COUNT } from '../constants';
-import type { MergedGimmick, SuperMergedGimmick } from '../utils';
+import { GIMMICK_BORDER_STYLE, GIMMICK_TEXT_STYLE, MAX_DISPLAY_COUNT } from '../../utils/constants';
+import type { MergedGimmick, SuperMergedGimmick } from '../../utils/types';
 import { DamageText } from './DamageText';
 
 type GimmickSubLineProps = {

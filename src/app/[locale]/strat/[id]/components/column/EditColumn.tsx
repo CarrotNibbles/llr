@@ -15,7 +15,7 @@ import Image from 'next/legacy/image';
 import { type MouseEventHandler, useContext, useEffect, useState } from 'react';
 
 import { usePixelPerFrame } from '@/lib/states';
-import { BOTTOM_PADDING_PX, TIME_STEP, columnWidth, contextMenuWidth } from '../constants';
+import { BOTTOM_PADDING_PX, TIME_STEP, columnWidth, contextMenuWidth } from '../../utils/constants';
 import { EntrySelectionContext } from './EntrySelectionContext';
 
 const snapToStep = (currentUseAt: number) => {
