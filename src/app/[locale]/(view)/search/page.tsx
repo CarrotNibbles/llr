@@ -33,7 +33,7 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
   const sort = searchParams.sort;
 
   // Redirect to default if page or limit is not a valid number
-  const qExist = q !== undefined && q !== '';
+  const qExist = q !== undefined;
   const patchValid = searchParams.patch === undefined || patch !== undefined;
   const pageValid = page !== null && page > 0;
   const limitValid = limit !== null && limit > 0;

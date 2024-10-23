@@ -92,7 +92,7 @@ const SearchButtonForm: React.FC<SearchButtonFormProps> = ({ limit, closeForm, c
   const [searchResult, setSearchResult] = useState<SearchStrategiesDataType>([]);
 
   const formSchema = z.object({
-    q: z.string({ required_error: '검색 문자열을 입력하세요.' }), //.min(5, '5글자 이상 입력해주세요.'),
+    q: z.string({ required_error: '검색 문자열을 입력하세요.' }),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -113,7 +113,13 @@ const SearchButtonForm: React.FC<SearchButtonFormProps> = ({ limit, closeForm, c
   };
 
   const onDetailedClick = () => {
-    router.push(buildSearchURL(searchParams, { q: form.getValues('q'), page: 1, limit: DEFAULT_LIMIT }));
+    router.push(
+      buildSearchURL(searchParams, {
+        q: form.getValues('q'),
+        page: 1,
+        limit: DEFAULT_LIMIT,
+      }),
+    );
     closeForm();
   };
 
@@ -235,8 +241,7 @@ const SearchButtonResult: React.FC<SearchButtonResultProps> = ({
       <Table className={cn('border-y', className)} {...props}>
         <TableBody>
           {searchResult.map((strat) => {
-            const likeCount =
-              strat.like_counts === null ? 0 : strat.like_counts.total_likes;
+            const likeCount = strat.like_counts === null ? 0 : strat.like_counts.total_likes;
             return (
               <TableRow key={strat.id}>
                 <TableCell>
@@ -285,4 +290,17 @@ const SearchButtonResult: React.FC<SearchButtonResultProps> = ({
 };
 SearchButtonResult.displayName = 'SearchButtonResult';
 
-export { SearchButton };
+const SearchButtonNew = forwardRef<HTMLButtonElement, SearchButtonProps>(({ className, ...props }, ref) => {
+  const searchParams = useSearchParams();
+
+  return (
+    <Button variant="ghost" size="icon" className={className} {...props} ref={ref}>
+      <Link href={buildSearchURL(searchParams, { page: 1, limit: DEFAULT_LIMIT })}>
+        <span className="sr-only">Search</span>
+        <MagnifyingGlassIcon className="w-6 h-6" />
+      </Link>
+    </Button>
+  );
+});
+
+export { SearchButtonNew as SearchButton };
