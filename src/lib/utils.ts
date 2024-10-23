@@ -16,6 +16,11 @@ const filteredMin = (...values: Array<number | undefined>) => Math.min(...values
 const filteredMax = (...values: Array<number | undefined>) => Math.max(...values.filter(notNullOrUndefined));
 export const clamp = (num: number, min?: number, max?: number) => filteredMax(filteredMin(num, max), min);
 
+export type Patch = Readonly<{
+  version: number;
+  subversion: number;
+}>;
+
 export const ALL_PATCHES = [
   { version: 2, subversion: 0 },
   { version: 2, subversion: 1 },
@@ -48,7 +53,7 @@ export const ALL_PATCHES = [
   { version: 6, subversion: 4 },
   { version: 6, subversion: 5 },
   { version: 7, subversion: 0 },
-];
+] as const satisfies Patch[];
 
 export type Role = 'Tank' | 'Healer' | 'DPS' | 'Others';
 export type DiversedRole = 'Tank' | 'Healer' | 'Ranged' | 'Melee' | 'Caster';
@@ -127,22 +132,22 @@ export const tryParseInt = (input: string | undefined | null, allowNegative = fa
   return null;
 };
 
-export const tryParseVersion = (input: string | undefined | null): Version | null => {
+export const tryParsePatch = (input: string | undefined | null): Patch | null => {
   if (input === undefined || input === null) return null;
 
-  const versionRegex = /^\d.\d$/;
+  const patchRegex = /^\d.\d$/;
 
-  if (!versionRegex.test(input)) return null;
+  if (!patchRegex.test(input)) return null;
 
   const [version, subversion] = input.split('.').map(Number);
-  return new Version(version, subversion);
+  return { version, subversion };
 };
 
 export const buildURL = (
   url: string,
   ...searchParams: (
-    | Record<string, string | number | Version | null | undefined>
-    | [string, string | number | null | undefined]
+    | Record<string, string | number | Patch | null | undefined>
+    | [string, string | number | Patch | null | undefined]
     | URLSearchParams
     | ReadonlyURLSearchParams
   )[]
@@ -151,17 +156,24 @@ export const buildURL = (
 
   for (const searchParam of searchParams) {
     if (Array.isArray(searchParam)) {
-      if (searchParam.length !== 2) continue;
-      if (searchParam[1] === null || searchParam[1] === undefined) newSearchParams.delete(searchParam[0]);
-      else newSearchParams.set(searchParam[0], searchParam[1].toString());
+      const [key, value] = searchParam;
+
+      if (value === null || value === undefined) newSearchParams.delete(key);
+      else if (typeof value === 'string') newSearchParams.set(key, value);
+      else if (typeof value === 'number') newSearchParams.set(key, value.toString());
+      else newSearchParams.set(key, `${value.version}.${value.subversion}`);
     } else if (searchParam instanceof URLSearchParams || searchParam instanceof ReadonlyURLSearchParams) {
       for (const [key, value] of searchParam.entries()) {
         newSearchParams.set(key, value);
       }
     } else {
       for (const key of Object.keys(searchParam)) {
-        if (searchParam[key] === undefined || searchParam[key] === null) newSearchParams.delete(key);
-        else newSearchParams.set(key, searchParam[key].toString());
+        const value = searchParam[key];
+
+        if (value === undefined || value === null) newSearchParams.delete(key);
+        else if (typeof value === 'string') newSearchParams.set(key, value);
+        else if (typeof value === 'number') newSearchParams.set(key, value.toString());
+        else newSearchParams.set(key, `${value.version}.${value.subversion}`);
       }
     }
   }
@@ -169,37 +181,23 @@ export const buildURL = (
   return `${url}?${newSearchParams.toString()}`;
 };
 
-export class Version {
-  readonly version: number;
-  readonly subversion: number;
-
-  constructor(version: number, subversion: number) {
-    this.version = version;
-    this.subversion = subversion;
-  }
-
-  public toString() {
-    return `${this.version}.${this.subversion}`;
-  }
-}
-
 export const Q_PARAM = 'q';
 export const PAGE_PARAM = 'page';
 export const LIMIT_PARAM = 'limit';
 export const SORT_PARAM = 'sort';
 export const RAID_PARAM = 'raid';
-export const VERSION_PARAM = 'version';
+export const PATCH_PARAM = 'patch';
 
 export type BoardSearchParamsRaw = {
   [RAID_PARAM]?: string;
-  [VERSION_PARAM]?: string;
+  [PATCH_PARAM]?: string;
   [PAGE_PARAM]: string;
   [LIMIT_PARAM]: string;
   [SORT_PARAM]: string;
 };
 export type BoardSearchParamsParsed = {
   [RAID_PARAM]?: string;
-  [VERSION_PARAM]?: Version;
+  [PATCH_PARAM]?: Patch;
   [PAGE_PARAM]: number;
   [LIMIT_PARAM]: number;
   [SORT_PARAM]: SortOption;
@@ -249,20 +247,36 @@ export const allSortOptions = ['like', 'recent'] as const;
 export type SortOption = (typeof allSortOptions)[number];
 export const DEFAULT_SORT: SortOption = 'like';
 
-export type StaticAssert<T extends true> = never
-export type TypeEqual<T, U> = [T] extends [U] ? [U] extends [T] ? true : false : false;
+export type StaticAssert<T extends true> = never;
+export type TypeEqual<T, U> = [T] extends [U] ? ([U] extends [T] ? true : false) : false;
 
-export type SelectableJob = Exclude<Enums<'job'>, "BLU" | "LB">
+export type SelectableJob = Exclude<Enums<'job'>, 'BLU' | 'LB'>;
 /* prettier-ignore-start */
 export const allSelectableJobs = [
-  'PLD', 'WAR', 'DRK', 'GNB',
-  'WHM', 'SCH', 'AST', 'SGE',
-  'MNK', 'DRG', 'NIN', 'SAM', 'RPR', 'VPR',
-  'BRD', 'MCH', 'DNC', 
-  'BLM', 'SMN', 'RDM', 'PCT',
+  'PLD',
+  'WAR',
+  'DRK',
+  'GNB',
+  'WHM',
+  'SCH',
+  'AST',
+  'SGE',
+  'MNK',
+  'DRG',
+  'NIN',
+  'SAM',
+  'RPR',
+  'VPR',
+  'BRD',
+  'MCH',
+  'DNC',
+  'BLM',
+  'SMN',
+  'RDM',
+  'PCT',
 ] as const;
 /* prettier-ignore-end */
-type SelectableJobsExhaustive = StaticAssert<TypeEqual<typeof allSelectableJobs[number], SelectableJob>>
+type SelectableJobsExhaustive = StaticAssert<TypeEqual<(typeof allSelectableJobs)[number], SelectableJob>>;
 
 export const sortJobs = (jobs: SelectableJob[]) =>
   jobs.sort((job1, job2) => allSelectableJobs.indexOf(job1) - allSelectableJobs.indexOf(job2));

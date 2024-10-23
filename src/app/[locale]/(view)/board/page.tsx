@@ -8,7 +8,7 @@ import {
   DEFAULT_SORT,
   buildBoardURL,
   tryParseInt,
-  tryParseVersion,
+  tryParsePatch,
 } from '@/lib/utils';
 import { redirect } from 'next/navigation';
 import { LimitCombobox } from '../components/LimitCombobox';
@@ -28,19 +28,19 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
   const raid = searchParams.raid;
   const page = tryParseInt(searchParams.page, false);
   const limit = tryParseInt(searchParams.limit, false);
-  const version = tryParseVersion(searchParams.version) ?? undefined;
+  const patch = tryParsePatch(searchParams.patch) ?? undefined;
   const sort = searchParams.sort;
 
   // Redirect to default if page or limit is not a valid number
-  const versionValid = searchParams.version === undefined || version !== undefined;
+  const patchValid = searchParams.patch === undefined || patch !== undefined;
   const pageValid = page !== null && page > 0;
   const limitValid = limit !== null && limit > 0;
   const sortValid = sort === 'like' || sort === 'recent';
-  const paramValid = versionValid && pageValid && limitValid && sortValid;
+  const paramValid = patchValid && pageValid && limitValid && sortValid;
   if (!paramValid)
     redirect(
       buildBoardURL(searchParams, {
-        version: versionValid ? version : undefined,
+        patch: patchValid ? patch : undefined,
         page: pageValid ? page : 1,
         limit: limitValid ? limit : DEFAULT_LIMIT,
         sort: sortValid ? sort : DEFAULT_SORT,
@@ -51,10 +51,10 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
     <div className="flex flex-col w-full max-w-screen-xl px-4 py-1">
       <BoardSubheader />
       <div className="px-4 mt-2 mb-8">
-        <StrategyTable dataPromise={buildStrategiesDataQuery(supabase, { raid, version, page, limit, sort })} />
+        <StrategyTable dataPromise={buildStrategiesDataQuery(supabase, { raid, patch, page, limit, sort })} />
         <div className="w-full flex flex-col-reverse lg:grid lg:grid-cols-3 gap-y-2 mt-2">
           <div />
-          <ViewPagination currentPage={page} dataPromise={buildMaxPageQuery(supabase, limit, { raid, version })} />
+          <ViewPagination currentPage={page} dataPromise={buildMaxPageQuery(supabase, limit, { raid, patch })} />
           <div className="flex text-xs flex-row-reverse gap-x-2">
             <LimitCombobox currentLimit={limit} />
             <SortCombobox currentSort={sort} />

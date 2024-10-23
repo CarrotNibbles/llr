@@ -9,7 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import type { RaidsDataType } from '@/lib/queries/server';
-import { JOB_LAYOUT, Version, allSelectableJobs, buildSearchURL, cn, getOrderedRole, getRole } from '@/lib/utils';
+import { allSelectableJobs, buildSearchURL, cn, getRole } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CollapsibleContent } from '@radix-ui/react-collapsible';
 import { CaretSortIcon, CheckIcon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
@@ -53,7 +53,6 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({ q, raidsData, class
       buildSearchURL(searchParams, {
         q: values.q,
         raid: values.raid,
-        // version: new Version(values.version, values.subversion),
       }),
     );
     setIsSearching(false);

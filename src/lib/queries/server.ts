@@ -2,7 +2,7 @@
 
 import type { QueryData } from '@supabase/supabase-js';
 import type { createClient } from '../supabase/server';
-import type { SortOption, Version } from '../utils';
+import type { SortOption, Patch } from '../utils';
 
 export const buildActionDataQuery = (supabase: ReturnType<typeof createClient>) => {
   return supabase.from('actions').select('*, mitigations(*)').order('priority');
@@ -12,9 +12,9 @@ export type ActionDataType = QueryData<ReturnType<typeof buildActionDataQuery>>;
 
 export const buildStrategyCountQuery = async (
   supabase: ReturnType<typeof createClient>,
-  params: { q?: string; raid?: string; version?: Version },
+  params: { q?: string; raid?: string; patch?: Patch },
 ) => {
-  const { q, raid, version } = params;
+  const { q, raid, patch } = params;
 
   let query = supabase
     .from('strategies')
@@ -22,7 +22,7 @@ export const buildStrategyCountQuery = async (
     .eq('is_public', true);
 
   if (raid !== undefined) query = query.eq('raids.semantic_key', raid);
-  if (version !== undefined) query = query.eq('version', version.version).eq('subversion', version.subversion);
+  if (patch !== undefined) query = query.eq('version', patch.version).eq('subversion', patch.subversion);
   if (q !== undefined) query = query.ilike('name', `%${q}%`);
 
   const res = await query;
@@ -32,7 +32,7 @@ export const buildStrategyCountQuery = async (
 export const buildMaxPageQuery = async (
   supabase: ReturnType<typeof createClient>,
   limit: number,
-  params: { q?: string; raid?: string; version?: Version },
+  params: { q?: string; raid?: string; patch?: Patch },
 ) => {
   const { count, error } = await buildStrategyCountQuery(supabase, params);
   if (error) return { data: null, error };
@@ -46,13 +46,13 @@ export const buildStrategiesDataQuery = async (
   params: {
     q?: string;
     raid?: string;
-    version?: Version;
+    patch?: Patch;
     page: number;
     limit: number;
     sort: SortOption;
   },
 ) => {
-  const { q, raid, version, page, limit, sort } = params;
+  const { q, raid, patch, page, limit, sort } = params;
   let query = supabase
     .from('strategies')
     .select(
@@ -64,7 +64,7 @@ export const buildStrategiesDataQuery = async (
     .eq('is_public', true);
 
   if (raid !== undefined) query = query.eq('raids.semantic_key', raid);
-  if (version !== undefined) query = query.eq('version', version.version).eq('subversion', version.subversion);
+  if (patch !== undefined) query = query.eq('version', patch.version).eq('subversion', patch.subversion);
   if (q !== undefined) query = query.ilike('name', `%${q}%`);
 
   const res = await query.order('created_at', { ascending: false }).range((page - 1) * limit, page * limit - 1);
