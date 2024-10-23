@@ -311,8 +311,35 @@ export const rangeInclusive = (start: number, end: number): number[] => {
 };
 
 export const navRaidCategories = ['Savage', 'Ultimate'] as const;
-export const raidCategories = ['Savage', 'Ultimate', 'Trial', 'Raid', 'Dungeon'] as const;
+export const allRaidCategories = ['Savage', 'Ultimate', 'Trial', 'Raid', 'Dungeon'] as const;
 
-export const sortOptions = ['like', 'recent'] as const;
-export type SortOption = (typeof sortOptions)[number];
+export const allSortOptions = ['like', 'recent'] as const;
+export type SortOption = (typeof allSortOptions)[number];
 export const DEFAULT_SORT: SortOption = 'like';
+
+export type StaticAssert<T extends true> = never
+export type TypeEqual<T, U> = [T] extends [U] ? [U] extends [T] ? true : false : false;
+
+export type SelectableJob = Exclude<Enums<'job'>, "BLU" | "LB">
+/* prettier-ignore-start */
+export const allSelectableJobs = [
+  'PLD', 'WAR', 'DRK', 'GNB',
+  'WHM', 'SCH', 'AST', 'SGE',
+  'MNK', 'DRG', 'NIN', 'SAM', 'RPR', 'VPR',
+  'BRD', 'MCH', 'DNC', 
+  'BLM', 'SMN', 'RDM', 'PCT',
+] as const;
+/* prettier-ignore-end */
+type SelectableJobsExhaustive = StaticAssert<TypeEqual<typeof allSelectableJobs[number], SelectableJob>>
+
+export const sortJobs = (jobs: SelectableJob[]) =>
+  jobs.sort((job1, job2) => allSelectableJobs.indexOf(job1) - allSelectableJobs.indexOf(job2));
+
+export const JOB_LAYOUT = [
+  ['PLD', 'WAR', 'DRK', 'GNB'],
+  ['WHM', 'SCH', 'AST', 'SGE'],
+  ['MNK', 'DRG', 'NIN', 'SAM', 'RPR', 'VPR'],
+  ['BRD', 'MCH', 'DNC'],
+  ['BLM', 'SMN', 'RDM', 'PCT'],
+  [null],
+] satisfies (Enums<'job'> | null)[][];

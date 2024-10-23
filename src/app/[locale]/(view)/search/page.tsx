@@ -1,6 +1,6 @@
 'use server';
 
-import { buildMaxPageQuery, buildStrategiesDataQuery } from '@/lib/queries/server';
+import { buildMaxPageQuery, buildRaidsDataQuery, buildStrategiesDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
 import {
   DEFAULT_LIMIT,
@@ -52,7 +52,7 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
   return (
     <div className="flex flex-col w-full max-w-screen-xl px-4 py-1">
       <div className="px-4 mt-2 mb-8">
-        <SearchForm q={q ?? ''} />
+        <SearchForm q={q ?? ''} dataPromise={buildRaidsDataQuery(supabase)} />
         {qExist && paramValid && (
           <>
             <StrategyTable dataPromise={buildStrategiesDataQuery(supabase, { q, raid, version, page, limit, sort })} />

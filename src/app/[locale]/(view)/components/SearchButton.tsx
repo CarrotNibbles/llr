@@ -14,7 +14,6 @@ import { type SearchStrategiesDataType, buildSearchButtonStrategiesDataQuery } f
 import { createClient } from '@/lib/supabase/client';
 import {
   DEFAULT_LIMIT,
-  Q_PARAM,
   SEARCH_BUTTON_LIMIT,
   SEARCH_BUTTON_MOBILE_LIMIT,
   buildSearchURL,
@@ -93,7 +92,7 @@ const SearchButtonForm: React.FC<SearchButtonFormProps> = ({ limit, closeForm, c
   const [searchResult, setSearchResult] = useState<SearchStrategiesDataType>([]);
 
   const formSchema = z.object({
-    [Q_PARAM]: z.string({ required_error: '검색 문자열을 입력하세요.' }), //.min(5, '5글자 이상 입력해주세요.'),
+    q: z.string({ required_error: '검색 문자열을 입력하세요.' }), //.min(5, '5글자 이상 입력해주세요.'),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -114,7 +113,7 @@ const SearchButtonForm: React.FC<SearchButtonFormProps> = ({ limit, closeForm, c
   };
 
   const onDetailedClick = () => {
-    router.push(buildSearchURL(searchParams, { q: form.getValues(Q_PARAM), page: 1, limit: DEFAULT_LIMIT }));
+    router.push(buildSearchURL(searchParams, { q: form.getValues('q'), page: 1, limit: DEFAULT_LIMIT }));
     closeForm();
   };
 
@@ -124,7 +123,7 @@ const SearchButtonForm: React.FC<SearchButtonFormProps> = ({ limit, closeForm, c
         <form onSubmit={form.handleSubmit(onSubmit)} className={className} {...props}>
           <FormField
             control={form.control}
-            name={Q_PARAM}
+            name="q"
             render={({ field }) => (
               <FormItem>
                 <div className="flex border focus-within:outline-none focus-within:ring-1 focus-within:ring-ring">
@@ -153,7 +152,7 @@ const SearchButtonForm: React.FC<SearchButtonFormProps> = ({ limit, closeForm, c
         </form>
       </Form>
       <SearchButtonResult
-        q={form.getValues(Q_PARAM)}
+        q={form.getValues('q')}
         searchState={searchState}
         searchResult={searchResult}
         limit={limit}

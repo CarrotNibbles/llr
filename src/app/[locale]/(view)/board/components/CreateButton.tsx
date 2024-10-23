@@ -78,7 +78,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
       is_editable: true,
       is_public: values.public === 'public',
       version: 7,
-      subversion: 0,
+      subversion: 0, // TODO: Add something like current_version
       created_at: new Date().toISOString(),
       modified_at: new Date().toISOString(),
       password: values.password,

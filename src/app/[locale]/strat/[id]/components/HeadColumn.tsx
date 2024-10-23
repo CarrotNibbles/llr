@@ -16,7 +16,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useToast } from '@/components/ui/use-toast';
 import type { Enums } from '@/lib/database.types';
 import type { ActionDataType } from '@/lib/queries/server';
-import { getOrderedRole } from '@/lib/utils';
+import { getOrderedRole, JOB_LAYOUT } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
 import { useState } from 'react';
@@ -66,15 +66,6 @@ export const HeadColumn = ({
   const [popoverOpen, setPopoverOpen] = useState(false);
   const t = useTranslations('StratPage.HeadColumn');
   const tActions = useTranslations('StratPage.Actions');
-
-  const JOB_LAYOUT = [
-    ['PLD', 'WAR', 'DRK', 'GNB'],
-    ['WHM', 'SCH', 'AST', 'SGE'],
-    ['MNK', 'DRG', 'NIN', 'SAM', 'RPR', 'VPR'],
-    ['BRD', 'MCH', 'DNC'],
-    ['BLM', 'SMN', 'RDM', 'PCT'],
-    [null],
-  ] satisfies (Enums<'job'> | null)[][];
 
   return (
     <div className="flex flex-col p-1 border-r-[1px] justify-center items-center space-y-1">
