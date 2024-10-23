@@ -58,19 +58,19 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
   const tPatches = useTranslations('Common.FFXIVPatches');
 
   const formSchema = z.object({
-    q: z.string(),
+    q: z.string().optional(),
     raid: z.string().optional(),
     patch: z.string().regex(patchRegex).optional(),
-    jobs: z.array(z.enum(ALL_SELECTABLE_JOBS)).default([]),
+    jobs: z.array(z.enum(ALL_SELECTABLE_JOBS)).optional(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { q, jobs: [] },
+    defaultValues: { q, raid: '', patch: '', jobs: [] },
   });
 
   useEffect(() => {
-    form.setValue('q', q ?? '');
+    form.setValue('q', q);
     form.setValue('raid', raid);
     form.setValue('patch', patch && `${patch.version}.${patch.subversion}`);
     form.setValue('jobs', jobs ?? []);
@@ -79,12 +79,9 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (isSearching) return;
 
-    if (
-      form.getValues('q') === '' &&
-      values.raid === undefined &&
-      form.getValues('patch') === undefined &&
-      form.getValues('jobs').length === 0
-    ) {
+    const { q, raid, patch, jobs } = values;
+
+    if (q === '' && raid === undefined && patch === undefined && (jobs === undefined || jobs.length === 0)) {
       setErrorMessage('Please set at least one field');
       return;
     }
@@ -95,15 +92,15 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
       buildSearchURL(
         searchParams,
         {
-          raid: values.raid,
-          jobs: values.jobs,
+          raid: raid,
+          jobs: jobs,
           page: 1,
           limit: DEFAULT_LIMIT,
           sort: DEFAULT_SORT,
           q: values.q,
         },
         {
-          patch: values.patch,
+          patch: patch,
         },
       ),
     );
@@ -121,7 +118,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
           <FormField
             control={form.control}
             name="q"
-            render={({ field }) => (
+            render={({ field: { value: q, ...field } }) => (
               <FormItem className="flex-grow">
                 <div>
                   <FormControl>
@@ -129,6 +126,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                       type="search"
                       placeholder="제목"
                       className="border-muted-foreground bg-background"
+                      value={q ?? ''}
                       {...field}
                     />
                   </FormControl>
@@ -214,7 +212,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
               <FormField
                 control={form.control}
                 name="jobs"
-                render={({ field }) => (
+                render={({ field: { value: jobs, ...field } }) => (
                   <FormItem className="md:col-span-1 xl:col-span-2">
                     <FormLabel>포함 직업</FormLabel>
                     <Popover>
@@ -225,14 +223,14 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                             role="combobox"
                             className={cn(
                               'w-full h-auto min-h-9 inline-flex text-left justify-between hover:bg-background hover:ring-ring hover:ring-1',
-                              field.value.length === 0 && 'text-muted-foreground',
+                              jobs === undefined || (jobs.length === 0 && 'text-muted-foreground'),
                             )}
                           >
-                            {field.value.length === 0 ? (
+                            {jobs === undefined || jobs.length === 0 ? (
                               '모든 직업'
                             ) : (
                               <div className="grid grid-cols-4 xs:grid-cols-8 gap-2">
-                                {field.value.map((job) => (
+                                {jobs.map((job) => (
                                   <JobIcon key={job} job={job} role={getRole(job)} className="w-4 h-4 xs:w-5 xs:h-5" />
                                 ))}
                               </div>
@@ -242,7 +240,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                         </FormControl>
                       </PopoverTrigger>
                       <PopoverContent>
-                        <JobToggleGroup sort maxCount={8} {...field} />
+                        <JobToggleGroup sort maxCount={8} value={jobs ?? []} {...field} />
                       </PopoverContent>
                     </Popover>
                   </FormItem>
