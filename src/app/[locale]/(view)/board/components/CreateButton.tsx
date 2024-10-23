@@ -18,6 +18,7 @@ import { createClient } from '@/lib/supabase/client';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CaretSortIcon, CheckIcon, Pencil1Icon } from '@radix-ui/react-icons';
+import { sha256 } from 'hash-wasm';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
@@ -81,7 +82,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
       subversion: 0, // TODO: Add something like current_version
       created_at: new Date().toISOString(),
       modified_at: new Date().toISOString(),
-      password: values.password,
+      password: await sha256(values.password),
     };
     const stratResponse = await buildClientInsertStrategyQuery(supabase, stratPrototype).select('id');
 
