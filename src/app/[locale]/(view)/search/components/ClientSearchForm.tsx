@@ -82,7 +82,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
 
     const { q, raid, patch, jobs } = values;
 
-    if (q === '' && raid === undefined && patch === undefined && (jobs === undefined || jobs.length === 0)) {
+    if (q === undefined || q === '' && raid === undefined && patch === undefined && (jobs === undefined || jobs.length === 0)) {
       setErrorMessage('Please set at least one field');
       return;
     }
@@ -132,7 +132,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                     />
                   </FormControl>
                   {errorMessage !== null && (
-                    <p className="text-[0.8rem] font-medium text-destructive">{errorMessage}</p>
+                    <p className="text-[0.8rem] mt-0.5 font-medium text-destructive">{errorMessage}</p>
                   )}
                 </div>
               </FormItem>
