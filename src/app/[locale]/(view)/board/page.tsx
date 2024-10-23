@@ -8,6 +8,7 @@ import {
   DEFAULT_SORT,
   buildBoardURL,
   tryParseInt,
+  tryParseJobs,
   tryParsePatch,
 } from '@/lib/utils';
 import { redirect } from 'next/navigation';
@@ -29,15 +30,17 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
   const page = tryParseInt(searchParams.page, false);
   const limit = tryParseInt(searchParams.limit, false);
   const patch = tryParsePatch(searchParams.patch) ?? undefined;
+  const jobs = tryParseJobs(searchParams.jobs) ?? undefined;
   const sort = searchParams.sort;
 
   // Redirect to default if page or limit is not a valid number
   const patchValid = searchParams.patch === undefined || patch !== undefined;
+  const jobsValid = searchParams.jobs === undefined || jobs === undefined;
   const pageValid = page !== null && page > 0;
   const limitValid = limit !== null && limit > 0;
   const sortValid = sort === 'like' || sort === 'recent';
-  const paramValid = patchValid && pageValid && limitValid && sortValid;
-  if (!paramValid)
+  const paramsValid = patchValid && jobsValid && pageValid && limitValid && sortValid;
+  if (!paramsValid)
     redirect(
       buildBoardURL(searchParams, {
         patch: patchValid ? patch : undefined,
@@ -51,7 +54,7 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
     <div className="flex flex-col w-full max-w-screen-xl px-4 py-1">
       <BoardSubheader />
       <div className="px-4 mt-2 mb-8">
-        <StrategyTable dataPromise={buildStrategiesDataQuery(supabase, { raid, patch, page, limit, sort })} />
+        <StrategyTable dataPromise={buildStrategiesDataQuery(supabase, { raid, patch, page, limit, sort, jobs: ['NIN'] })} />
         <div className="w-full flex flex-col-reverse lg:grid lg:grid-cols-3 gap-y-2 mt-2">
           <div />
           <ViewPagination currentPage={page} dataPromise={buildMaxPageQuery(supabase, limit, { raid, patch })} />

@@ -142,11 +142,20 @@ export const tryParsePatch = (input: string | undefined | null): Patch | null =>
   return { version, subversion };
 };
 
+export const tryParseJobs = (input: string | undefined | null): SelectableJob[] | null => {
+  if (input === undefined || input === null) return null;
+
+  const jobs = input.split(',');
+  if (jobs.some((job) => !ALL_SELECTABLE_JOBS.includes(job as SelectableJob))) return null;
+
+  return jobs as SelectableJob[];
+};
+
 export const buildURL = (
   url: string,
   ...searchParams: (
-    | Record<string, string | number | Patch | null | undefined>
-    | [string, string | number | Patch | null | undefined]
+    | Record<string, string | number | Patch | null | undefined | string[]>
+    | [string, string | number | Patch | null | undefined | string[]]
     | URLSearchParams
     | ReadonlyURLSearchParams
   )[]
@@ -160,6 +169,7 @@ export const buildURL = (
       if (value === null || value === undefined) newSearchParams.delete(key);
       else if (typeof value === 'string') newSearchParams.set(key, value);
       else if (typeof value === 'number') newSearchParams.set(key, value.toString());
+      else if (Array.isArray(value)) newSearchParams.set(key, value.join(','));
       else newSearchParams.set(key, `${value.version}.${value.subversion}`);
     } else if (searchParam instanceof URLSearchParams || searchParam instanceof ReadonlyURLSearchParams) {
       for (const [key, value] of searchParam.entries()) {
@@ -172,6 +182,7 @@ export const buildURL = (
         if (value === undefined || value === null) newSearchParams.delete(key);
         else if (typeof value === 'string') newSearchParams.set(key, value);
         else if (typeof value === 'number') newSearchParams.set(key, value.toString());
+        else if (Array.isArray(value)) newSearchParams.set(key, value.join(','));
         else newSearchParams.set(key, `${value.version}.${value.subversion}`);
       }
     }
@@ -186,10 +197,12 @@ export const LIMIT_PARAM = 'limit';
 export const SORT_PARAM = 'sort';
 export const RAID_PARAM = 'raid';
 export const PATCH_PARAM = 'patch';
+export const JOBS_PARAM = 'jobs';
 
 export type BoardSearchParamsRaw = {
   [RAID_PARAM]?: string;
   [PATCH_PARAM]?: string;
+  [JOBS_PARAM]?: string;
   [PAGE_PARAM]: string;
   [LIMIT_PARAM]: string;
   [SORT_PARAM]: string;
@@ -197,6 +210,7 @@ export type BoardSearchParamsRaw = {
 export type BoardSearchParamsParsed = {
   [RAID_PARAM]?: string;
   [PATCH_PARAM]?: Patch;
+  [JOBS_PARAM]?: SelectableJob[];
   [PAGE_PARAM]: number;
   [LIMIT_PARAM]: number;
   [SORT_PARAM]: SortOption;

@@ -1,40 +1,56 @@
 'use client';
 
-import { Icons } from '@/components/icons';
 import { JobIcon } from '@/components/JobIcon';
+import { Icons } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { RaidsDataType } from '@/lib/queries/server';
 import {
   ALL_PATCHES,
   ALL_SELECTABLE_JOBS,
-  buildSearchURL,
-  cn,
   DEFAULT_LIMIT,
   DEFAULT_SORT,
+  type Patch,
+  type SelectableJob,
+  buildSearchURL,
+  cn,
   getRole,
   patchRegex,
 } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CollapsibleContent } from '@radix-ui/react-collapsible';
 import { CaretSortIcon, CheckIcon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
+import { useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { JobToggleGroup } from './JobToggleGroup';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useTranslations } from 'next-intl';
 
 type ClientSearchFormProps = Readonly<
-  Omit<React.ComponentProps<'form'>, 'onSubmit'> & { q: string; raidsData: RaidsDataType }
+  Omit<React.ComponentProps<'form'>, 'onSubmit'> & {
+    q?: string;
+    raid?: string;
+    patch?: Patch;
+    jobs?: SelectableJob[];
+    raidsData: RaidsDataType;
+  }
 >;
 
-const ClientSearchForm: React.FC<ClientSearchFormProps> = ({ q, raidsData, className, ...props }) => {
+const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
+  q,
+  raid,
+  patch,
+  jobs,
+  raidsData,
+  className,
+  ...props
+}) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [isSearching, setIsSearching] = useState(false);
@@ -44,8 +60,8 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({ q, raidsData, class
   const formSchema = z.object({
     q: z.string(),
     raid: z.string().optional(),
-    jobs: z.array(z.enum(ALL_SELECTABLE_JOBS)).default([]),
     patch: z.string().regex(patchRegex).optional(),
+    jobs: z.array(z.enum(ALL_SELECTABLE_JOBS)).default([]),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -54,17 +70,20 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({ q, raidsData, class
   });
 
   useEffect(() => {
-    form.setValue('q', q);
-  }, [q, form]);
+    form.setValue('q', q ?? '');
+    form.setValue('raid', raid);
+    form.setValue('patch', patch && `${patch.version}.${patch.subversion}`);
+    form.setValue('jobs', jobs ?? []);
+  }, [q, raid, patch, jobs, form]);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (isSearching) return;
 
     if (
+      form.getValues('q') === '' &&
       values.raid === undefined &&
       form.getValues('patch') === undefined &&
-      form.getValues('jobs').length === 0 &&
-      form.getValues('q') === ''
+      form.getValues('jobs').length === 0
     ) {
       setErrorMessage('Please set at least one field');
       return;
@@ -77,6 +96,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({ q, raidsData, class
         searchParams,
         {
           raid: values.raid,
+          jobs: values.jobs,
           page: 1,
           limit: DEFAULT_LIMIT,
           sort: DEFAULT_SORT,

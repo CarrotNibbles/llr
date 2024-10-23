@@ -2,7 +2,7 @@
 
 import type { QueryData } from '@supabase/supabase-js';
 import type { createClient } from '../supabase/server';
-import type { SortOption, Patch } from '../utils';
+import type { SortOption, Patch, SelectableJob } from '../utils';
 
 export const buildActionDataQuery = (supabase: ReturnType<typeof createClient>) => {
   return supabase.from('actions').select('*, mitigations(*)').order('priority');
@@ -12,9 +12,9 @@ export type ActionDataType = QueryData<ReturnType<typeof buildActionDataQuery>>;
 
 export const buildStrategyCountQuery = async (
   supabase: ReturnType<typeof createClient>,
-  params: { q?: string; raid?: string; patch?: Patch },
+  params: { q?: string; raid?: string; patch?: Patch; jobs?: SelectableJob[] },
 ) => {
-  const { q, raid, patch } = params;
+  const { q, raid, patch, jobs } = params;
 
   let query = supabase
     .from('strategies')
@@ -24,7 +24,8 @@ export const buildStrategyCountQuery = async (
   if (raid !== undefined) query = query.eq('raids.semantic_key', raid);
   if (patch !== undefined) query = query.eq('version', patch.version).eq('subversion', patch.subversion);
   if (q !== undefined) query = query.ilike('name', `%${q}%`);
-  
+  // if (jobs !== undefined) query = query.contains('strategy_players!inner(job)', jobs)
+
   const res = await query;
   return res;
 };
@@ -32,7 +33,7 @@ export const buildStrategyCountQuery = async (
 export const buildMaxPageQuery = async (
   supabase: ReturnType<typeof createClient>,
   limit: number,
-  params: { q?: string; raid?: string; patch?: Patch },
+  params: { q?: string; raid?: string; patch?: Patch, jobs?: SelectableJob[] },
 ) => {
   const { count, error } = await buildStrategyCountQuery(supabase, params);
   if (error) return { data: null, error };
@@ -50,9 +51,10 @@ export const buildStrategiesDataQuery = async (
     page: number;
     limit: number;
     sort: SortOption;
+    jobs?: SelectableJob[];
   },
 ) => {
-  const { q, raid, patch, page, limit, sort } = params;
+  const { q, raid, patch, page, limit, sort, jobs } = params;
   let query = supabase
     .from('strategies')
     .select(
@@ -66,13 +68,14 @@ export const buildStrategiesDataQuery = async (
   if (raid !== undefined) query = query.eq('raids.semantic_key', raid);
   if (patch !== undefined) query = query.eq('version', patch.version).eq('subversion', patch.subversion);
   if (q !== undefined) query = query.ilike('name', `%${q}%`);
-  
+  // if (jobs !== undefined) query = query.contains('strategy_players!inner(job)', jobs)
+
   if (sort === 'like') query = query.order('like_counts(total_likes)', { ascending: false });
   else if (sort === 'recent') query = query.order('created_at', { ascending: false });
 
   query = query.range((page - 1) * limit, page * limit - 1);
 
-  const res = await query
+  const res = await query;
 
   if (res.data) for (const strategy of res.data) strategy.strategy_players.sort((a, b) => a.order - b.order);
 
