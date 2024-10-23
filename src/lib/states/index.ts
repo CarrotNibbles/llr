@@ -18,4 +18,4 @@ export function useCheckedRecoilState<T>(recoilState: RecoilState<T>, defaultVal
 
 export { useFilterState } from './filter';
 export { useUserState } from './user';
-export { useZoomState } from './zoom';
+export { useZoomState, usePixelPerFrame } from './zoom';

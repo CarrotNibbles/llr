@@ -1,99 +1,49 @@
 {
-  "StratPage": {
-    "CoreArea": {},
-    "DamageText": {
-      "DamageOption": {
-        "Share": "Stack",
-        "RaidWide": "Raid-wide",
-        "Unknown": "???"
+  "Common": {
+    "FFXIVPatches": {
+      "2": {
+        "0": "A Realm Reborn",
+        "1": "A Realm Awoken",
+        "2": "Through the Maelstrom",
+        "3": "Defenders of Eorzea",
+        "4": "Dreams of Ice",
+        "5": "Before the Fall"
+      },
+      "3": {
+        "0": "Heavensward",
+        "1": "As Goes Light, So Goes Darkness",
+        "2": "The Gears of Change",
+        "3": "Revenge of the Horde",
+        "4": "Soul Surrender",
+        "5": "The Far Edge of Fate"
+      },
+      "4": {
+        "0": "Stormblood",
+        "1": "The Legend Returns",
+        "2": "Rise of a New Sun",
+        "3": "Under the Moonlight",
+        "4": "Prelude in Violet",
+        "5": "A Requiem for Heroes"
+      },
+      "5": {
+        "0": "Shadowbringers",
+        "1": "Vows of Virtue, Deeds of Cruelty",
+        "2": "Echoes of a Fallen Star",
+        "3": "Reflections in Crystal",
+        "4": "Futures Rewritten",
+        "5": "Death Unto Dawn"
+      },
+      "6": {
+        "0": "Endwalker",
+        "1": "Newfound Adventure",
+        "2": "Buried Memory",
+        "3": "Gods Revel, Lands Tremble",
+        "4": "The Dark Throne",
+        "5": "Growing Light"
+      },
+      "7": {
+        "0": "Dawntrail"
       }
-    },
-    "EditColumn": {
-      "Lock": "Lock",
-      "Delete": "Delete"
-    },
-    "HeadColumn": {
-      "JobChange": {
-        "JobChange": "Change Job",
-        "ConfirmTitle": "Confirm Job Change",
-        "Confirm": "Change Job",
-        "Cancel": "Cancel",
-        "Warning": "Once you change the selected job, the strategy for the previous job will be permanently lost. Even if you change back to the previous job, the strategy will not be restored. Do you still wish to continue?",
-        "Complete": "Job Change Complete"
-      }
-    },
-    "StratHeader": {
-      "StratInfo": {
-        "DialogTitle": "Information",
-        "StrategyTitle": "Strategy Title",
-        "Duty": "Duty",
-        "FFXIVPatch": "Patch Version",
-        "LevelSync": "Level Sync",
-        "ItemLevelSync": "Item Level Sync",
-        "PlayerCount": "Player Count",
-        "PartyBonus": "Party Bonus",
-        "HPTank": "HP* (Tank)",
-        "HPHealer": "HP* (Healer)",
-        "HealingTank": "400p Healing* (Tank)",
-        "HealingHealer": "400p Healing* (Healer)",
-        "Disclaimer": "* HP and healing values are rough estimates."
-      },
-      "GimmickType": {
-        "AutoAttack": "Auto Attack",
-        "Raidwide": "Raid-Wide",
-        "Tankbuster": "Tankbuster",
-        "Hybrid": "Others",
-        "Avoidable": "AoE",
-        "Enrage": "Enrage"
-      },
-      "EditPermission": {
-        "Description": "Please enter the password to edit this strategy.",
-        "Acquire": "Acquire Edit Permission",
-        "Submit": "Submit",
-        "Success": "Acquired edit permission.",
-        "Failure": "Please confirm your password.",
-        "Complete": "Acquired edit permission.",
-        "Password": "Password"
-      },
-      "Share": {
-        "Success": "Link copied to clipboard!",
-        "FailureTitle": "There was an Error",
-        "FailureDescription": "An error occurred while copying the link to clipboard."
-      },
-      "StratSettings": {
-        "Title": "Settings",
-        "Name": "Strategy Name",
-        "isPublic": "Public Strategy",
-        "isPublicDescription": "If you make the strategy public, other users can search and view it.",
-        "isEditable": "Editable",
-        "isEditableDescription": "Allows the strategy to be edited with a password.",
-        "Patch": "Base Patch Version",
-        "PatchPlaceholder": "Please select a patch version.",
-        "PatchDescription": "Select the base patch version.",
-        "Password": "Edit Password",
-        "DeleteStrategy": "Delete Strategy",
-        "AlertTitle": "Warning",
-        "AlertDescription": "If you change the settings to be more restrictive, other sessions will be disconnected.",
-        "Save": "Save"
-      },
-      "LikeButton": {
-        "Liked": "Like added.",
-        "Unliked": "Like removed.",
-        "CaptchaFailed": "Failed to verify CAPTCHA.",
-        "StrategyNotFound": "Strategy not found.",
-        "AlreadyLiked": "A like has already been added from the same IP within the last 24 hours.",
-        "Error": "An error occurred while adding the like.",
-        "CaptchaHeading": "CAPTCHA Verification",
-        "CaptchaLoading": "Loading CAPTCHA..."
-      }
-    },
-    "GimmickLine": {
-      "Etc": "and {count} more"
-    },
-    "StratSyncProvider": {
-      "ErrorTitle": "Connection Lost",
-      "ErrorDescription": "Lost connection to the server. Please refresh the page and try again.",
-      "Refresh": "Refresh"
     },
     "Actions": {
       "macrocosmos": "Macrocosmos",
@@ -181,51 +131,6 @@
       "P10S": "Anabaseios: The Tenth Circle (Savage)",
       "P11S": "Anabaseios: The Eleventh Circle (Savage)"
     },
-    "FFXIVPatches": {
-      "2": {
-        "0": "A Realm Reborn",
-        "1": "A Realm Awoken",
-        "2": "Through the Maelstrom",
-        "3": "Defenders of Eorzea",
-        "4": "Dreams of Ice",
-        "5": "Before the Fall"
-      },
-      "3": {
-        "0": "Heavensward",
-        "1": "As Goes Light, So Goes Darkness",
-        "2": "The Gears of Change",
-        "3": "Revenge of the Horde",
-        "4": "Soul Surrender",
-        "5": "The Far Edge of Fate"
-      },
-      "4": {
-        "0": "Stormblood",
-        "1": "The Legend Returns",
-        "2": "Rise of a New Sun",
-        "3": "Under the Moonlight",
-        "4": "Prelude in Violet",
-        "5": "A Requiem for Heroes"
-      },
-      "5": {
-        "0": "Shadowbringers",
-        "1": "Vows of Virtue, Deeds of Cruelty",
-        "2": "Echoes of a Fallen Star",
-        "3": "Reflections in Crystal",
-        "4": "Futures Rewritten",
-        "5": "Death Unto Dawn"
-      },
-      "6": {
-        "0": "Endwalker",
-        "1": "Newfound Adventure",
-        "2": "Buried Memory",
-        "3": "Gods Revel, Lands Tremble",
-        "4": "The Dark Throne",
-        "5": "Growing Light"
-      },
-      "7": {
-        "0": "Dawntrail"
-      }
-    },
     "Gimmicks": {
       "auto_attack": "Auto Attack",
       "ultima": "Ultima",
@@ -254,6 +159,111 @@
       "temp_jade": "Jade?",
       "temp_landing": "Landing?",
       "temp_judgement": "Judgement?"
+    }
+  },
+  "ErrorPage": {
+    "NotFound": "The page you are looking for cannot be found.",
+    "Error": "An unexpected error has occurred.",
+    "GoHome": "Return to home"
+  },
+  "StratPage": {
+    "CoreArea": {},
+    "DamageText": {
+      "DamageOption": {
+        "Share": "Stack",
+        "RaidWide": "Raid-wide",
+        "Unknown": "???"
+      }
+    },
+    "EditColumn": {
+      "Lock": "Lock",
+      "Delete": "Delete",
+      "ActionOverlapError": "You cannot place this due to the action cooldown."
+    },
+    "HeadColumn": {
+      "JobChange": {
+        "JobChange": "Change Job",
+        "ConfirmTitle": "Confirm Job Change",
+        "Confirm": "Change Job",
+        "Cancel": "Cancel",
+        "Warning": "Once you change the selected job, the strategy for the previous job will be permanently lost. Even if you change back to the previous job, the strategy will not be restored. Do you still wish to continue?",
+        "Complete": "Job Change Complete"
+      }
+    },
+    "StratHeader": {
+      "StratInfo": {
+        "DialogTitle": "Information",
+        "StrategyTitle": "Strategy Title",
+        "Duty": "Duty",
+        "FFXIVPatch": "Patch Version",
+        "LevelSync": "Level Sync",
+        "ItemLevelSync": "Item Level Sync",
+        "PlayerCount": "Player Count",
+        "PartyBonus": "Party Bonus",
+        "HPTank": "HP* (Tank)",
+        "HPHealer": "HP* (Healer)",
+        "HealingTank": "400p Healing* (Tank)",
+        "HealingHealer": "400p Healing* (Healer)",
+        "Disclaimer": "* HP and healing values are rough estimates."
+      },
+      "GimmickType": {
+        "AutoAttack": "Auto Attack",
+        "Raidwide": "Raid-Wide",
+        "Tankbuster": "Tankbuster",
+        "Hybrid": "Others",
+        "Avoidable": "AoE",
+        "Enrage": "Enrage"
+      },
+      "EditPermission": {
+        "Description": "Please enter the password to edit this strategy.",
+        "Acquire": "Acquire Edit Permission",
+        "Submit": "Submit",
+        "Success": "Acquired edit permission.",
+        "Failure": "Please confirm your password.",
+        "Complete": "Acquired edit permission.",
+        "Password": "Password"
+      },
+      "Share": {
+        "Success": "Link copied to clipboard!",
+        "FailureTitle": "There was an Error",
+        "FailureDescription": "An error occurred while copying the link to clipboard."
+      },
+      "StratSettings": {
+        "Title": "Settings",
+        "Name": "Strategy Name",
+        "isPublic": "Public Strategy",
+        "isPublicDescription": "If you make the strategy public, other users can search and view it.",
+        "isEditable": "Editable",
+        "isEditableDescription": "Allows the strategy to be edited with a password.",
+        "Patch": "Base Patch Version",
+        "PatchPlaceholder": "Please select a patch version.",
+        "PatchDescription": "Select the base patch version.",
+        "Password": "Edit Password",
+        "DeleteStrategy": "Delete Strategy",
+        "AlertTitle": "Warning",
+        "AlertDescription": "If you change the settings to be more restrictive, other sessions will be disconnected.",
+        "Save": "Save",
+        "Saved": "Saved!",
+        "Error": "An error occurred while saving the settings."
+      },
+      "LikeButton": {
+        "Liked": "Like added.",
+        "Unliked": "Like removed.",
+        "CaptchaFailed": "Failed to verify CAPTCHA.",
+        "StrategyNotFound": "Strategy not found.",
+        "AlreadyLiked": "A like has already been added from the same IP within the last 24 hours.",
+        "Error": "An error occurred while adding the like.",
+        "CaptchaHeading": "CAPTCHA Verification",
+        "CaptchaLoading": "Loading CAPTCHA..."
+      }
+    },
+    "GimmickLine": {
+      "Etc": "and {count} more"
+    },
+    "StratSyncProvider": {
+      "ErrorTitle": "Connection Lost",
+      "ErrorDescription": "Lost connection to the server. Please refresh the page and try again.",
+      "Refresh": "Refresh"
     }
   }
 }

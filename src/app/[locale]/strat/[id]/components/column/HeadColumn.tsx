@@ -16,11 +16,11 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useToast } from '@/components/ui/use-toast';
 import type { Enums } from '@/lib/database.types';
 import type { ActionDataType } from '@/lib/queries/server';
-import { getOrderedRole, JOB_LAYOUT } from '@/lib/utils';
+import { JOB_LAYOUT, getOrderedRole } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
 import { useState } from 'react';
-import { columnWidth, columnWidthLarge } from './coreAreaConstants';
+import { columnWidth } from '../../utils/constants';
 
 const HeadSubColumn = ({
   job,
@@ -34,13 +34,21 @@ const HeadSubColumn = ({
   const src = job && iconFilename ? `/icons/action/${job}/${iconFilename}.png` : null;
 
   return (
-    <div
-      className={`flex flex-shrink-0 ${columnWidth} ${columnWidthLarge} overflow-hidden justify-center items-end relative`}
-    >
+    <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden justify-center items-end relative`}>
       <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>
           <div className="aspect-square relative w-full cursor-pointer">
-            {src && <Image src={src} alt={name} layout="fill" objectFit="contain" />}
+            {src && (
+              <Image
+                src={src}
+                alt={name}
+                layout="fill"
+                objectFit="contain"
+                className="pointer-events-none select-none"
+                draggable={false}
+                unselectable="on"
+              />
+            )}
           </div>
         </TooltipTrigger>
         <TooltipContent className="pointer-events-none">{name}</TooltipContent>
@@ -65,17 +73,17 @@ export const HeadColumn = ({
 
   const [popoverOpen, setPopoverOpen] = useState(false);
   const t = useTranslations('StratPage.HeadColumn');
-  const tActions = useTranslations('StratPage.Actions');
+  const tActions = useTranslations('Common.Actions');
 
   return (
     <div className="flex flex-col p-1 border-r-[1px] justify-center items-center space-y-1">
       <div className="flex flex-grow relative">
-        <div className={`aspect-square relative ${columnWidth} ${columnWidthLarge} flex items-center`}>
+        <div className={`aspect-square relative ${columnWidth} flex items-center`}>
           <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
             <AlertDialog>
               <PopoverTrigger className={elevated ? 'cursor-pointer' : 'cursor-not-allowed'} disabled={!elevated}>
                 <span className="sr-only">Change job {job}</span>
-                <JobIcon job={job} role={getOrderedRole(job, order)} className={`${columnWidth} ${columnWidthLarge}`} />
+                <JobIcon job={job} role={getOrderedRole(job, order)} className={`${columnWidth}`} />
               </PopoverTrigger>
               <PopoverContent className="w-auto">
                 <div className="space-y-3">
@@ -141,19 +149,13 @@ export const HeadColumn = ({
 
         {actions.length === 0 && (
           <>
-            <div
-              className={`flex flex-shrink-0 ${columnWidth} ${columnWidthLarge} overflow-hidden justify-center items-end relative`}
-            >
+            <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden justify-center items-end relative`}>
               <div className="aspect-square relative w-full" />
             </div>
-            <div
-              className={`flex flex-shrink-0 ${columnWidth} ${columnWidthLarge} overflow-hidden justify-center items-end relative`}
-            >
+            <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden justify-center items-end relative`}>
               <div className="aspect-square relative w-full" />
             </div>
-            <div
-              className={`flex flex-shrink-0 ${columnWidth} ${columnWidthLarge} overflow-hidden justify-center items-end relative`}
-            >
+            <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden justify-center items-end relative`}>
               <div className="aspect-square relative w-full" />
             </div>
           </>

@@ -12,7 +12,7 @@ const config = {
   prefix: '',
   theme: {
   	container: {
-  		center: 'true',
+  		center: true,
   		padding: '2rem',
   		screens: {
   			'2xl': '1400px'
@@ -83,7 +83,10 @@ const config = {
   		},
   		fontFamily: {
   			sans: ['var(--font-sans)', ...fontFamily.sans]
-  		}
+  		},
+      dropShadow: {
+        selection: '0 0 1.5px hsl(var(--muted-foreground))',
+      }
   	}
   },
   plugins: [require('tailwindcss-animate'), require('tailwind-scrollbar-hide')],

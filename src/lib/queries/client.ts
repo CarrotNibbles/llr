@@ -14,7 +14,7 @@ export const buildClientInsertStrategyQuery = (
 
 export const buildClientUpdateStrategyQuery = (
   supabase: ReturnType<typeof createClient>,
-  strategy: Tables<'strategies'>,
+  strategy: Partial<Tables<'strategies'>> & { id: string },
 ) => {
   return supabase.from('strategies').update(strategy).eq('id', strategy.id);
 };

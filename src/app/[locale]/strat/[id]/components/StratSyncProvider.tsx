@@ -53,7 +53,6 @@ const StratSyncLoader = (props: { strategy: string; isAuthor: boolean; editable:
           filter: `id=eq.${props.strategy}`,
         },
         (payload) => {
-          console.log('strat update', payload);
           updateStrategyData(payload.new);
         },
       )
@@ -66,7 +65,6 @@ const StratSyncLoader = (props: { strategy: string; isAuthor: boolean; editable:
           filter: `strategy=eq.${props.strategy}`,
         },
         (payload) => {
-          console.log('like_counts update', payload);
           updateStrategyData({ like_counts: payload.new as Tables<'like_counts'> });
         },
       )
@@ -79,7 +77,6 @@ const StratSyncLoader = (props: { strategy: string; isAuthor: boolean; editable:
           filter: `strategy=eq.${props.strategy}`,
         },
         (payload) => {
-          console.log('user_likes insert', payload);
           updateStrategyData({ user_likes: [payload.new as Tables<'user_likes'>] });
         },
       )
@@ -92,7 +89,6 @@ const StratSyncLoader = (props: { strategy: string; isAuthor: boolean; editable:
           filter: `strategy=eq.${props.strategy}`,
         },
         (payload) => {
-          console.log('user_likes delete', payload);
           updateStrategyData({ user_likes: [] });
         },
       )
