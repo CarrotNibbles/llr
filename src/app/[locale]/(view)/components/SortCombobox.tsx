@@ -3,7 +3,7 @@
 import { Button, type ButtonProps } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { DEFAULT_LIMIT, type SortOption, cn, allSortOptions } from '@/lib/utils';
+import { DEFAULT_LIMIT, type SortOption, cn, ALL_SORT_OPTIONS } from '@/lib/utils';
 import { CaretDownIcon, CaretUpIcon } from '@radix-ui/react-icons';
 import type React from 'react';
 import { useState } from 'react';
@@ -43,7 +43,7 @@ export const SortCombobox: React.FC<SortComboboxProps> = ({ currentSort, classNa
           <CommandList>
             <CommandEmpty>Choose the number of strats to show in a page</CommandEmpty>
             <CommandGroup>
-              {allSortOptions.map((sort) => (
+              {ALL_SORT_OPTIONS.map((sort) => (
                 <CommandItem
                   className="rounded-none p-0 my-1"
                   key={sort}

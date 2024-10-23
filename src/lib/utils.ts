@@ -22,8 +22,7 @@ export type Patch = Readonly<{
 }>;
 
 export const ALL_PATCHES = [
-  { version: 2, subversion: 0 },
-  { version: 2, subversion: 1 },
+  { version: 2, subversion: 0 }, { version: 2, subversion: 1 },
   { version: 2, subversion: 2 },
   { version: 2, subversion: 3 },
   { version: 2, subversion: 4 },
@@ -240,46 +239,30 @@ export const rangeInclusive = (start: number, end: number): number[] => {
   return result;
 };
 
-export const navRaidCategories = ['Savage', 'Ultimate'] as const;
-export const allRaidCategories = ['Savage', 'Ultimate', 'Trial', 'Raid', 'Dungeon'] as const;
+export const NAV_RAID_CATEGORIES = ['Savage', 'Ultimate'] as const;
+export const ALL_RAIG_CATEGORIES = ['Savage', 'Ultimate', 'Trial', 'Raid', 'Dungeon'] as const;
 
-export const allSortOptions = ['like', 'recent'] as const;
-export type SortOption = (typeof allSortOptions)[number];
+export const ALL_SORT_OPTIONS = ['like', 'recent'] as const;
+export type SortOption = (typeof ALL_SORT_OPTIONS)[number];
 export const DEFAULT_SORT: SortOption = 'like';
 
 export type StaticAssert<T extends true> = never;
 export type TypeEqual<T, U> = [T] extends [U] ? ([U] extends [T] ? true : false) : false;
 
 export type SelectableJob = Exclude<Enums<'job'>, 'BLU' | 'LB'>;
-/* prettier-ignore-start */
-export const allSelectableJobs = [
-  'PLD',
-  'WAR',
-  'DRK',
-  'GNB',
-  'WHM',
-  'SCH',
-  'AST',
-  'SGE',
-  'MNK',
-  'DRG',
-  'NIN',
-  'SAM',
-  'RPR',
-  'VPR',
-  'BRD',
-  'MCH',
-  'DNC',
-  'BLM',
-  'SMN',
-  'RDM',
-  'PCT',
+// biome-ignore format: job array too long
+export const ALL_SELECTABLE_JOBS = [
+  'PLD', 'WAR', 'DRK', 'GNB',
+  'WHM', 'SCH', 'AST', 'SGE',
+  'MNK', 'DRG', 'NIN', 'SAM', 'RPR', 'VPR',
+  'BRD', 'MCH', 'DNC',
+  'BLM', 'SMN', 'RDM', 'PCT',
 ] as const;
 /* prettier-ignore-end */
-type SelectableJobsExhaustive = StaticAssert<TypeEqual<(typeof allSelectableJobs)[number], SelectableJob>>;
+type SelectableJobsExhaustive = StaticAssert<TypeEqual<(typeof ALL_SELECTABLE_JOBS)[number], SelectableJob>>;
 
 export const sortJobs = (jobs: SelectableJob[]) =>
-  jobs.sort((job1, job2) => allSelectableJobs.indexOf(job1) - allSelectableJobs.indexOf(job2));
+  jobs.sort((job1, job2) => ALL_SELECTABLE_JOBS.indexOf(job1) - ALL_SELECTABLE_JOBS.indexOf(job2));
 
 export const JOB_LAYOUT = [
   ['PLD', 'WAR', 'DRK', 'GNB'],

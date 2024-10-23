@@ -2,7 +2,7 @@
 
 import { type RaidsDataType, buildRaidsDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
-import { navRaidCategories, cn } from '@/lib/utils';
+import { NAV_RAID_CATEGORIES, cn } from '@/lib/utils';
 import type React from 'react';
 import { Suspense } from 'react';
 import { CreateButton } from './CreateButton';
@@ -44,7 +44,7 @@ const BoardSubheaderContent: React.FC<BoardSubheaderContentProps> = async ({ dat
     <nav>
       <div className={cn('rounded-none flex min-w-full items-center', className)} {...props}>
         <ul className="hidden sm:flex gap-x-2">
-          {navRaidCategories.map((raidCategory) => (
+          {NAV_RAID_CATEGORIES.map((raidCategory) => (
             <li key={raidCategory}>
               <RaidPopover
                 name={raidCategory.toUpperCase()}

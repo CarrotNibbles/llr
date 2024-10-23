@@ -9,7 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import type { RaidsDataType } from '@/lib/queries/server';
-import { allSelectableJobs, buildSearchURL, cn, getRole } from '@/lib/utils';
+import { ALL_SELECTABLE_JOBS, buildSearchURL, cn, getRole } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CollapsibleContent } from '@radix-ui/react-collapsible';
 import { CaretSortIcon, CheckIcon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
@@ -31,7 +31,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({ q, raidsData, class
   const formSchema = z.object({
     q: z.string({ required_error: '검색 문자열을 입력하세요.' }), //.min(3, '3글자 이상 입력해주세요.'),
     raid: z.string().optional(),
-    jobs: z.array(z.enum(allSelectableJobs)).default([]),
+    jobs: z.array(z.enum(ALL_SELECTABLE_JOBS)).default([]),
     version: z.number().min(2).optional(),
     subversion: z.number().min(0).max(5).optional(),
   });
