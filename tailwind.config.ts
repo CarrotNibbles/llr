@@ -19,6 +19,10 @@ const config = {
   		}
   	},
   	extend: {
+			screens: {
+				'xs': '480px',
+				'capped': '1300px'
+			},
   		colors: {
   			border: 'hsl(var(--border))',
   			input: 'hsl(var(--input))',

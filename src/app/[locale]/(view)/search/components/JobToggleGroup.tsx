@@ -10,6 +10,7 @@ type JobToggleGroup = Readonly<
   Omit<React.ComponentProps<'div'>, 'defaultValue' | 'dir'> & {
     sort?: boolean;
     value?: SelectableJob[];
+    maxCount?: number;
     onChange?: (value: SelectableJob[]) => void;
   }
 >;
@@ -18,25 +19,27 @@ export const JobToggleGroup: React.FC<JobToggleGroup> = ({
   value: externalValue,
   onChange: onValueChangeExternal,
   sort,
+  maxCount,
   className,
   ...props
 }) => {
   const [nativeValue, setNativeValue] = useState<SelectableJob[]>([]);
-  const isControlled = externalValue !== undefined
+  const isControlled = externalValue !== undefined;
+  const value = isControlled ? externalValue : nativeValue;
 
   const onValueChange = (value: SelectableJob[]) => {
     const newValue = sort ? sortJobs(value) : value;
-    if (!isControlled){
-      setNativeValue(newValue)
-      return
-    } 
-    if (onValueChangeExternal !== undefined)
-      onValueChangeExternal(newValue)
-  }
+
+    if (!isControlled) {
+      setNativeValue(newValue);
+      return;
+    }
+    if (onValueChangeExternal !== undefined) onValueChangeExternal(newValue);
+  };
 
   return (
     <ToggleGroup
-      value={isControlled ? externalValue : nativeValue}
+      value={value}
       onValueChange={onValueChange}
       type="multiple"
       className={cn('flex items-start gap-x-1 bg-background', className)}
@@ -54,7 +57,12 @@ export const JobToggleGroup: React.FC<JobToggleGroup> = ({
               className="flex flex-col gap-y-1"
             >
               {nonNullJobs.map((job) => (
-                <ToggleGroupItem key={job} value={job ?? ''} className="p-1 w-auto h-auto">
+                <ToggleGroupItem
+                  key={job}
+                  value={job ?? ''}
+                  disabled={maxCount && value.length >= maxCount ? !value.includes(job) : false}
+                  className="p-1 w-auto h-auto focus:bg-inherit"
+                >
                   <JobIcon job={job} role={getRole(job)} className="w-6 h-6" />
                 </ToggleGroupItem>
               ))}

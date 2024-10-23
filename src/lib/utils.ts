@@ -16,13 +16,15 @@ const filteredMin = (...values: Array<number | undefined>) => Math.min(...values
 const filteredMax = (...values: Array<number | undefined>) => Math.max(...values.filter(notNullOrUndefined));
 export const clamp = (num: number, min?: number, max?: number) => filteredMax(filteredMin(num, max), min);
 
+export const patchRegex = /^[234567]\.[012345]$/;
 export type Patch = Readonly<{
   version: number;
   subversion: number;
 }>;
 
 export const ALL_PATCHES = [
-  { version: 2, subversion: 0 }, { version: 2, subversion: 1 },
+  { version: 2, subversion: 0 },
+  { version: 2, subversion: 1 },
   { version: 2, subversion: 2 },
   { version: 2, subversion: 3 },
   { version: 2, subversion: 4 },
@@ -133,8 +135,6 @@ export const tryParseInt = (input: string | undefined | null, allowNegative = fa
 
 export const tryParsePatch = (input: string | undefined | null): Patch | null => {
   if (input === undefined || input === null) return null;
-
-  const patchRegex = /^\d.\d$/;
 
   if (!patchRegex.test(input)) return null;
 
