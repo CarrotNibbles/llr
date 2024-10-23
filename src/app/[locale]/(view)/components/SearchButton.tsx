@@ -236,7 +236,7 @@ const SearchButtonResult: React.FC<SearchButtonResultProps> = ({
         <TableBody>
           {searchResult.map((strat) => {
             const likeCount =
-              strat.like_counts === null ? 0 : strat.like_counts.anon_likes + strat.like_counts.user_likes;
+              strat.like_counts === null ? 0 : strat.like_counts.total_likes;
             return (
               <TableRow key={strat.id}>
                 <TableCell>

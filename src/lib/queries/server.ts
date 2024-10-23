@@ -24,7 +24,7 @@ export const buildStrategyCountQuery = async (
   if (raid !== undefined) query = query.eq('raids.semantic_key', raid);
   if (patch !== undefined) query = query.eq('version', patch.version).eq('subversion', patch.subversion);
   if (q !== undefined) query = query.ilike('name', `%${q}%`);
-
+  
   const res = await query;
   return res;
 };
@@ -58,7 +58,7 @@ export const buildStrategiesDataQuery = async (
     .select(
       `id, name, version, subversion, modified_at, created_at,
       raids!inner(name, semantic_key),
-      like_counts!inner(user_likes, anon_likes), 
+      like_counts!inner(total_likes), 
       strategy_players!inner(id, job, order)`,
     )
     .eq('is_public', true);
@@ -66,8 +66,13 @@ export const buildStrategiesDataQuery = async (
   if (raid !== undefined) query = query.eq('raids.semantic_key', raid);
   if (patch !== undefined) query = query.eq('version', patch.version).eq('subversion', patch.subversion);
   if (q !== undefined) query = query.ilike('name', `%${q}%`);
+  
+  if (sort === 'like') query = query.order('like_counts(total_likes)', { ascending: false });
+  else if (sort === 'recent') query = query.order('created_at', { ascending: false });
 
-  const res = await query.order('created_at', { ascending: false }).range((page - 1) * limit, page * limit - 1);
+  query = query.range((page - 1) * limit, page * limit - 1);
+
+  const res = await query
 
   if (res.data) for (const strategy of res.data) strategy.strategy_players.sort((a, b) => a.order - b.order);
 

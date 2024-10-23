@@ -106,7 +106,7 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
                 <div className="px-2 py-4">
                   {strategyData.like_counts === null
                     ? 0
-                    : strategyData.like_counts.anon_likes + strategyData.like_counts.user_likes}
+                    : strategyData.like_counts.total_likes}
                 </div>
               </Link>
             </TableCell>
