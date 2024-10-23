@@ -33,7 +33,7 @@ export const buildStrategyCountQuery = async (
 export const buildMaxPageQuery = async (
   supabase: ReturnType<typeof createClient>,
   limit: number,
-  params: { q?: string; raid?: string; patch?: Patch, jobs?: SelectableJob[] },
+  params: { q?: string; raid?: string; patch?: Patch; jobs?: SelectableJob[] },
 ) => {
   const { count, error } = await buildStrategyCountQuery(supabase, params);
   if (error) return { data: null, error };
@@ -61,10 +61,11 @@ export const buildStrategiesDataQuery = async (
       `id, name, version, subversion, modified_at, created_at,
       raids!inner(name, semantic_key),
       like_counts!inner(total_likes), 
-      strategy_players!inner(id, job, order)`,
+      strategy_players!inner(id, job, order),
+      author:profiles!strategies_author_fkey(display_name)
+      `,
     )
     .eq('is_public', true);
-
   if (raid !== undefined) query = query.eq('raids.semantic_key', raid);
   if (patch !== undefined) query = query.eq('version', patch.version).eq('subversion', patch.subversion);
   if (q !== undefined) query = query.ilike('name', `%${q}%`);

@@ -92,8 +92,17 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
               </Link>
             </TableCell>
             <TableCell className="p-0 w-0 h-0 hidden md:table-cell">
-              <Link href={`/strat/${strategyData.id}`} className="w-full h-full flex items-center">
-                <div className="px-2 py-4">Mario Mario</div>
+              <Link
+                href={`/strat/${strategyData.id}`}
+                className={cn(
+                  'w-full h-full flex items-center',
+                  strategyData.author === null && 'text-muted-foreground',
+                )}
+              >
+                <div className="px-2 py-4">
+                  {strategyData.author === null ? 'Deleted User' : strategyData.author.display_name}
+                </div>
+                {/* TODO: Add i18n */}
               </Link>
             </TableCell>
             <TableCell className="p-0 w-0 h-0">
@@ -104,9 +113,7 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
             <TableCell className="p-0 w-0 h-0">
               <Link href={`/strat/${strategyData.id}`} className="w-full h-full flex justify-center items-center">
                 <div className="px-2 py-4">
-                  {strategyData.like_counts === null
-                    ? 0
-                    : strategyData.like_counts.total_likes}
+                  {strategyData.like_counts === null ? 0 : strategyData.like_counts.total_likes}
                 </div>
               </Link>
             </TableCell>
