@@ -34,6 +34,7 @@ type CreateFormProps = Readonly<
 const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsData, className, ...props }, ref) => {
   const [isLoading, setIsLoading] = useState(false);
   const [failMessage, setFailMessage] = useState<string | undefined>(undefined);
+  const [raidPopoverOpen, setRaidPopoverOpen] = useState(false);
   const router = useRouter();
   const t = useTranslations();
 
@@ -121,7 +122,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
           render={({ field }) => (
             <FormItem>
               <FormLabel className="inline-block">레이드</FormLabel>
-              <Popover>
+              <Popover open={raidPopoverOpen} onOpenChange={(open) => setRaidPopoverOpen(open)}>
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
@@ -140,17 +141,22 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
                     </Button>
                   </FormControl>
                 </PopoverTrigger>
-                <PopoverContent align="start" className="p-0" style={{ width: 'var(--radix-popover-trigger-width)' }}>
-                  <Command>
+                <PopoverContent
+                  align="start"
+                  className="p-0 pointer-events-auto"
+                  style={{ width: 'var(--radix-popover-trigger-width)' }}
+                >
+                  <Command {...field}>
                     <CommandInput placeholder="레이드 검색..." className="h-9" />
                     <CommandEmpty>레이드가 없습니다.</CommandEmpty>
                     <CommandGroup>
                       {raidsData.map((raid) => (
                         <CommandItem
-                          value={raid.name}
+                          value={raid.id}
                           key={raid.id}
                           onSelect={() => {
                             form.setValue('raid', raid.id);
+                            setRaidPopoverOpen(false);
                           }}
                         >
                           {raid.name}
@@ -271,7 +277,7 @@ const CreateButton = React.forwardRef<HTMLButtonElement, CreateButtonProps>(
         </DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>공략 생성</DrawerHeader>
-          <CreateForm raidsData={raidsData} className='px-8' />
+          <CreateForm raidsData={raidsData} className="px-8" />
           <DrawerFooter />
         </DrawerContent>
       </Drawer>

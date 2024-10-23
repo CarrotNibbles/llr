@@ -55,6 +55,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
   const router = useRouter();
   const [isSearching, setIsSearching] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [raidsPopoverOpen, setRaidsPopoverOpen] = useState(false);
   const tPatches = useTranslations('Common.FFXIVPatches');
 
   const formSchema = z.object({
@@ -156,7 +157,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                 render={({ field }) => (
                   <FormItem className="md:col-span-2 xl:col-span-3">
                     <FormLabel className="inline-block">레이드</FormLabel>
-                    <Popover>
+                    <Popover open={raidsPopoverOpen} onOpenChange={setRaidsPopoverOpen}>
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
@@ -191,6 +192,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                                 key={raid.id}
                                 onSelect={() => {
                                   form.setValue('raid', raid.semantic_key);
+                                  setRaidsPopoverOpen(false)
                                 }}
                               >
                                 {raid.name}
