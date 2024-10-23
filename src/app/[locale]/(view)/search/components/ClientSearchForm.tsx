@@ -114,7 +114,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({ q, raidsData, class
                             )}
                           >
                             <div className="overflow-hidden">
-                              {field.value ? raidsData.find((raid) => raid.id === field.value)?.name : '모든 레이드'}
+                              {field.value ? raidsData.find((raid) => raid.semantic_key === field.value)?.name : '모든 레이드'}
                             </div>
                             <CaretSortIcon className="ml-1 h-4 w-4 opacity-50" />
                           </Button>
@@ -134,14 +134,14 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({ q, raidsData, class
                                 value={raid.name}
                                 key={raid.id}
                                 onSelect={() => {
-                                  form.setValue('raid', raid.id);
+                                  form.setValue('raid', raid.semantic_key);
                                 }}
                               >
                                 {raid.name}
                                 <CheckIcon
                                   className={cn(
                                     'ml-auto h-4 w-4',
-                                    raid.id === field.value ? 'opacity-100' : 'opacity-0',
+                                    raid.semantic_key === field.value ? 'opacity-100' : 'opacity-0',
                                   )}
                                 />
                               </CommandItem>
