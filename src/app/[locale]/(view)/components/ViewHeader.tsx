@@ -12,7 +12,7 @@ import { SearchButton } from './SearchButton';
 
 type ViewHeaderProps = Readonly<React.HTMLAttributes<HTMLDivElement> & {}>;
 
-export const ViewHeader: React.FC<ViewHeaderProps> = async ({ className, ...props }, ref) => {
+const ViewHeader: React.FC<ViewHeaderProps> = async ({ className, ...props }, ref) => {
   const supabase = createClient();
   const {
     data: { user },
@@ -43,3 +43,6 @@ export const ViewHeader: React.FC<ViewHeaderProps> = async ({ className, ...prop
     </div>
   );
 };
+ViewHeader.displayName = 'ViewHeader';
+
+export { ViewHeader };

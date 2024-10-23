@@ -18,13 +18,14 @@ type ViewPaginationProps = Readonly<
   }
 >;
 
-export const ViewPagination: React.FC<ViewPaginationProps> = ({ dataPromise, currentPage, className, ...props }) => {
+const ViewPagination: React.FC<ViewPaginationProps> = ({ dataPromise, currentPage, className, ...props }) => {
   return (
     <Suspense fallback={<ViewPaginationContent currentPage={currentPage} className={className} {...props} />}>
       <ViewPaginationContent dataPromise={dataPromise} currentPage={currentPage} className={className} {...props} />
     </Suspense>
   );
 };
+ViewPagination.displayName = 'ViewPagination';
 
 type ViewPaginationContentProps = Readonly<
   React.HTMLAttributes<HTMLDivElement> & {
@@ -82,6 +83,7 @@ const ViewPaginationContent: React.FC<ViewPaginationContentProps> = async ({
     </Pagination>
   );
 };
+ViewPaginationContent.displayName = 'ViewPaginationContent';
 
 type PaginationLinkProps = Omit<React.ComponentProps<typeof Link>, 'href'> & {
   isActive?: boolean;
@@ -104,7 +106,6 @@ const ViewPaginationLink: React.FC<PaginationLinkProps> = ({ page, className, is
     />
   );
 };
-
 ViewPaginationLink.displayName = 'ViewPaginationLink';
 
 const ViewPaginationPrevious: React.FC<PaginationLinkProps> = ({ className, ...props }) => (
@@ -120,3 +121,5 @@ const ViewPaginationNext: React.FC<PaginationLinkProps> = ({ className, ...props
   </ViewPaginationLink>
 );
 ViewPaginationNext.displayName = 'ViewPaginationNext';
+
+export { ViewPagination };

@@ -9,34 +9,6 @@ import { CaretDownIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
 import type React from 'react';
 
-type RaidFoldoutProps = Readonly<
-  React.HTMLAttributes<HTMLButtonElement> & {
-    name: string;
-    raidsData: RaidsDataType;
-  }
->;
-
-const RaidFoldout: React.FC<RaidFoldoutProps> = async ({ name, raidsData, className, ...props }, ref) => {
-  return (
-    <AccordionItem value={name}>
-      <AccordionTrigger className={cn(className, 'p-2')} {...props}>
-        {name}
-      </AccordionTrigger>
-      <AccordionContent className="p-0">
-        <ul>
-          {raidsData.map((raidData) => (
-            <li key={raidData.id} className="text-end mt-1">
-              <Link href={buildBoardURL({ page: 1, limit: DEFAULT_LIMIT, raid: raidData.semantic_key, sort: DEFAULT_SORT })} className='w-full h-full flex p-2 hover:underline'>
-                {raidData.name}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </AccordionContent>
-    </AccordionItem>
-  );
-};
-
 type RaidPopoverProps = Readonly<
   ButtonProps & {
     name: string; // TODO: Change to enum
@@ -44,7 +16,7 @@ type RaidPopoverProps = Readonly<
   }
 >;
 
-export const RaidPopover: React.FC<RaidPopoverProps> = async ({ name, raidsData, className, ...props }, ref) => {
+const RaidPopover: React.FC<RaidPopoverProps> = ({ name, raidsData, className, ...props }, ref) => {
   const raidsDataByDungeon: { dungeon: string; raidsData: RaidsDataType }[] = [{ dungeon: 'Anabesios', raidsData }];
 
   return (
@@ -70,3 +42,38 @@ export const RaidPopover: React.FC<RaidPopoverProps> = async ({ name, raidsData,
     </Popover>
   );
 };
+RaidPopover.displayName = 'RaidPopover';
+
+type RaidFoldoutProps = Readonly<
+  React.HTMLAttributes<HTMLButtonElement> & {
+    name: string;
+    raidsData: RaidsDataType;
+  }
+>;
+
+const RaidFoldout: React.FC<RaidFoldoutProps> = ({ name, raidsData, className, ...props }, ref) => {
+  return (
+    <AccordionItem value={name}>
+      <AccordionTrigger className={cn(className, 'p-2')} {...props}>
+        {name}
+      </AccordionTrigger>
+      <AccordionContent className="p-0">
+        <ul>
+          {raidsData.map((raidData) => (
+            <li key={raidData.id} className="text-end mt-1">
+              <Link
+                href={buildBoardURL({ page: 1, limit: DEFAULT_LIMIT, raid: raidData.semantic_key, sort: DEFAULT_SORT })}
+                className="w-full h-full flex p-2 hover:underline"
+              >
+                {raidData.name}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </AccordionContent>
+    </AccordionItem>
+  );
+};
+RaidFoldout.displayName = 'RaidPopover';
+
+export { RaidPopover };

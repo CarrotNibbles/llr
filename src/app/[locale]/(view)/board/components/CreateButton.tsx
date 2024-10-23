@@ -25,6 +25,51 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+type CreateButtonProps = Readonly<
+  ButtonProps & {
+    raidsData: RaidsDataType;
+  }
+>;
+
+const CreateButton = React.forwardRef<HTMLButtonElement, CreateButtonProps>(
+  ({ raidsData, className, ...props }, ref) => {
+    const isDesktop = useMediaQuery('(min-width: 640px)');
+
+    return isDesktop ? (
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button className={className} {...props} ref={ref}>
+            <Pencil1Icon className="mr-1" />
+            <div className="mx-1">공략 작성</div>
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>공략 생성</DialogTitle>
+          </DialogHeader>
+          <CreateForm raidsData={raidsData} />
+          <DialogFooter />
+        </DialogContent>
+      </Dialog>
+    ) : (
+      <Drawer>
+        <DrawerTrigger asChild>
+          <Button className={className} {...props} ref={ref}>
+            <Pencil1Icon className="mr-1" />
+            <div className="mx-1">공략 작성</div>
+          </Button>
+        </DrawerTrigger>
+        <DrawerContent>
+          <DrawerHeader>공략 생성</DrawerHeader>
+          <CreateForm raidsData={raidsData} className="px-8" />
+          <DrawerFooter />
+        </DrawerContent>
+      </Drawer>
+    );
+  },
+);
+CreateButton.displayName = 'CreateButton';
+
 type CreateFormProps = Readonly<
   React.HTMLAttributes<HTMLFormElement> & {
     raidsData: RaidsDataType;
@@ -241,50 +286,6 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
   );
 });
 
-type CreateButtonProps = Readonly<
-  ButtonProps & {
-    raidsData: RaidsDataType;
-  }
->;
-
-const CreateButton = React.forwardRef<HTMLButtonElement, CreateButtonProps>(
-  ({ raidsData, className, ...props }, ref) => {
-    const isDesktop = useMediaQuery('(min-width: 640px)');
-
-    return isDesktop ? (
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button className={className} {...props} ref={ref}>
-            <Pencil1Icon className="mr-1" />
-            <div className="mx-1">공략 작성</div>
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>공략 생성</DialogTitle>
-          </DialogHeader>
-          <CreateForm raidsData={raidsData} />
-          <DialogFooter />
-        </DialogContent>
-      </Dialog>
-    ) : (
-      <Drawer>
-        <DrawerTrigger asChild>
-          <Button className={className} {...props} ref={ref}>
-            <Pencil1Icon className="mr-1" />
-            <div className="mx-1">공략 작성</div>
-          </Button>
-        </DrawerTrigger>
-        <DrawerContent>
-          <DrawerHeader>공략 생성</DrawerHeader>
-          <CreateForm raidsData={raidsData} className="px-8" />
-          <DrawerFooter />
-        </DrawerContent>
-      </Drawer>
-    );
-  },
-);
-
-CreateButton.displayName = 'CreateButton';
+CreateForm.displayName = 'CreateForm';
 
 export { CreateButton };

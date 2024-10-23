@@ -16,8 +16,7 @@ type LimitComboboxProps = Readonly<
 >;
 
 const LIMIT_OPTIONS = [5, 10, 15, 20];
-
-export const LimitCombobox: React.FC<LimitComboboxProps> = ({ currentLimit, className, ...props }) => {
+const LimitCombobox: React.FC<LimitComboboxProps> = ({ currentLimit, className, ...props }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -64,3 +63,6 @@ export const LimitCombobox: React.FC<LimitComboboxProps> = ({ currentLimit, clas
     </Popover>
   );
 };
+LimitCombobox.displayName = 'LimitCombobox';
+
+export { LimitCombobox };

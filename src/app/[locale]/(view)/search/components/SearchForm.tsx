@@ -16,7 +16,7 @@ type SearchFormProps = Readonly<
   }
 >;
 
-export const SearchForm: React.FC<SearchFormProps> = ({ q, raid, patch, jobs, dataPromise, className, ...props }) => (
+const SearchForm: React.FC<SearchFormProps> = ({ q, raid, patch, jobs, dataPromise, className, ...props }) => (
   <Suspense fallback={<SearchFormContent q={q} raid={raid} patch={patch} jobs={jobs} />}>
     <SearchFormContent
       q={q}
@@ -29,6 +29,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({ q, raid, patch, jobs, da
     />
   </Suspense>
 );
+SearchForm.displayName = 'SearchForm';
 
 const DEFAULT_RAIDS_DATA = { data: [], error: null };
 type SearchFormContentProps = Readonly<
@@ -64,3 +65,6 @@ const SearchFormContent: React.FC<SearchFormContentProps> = async ({
     />
   );
 };
+SearchFormContent.displayName = 'SearchFormContent';
+
+export { SearchForm };

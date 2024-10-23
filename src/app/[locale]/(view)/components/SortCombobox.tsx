@@ -20,7 +20,7 @@ const sortOptionMap: Record<SortOption, string> = {
   recent: 'Most Recent',
 };
 
-export const SortCombobox: React.FC<SortComboboxProps> = ({ currentSort, className, ...props }) => {
+const SortCombobox: React.FC<SortComboboxProps> = ({ currentSort, className, ...props }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -68,3 +68,6 @@ export const SortCombobox: React.FC<SortComboboxProps> = ({ currentSort, classNa
     </Popover>
   );
 };
+SortCombobox.displayName = "SortCombobox"
+
+export { SortCombobox };

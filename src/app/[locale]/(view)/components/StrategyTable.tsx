@@ -19,7 +19,7 @@ type StrategyTableProps = Readonly<
   }
 >;
 
-export const StrategyTable: React.FC<StrategyTableProps> = ({ dataPromise, className, ...props }) => {
+const StrategyTable: React.FC<StrategyTableProps> = ({ dataPromise, className, ...props }) => {
   return (
     <Table className={cn(className, 'border-b')} {...props}>
       <TableHeader>
@@ -43,6 +43,7 @@ export const StrategyTable: React.FC<StrategyTableProps> = ({ dataPromise, class
     </Table>
   );
 };
+StrategyTable.displayName = "StrategyTable"
 
 type StrategyTableBodyProps = Readonly<
   React.HTMLAttributes<HTMLTableSectionElement> & {
@@ -130,6 +131,7 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
     </TableBody>
   );
 };
+StrategyTableBody.displayName = "StrategyTableBody"
 
 type StrategyTableBodySkeletonProps = Readonly<React.HTMLAttributes<HTMLTableSectionElement> & {}>;
 
@@ -176,3 +178,6 @@ const StrategyTableBodySkeleton: React.FC<StrategyTableBodySkeletonProps> = ({ c
     ))}
   </TableBody>
 );
+StrategyTableBodySkeleton.displayName = "StrategyTableBodySkeleton"
+
+export { StrategyTable}

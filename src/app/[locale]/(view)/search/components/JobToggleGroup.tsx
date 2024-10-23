@@ -15,7 +15,7 @@ type JobToggleGroupProps = Readonly<
   }
 >;
 
-export const JobToggleGroup = React.forwardRef<HTMLDivElement, JobToggleGroupProps>(
+const JobToggleGroup = React.forwardRef<HTMLDivElement, JobToggleGroupProps>(
   ({ value: externalValue, onChange: onValueChangeExternal, sort, maxCount, className, ...props }, ref) => {
     const [nativeValue, setNativeValue] = useState<SelectableJob[]>([]);
     const isControlled = externalValue !== undefined;
@@ -69,3 +69,6 @@ export const JobToggleGroup = React.forwardRef<HTMLDivElement, JobToggleGroupPro
     );
   },
 );
+JobToggleGroup.displayName = 'JobToggleGroup';
+
+export { JobToggleGroup };

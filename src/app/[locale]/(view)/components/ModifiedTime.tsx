@@ -1,4 +1,4 @@
-'use server'
+'use server';
 
 import { LocalizedDate } from '@/components/LocalizedDate';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -11,7 +11,7 @@ type ModifiedTimeProp = Readonly<
   }
 >;
 
-export const ModifiedTime: React.FC<ModifiedTimeProp> = ({ createdAt, modifiedAt, className, ...props }) => {
+const ModifiedTime: React.FC<ModifiedTimeProp> = ({ createdAt, modifiedAt, className, ...props }) => {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -28,3 +28,6 @@ export const ModifiedTime: React.FC<ModifiedTimeProp> = ({ createdAt, modifiedAt
     </Tooltip>
   );
 };
+ModifiedTime.displayName = 'ModifiedTime';
+
+export { ModifiedTime };

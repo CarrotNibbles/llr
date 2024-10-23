@@ -10,7 +10,7 @@ import { RaidPopover } from './RaidPopover';
 
 type BoardSubheaderProps = Readonly<React.HTMLAttributes<HTMLDivElement>>;
 
-export const BoardSubheader: React.FC<BoardSubheaderProps> = ({ className, ...props }) => {
+const BoardSubheader: React.FC<BoardSubheaderProps> = ({ className, ...props }) => {
   const supabase = createClient();
 
   const fecthData = async () => {
@@ -26,6 +26,7 @@ export const BoardSubheader: React.FC<BoardSubheaderProps> = ({ className, ...pr
     </Suspense>
   );
 };
+BoardSubheader.displayName = "BoardSubheader"
 
 type BoardSubheaderContentData = Readonly<{ raidsData: RaidsDataType }>;
 type BoardSubheaderContentProps = Readonly<
@@ -59,3 +60,6 @@ const BoardSubheaderContent: React.FC<BoardSubheaderContentProps> = async ({ dat
     </nav>
   );
 };
+BoardSubheaderContent.displayName = "BoardSubheaderContent"
+
+export { BoardSubheader }

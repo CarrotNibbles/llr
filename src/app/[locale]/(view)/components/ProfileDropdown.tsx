@@ -16,7 +16,7 @@ import type React from 'react';
 
 type ProfileDropdownProps = Readonly<ButtonProps & {}>;
 
-export const ProfileDropdown: React.FC<ProfileDropdownProps> = async ({ className, ...props }) => {
+const ProfileDropdown: React.FC<ProfileDropdownProps> = async ({ className, ...props }) => {
   const supabase = createClient();
   const {
     data: { user },
@@ -57,3 +57,6 @@ export const ProfileDropdown: React.FC<ProfileDropdownProps> = async ({ classNam
     </DropdownMenu>
   );
 };
+ProfileDropdown.displayName = 'ProfileDropdown';
+
+export { ProfileDropdown };

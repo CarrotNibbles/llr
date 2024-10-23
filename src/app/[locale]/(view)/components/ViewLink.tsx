@@ -26,6 +26,6 @@ const ViewLink: React.FC<ViewLinkProps> = ({ raid, patch, page, limit, sort, q, 
     />
   );
 };
-ViewLink.displayName = 'BoardLink';
+ViewLink.displayName = 'ViewLink';
 
 export { ViewLink };
