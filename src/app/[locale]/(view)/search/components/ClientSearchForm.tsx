@@ -82,7 +82,12 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
 
     const { q, raid, patch, jobs } = values;
 
-    if (q === undefined || q === '' && raid === undefined && patch === undefined && (jobs === undefined || jobs.length === 0)) {
+    if (
+      (q === undefined || q === '') &&
+      raid === undefined &&
+      patch === undefined &&
+      (jobs === undefined || jobs.length === 0)
+    ) {
       setErrorMessage('Please set at least one field');
       return;
     }
@@ -186,13 +191,27 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                           <CommandInput placeholder="레이드 검색..." className="h-9" />
                           <CommandEmpty>레이드가 없습니다.</CommandEmpty>
                           <CommandGroup>
+                            <CommandItem
+                              onSelect={() => {
+                                form.setValue('raid', undefined);
+                                setRaidsPopoverOpen(false);
+                              }}
+                            >
+                              모든 레이드
+                              <CheckIcon
+                                className={cn(
+                                  'ml-auto h-4 w-4',
+                                  field.value === '' ? 'opacity-100' : 'opacity-0',
+                                )}
+                              />
+                            </CommandItem>
                             {raidsData.map((raid) => (
                               <CommandItem
                                 value={raid.name}
                                 key={raid.id}
                                 onSelect={() => {
                                   form.setValue('raid', raid.semantic_key);
-                                  setRaidsPopoverOpen(false)
+                                  setRaidsPopoverOpen(false);
                                 }}
                               >
                                 {raid.name}
@@ -258,16 +277,16 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                       onValueChange={(value) => {
                         value !== 'none' ? field.onChange(value) : field.onChange(undefined);
                       }}
-                      defaultValue={'none'}
+                      defaultValue="none"
                     >
                       <FormControl>
                         <SelectTrigger
                           className={cn(
                             'w-full inline-flex text-left justify-between bg-background hover:ring-ring hover:ring-1 hover:text-accent-foreground hover:font-semibold',
-                            field.value === undefined && 'text-muted-foreground',
+                            field.value === '' && 'text-muted-foreground',
                           )}
                         >
-                          <SelectValue placeholder="모든 패치" />
+                          <SelectValue />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent align="end">
