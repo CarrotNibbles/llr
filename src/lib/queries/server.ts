@@ -38,7 +38,7 @@ export const buildMaxPageQuery = async (
   const { count, error } = await buildStrategyCountQuery(supabase, params);
   if (error) return { data: null, error };
 
-  const maxPage = Math.floor((count ?? 1 - 1) / limit) + 1;
+  const maxPage = Math.floor(((count ?? 1) - 1) / limit) + 1;
   return { data: maxPage, error: null };
 };
 
