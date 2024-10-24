@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ClearOtherSessionsRequest, DeleteEntryRequest, ElevationRequest, EventResponse, SubscriptionRequest, UpdatePlayerJobRequest, UpsertDamageOptionRequest, UpsertEntryRequest } from "./stratsync_pb";
+import { ClearOtherSessionsRequest, ElevationRequest, EventResponse, MutateEntriesRequest, SubscriptionRequest, UpdatePlayerJobRequest, UpsertDamageOptionRequest } from "./stratsync_pb";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -49,20 +49,11 @@ export const StratSync = {
       kind: MethodKind.Unary,
     },
     /**
-     * @generated from rpc stratsync.StratSync.UpsertEntry
+     * @generated from rpc stratsync.StratSync.MutateEntries
      */
-    upsertEntry: {
-      name: "UpsertEntry",
-      I: UpsertEntryRequest,
-      O: Empty,
-      kind: MethodKind.Unary,
-    },
-    /**
-     * @generated from rpc stratsync.StratSync.DeleteEntry
-     */
-    deleteEntry: {
-      name: "DeleteEntry",
-      I: DeleteEntryRequest,
+    mutateEntries: {
+      name: "MutateEntries",
+      I: MutateEntriesRequest,
       O: Empty,
       kind: MethodKind.Unary,
     },

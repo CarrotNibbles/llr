@@ -178,10 +178,12 @@
     "EditColumn": {
       "Lock": "ロック",
       "Delete": "削除",
+      "DeleteAll": "全削除",
       "ActionOverlapError": "再使用待機時間のため、配置できません。"
     },
     "HeadColumn": {
       "JobChange": {
+        "JobAssign": "ジョブ割り当て",
         "JobChange": "ジョブチェンジ",
         "ConfirmTitle": "ジョブチェンジの確認",
         "Confirm": "ジョブチェンジ",

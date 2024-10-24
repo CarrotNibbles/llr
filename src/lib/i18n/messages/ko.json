@@ -178,10 +178,12 @@
     "EditColumn": {
       "Lock": "잠금",
       "Delete": "삭제",
+      "DeleteAll": "전체 삭제",
       "ActionOverlapError": "재사용 대기 시간으로 인해 배치할 수 없습니다."
     },
     "HeadColumn": {
       "JobChange": {
+        "JobAssign": "직업 할당",
         "JobChange": "직업 변경",
         "ConfirmTitle": "직업 변경 확인",
         "Confirm": "직업 변경",

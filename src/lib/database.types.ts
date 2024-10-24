@@ -247,6 +247,21 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          display_name: string | null
+          id: string
+        }
+        Insert: {
+          display_name?: string | null
+          id: string
+        }
+        Update: {
+          display_name?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
       raids: {
         Row: {
           category: Database["public"]["Enums"]["raid_category"]
@@ -283,6 +298,7 @@ export type Database = {
       strategies: {
         Row: {
           author: string | null
+          author: string | null
           created_at: string
           id: string
           is_editable: boolean
@@ -290,11 +306,13 @@ export type Database = {
           modified_at: string
           name: string
           password: string | null
+          password: string | null
           raid: string
           subversion: number
           version: number
         }
         Insert: {
+          author?: string | null
           author?: string | null
           created_at?: string
           id?: string
@@ -303,11 +321,13 @@ export type Database = {
           modified_at?: string
           name?: string
           password?: string | null
+          password?: string | null
           raid: string
           subversion: number
           version: number
         }
         Update: {
+          author?: string | null
           author?: string | null
           created_at?: string
           id?: string
@@ -315,6 +335,7 @@ export type Database = {
           is_public?: boolean
           modified_at?: string
           name?: string
+          password?: string | null
           password?: string | null
           raid?: string
           subversion?: number
@@ -326,6 +347,13 @@ export type Database = {
             columns: ["raid"]
             isOneToOne: false
             referencedRelation: "raids"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "strategies_author_fkey"
+            columns: ["author"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {
@@ -473,6 +501,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "user_likes_liked_by_fkey"
+            columns: ["liked_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
     }
@@ -571,6 +606,11 @@ export type Database = {
       raid_category: "Savage" | "Ultimate" | "Trial" | "Raid" | "Dungeon"
     }
     CompositeTypes: {
+      selected_strategy_player: {
+        id: string | null
+        job: Database["public"]["Enums"]["job"] | null
+        order: number | null
+      }
       selected_strategy_player: {
         id: string | null
         job: Database["public"]["Enums"]["job"] | null

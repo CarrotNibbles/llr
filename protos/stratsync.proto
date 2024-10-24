@@ -9,8 +9,7 @@ service StratSync {
     rpc ClearOtherSessions (ClearOtherSessionsRequest) returns (google.protobuf.Empty);
     rpc Elevate (ElevationRequest) returns (google.protobuf.Empty);
     rpc UpsertDamageOption (UpsertDamageOptionRequest) returns (google.protobuf.Empty);
-    rpc UpsertEntry (UpsertEntryRequest) returns (google.protobuf.Empty);
-    rpc DeleteEntry (DeleteEntryRequest) returns (google.protobuf.Empty);
+    rpc MutateEntries (MutateEntriesRequest) returns (google.protobuf.Empty);
     rpc UpdatePlayerJob (UpdatePlayerJobRequest) returns (google.protobuf.Empty);
 }
 
@@ -58,14 +57,10 @@ message UpsertDamageOptionRequest {
     DamageOption damage_option = 2;
 }
 
-message UpsertEntryRequest {
+message MutateEntriesRequest {
     string token = 1;
-    Entry entry = 2;
-}
-
-message DeleteEntryRequest {
-    string token = 1;
-    string id = 2;
+    repeated Entry upserts = 2;
+    repeated string deletes = 3;
 }
 
 message UpdatePlayerJobRequest {
@@ -78,12 +73,9 @@ message UpsertDamageOptionEvent {
     DamageOption damage_option = 1;
 }
 
-message UpsertEntryEvent {
-    Entry entry = 1;
-}
-
-message DeleteEntryEvent {
-    string id = 1;
+message MutateEntriesEvent {
+    repeated Entry upserts = 1;
+    repeated string deletes = 2;
 }
 
 message UpdatePlayerJobEvent {
@@ -95,8 +87,7 @@ message EventResponse {
     oneof event {
         InitializationEvent initialization_event = 1;
         UpsertDamageOptionEvent upsert_damage_option_event = 2;
-        UpsertEntryEvent upsert_entry_event = 3;
-        DeleteEntryEvent delete_entry_event = 4;
-        UpdatePlayerJobEvent update_player_job_event = 5;
+        MutateEntriesEvent mutate_entries_event = 3;
+        UpdatePlayerJobEvent update_player_job_event = 4;
     }
 }

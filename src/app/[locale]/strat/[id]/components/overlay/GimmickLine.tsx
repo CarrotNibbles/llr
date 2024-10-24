@@ -163,7 +163,7 @@ const GimmickLine = React.forwardRef<
         style={{ top: `${prepareAt * pixelPerFrame}px` }}
       >
         <div className="space-y-1">
-          <HoverCard openDelay={0}>
+          <HoverCard openDelay={100}>
             <HoverCardTrigger>
               {mergedGimmicks.length > 0 && (
                 <GimmicksNames
@@ -172,7 +172,7 @@ const GimmickLine = React.forwardRef<
                 />
               )}
             </HoverCardTrigger>
-            <HoverCardContent>
+            <HoverCardContent className="w-auto" align="start">
               {mergedGimmicks.length > 0 &&
                 mergedGimmicks.map((mergedGimmick, index) => (
                   <div key={mergedGimmick.id} className={cn(className, 'space-y-1 mb-1')}>
