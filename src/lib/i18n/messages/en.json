@@ -246,7 +246,9 @@
         "AlertDescription": "If you change the settings to be more restrictive, other sessions will be disconnected.",
         "Save": "Save",
         "Saved": "Saved!",
-        "Error": "An error occurred while saving the settings."
+        "Error": "An error occurred while saving the settings.",
+        "NameError": "Please enter the strategy name.",
+        "PasswordError": "The password must be an 8-digit number."
       },
       "LikeButton": {
         "Liked": "Like added.",

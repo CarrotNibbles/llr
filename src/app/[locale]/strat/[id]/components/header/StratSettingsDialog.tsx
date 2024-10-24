@@ -36,13 +36,13 @@ export const StratSettingsDialog = () => {
   const [open, setOpen] = useState(false);
 
   const formSchema = z.object({
-    name: z.string().min(1),
+    name: z.string().min(1, t('NameError')),
     isPublic: z.boolean(),
     isEditable: z.boolean(),
     patch: z.string().regex(patchRegex),
     password: z
       .string()
-      .regex(/^\d{8}$/)
+      .regex(/^\d{8}$/, t('PasswordError'))
       .optional(),
   });
 
@@ -91,6 +91,7 @@ export const StratSettingsDialog = () => {
       toast({
         description: t('Saved'),
       });
+      form.resetField('password');
       setOpen(false);
     }
   });
