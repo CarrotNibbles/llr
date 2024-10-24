@@ -12,6 +12,7 @@ export type Database = {
       actions: {
         Row: {
           available_level: number
+          charges: number
           cooldown: number
           deleted_subversion: number | null
           deleted_version: number | null
@@ -21,13 +22,13 @@ export type Database = {
           name: string
           priority: number
           semantic_key: string
-          stacks: number
           superseding_level: number | null
           updated_subversion: number
           updated_version: number
         }
         Insert: {
           available_level: number
+          charges?: number
           cooldown: number
           deleted_subversion?: number | null
           deleted_version?: number | null
@@ -37,13 +38,13 @@ export type Database = {
           name?: string
           priority: number
           semantic_key?: string
-          stacks?: number
           superseding_level?: number | null
           updated_subversion: number
           updated_version: number
         }
         Update: {
           available_level?: number
+          charges?: number
           cooldown?: number
           deleted_subversion?: number | null
           deleted_version?: number | null
@@ -53,7 +54,6 @@ export type Database = {
           name?: string
           priority?: number
           semantic_key?: string
-          stacks?: number
           superseding_level?: number | null
           updated_subversion?: number
           updated_version?: number
@@ -480,6 +480,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      count_strategies: {
+        Args: {
+          q?: string
+          raid_skey?: string
+          patch?: Json
+          jobs?: Database["public"]["Enums"]["job"][]
+        }
+        Returns: number
+      }
       get_strategy_players: {
         Args: {
           strategy_id: string
@@ -488,9 +497,10 @@ export type Database = {
       }
       select_strategies: {
         Args: {
+          q?: string
           raid_skey?: string
           patch?: Json
-          q?: string
+          jobs?: Database["public"]["Enums"]["job"][]
           sort?: string
           page?: number
           lim?: number
@@ -505,7 +515,7 @@ export type Database = {
           raid_name: string
           raid_semantic_key: string
           total_likes: number
-          strategy_players: Database["public"]["CompositeTypes"]["selected_strategy_player"][]
+          strategy_players: Json
           author_display_name: string
         }[]
       }
