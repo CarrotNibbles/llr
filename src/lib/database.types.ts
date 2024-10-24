@@ -12,6 +12,7 @@ export type Database = {
       actions: {
         Row: {
           available_level: number
+          charges: number
           cooldown: number
           deleted_subversion: number | null
           deleted_version: number | null
@@ -21,13 +22,13 @@ export type Database = {
           name: string
           priority: number
           semantic_key: string
-          stacks: number
           superseding_level: number | null
           updated_subversion: number
           updated_version: number
         }
         Insert: {
           available_level: number
+          charges?: number
           cooldown: number
           deleted_subversion?: number | null
           deleted_version?: number | null
@@ -37,13 +38,13 @@ export type Database = {
           name?: string
           priority: number
           semantic_key?: string
-          stacks?: number
           superseding_level?: number | null
           updated_subversion: number
           updated_version: number
         }
         Update: {
           available_level?: number
+          charges?: number
           cooldown?: number
           deleted_subversion?: number | null
           deleted_version?: number | null
@@ -53,7 +54,6 @@ export type Database = {
           name?: string
           priority?: number
           semantic_key?: string
-          stacks?: number
           superseding_level?: number | null
           updated_subversion?: number
           updated_version?: number
