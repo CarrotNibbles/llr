@@ -3,7 +3,7 @@ import { sha256 } from 'hash-wasm';
 import { produce } from 'immer';
 import { createStore } from 'zustand';
 import type { Enums } from '../database.types';
-import type { DamageOption, Entry, EventResponse, Player } from '../proto/stratsync_pb';
+import type { DamageOption, Entry, EventResponse } from '../proto/stratsync_pb';
 import type { StrategyDataType } from '../queries/server';
 import { type StratSyncClient, StratSyncClientFactory } from '../stratSyncClient';
 import { createClient } from '../supabase/client';
@@ -28,8 +28,7 @@ export type StratSyncActions = {
   clearOtherSessions: () => Promise<boolean>;
   abort: () => void;
   upsertDamageOption: (damageOption: PlainMessage<DamageOption>, local: boolean) => void;
-  upsertEntry: (entry: PlainMessage<Entry>, local: boolean) => void;
-  deleteEntry: (id: string, local: boolean) => void;
+  mutateEntries: (upserts: PlainMessage<Entry>[], deletes: string[], local: boolean) => void;
   updatePlayerJob: (id: string, job: string | undefined, local: boolean) => void;
 };
 
@@ -66,27 +65,25 @@ const handleUpsertDamageOption = (damageOption: PlainMessage<DamageOption>) =>
     }
   });
 
-const handleUpsertEntry = (entry: PlainMessage<Entry>) =>
+const handleMutateEntries = (upserts: PlainMessage<Entry>[], deletes: string[]) =>
   produce((state: StratSyncStore) => {
+    const deletes_set = new Set(deletes);
+
     for (const player of state.strategyData.strategy_players) {
-      if (player.id !== entry.player) continue;
+      player.strategy_player_entries = player.strategy_player_entries.filter((e) => !deletes_set.has(e.id));
+
+      const upserts_for_player = upserts.filter((e) => e.player === player.id);
+      const upserts_id_set = new Set(upserts_for_player.map((e) => e.id));
 
       player.strategy_player_entries = [
-        ...player.strategy_player_entries.filter((e) => e.id !== entry.id),
-        {
-          action: entry.action,
-          id: entry.id,
-          player: entry.player,
-          use_at: entry.useAt,
-        },
+        ...player.strategy_player_entries.filter((e) => !upserts_id_set.has(e.id)),
+        ...upserts_for_player.map((e) => ({
+          action: e.action,
+          id: e.id,
+          player: e.player,
+          use_at: e.useAt,
+        })),
       ];
-    }
-  });
-
-const handleDeleteEntry = (id: string) =>
-  produce((state: StratSyncStore) => {
-    for (const player of state.strategyData.strategy_players) {
-      player.strategy_player_entries = player.strategy_player_entries.filter((e) => e.id !== id);
     }
   });
 
@@ -204,16 +201,9 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
               }
             }
 
-            if (event.case === 'upsertEntryEvent') {
-              if (event.value.entry) {
-                const { entry } = event.value;
-                set((state: StratSyncStore) => handleUpsertEntry(entry)(state));
-              }
-            }
-
-            if (event.case === 'deleteEntryEvent') {
-              const { id } = event.value;
-              set((state: StratSyncStore) => handleDeleteEntry(id)(state));
+            if (event.case === 'mutateEntriesEvent') {
+              const { upserts, deletes } = event.value;
+              set((state: StratSyncStore) => handleMutateEntries(upserts, deletes)(state));
             }
 
             if (event.case === 'updatePlayerJobEvent') {
@@ -286,19 +276,11 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
             local,
           ),
         ),
-      upsertEntry: (entry: PlainMessage<Entry>, local = false) =>
+      mutateEntries: (upserts: PlainMessage<Entry>[], deletes: string[], local = false) =>
         set(
           localFirstDispatch(
-            handleUpsertEntry(entry),
-            (state: StratSyncState) => state.client?.upsertEntry({ token: state.token, entry }),
-            local,
-          ),
-        ),
-      deleteEntry: (id: string, local = false) =>
-        set(
-          localFirstDispatch(
-            handleDeleteEntry(id),
-            (state: StratSyncState) => state.client?.deleteEntry({ token: state.token, id }),
+            handleMutateEntries(upserts, deletes),
+            (state: StratSyncState) => state.client?.mutateEntries({ token: state.token, upserts, deletes }),
             local,
           ),
         ),

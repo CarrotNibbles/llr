@@ -82,7 +82,7 @@ const DraggableBox = ({ action, entry, otherUseAts, raidDuration, durations, coo
   const src = `/icons/action/${action.job}/${action.semantic_key}.png`;
   const { snapAndRemoveOverlap } = buildHelperFunctions(raidDuration, cooldown);
 
-  const { upsertEntry, deleteEntry, elevated } = useStratSyncStore((state) => state);
+  const { mutateEntries, elevated } = useStratSyncStore((state) => state);
 
   const [holdingShift, setHoldingShift] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
@@ -140,13 +140,16 @@ const DraggableBox = ({ action, entry, otherUseAts, raidDuration, durations, coo
       return newActiveEntries;
     });
 
-    upsertEntry(
-      {
-        id: entryId,
-        action: actionId,
-        player: playerId,
-        useAt: snappedUseAt,
-      },
+    mutateEntries(
+      [
+        {
+          id: entryId,
+          action: actionId,
+          player: playerId,
+          useAt: snappedUseAt,
+        },
+      ],
+      [],
       false,
     );
   };
@@ -261,7 +264,7 @@ const DraggableBox = ({ action, entry, otherUseAts, raidDuration, durations, coo
         <ContextMenuItem
           inset
           onClick={() => {
-            deleteEntry(entryId, false);
+            mutateEntries([], [entryId], false);
             setActiveEntries((prev) => {
               const newActiveEntries = new Map(prev);
               newActiveEntries.delete(entryId);
@@ -287,7 +290,7 @@ const EditSubColumn = ({ raidDuration, action, entries, playerId }: EditSubColum
   const { toast } = useToast();
   const t = useTranslations('StratPage.EditColumn');
 
-  const { upsertEntry } = useStratSyncStore((state) => state);
+  const { mutateEntries } = useStratSyncStore((state) => state);
   const boxValues = entries.map((entry) => ({ useAt: entry.use_at, id: entry.id }));
   const pixelPerFrame = usePixelPerFrame();
   const { snapAndRemoveOverlap } = buildHelperFunctions(raidDuration, action.cooldown);
@@ -325,13 +328,16 @@ const EditSubColumn = ({ raidDuration, action, entries, playerId }: EditSubColum
       return false;
     }
 
-    upsertEntry(
-      {
-        id: crypto.randomUUID(),
-        action: action.id,
-        player: playerId,
-        useAt: useAtCalced,
-      },
+    mutateEntries(
+      [
+        {
+          id: crypto.randomUUID(),
+          action: action.id,
+          player: playerId,
+          useAt: useAtCalced,
+        },
+      ],
+      [],
       false,
     );
   };
