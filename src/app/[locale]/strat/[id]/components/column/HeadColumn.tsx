@@ -1,3 +1,4 @@
+import { JobIcon } from '@/components/JobIcon';
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import {
   AlertDialog,
@@ -15,12 +16,11 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useToast } from '@/components/ui/use-toast';
 import type { Enums } from '@/lib/database.types';
 import type { ActionDataType } from '@/lib/queries/server';
-import { type Role, cn, getOrderedRole } from '@/lib/utils';
+import { JOB_LAYOUT, getOrderedRole } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
 import { useState } from 'react';
-import { ReactSVG } from 'react-svg';
-import { ROLE_ICON_STYLE, columnWidth } from '../../utils/constants';
+import { columnWidth } from '../../utils/constants';
 
 const HeadSubColumn = ({
   job,
@@ -57,29 +57,6 @@ const HeadSubColumn = ({
   );
 };
 
-export const JobIcon = ({
-  className,
-  job,
-  role,
-}: {
-  className?: string;
-  job: Enums<'job'> | null;
-  role: Role;
-}) => {
-  const src = `/icons/job/${job ?? 'BLANK'}.svg`;
-
-  return (
-    <>
-      {job !== 'LB' && (
-        <ReactSVG
-          src={src}
-          className={cn(className, `${ROLE_ICON_STYLE[role]} rounded-md saturate-50 border-[1.5px]`)}
-        />
-      )}
-    </>
-  );
-};
-
 export const HeadColumn = ({
   playerId,
   job,
@@ -97,15 +74,6 @@ export const HeadColumn = ({
   const [popoverOpen, setPopoverOpen] = useState(false);
   const t = useTranslations('StratPage.HeadColumn');
   const tActions = useTranslations('Common.Actions');
-
-  const JOB_LAYOUT = [
-    ['PLD', 'WAR', 'DRK', 'GNB'],
-    ['WHM', 'SCH', 'AST', 'SGE'],
-    ['MNK', 'DRG', 'NIN', 'SAM', 'RPR', 'VPR'],
-    ['BRD', 'MCH', 'DNC'],
-    ['BLM', 'SMN', 'RDM', 'PCT'],
-    [null],
-  ] satisfies (Enums<'job'> | null)[][];
 
   return (
     <div className="flex flex-col p-1 border-r-[1px] justify-center items-center space-y-1">

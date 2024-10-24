@@ -1,5 +1,6 @@
 'use client';
 
+import type { QueryData } from '@supabase/supabase-js';
 import type { Tables } from '../database.types';
 import type { createClient } from '../supabase/client';
 
@@ -21,6 +22,32 @@ export const buildClientUpdateStrategyQuery = (
 export const buildClientDeleteStrategyQuery = (supabase: ReturnType<typeof createClient>, strategyId: string) => {
   return supabase.from('strategies').delete().eq('id', strategyId);
 };
+
+export const buildSearchButtonStrategiesDataQuery = async (
+  supabase: ReturnType<typeof createClient>,
+  q: string,
+  page: number,
+  limit: number,
+) => {
+  const res = await supabase
+    .from('strategies')
+    .select(
+      `id, name, version, subversion, modified_at, created_at,
+      raids(name),
+      like_counts(total_likes), 
+      strategy_players(id, job, order)`,
+    )
+    .like("name", `%${q}%`)
+    .eq('is_public', true)
+    .order('created_at', { ascending: false })
+    .range((page - 1) * limit, page * limit - 1);
+
+  if (res.data) for (const strategy of res.data) strategy.strategy_players.sort((a, b) => a.order - b.order);
+
+  return res;
+};
+
+export type SearchStrategiesDataType = QueryData<ReturnType<typeof buildSearchButtonStrategiesDataQuery>>
 
 //! Deprecated
 // // StrategyPlayer

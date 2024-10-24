@@ -232,6 +232,21 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          display_name: string | null
+          id: string
+        }
+        Insert: {
+          display_name?: string | null
+          id: string
+        }
+        Update: {
+          display_name?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
       raids: {
         Row: {
           category: Database["public"]["Enums"]["raid_category"]
@@ -267,7 +282,7 @@ export type Database = {
       }
       strategies: {
         Row: {
-          author: string
+          author: string | null
           created_at: string
           id: string
           is_editable: boolean
@@ -280,7 +295,7 @@ export type Database = {
           version: number
         }
         Insert: {
-          author?: string
+          author?: string | null
           created_at?: string
           id?: string
           is_editable?: boolean
@@ -293,7 +308,7 @@ export type Database = {
           version: number
         }
         Update: {
-          author?: string
+          author?: string | null
           created_at?: string
           id?: string
           is_editable?: boolean
@@ -311,6 +326,13 @@ export type Database = {
             columns: ["raid"]
             isOneToOne: false
             referencedRelation: "raids"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "strategies_author_fkey"
+            columns: ["author"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -442,6 +464,13 @@ export type Database = {
             columns: ["strategy"]
             isOneToOne: false
             referencedRelation: "strategies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_likes_liked_by_fkey"
+            columns: ["liked_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

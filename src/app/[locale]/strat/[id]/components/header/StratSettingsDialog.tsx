@@ -11,7 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/components/ui/use-toast';
 import { buildClientUpdateStrategyQuery } from '@/lib/queries/client';
 import { createClient } from '@/lib/supabase/client';
-import { ALL_PATCHES } from '@/lib/utils';
+import { ALL_PATCHES, patchRegex } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ExclamationTriangleIcon, GearIcon } from '@radix-ui/react-icons';
 import { bcrypt, sha1, sha256 } from 'hash-wasm';
@@ -39,7 +39,7 @@ export const StratSettingsDialog = () => {
     name: z.string().min(1),
     isPublic: z.boolean(),
     isEditable: z.boolean(),
-    patch: z.string().regex(/^[234567]\.[012345]$/),
+    patch: z.string().regex(patchRegex),
     password: z
       .string()
       .regex(/^\d{8}$/)
