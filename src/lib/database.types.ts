@@ -289,7 +289,7 @@ export type Database = {
           is_public: boolean
           modified_at: string
           name: string
-          password: string
+          password: string | null
           raid: string
           subversion: number
           version: number
@@ -302,7 +302,7 @@ export type Database = {
           is_public?: boolean
           modified_at?: string
           name?: string
-          password: string
+          password?: string | null
           raid: string
           subversion: number
           version: number
@@ -315,7 +315,7 @@ export type Database = {
           is_public?: boolean
           modified_at?: string
           name?: string
-          password?: string
+          password?: string | null
           raid?: string
           subversion?: number
           version?: number
@@ -480,6 +480,40 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_strategy_players: {
+        Args: {
+          strategy_id: string
+        }
+        Returns: {
+          id: string
+          job: Database["public"]["Enums"]["job"] | null
+          order: number
+          strategy: string
+        }[]
+      }
+      select_strategies: {
+        Args: {
+          raid_skey?: string
+          patch?: Json
+          q?: string
+          sort?: string
+          page?: number
+          lim?: number
+        }
+        Returns: {
+          id: string
+          name: string
+          version: number
+          subversion: number
+          modified_at: string
+          created_at: string
+          raid_name: string
+          raid_semantic_key: string
+          total_likes: number
+          strategy_players: Database["public"]["Tables"]["strategy_players"]["Row"][]
+          author_display_name: string
+        }[]
+      }
       update_modified_at: {
         Args: {
           strategy_id: string
