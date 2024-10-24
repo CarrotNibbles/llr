@@ -62,11 +62,11 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
         {queried && paramsValid && (
           <>
             <StrategyTable
-              dataPromise={buildStrategiesDataQuery(supabase, { q, raid, patch, page, limit, sort, jobs })}
+              dataPromise={buildStrategiesDataQuery(supabase, { q, raid_skey: raid, patch, page, lim: limit, sort, jobs })}
             />
             <div className="w-full flex flex-col-reverse xl:grid xl:grid-cols-3 gap-y-2 mt-2">
               <div />
-              <ViewPagination currentPage={page} dataPromise={buildMaxPageQuery(supabase, limit, { q, raid, patch })} />
+              <ViewPagination currentPage={page} dataPromise={buildMaxPageQuery(supabase, limit, { q, raid_skey: raid, patch, jobs })} />
               <div className="flex flex-row-reverse gap-x-2">
                 <LimitCombobox currentLimit={limit} />
                 <SortCombobox currentSort={sort} />
