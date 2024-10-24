@@ -178,6 +178,7 @@
     "EditColumn": {
       "Lock": "ロック",
       "Delete": "削除",
+      "DeleteAll": "全削除",
       "ActionOverlapError": "再使用待機時間のため、配置できません。"
     },
     "HeadColumn": {

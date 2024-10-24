@@ -15,7 +15,7 @@ import Image from 'next/legacy/image';
 import { type MouseEventHandler, useContext, useEffect, useState } from 'react';
 
 import { usePixelPerFrame } from '@/lib/states';
-import { BOTTOM_PADDING_PX, TIME_STEP, columnWidth, contextMenuWidth } from '../../utils/constants';
+import { BOTTOM_PADDING_PX, TIME_STEP, columnWidth } from '../../utils/constants';
 import { EntrySelectionContext } from './EntrySelectionContext';
 
 const snapToStep = (currentUseAt: number) => {
@@ -247,7 +247,7 @@ const DraggableBox = ({ action, entry, otherUseAts, raidDuration, durations, coo
           </div>
         </motion.div>
       </ContextMenuTrigger>
-      <ContextMenuContent className={`${contextMenuWidth}`}>
+      <ContextMenuContent>
         <ContextMenuCheckboxItem
           checked={isLocked}
           onCheckedChange={(checked) => {
@@ -274,6 +274,17 @@ const DraggableBox = ({ action, entry, otherUseAts, raidDuration, durations, coo
         >
           {t('Delete')}
         </ContextMenuItem>
+        {activeEntries.size > 1 && (
+          <ContextMenuItem
+            inset
+            onClick={() => {
+              mutateEntries([], activeEntries.keys().toArray(), false);
+              setActiveEntries(new Map());
+            }}
+          >
+            {t('DeleteAll')}
+          </ContextMenuItem>
+        )}
       </ContextMenuContent>
     </ContextMenu>
   );

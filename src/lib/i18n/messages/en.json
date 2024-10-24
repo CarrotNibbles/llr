@@ -178,6 +178,7 @@
     "EditColumn": {
       "Lock": "Lock",
       "Delete": "Delete",
+      "DeleteAll": "Delete All",
       "ActionOverlapError": "You cannot place this due to the action cooldown."
     },
     "HeadColumn": {

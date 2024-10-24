@@ -172,7 +172,7 @@ const GimmickLine = React.forwardRef<
                 />
               )}
             </HoverCardTrigger>
-            <HoverCardContent className='w-auto' align='start'>
+            <HoverCardContent className="w-auto" align="start">
               {mergedGimmicks.length > 0 &&
                 mergedGimmicks.map((mergedGimmick, index) => (
                   <div key={mergedGimmick.id} className={cn(className, 'space-y-1 mb-1')}>

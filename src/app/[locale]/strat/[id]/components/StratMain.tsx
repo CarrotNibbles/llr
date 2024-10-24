@@ -77,9 +77,7 @@ export const StratMain = () => {
               <div className="min-h-20 h-20 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide border-b flex flex-row">
                 {strategyData.strategy_players.map((playerStrategy) => (
                   <HeadColumn
-                    playerId={playerStrategy.id}
-                    job={playerStrategy.job}
-                    order={playerStrategy.order}
+                    playerStrategy={playerStrategy}
                     actions={availableActions.filter(({ job }) => job === playerStrategy.job)}
                     key={`headcolumn-${playerStrategy.id}`}
                   />
