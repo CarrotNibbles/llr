@@ -289,7 +289,7 @@ export type Database = {
           is_public: boolean
           modified_at: string
           name: string
-          password: string
+          password: string | null
           raid: string
           subversion: number
           version: number
@@ -302,7 +302,7 @@ export type Database = {
           is_public?: boolean
           modified_at?: string
           name?: string
-          password: string
+          password?: string | null
           raid: string
           subversion: number
           version: number
@@ -315,7 +315,7 @@ export type Database = {
           is_public?: boolean
           modified_at?: string
           name?: string
-          password?: string
+          password?: string | null
           raid?: string
           subversion?: number
           version?: number
@@ -480,6 +480,45 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      count_strategies: {
+        Args: {
+          q?: string
+          raid_skey?: string
+          patch?: Json
+          jobs?: Database["public"]["Enums"]["job"][]
+        }
+        Returns: number
+      }
+      get_strategy_players: {
+        Args: {
+          strategy_id: string
+        }
+        Returns: Json
+      }
+      select_strategies: {
+        Args: {
+          q?: string
+          raid_skey?: string
+          patch?: Json
+          jobs?: Database["public"]["Enums"]["job"][]
+          sort?: string
+          page?: number
+          lim?: number
+        }
+        Returns: {
+          id: string
+          name: string
+          version: number
+          subversion: number
+          modified_at: string
+          created_at: string
+          raid_name: string
+          raid_semantic_key: string
+          total_likes: number
+          strategy_players: Json
+          author_display_name: string
+        }[]
+      }
       update_modified_at: {
         Args: {
           strategy_id: string
@@ -532,7 +571,11 @@ export type Database = {
       raid_category: "Savage" | "Ultimate" | "Trial" | "Raid" | "Dungeon"
     }
     CompositeTypes: {
-      [_ in never]: never
+      selected_strategy_player: {
+        id: string | null
+        job: Database["public"]["Enums"]["job"] | null
+        order: number | null
+      }
     }
   }
 }
