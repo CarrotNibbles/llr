@@ -182,6 +182,7 @@
     },
     "HeadColumn": {
       "JobChange": {
+        "JobAssign": "직업 할당",
         "JobChange": "직업 변경",
         "ConfirmTitle": "직업 변경 확인",
         "Confirm": "직업 변경",

@@ -182,6 +182,7 @@
     },
     "HeadColumn": {
       "JobChange": {
+        "JobAssign": "Assign Job",
         "JobChange": "Change Job",
         "ConfirmTitle": "Confirm Job Change",
         "Confirm": "Change Job",

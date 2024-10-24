@@ -182,6 +182,7 @@
     },
     "HeadColumn": {
       "JobChange": {
+        "JobAssign": "ジョブ割り当て",
         "JobChange": "ジョブチェンジ",
         "ConfirmTitle": "ジョブチェンジの確認",
         "Confirm": "ジョブチェンジ",

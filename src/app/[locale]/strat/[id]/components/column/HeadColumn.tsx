@@ -87,7 +87,7 @@ export const HeadColumn = ({
               </PopoverTrigger>
               <PopoverContent className="w-auto">
                 <div className="space-y-3">
-                  <div className="text-xs font-bold">{t('JobChange.JobChange')}</div>
+                  <div className="text-xs font-bold">{t(job ? 'JobChange.JobChange' : 'JobChange.JobAssign')}</div>
                   <div className="flex space-x-2">
                     {JOB_LAYOUT.map((row, i) => (
                       <div
@@ -97,37 +97,48 @@ export const HeadColumn = ({
                         }`}
                         className="flex flex-col space-y-2"
                       >
-                        {row.map((newJob) => (
-                          <AlertDialog key={`job-icon-${newJob}`}>
-                            <AlertDialogTrigger
+                        {row.map((newJob) => {
+                          const applyChange = () => {
+                            updatePlayerJob(playerId, newJob ?? undefined, false);
+                            setPopoverOpen(false);
+                            toast({
+                              description: t('JobChange.Complete'),
+                            });
+                          };
+
+                          return job ? (
+                            <AlertDialog key={`job-icon-change-${newJob}`}>
+                              <AlertDialogTrigger
+                                disabled={job === newJob}
+                                className={job === newJob ? 'cursor-not-allowed' : undefined}
+                              >
+                                <span className="sr-only">Change job to {job}</span>
+                                <JobIcon job={newJob} role={getOrderedRole(newJob, order)} className="w-6 h-6" />
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>{t('JobChange.ConfirmTitle')}</AlertDialogTitle>
+                                  <AlertDialogDescription>{t('JobChange.Warning')}</AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>{t('JobChange.Cancel')}</AlertDialogCancel>
+                                  <AlertDialogAction onClick={applyChange}>{t('JobChange.Confirm')}</AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          ) : (
+                            <button
+                              type="button"
+                              key={`job-icon-assign-${newJob}`}
                               disabled={job === newJob}
                               className={job === newJob ? 'cursor-not-allowed' : undefined}
+                              onClick={applyChange}
                             >
                               <span className="sr-only">Change job to {job}</span>
                               <JobIcon job={newJob} role={getOrderedRole(newJob, order)} className="w-6 h-6" />
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>{t('JobChange.ConfirmTitle')}</AlertDialogTitle>
-                                <AlertDialogDescription>{t('JobChange.Warning')}</AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>{t('JobChange.Cancel')}</AlertDialogCancel>
-                                <AlertDialogAction
-                                  onClick={() => {
-                                    updatePlayerJob(playerId, newJob ?? undefined, false);
-                                    setPopoverOpen(false);
-                                    toast({
-                                      description: t('JobChange.Complete'),
-                                    });
-                                  }}
-                                >
-                                  {t('JobChange.Confirm')}
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
-                        ))}
+                            </button>
+                          );
+                        })}
                       </div>
                     ))}
                   </div>
