@@ -43,7 +43,7 @@ const StrategyTable: React.FC<StrategyTableProps> = ({ dataPromise, className, .
     </Table>
   );
 };
-StrategyTable.displayName = "StrategyTable"
+StrategyTable.displayName = 'StrategyTable';
 
 type StrategyTableBodyProps = Readonly<
   React.HTMLAttributes<HTMLTableSectionElement> & {
@@ -74,8 +74,8 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
               <Link href={`/strat/${strategyData.id}`} className="w-full h-full flex items-center">
                 <div className="flex flex-col pl-4 py-4 pr-2">
                   <h2 className="text-base md:text-lg font-bold">{strategyData.name}</h2>
-                  <div className="text-xs md:text-sm text-muted-foreground">{strategyData.raids?.name}</div>
-                  {strategyData.strategy_players.length !== 0 && (
+                  <div className="text-xs md:text-sm text-muted-foreground">{strategyData.raid_name}</div>
+                  {strategyData.strategy_players !== null && strategyData.strategy_players.length !== 0 && (
                     <div>
                       <div className="inline-grid grid-cols-4 sm:grid-cols-8 gap-1 mt-2">
                         {strategyData.strategy_players.map((player) => (
@@ -97,12 +97,10 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
                 href={`/strat/${strategyData.id}`}
                 className={cn(
                   'w-full h-full flex items-center',
-                  strategyData.author === null && 'text-muted-foreground',
+                  strategyData.author_display_name && 'text-muted-foreground',
                 )}
               >
-                <div className="px-2 py-4">
-                  {strategyData.author === null ? 'Deleted User' : strategyData.author.display_name}
-                </div>
+                <div className="px-2 py-4">{strategyData.author_display_name ?? 'Deleted User'}</div>
                 {/* TODO: Add i18n */}
               </Link>
             </TableCell>
@@ -113,9 +111,7 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
             </TableCell>
             <TableCell className="p-0 w-0 h-0">
               <Link href={`/strat/${strategyData.id}`} className="w-full h-full flex justify-center items-center">
-                <div className="px-2 py-4">
-                  {strategyData.like_counts === null ? 0 : strategyData.like_counts.total_likes}
-                </div>
+                <div className="px-2 py-4">{strategyData.total_likes === null ? 0 : strategyData.total_likes}</div>
               </Link>
             </TableCell>
             <TableCell className="p-0 w-0 h-0  hidden md:table-cell">
@@ -131,7 +127,7 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
     </TableBody>
   );
 };
-StrategyTableBody.displayName = "StrategyTableBody"
+StrategyTableBody.displayName = 'StrategyTableBody';
 
 type StrategyTableBodySkeletonProps = Readonly<React.HTMLAttributes<HTMLTableSectionElement> & {}>;
 
@@ -178,6 +174,6 @@ const StrategyTableBodySkeleton: React.FC<StrategyTableBodySkeletonProps> = ({ c
     ))}
   </TableBody>
 );
-StrategyTableBodySkeleton.displayName = "StrategyTableBodySkeleton"
+StrategyTableBodySkeleton.displayName = 'StrategyTableBodySkeleton';
 
-export { StrategyTable}
+export { StrategyTable };
