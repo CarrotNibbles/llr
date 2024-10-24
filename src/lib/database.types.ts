@@ -484,12 +484,7 @@ export type Database = {
         Args: {
           strategy_id: string
         }
-        Returns: {
-          id: string
-          job: Database["public"]["Enums"]["job"] | null
-          order: number
-          strategy: string
-        }[]
+        Returns: Json
       }
       select_strategies: {
         Args: {
@@ -510,7 +505,7 @@ export type Database = {
           raid_name: string
           raid_semantic_key: string
           total_likes: number
-          strategy_players: Database["public"]["Tables"]["strategy_players"]["Row"][]
+          strategy_players: Database["public"]["CompositeTypes"]["selected_strategy_player"][]
           author_display_name: string
         }[]
       }
@@ -566,7 +561,11 @@ export type Database = {
       raid_category: "Savage" | "Ultimate" | "Trial" | "Raid" | "Dungeon"
     }
     CompositeTypes: {
-      [_ in never]: never
+      selected_strategy_player: {
+        id: string | null
+        job: Database["public"]["Enums"]["job"] | null
+        order: number | null
+      }
     }
   }
 }
