@@ -202,7 +202,6 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          layout
           drag={draggable ? 'y' : false}
           dragControls={effectiveDragControls}
           dragListener={false}
