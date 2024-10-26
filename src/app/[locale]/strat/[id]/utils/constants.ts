@@ -4,7 +4,7 @@ import type { Role } from '@/lib/utils';
 export const columnWidth = 'w-6 lg:w-6';
 export const jobIconWidth = 'w-8 lg:w-8';
 
-export const TIME_STEP = 20;
+export const TIME_STEP = 1;
 
 export const BOTTOM_PADDING_PX = 60;
 
@@ -44,6 +44,9 @@ export const GIMMICK_BACKGROUND_STYLE = {
 
 export const MERGE_THRESHOLD_DEFAULT = 28;
 export const MERGE_THRESHOLD_INCREMENTAL = 20;
+
+export const BOX_X_OFFSET = [0, 5, -5];
+export const BOX_Z_INDEX = [4, 5, 6];
 
 export const MAX_DISPLAY_COUNT = 3;
 

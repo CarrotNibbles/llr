@@ -12,11 +12,13 @@ import { type ArrayElement, clamp } from '@/lib/utils';
 import { AnimatePresence, animate, motion, useDragControls, useMotionValue } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
-import { type MouseEventHandler, useContext, useEffect, useState } from 'react';
+import { type MouseEventHandler, useContext, useEffect, useMemo, useState } from 'react';
 
 import { usePixelPerFrame } from '@/lib/states';
-import { BOTTOM_PADDING_PX, TIME_STEP, columnWidth } from '../../utils/constants';
+import { BOTTOM_PADDING_PX, BOX_X_OFFSET, BOX_Z_INDEX, TIME_STEP, columnWidth } from '../../utils/constants';
 import { EntrySelectionContext } from './EntrySelectionContext';
+import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvider';
+import { MultiIntervalSet } from '../../utils/helpers';
 
 const snapToStep = (currentUseAt: number) => {
   const clampedUseAt = currentUseAt > 0 ? currentUseAt : 0;
@@ -24,72 +26,124 @@ const snapToStep = (currentUseAt: number) => {
   return TIME_STEP * Math.round(clampedUseAt / TIME_STEP);
 };
 
-const overlaps = (currentUseAt: number, otherUseAt: number, cooldown: number) =>
-  Math.abs(currentUseAt - otherUseAt) < cooldown;
+function useEntryMutation() {
+  const { mutateEntries, strategyData } = useStratSyncStore((state) => state);
+  const { actionData } = useStaticDataStore((state) => state);
 
-const evaluateOverlap = (currentUseAt: number, prevUseAt: number, otherUseAt: number, cooldown: number) => {
-  if (Math.abs(currentUseAt - otherUseAt) >= cooldown * 0.5) return currentUseAt < otherUseAt ? 'up' : 'down';
-  return prevUseAt < otherUseAt ? 'up' : 'down';
-};
+  const moveEntries = (ids: string[], offset: number) => {
+    const upserts = strategyData.strategy_players
+      .flatMap((player) => {
+        const targetActions = new Set(
+          player.strategy_player_entries.filter((entry) => ids.includes(entry.id)).map((entry) => entry.action),
+        );
 
-function buildHelperFunctions(raidDuration: number, cooldown: number) {
-  const removeOverlap = (currentUseAt: number, prevUseAt: number, otherUseAts: number[]) => {
-    const sortedOtherUseAts = otherUseAts.toSorted((a, b) => a - b);
+        return targetActions
+          .values()
+          .toArray()
+          .flatMap((actionId) => {
+            const action = actionData?.find((action) => action.id === actionId);
 
-    const overlapIndex = sortedOtherUseAts.reduce(
-      (acc, curr, index) =>
-        Math.abs(curr - currentUseAt) < acc.value ? { value: Math.abs(curr - currentUseAt), index } : acc,
-      { value: cooldown, index: -1 },
-    ).index;
+            if (!action) return [];
 
-    if (overlapIndex === -1) return currentUseAt;
+            const entries = player.strategy_player_entries
+              .filter((entry) => entry.action === action.id)
+              .toSorted((lhs, rhs) => lhs.use_at - rhs.use_at);
 
-    const newUseAt =
-      evaluateOverlap(currentUseAt, prevUseAt, sortedOtherUseAts[overlapIndex], cooldown) === 'up'
-        ? sortedOtherUseAts[overlapIndex] - cooldown
-        : sortedOtherUseAts[overlapIndex] + cooldown;
+            const fixedIntervals = entries
+              .filter((entry) => !ids.includes(entry.id))
+              .map((entry) => [entry.use_at, entry.use_at + action.cooldown] as [number, number]);
+            const upserts = entries.filter((entry) => ids.includes(entry.id)).toReversed();
 
-    if (
-      newUseAt >= 0 &&
-      newUseAt <= raidDuration &&
-      sortedOtherUseAts.every((otherUseAt) => !overlaps(newUseAt, otherUseAt, cooldown))
-    )
-      return newUseAt;
+            let currentOffset = offset;
+            const mis = new MultiIntervalSet(action.charges, fixedIntervals);
+            return upserts.map((entry) => {
+              currentOffset = mis.offsetSearch([entry.use_at, entry.use_at + action.cooldown], currentOffset);
 
-    return null;
+              mis.insertInterval([entry.use_at + currentOffset, entry.use_at + action.cooldown + currentOffset]);
+
+              return { ...entry, use_at: entry.use_at + currentOffset };
+            });
+          });
+      })
+      .map(({ id, action, player, use_at }) => ({
+        id,
+        action,
+        player,
+        useAt: use_at,
+      }));
+
+    mutateEntries(upserts, [], false);
   };
 
-  const snapAndRemoveOverlap = (currentUseAt: number, prevUseAt: number, otherUseAts: number[]) =>
-    removeOverlap(snapToStep(currentUseAt), prevUseAt, otherUseAts);
+  const insertEntry = (
+    entry: ArrayElement<ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries']>,
+  ) => {
+    const { id, player: playerId, action: actionId, use_at } = entry;
+    const playerData = strategyData.strategy_players.find((p) => p.id === playerId);
 
-  return { removeOverlap, snapAndRemoveOverlap };
+    if (!playerData) return false;
+
+    const action = actionData?.find((a) => a.id === actionId);
+
+    if (!action) return false;
+
+    const fixedIntervals = playerData.strategy_player_entries
+      .filter((entry) => entry.action === action.id)
+      .map((entry) => [entry.use_at, entry.use_at + action.cooldown] as [number, number]);
+
+    const mis = new MultiIntervalSet(action.charges, fixedIntervals);
+
+    const insertable = mis.isInsertable([use_at, use_at + action.cooldown]);
+
+    if (insertable) {
+      mutateEntries(
+        [
+          {
+            id,
+            action: actionId,
+            player: playerId,
+            useAt: use_at,
+          },
+        ],
+        [],
+        false,
+      );
+    }
+
+    return insertable;
+  };
+
+  return { moveEntries, insertEntry };
 }
 
 type DraggableBoxProps = {
   action: ArrayElement<ActionDataType>;
   entry: ArrayElement<ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries']>;
-  otherUseAts: number[];
+  slot: number;
   raidDuration: number;
   durations: number[];
-  cooldown: number;
 };
 
-const DraggableBox = ({ action, entry, otherUseAts, raidDuration, durations, cooldown }: DraggableBoxProps) => {
+const DraggableBox = ({ action, entry, slot, raidDuration, durations }: DraggableBoxProps) => {
   const { use_at: useAt, id: entryId, action: actionId, player: playerId } = entry;
 
   const pixelPerFrame = usePixelPerFrame();
   const t = useTranslations('StratPage.EditColumn');
   const src = `/icons/action/${action.job}/${action.semantic_key}.png`;
-  const { snapAndRemoveOverlap } = buildHelperFunctions(raidDuration, cooldown);
+
+  const { toast } = useToast();
 
   const { mutateEntries, elevated } = useStratSyncStore((state) => state);
+  const { insertEntry, moveEntries } = useEntryMutation();
 
   const [holdingShift, setHoldingShift] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
+  const xMotionValue = useMotionValue(BOX_X_OFFSET[slot]);
   const yMotionValue = useMotionValue(useAt * pixelPerFrame);
 
-  const { activeEntries, setActiveEntries } = useContext(EntrySelectionContext);
+  const { activeEntries, setActiveEntries, draggingCount, setDraggingCount } = useContext(EntrySelectionContext);
   const draggable = elevated && !isLocked;
+  const [isDragging, setIsDragging] = useState(false);
 
   const dragControls = useDragControls();
   const effectiveDragControls = draggable ? dragControls : undefined;
@@ -98,19 +152,30 @@ const DraggableBox = ({ action, entry, otherUseAts, raidDuration, durations, coo
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    void animate(yMotionValue, useAt * pixelPerFrame);
-  }, [pixelPerFrame, useAt]);
-
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 'Shift') setHoldingShift(true);
-  };
-
-  const handleKeyUp = (e: KeyboardEvent) => {
-    if (e.key === 'Shift') setHoldingShift(false);
-  };
+    void animate(xMotionValue, BOX_X_OFFSET[slot])
+  }, [slot]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
+    void animate(yMotionValue, useAt * pixelPerFrame);
+  }, [pixelPerFrame, useAt]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  useEffect(() => {
+    if (draggingCount === 0) {
+      void animate(yMotionValue, useAt * pixelPerFrame);
+    }
+  }, [draggingCount]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Shift') setHoldingShift(true);
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === 'Shift') setHoldingShift(false);
+    };
+
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
 
@@ -120,47 +185,24 @@ const DraggableBox = ({ action, entry, otherUseAts, raidDuration, durations, coo
     };
   }, []);
 
-  const onDragEnd = async () => {
-    // AdjustPosition
-    yMotionValue.animation?.cancel();
-
-    const oldUseAt = useAt;
-    const newUseAt = clamp(yMotionValue.get() / pixelPerFrame, 0, raidDuration);
-    const newUseAtCalced = snapAndRemoveOverlap(newUseAt, useAt, otherUseAts);
-
-    const snappedUseAt = newUseAtCalced !== null ? snapToStep(newUseAtCalced) : oldUseAt;
-
-    void animate(yMotionValue, snappedUseAt * pixelPerFrame);
-
-    if (newUseAtCalced === null) return;
-
-    setActiveEntries((prev) => {
-      const newActiveEntries = new Map(prev);
-      newActiveEntries.delete(entryId);
-      return newActiveEntries;
-    });
-
-    mutateEntries(
-      [
-        {
-          id: entryId,
-          action: actionId,
-          player: playerId,
-          useAt: snappedUseAt,
-        },
-      ],
-      [],
-      false,
-    );
-  };
-
   return (
     <ContextMenu>
       <ContextMenuTrigger className="relative" disabled={!elevated}>
         <motion.div
+          className={`${columnWidth} h-0 absolute z-[5] shadow-xl filter ${activeEntries.get(entryId) ? 'drop-shadow-selection' : ''}`}
+          style={{
+            x: xMotionValue,
+            y: yMotionValue,
+            zIndex: BOX_Z_INDEX[slot],
+            cursor: draggable ? 'grab' : 'not-allowed',
+            transitionProperty: 'filter',
+            transitionDuration: '0.3s',
+            transitionTimingFunction: 'ease-in-out',
+          }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          layout
           drag={draggable ? 'y' : false}
           dragControls={effectiveDragControls}
           dragListener={false}
@@ -182,33 +224,57 @@ const DraggableBox = ({ action, entry, otherUseAts, raidDuration, durations, coo
               for (const dc of activeEntries.values()) {
                 dc.start(e);
               }
+
+              setDraggingCount(activeEntries.size);
             }
           }}
-          onPointerUp={() => {
-            if (activeEntries.get(entryId)) {
-              if (activeEntries.size === 1 && !holdingShift) {
-                activeEntries.clear();
-                setActiveEntries(new Map());
+          onDragStart={() => {
+            setIsDragging(true);
+          }}
+          onDragEnd={() => {
+            setIsDragging(false);
+            yMotionValue.animation?.stop();
+
+            const oldUseAt = useAt;
+            const newUseAt = snapToStep(clamp(yMotionValue.get() / pixelPerFrame, 0, raidDuration));
+            const offset = newUseAt - oldUseAt;
+
+            moveEntries(activeEntries.keys().toArray(), offset);
+            setActiveEntries(new Map());
+
+            setDraggingCount((prev) => prev - 1);
+          }}
+          onClick={(e) => {
+            if (!holdingShift) {
+              setActiveEntries(new Map());
+
+              if (action.charges > 1 && !isDragging) {
+                const cursorY = e.clientY - e.currentTarget.getBoundingClientRect().top + useAt * pixelPerFrame;
+                const cursorUseAt = snapToStep(clamp(cursorY / pixelPerFrame, 0, raidDuration));
+
+                const success = insertEntry({
+                  id: crypto.randomUUID(),
+                  action: actionId,
+                  player: playerId,
+                  use_at: cursorUseAt,
+                });
+
+                if (!success) {
+                  toast({
+                    description: t('ActionOverlapError'),
+                  });
+                }
               }
             }
-          }}
-          onDragEnd={onDragEnd}
-          className={`${columnWidth} h-0 absolute z-[5] shadow-xl filter ${activeEntries.get(entryId) ? 'drop-shadow-selection' : ''}`}
-          style={{
-            y: yMotionValue,
-            cursor: draggable ? 'grab' : 'not-allowed',
-            transitionProperty: 'filter',
-            transitionDuration: '0.3s',
-            transitionTimingFunction: 'ease-in-out',
           }}
         >
           <div
             className={`relative ${columnWidth} overflow-hidden border-zinc-300 dark:border-zinc-700 border-b-[2px]`}
-            style={{ height: `${cooldown * pixelPerFrame}px` }}
+            style={{ height: `${action.cooldown * pixelPerFrame}px` }}
           >
             <div
               className={`absolute top-0 mx-auto ${columnWidth} ml-[calc(50%-1.5px)] border-zinc-300 dark:border-zinc-700 border-l-[3px] border-dotted`}
-              style={{ height: `${cooldown * pixelPerFrame}px` }}
+              style={{ height: `${action.cooldown * pixelPerFrame}px` }}
             />
             {otherDurations.length > 0 && (
               <>
@@ -301,56 +367,47 @@ const EditSubColumn = ({ raidDuration, action, entries, playerId }: EditSubColum
   const { toast } = useToast();
   const t = useTranslations('StratPage.EditColumn');
 
-  const { mutateEntries } = useStratSyncStore((state) => state);
-  const boxValues = entries.map((entry) => ({ useAt: entry.use_at, id: entry.id }));
   const pixelPerFrame = usePixelPerFrame();
-  const { snapAndRemoveOverlap } = buildHelperFunctions(raidDuration, action.cooldown);
+  const { insertEntry } = useEntryMutation();
   const { elevated } = useStratSyncStore((state) => state);
 
   const { setActiveEntries } = useContext(EntrySelectionContext);
 
+  const slotMap: Map<string, number> = useMemo(() => {
+    const slots: { id: string; use_at: number }[][] = Array.from({ length: action.charges }, () => []);
+
+    for (const { id, use_at } of entries.toSorted((lhs, rhs) => lhs.use_at - rhs.use_at)) {
+      let idx = 0;
+
+      while (slots[idx].length > 0 && slots[idx][slots[idx].length - 1].use_at + action.cooldown > use_at) {
+        idx++;
+      }
+
+      slots[idx].push({ id, use_at });
+    }
+
+    return new Map(slots.flatMap((slot, idx) => slot.map(({ id }) => [id, idx])));
+  }, [entries, action]);
+
   const createBox: MouseEventHandler<HTMLDivElement> = async (evt) => {
     const cursorY = evt.clientY - evt.currentTarget.getBoundingClientRect().top;
     const cursorUseAt = cursorY / pixelPerFrame;
+    const useAt = snapToStep(cursorUseAt);
 
     setActiveEntries(new Map());
 
-    if (
-      boxValues.some((boxValue) => cursorUseAt - boxValue.useAt >= 0 && cursorUseAt - boxValue.useAt <= action.cooldown)
-    ) {
+    const success = insertEntry({
+      id: crypto.randomUUID(),
+      action: action.id,
+      player: playerId,
+      use_at: useAt,
+    });
+
+    if (!success) {
       toast({
         description: t('ActionOverlapError'),
       });
-
-      return false;
     }
-
-    const useAtCalced = snapAndRemoveOverlap(
-      cursorUseAt,
-      snapToStep(cursorUseAt),
-      boxValues.map((boxValue) => boxValue.useAt),
-    );
-
-    if (useAtCalced === null) {
-      toast({
-        description: t('ActionOverlapError'),
-      });
-
-      return false;
-    }
-
-    mutateEntries(
-      [
-        {
-          id: crypto.randomUUID(),
-          action: action.id,
-          player: playerId,
-          useAt: useAtCalced,
-        },
-      ],
-      [],
-      false,
-    );
   };
 
   return (
@@ -359,15 +416,14 @@ const EditSubColumn = ({ raidDuration, action, entries, playerId }: EditSubColum
       style={{ height: `${raidDuration * pixelPerFrame + BOTTOM_PADDING_PX}px` }}
     >
       <AnimatePresence>
-        {...boxValues.map((boxValue, index) => (
+        {...entries.map(({ id, use_at }, index) => (
           <DraggableBox
-            key={boxValue.id}
+            key={`draggable-box-${id}`}
             action={action}
             entry={entries[index]}
+            slot={slotMap.get(id) ?? 0}
             raidDuration={raidDuration}
             durations={action.mitigations.map(({ duration }) => duration)}
-            cooldown={action.cooldown}
-            otherUseAts={boxValues.filter((_, j) => j !== index).map((boxValue) => boxValue.useAt)}
           />
         ))}
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}

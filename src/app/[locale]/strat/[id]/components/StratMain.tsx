@@ -22,6 +22,7 @@ export const StratMain = () => {
   const ref = useRef<HTMLDivElement>(null);
 
   const [activeEntries, setActiveEntries] = useState<Map<string, DragControls>>(new Map());
+  const [draggingCount, setDraggingCount] = useState(0);
 
   useEffect(() => {
     if (ref.current) {
@@ -59,7 +60,7 @@ export const StratMain = () => {
 
   return (
     <ScrollSync>
-      <EntrySelectionContext.Provider value={{ activeEntries, setActiveEntries }}>
+      <EntrySelectionContext.Provider value={{ activeEntries, setActiveEntries, draggingCount, setDraggingCount }}>
         <ResizablePanelGroup direction="horizontal" className="relative flex w-screen flex-grow overflow-hidden">
           <ResizablePanel defaultSize={20} minSize={4} className="border-r -z-50">
             <div className="min-h-20 h-20 border-b" />
