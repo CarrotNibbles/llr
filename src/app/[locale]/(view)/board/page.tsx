@@ -54,10 +54,15 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
     <div className="flex flex-col w-full max-w-screen-xl px-4 py-1">
       <BoardSubheader />
       <div className="px-4 mt-2 mb-8">
-        <StrategyTable dataPromise={buildStrategiesDataQuery(supabase, { raid, patch, page, limit, sort, jobs: ['NIN'] })} />
+        <StrategyTable
+          dataPromise={buildStrategiesDataQuery(supabase, { raid_skey: raid, patch, page, lim: limit, sort, jobs })}
+        />
         <div className="w-full flex flex-col-reverse lg:grid lg:grid-cols-3 gap-y-2 mt-2">
           <div />
-          <ViewPagination currentPage={page} dataPromise={buildMaxPageQuery(supabase, limit, { raid, patch })} />
+          <ViewPagination
+            currentPage={page}
+            dataPromise={buildMaxPageQuery(supabase, limit, { raid_skey: raid, patch, jobs })}
+          />
           <div className="flex text-xs flex-row-reverse gap-x-2">
             <LimitCombobox currentLimit={limit} />
             <SortCombobox currentSort={sort} />
