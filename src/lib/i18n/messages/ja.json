@@ -304,6 +304,11 @@
       "Current": "{currentLimit}件ずつ",
       "Empty": "一度に表示する戦略の数を選択してください",
       "Item": "{limit}件ずつ"
+    },
+    "SortCombobox": {
+      "like": "いいね順",
+      "recent": "最新順",
+      "Empty": "並び替え方法を選択"
     }
   }
 }

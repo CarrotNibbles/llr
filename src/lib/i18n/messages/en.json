@@ -304,6 +304,11 @@
       "Current": "{currentLimit} Strats in Page",
       "Empty": "Choose the number of strats to show in a page",
       "Item": "{limit} Strats per Page"
+    },
+    "SortCombobox": {
+      "like": "Most Likes",
+      "recent": "Most Recent",
+      "Empty": "Choose sort order"
     }
   }
 }
