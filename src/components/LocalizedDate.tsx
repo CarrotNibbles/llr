@@ -10,7 +10,7 @@ import React from 'react';
 type LocalizedDateProp = React.HTMLAttributes<HTMLSpanElement> & {
   dateISOString: string;
   useDifference?: boolean;
-  dateFormat: string
+  dateFormat: string;
 };
 
 const localeMap: Record<Locale, DateFNSLocale> = {

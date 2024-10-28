@@ -18,13 +18,7 @@ export const SignOutButton: React.FC<SignOutButtonProps> = ({ className, ...prop
   }
 
   return (
-    <Button
-      className={className}
-      type="button"
-      disabled={isLoading}
-      onClick={onDiscordSubmit}
-      {...props}
-    >
+    <Button className={className} type="button" disabled={isLoading} onClick={onDiscordSubmit} {...props}>
       {isLoading && (
         <>
           <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />{' '}

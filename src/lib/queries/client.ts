@@ -37,7 +37,7 @@ export const buildSearchButtonStrategiesDataQuery = async (
       like_counts(total_likes), 
       strategy_players(id, job, order)`,
     )
-    .like("name", `%${q}%`)
+    .like('name', `%${q}%`)
     .eq('is_public', true)
     .order('created_at', { ascending: false })
     .range((page - 1) * limit, page * limit - 1);
@@ -47,7 +47,7 @@ export const buildSearchButtonStrategiesDataQuery = async (
   return res;
 };
 
-export type SearchStrategiesDataType = QueryData<ReturnType<typeof buildSearchButtonStrategiesDataQuery>>
+export type SearchStrategiesDataType = QueryData<ReturnType<typeof buildSearchButtonStrategiesDataQuery>>;
 
 //! Deprecated
 // // StrategyPlayer

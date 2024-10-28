@@ -26,7 +26,7 @@ const BoardSubheader: React.FC<BoardSubheaderProps> = ({ className, ...props }) 
     </Suspense>
   );
 };
-BoardSubheader.displayName = "BoardSubheader"
+BoardSubheader.displayName = 'BoardSubheader';
 
 type BoardSubheaderContentData = Readonly<{ raidsData: RaidsDataType }>;
 type BoardSubheaderContentProps = Readonly<
@@ -38,7 +38,9 @@ type BoardSubheaderContentProps = Readonly<
 const BOARD_SUBHEADER_CONTENT_DEFAULT_DATA: BoardSubheaderContentData = { raidsData: [] };
 const BoardSubheaderContent: React.FC<BoardSubheaderContentProps> = async ({ dataPromise, className, ...props }) => {
   const supabase = createClient();
-  const { data: { user }} = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   const { raidsData } = (await dataPromise) ?? BOARD_SUBHEADER_CONTENT_DEFAULT_DATA;
 
   return (
@@ -60,6 +62,6 @@ const BoardSubheaderContent: React.FC<BoardSubheaderContentProps> = async ({ dat
     </nav>
   );
 };
-BoardSubheaderContent.displayName = "BoardSubheaderContent"
+BoardSubheaderContent.displayName = 'BoardSubheaderContent';
 
-export { BoardSubheader }
+export { BoardSubheader };

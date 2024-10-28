@@ -1,8 +1,8 @@
-'use server'
+'use server';
 
-import { redirect } from "next/navigation";
-import { createClient } from "../supabase/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+import { createClient } from '../supabase/server';
 
 export async function discordSignIn() {
   const supabase = createClient();
@@ -12,8 +12,8 @@ export async function discordSignIn() {
     options: {
       redirectTo: `${process.env.HOST_URI}/auth/callback`,
       queryParams: {
-        prompt: 'none'
-      }
+        prompt: 'none',
+      },
     },
   });
 
@@ -30,12 +30,12 @@ export async function discordSignIn() {
 export async function signOut() {
   const supabase = createClient();
 
-  const { error } = await supabase.auth.signOut()
+  const { error } = await supabase.auth.signOut();
 
   if (error) {
     console.error('Error signing out:', error);
     redirect('/error');
   }
 
-  revalidatePath('/', 'layout')
+  revalidatePath('/', 'layout');
 }

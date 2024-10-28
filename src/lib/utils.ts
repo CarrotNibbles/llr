@@ -1,7 +1,7 @@
 import { type ClassValue, clsx } from 'clsx';
+import { ReadonlyURLSearchParams } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 import type { Enums } from './database.types';
-import { ReadonlyURLSearchParams } from 'next/navigation';
 
 export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs));

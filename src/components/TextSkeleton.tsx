@@ -1,8 +1,8 @@
 'use server';
 
+import { cn } from '@/lib/utils';
 import type React from 'react';
 import { Skeleton } from './ui/skeleton';
-import { cn } from '@/lib/utils';
 
 const TAILWIND_TEXT_SIZE = [
   'xs',
@@ -52,10 +52,12 @@ const SkeletonHeightClass: Record<TailwindTextSize, string> = {
   '9xl': 'h-32',
 };
 
-type TextSkeletonProps = Readonly<React.HTMLAttributes<HTMLDivElement> & {
-  textSize: TailwindTextSize;
-  mdTextSize?: TailwindTextSize;
-}>;
+type TextSkeletonProps = Readonly<
+  React.HTMLAttributes<HTMLDivElement> & {
+    textSize: TailwindTextSize;
+    mdTextSize?: TailwindTextSize;
+  }
+>;
 
 export const TextSkeleton: React.FC<TextSkeletonProps> = ({ textSize, mdTextSize, className, ...props }) => (
   <div

@@ -1,7 +1,7 @@
 import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvider';
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { OrderedMap } from '@js-sdsl/ordered-map';
-import { ElementType, useMemo } from 'react';
+import { useMemo } from 'react';
 import type { Tables } from '../database.types';
 import { type ArrayElement, type Role, getDiversedRole, getRole } from '../utils';
 import { estimateAll } from './estimations';

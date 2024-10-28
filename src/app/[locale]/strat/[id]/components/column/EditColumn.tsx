@@ -14,11 +14,11 @@ import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
 import { type MouseEventHandler, useContext, useEffect, useMemo, useState } from 'react';
 
+import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvider';
 import { usePixelPerFrame } from '@/lib/states';
 import { BOTTOM_PADDING_PX, BOX_X_OFFSET, BOX_Z_INDEX, TIME_STEP, columnWidth } from '../../utils/constants';
-import { EntrySelectionContext } from './EntrySelectionContext';
-import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvider';
 import { MultiIntervalSet } from '../../utils/helpers';
+import { EntrySelectionContext } from './EntrySelectionContext';
 
 const snapToStep = (currentUseAt: number) => {
   const clampedUseAt = currentUseAt > 0 ? currentUseAt : 0;
@@ -152,7 +152,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    void animate(xMotionValue, BOX_X_OFFSET[slot])
+    void animate(xMotionValue, BOX_X_OFFSET[slot]);
   }, [slot]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>

@@ -1,40 +1,10 @@
 'use client';
-
-import { JobIcon } from '@/components/JobIcon';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button, type ButtonProps } from '@/components/ui/button';
-import { Drawer, DrawerContent, DrawerTrigger } from '@/components/ui/drawer';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
-import { useMediaQuery } from '@/lib/hooks/useMediaQuery';
-import { type SearchStrategiesDataType, buildSearchButtonStrategiesDataQuery } from '@/lib/queries/client';
-import { createClient } from '@/lib/supabase/client';
-import {
-  DEFAULT_LIMIT,
-  SEARCH_BUTTON_LIMIT,
-  SEARCH_BUTTON_MOBILE_LIMIT,
-  buildSearchURL,
-  cn,
-  getOrderedRole,
-  rangeInclusive
-} from '@/lib/utils';
-import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  ExclamationTriangleIcon,
-  HeartFilledIcon,
-  HeartIcon,
-  MagnifyingGlassIcon,
-  MixerVerticalIcon,
-} from '@radix-ui/react-icons';
+import { DEFAULT_LIMIT, buildSearchURL } from '@/lib/utils';
+import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
-import type React from 'react';
-import { forwardRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { useSearchParams } from 'next/navigation';
+import { forwardRef } from 'react';
 
 type SearchButtonProps = Readonly<ButtonProps & {}>;
 
@@ -302,6 +272,6 @@ const SearchButtonNew = forwardRef<HTMLButtonElement, SearchButtonProps>(({ clas
     </Button>
   );
 });
-SearchButtonNew.displayName = 'SearchButton'
+SearchButtonNew.displayName = 'SearchButton';
 
 export { SearchButtonNew as SearchButton };

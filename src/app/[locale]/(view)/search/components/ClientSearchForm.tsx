@@ -199,10 +199,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                             >
                               모든 레이드
                               <CheckIcon
-                                className={cn(
-                                  'ml-auto h-4 w-4',
-                                  field.value === '' ? 'opacity-100' : 'opacity-0',
-                                )}
+                                className={cn('ml-auto h-4 w-4', field.value === '' ? 'opacity-100' : 'opacity-0')}
                               />
                             </CommandItem>
                             {raidsData.map((raid) => (
