@@ -19,7 +19,6 @@ export type Database = {
           id: string
           is_gcd: boolean
           job: Database["public"]["Enums"]["job"]
-          name: string
           priority: number
           semantic_key: string
           superseding_level: number | null
@@ -35,7 +34,6 @@ export type Database = {
           id?: string
           is_gcd: boolean
           job?: Database["public"]["Enums"]["job"]
-          name?: string
           priority: number
           semantic_key?: string
           superseding_level?: number | null
@@ -51,7 +49,6 @@ export type Database = {
           id?: string
           is_gcd?: boolean
           job?: Database["public"]["Enums"]["job"]
-          name?: string
           priority?: number
           semantic_key?: string
           superseding_level?: number | null
@@ -128,7 +125,6 @@ export type Database = {
         Row: {
           cast_at: number | null
           id: string
-          name: string
           prepare_at: number
           raid: string
           resolve_at: number | null
@@ -138,7 +134,6 @@ export type Database = {
         Insert: {
           cast_at?: number | null
           id?: string
-          name?: string
           prepare_at: number
           raid: string
           resolve_at?: number | null
@@ -148,7 +143,6 @@ export type Database = {
         Update: {
           cast_at?: number | null
           id?: string
-          name?: string
           prepare_at?: number
           raid?: string
           resolve_at?: number | null
