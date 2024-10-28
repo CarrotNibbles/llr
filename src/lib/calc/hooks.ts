@@ -6,6 +6,16 @@ import type { Tables } from '../database.types';
 import { type ArrayElement, type Role, getDiversedRole, getRole } from '../utils';
 import { estimateAll } from './estimations';
 
+const HEALER_BASIC_BARRIERS = [
+  'succor',
+  'concitation',
+  'deployment_tactics',
+  'eukrasian_prognosis',
+  'eukrasian_prognosis_ii',
+];
+const RANGED_PARTY_MITIGATION = ['troubadour', 'tactician', 'shield_samba'];
+const ACTIONS_ACTIVEAMP_ONCE = ['recitation', 'zoe'];
+
 export const useTank: () => [string, string] = () => {
   const {
     strategyData: { strategy_players },
@@ -96,16 +106,6 @@ const resolveDamage = (
 };
 
 const semanticKeyTransform = (key: string): string => {
-  const HEALER_BASIC_BARRIERS = [
-    'succor',
-    'concitation',
-    'deployment_tactics',
-    'eukrasian_prognosis',
-    'eukrasian_prognosis_ii',
-  ];
-
-  const RANGED_PARTY_MITIGATION = ['troubadour', 'tactician', 'shield_samba'];
-
   if (HEALER_BASIC_BARRIERS.includes(key)) {
     return 'healer_basic_barrier';
   }
@@ -241,10 +241,10 @@ export const useMitigatedDamages = () => {
     );
     const activeRaidwideEffects = new OrderedMap<ActiveEffectMapKey, Effect>([], effectMapComparator);
 
-    const effectIteratorMapPersonal = Object.fromEntries(
+    const effectKeyMapPersonal = Object.fromEntries(
       playerIds.map((playerId) => [playerId, new Map<string, ActiveEffectMapKey>()]),
     );
-    const effectIteratorMapRaidwide = new Map<string, ActiveEffectMapKey>();
+    const effectKeyMapRaidwide = new Map<string, ActiveEffectMapKey>();
 
     const personalEffect: Record<string, Effect> = Object.fromEntries(
       playerIds.map((playerId) => [playerId, IDENTITY_EFFECT]),
@@ -425,6 +425,22 @@ export const useMitigatedDamages = () => {
         );
         const amplification = (gcd ? subjectEffect.activeAmp : 1) * objectEffect.passiveAmp;
 
+        if (gcd && personalEffect[timelineEntry.by].activeAmp > 1) {
+          for (const semanticKey of ACTIONS_ACTIVEAMP_ONCE) {
+            const via = `${semanticKey}.ActiveAmp`;
+            const activeEffectKey = effectKeyMapPersonal[timelineEntry.by].get(via);
+            if (activeEffectKey) {
+              const activeEffect =
+                activePersonalEffects[timelineEntry.by].getElementByKey(activeEffectKey) ?? IDENTITY_EFFECT;
+              personalEffect[timelineEntry.by] = addEffect(
+                personalEffect[timelineEntry.by],
+                inverseEffect(activeEffect),
+              );
+              activePersonalEffects[timelineEntry.by].eraseElementByKey(activeEffectKey);
+            }
+          }
+        }
+
         let effect: Effect = IDENTITY_EFFECT;
         if (type === 'Physical') {
           effect = {
@@ -472,7 +488,7 @@ export const useMitigatedDamages = () => {
             effect,
             activeRaidwideEffects,
             raidwideEffect,
-            effectIteratorMapRaidwide,
+            effectKeyMapRaidwide,
             timelineEntry.via,
           );
         } else {
@@ -481,7 +497,7 @@ export const useMitigatedDamages = () => {
             effect,
             activePersonalEffects[timelineEntry.by],
             personalEffect[timelineEntry.by],
-            effectIteratorMapPersonal[timelineEntry.by],
+            effectKeyMapPersonal[timelineEntry.by],
             timelineEntry.via,
           );
         }
