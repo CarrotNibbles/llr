@@ -30,6 +30,7 @@ const HeadSubColumn = ({
   playerStrategy: ArrayElement<StrategyDataType['strategy_players']>;
   action: ArrayElement<ActionDataType>;
 }) => {
+  const tActions = useTranslations('Common.Actions');
   const { setActiveEntries } = useContext(EntrySelectionContext);
   const { elevated, mutateEntries } = useStratSyncStore((state) => state);
 
@@ -46,7 +47,7 @@ const HeadSubColumn = ({
                 {src && (
                   <Image
                     src={src}
-                    alt={action.name}
+                    alt={tActions(action.semantic_key)}
                     layout="fill"
                     objectFit="contain"
                     className="pointer-events-none select-none"
@@ -57,7 +58,7 @@ const HeadSubColumn = ({
               </div>
             </ContextMenuTrigger>
           </TooltipTrigger>
-          <TooltipContent className="pointer-events-none">{action.name}</TooltipContent>
+          <TooltipContent className="pointer-events-none">{tActions(action.semantic_key)}</TooltipContent>
           <ContextMenuContent>
             <ContextMenuItem
               onClick={() => {

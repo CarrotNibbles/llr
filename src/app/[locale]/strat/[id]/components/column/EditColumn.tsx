@@ -127,8 +127,9 @@ type DraggableBoxProps = {
 const DraggableBox = ({ action, entry, slot, raidDuration, durations }: DraggableBoxProps) => {
   const { use_at: useAt, id: entryId, action: actionId, player: playerId } = entry;
 
-  const pixelPerFrame = usePixelPerFrame();
   const t = useTranslations('StratPage.EditColumn');
+  const tActions = useTranslations('Common.Actions');
+  const pixelPerFrame = usePixelPerFrame();
   const src = `/icons/action/${action.job}/${action.semantic_key}.png`;
 
   const { toast } = useToast();
@@ -298,7 +299,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
             <div className="aspect-square relative w-full pointer-events-none">
               <Image
                 src={src}
-                alt={action.name}
+                alt={tActions(action.semantic_key)}
                 onDragStart={() => {
                   return false;
                 }}
