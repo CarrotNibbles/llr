@@ -299,6 +299,11 @@
       "CreateConfirm": "作成",
       "NotSignedIn": "投稿するにはログインしてください",
       "UnknownError": "戦略の作成に失敗しました。しばらくしてから再度お試しください。"
+    },
+    "LimitCombobox": {
+      "Current": "{currentLimit}件ずつ",
+      "Empty": "一度に表示する戦略の数を選択してください",
+      "Item": "{limit}件ずつ"
     }
   }
 }

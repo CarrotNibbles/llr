@@ -299,6 +299,11 @@
       "CreateConfirm": "Create",
       "NotSignedIn": "Please sign in to create a strategy",
       "UnknownError": "Failed to create strategy. Please try again later."
+    },
+    "LimitCombobox": {
+      "Current": "{currentLimit} Strats in Page",
+      "Empty": "Choose the number of strats to show in a page",
+      "Item": "{limit} Strats per Page"
     }
   }
 }

@@ -299,6 +299,11 @@
       "CreateConfirm": "생성",
       "NotSignedIn": "글을 작성하려면 로그인하세요",
       "UnknownError": "공략 생성에 실패했습니다. 잠시 후 재시도해 주세요."
+    },
+    "LimitCombobox": {
+      "Current": "{currentLimit}개씩",
+      "Empty": "한 번에 표시할 공략 수 선택",
+      "Item": "{limit}개씩"
     }
   }
 }
