@@ -45,8 +45,8 @@ export const GIMMICK_BACKGROUND_STYLE = {
 export const MERGE_THRESHOLD_DEFAULT = 28;
 export const MERGE_THRESHOLD_INCREMENTAL = 20;
 
-export const BOX_X_OFFSET = [0, 5, -5];
-export const BOX_Z_INDEX = [4, 5, 6];
+export const BOX_X_OFFSET = [0, 5, -5, 10, -10];
+export const BOX_Z_INDEX = [3, 4, 5, 6, 7];
 
 export const MAX_DISPLAY_COUNT = 3;
 
