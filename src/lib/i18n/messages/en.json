@@ -271,5 +271,34 @@
       "ErrorDescription": "Lost connection to the server. Please refresh the page and try again.",
       "Refresh": "Refresh"
     }
+  },
+  "ViewPage": {
+    "CreateButton": {
+      "ButtonTitle": "Create Strategy",
+      "DialogTitle": "Create Strategy",
+      "NameLabel": "Strategy Name",
+      "NamePlaceholder": "Enter strategy name",
+      "NameRequired": "Please enter a strategy name",
+      "NameTooShort": "Strategy name must be at least 2 characters",
+      "NameTooLong": "Strategy name must be 50 characters or fewer",
+      "RaidLabel": "Raid",
+      "RaidPlaceholder": "Select a raid",
+      "RaidSearchPlaceholder": "Search raid",
+      "RaidEmpty": "No raids available",
+      "RaidRequired": "Please select a raid",
+      "ScopeLabel": "Visibility",
+      "ScopePublicLabel": "Public",
+      "ScopePublicDescription": "Anyone can view this strategy",
+      "ScopePrivateLabel": "Private",
+      "ScopePrivateDescription": "Only the author can view this strategy",
+      "ScopeRequired": "Please select visibility",
+      "PasswordLabel": "Password",
+      "PasswordDescription": "Password required to edit this strategy (not needed for author)",
+      "PasswordRequired": "Please set a password",
+      "PasswordLengthMismatch": "Password must be 8 characters long",
+      "CreateConfirm": "Create",
+      "NotSignedIn": "Please sign in to create a strategy",
+      "UnknownError": "Failed to create strategy. Please try again later."
+    }
   }
 }

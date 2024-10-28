@@ -271,5 +271,34 @@
       "ErrorDescription": "サーバーへの接続が失われました。ページを再読み込みして、もう一度お試しください。",
       "Refresh": "再読み込み"
     }
+  },
+  "ViewPage": {
+    "CreateButton": {
+      "ButtonTitle": "戦略作成",
+      "DialogTitle": "戦略作成",
+      "NameLabel": "戦略名",
+      "NamePlaceholder": "戦略名を入力してください",
+      "NameRequired": "戦略名を入力してください",
+      "NameTooShort": "戦略名は2文字以上で入力してください",
+      "NameTooLong": "戦略名は50文字以内で入力してください",
+      "RaidLabel": "レイド",
+      "RaidPlaceholder": "レイドを選択してください",
+      "RaidSearchPlaceholder": "レイドを検索",
+      "RaidEmpty": "利用可能なレイドがありません",
+      "RaidRequired": "レイドを選択してください",
+      "ScopeLabel": "公開範囲",
+      "ScopePublicLabel": "公開",
+      "ScopePublicDescription": "誰でもこの戦略を閲覧できます",
+      "ScopePrivateLabel": "非公開",
+      "ScopePrivateDescription": "作成者のみがこの戦略を閲覧できます",
+      "ScopeRequired": "公開範囲を選択してください",
+      "PasswordLabel": "パスワード",
+      "PasswordDescription": "戦略を編集する際に必要なパスワード（作成者は不要）",
+      "PasswordRequired": "パスワードを設定してください",
+      "PasswordLengthMismatch": "パスワードは8文字である必要があります",
+      "CreateConfirm": "作成",
+      "NotSignedIn": "投稿するにはログインしてください",
+      "UnknownError": "戦略の作成に失敗しました。しばらくしてから再度お試しください。"
+    }
   }
 }
