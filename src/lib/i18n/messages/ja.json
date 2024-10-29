@@ -317,6 +317,14 @@
     "ProfileDropdown": {
       "MyStrats": "自分の戦略",
       "LikedStrats": "いいねした戦略"
+    },
+    "StrategyTable": {
+      "Strategy": "戦略",
+      "Author": "作成者",
+      "Patch": "バージョン",
+      "Likes": "いいね",
+      "Created": "作成日",
+      "NoStrategyFound": "戦略が見つかりませんでした"
     }
   }
 }

@@ -317,6 +317,14 @@
     "ProfileDropdown": {
       "MyStrats": "내 전략",
       "LikedStrats": "좋아요한 전략"
+    },
+    "StrategyTable": {
+      "Strategy": "전략",
+      "Author": "작성자",
+      "Patch": "버전",
+      "Likes": "좋아요",
+      "Created": "작성일",
+      "NoStrategyFound": "전략을 찾지 못했습니다"
     }
   }
 }

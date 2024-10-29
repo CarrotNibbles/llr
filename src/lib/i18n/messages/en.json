@@ -317,6 +317,14 @@
     "ProfileDropdown": {
       "MyStrats": "My Strats",
       "LikedStrats": "Liked Strats"
+    },
+    "StrategyTable": {
+      "Strategy": "Strategy",
+      "Author": "Author",
+      "Patch": "Version",
+      "Likes": "Likes",
+      "Created": "Created",
+      "NoStrategyFound": "No Strategy Found"
     }
   }
 }
