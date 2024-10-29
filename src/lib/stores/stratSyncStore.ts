@@ -139,8 +139,6 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
       ...initState,
       connect: async (strategy: string, isAuthor: boolean, editable: boolean) => {
         try {
-          if (StratSyncClientFactory.instance) return;
-
           const client = new StratSyncClientFactory().client;
           const eventStream = client.event({ strategy }, { headers: await getAuthorizationHeader() });
           const { event } = (await eventStream[Symbol.asyncIterator]().next()).value as EventResponse;
