@@ -88,6 +88,9 @@ const config = {
   		fontFamily: {
   			sans: ['var(--font-sans)', ...fontFamily.sans]
   		},
+      fontSize: {
+        '2xs': ['0.625rem', '0.75rem'],
+      },
       dropShadow: {
         selection: '0 0 1.5px hsl(var(--muted-foreground))',
       }

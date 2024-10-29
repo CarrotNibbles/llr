@@ -4,7 +4,14 @@ import type { StrategyDataType } from '@/lib/queries/server';
 import { useFilterState, usePixelPerFrame } from '@/lib/states';
 import { type ArrayElement, cn } from '@/lib/utils';
 import React from 'react';
-import { COUNTDOWN_DURATION, MERGE_THRESHOLD_DEFAULT, MERGE_THRESHOLD_INCREMENTAL } from '../../utils/constants';
+import {
+  AVAILABLE_GRID_MINOR_INTERVALS,
+  COUNTDOWN_DURATION,
+  INTERVAL_RENDER_THRESHOLD,
+  MAJOR_GRID_INTERVAL,
+  MERGE_THRESHOLD_DEFAULT,
+  MERGE_THRESHOLD_INCREMENTAL,
+} from '../../utils/constants';
 import { getAreaHeight, timeToY } from '../../utils/helpers';
 import type { MergedGimmick } from '../../utils/types';
 import { GimmickLine } from './GimmickLine';
@@ -31,11 +38,7 @@ const GridOverlay = ({ className, ...props }: { className?: string } & GridOverl
   const MinorLine = ({ t }: { t: number }) => (
     <>
       <div
-        className="absolute border-0 border-t-1 border-zinc-100 dark:border-zinc-800 right-0 pointer-events-none"
-        style={{ top: `${timeToY(t, pixelPerFrame)}px`, width: `${resizePanelSize}vw` }}
-      />
-      <div
-        className="flex absolute pointer-events-none h-8 items-center justify-end text-xs text-zinc-100 dark:text-zinc-800 pr-1 tabular-nums -z-10"
+        className="flex absolute pointer-events-none h-8 items-center justify-end text-2xs text-zinc-300 dark:text-zinc-700 pr-1 tabular-nums -z-10"
         style={{ top: `calc(${timeToY(t, pixelPerFrame)}px - 1rem)`, right: `${resizePanelSize}vw` }}
       >
         {getTimeRepresentation(t)}
@@ -100,6 +103,9 @@ const GimmickOverlay = React.forwardRef<
   const pixelPerFrame = usePixelPerFrame();
   const areaHeight = getAreaHeight(pixelPerFrame, raidDuration);
 
+  const minorInterval =
+    AVAILABLE_GRID_MINOR_INTERVALS.find((intv) => pixelPerFrame * intv >= INTERVAL_RENDER_THRESHOLD) ??
+    MAJOR_GRID_INTERVAL;
   const [filterState, _] = useFilterState();
 
   const mergeGimmicks = (gimmicks: GimmickOverlayProps['gimmicks']) => {
@@ -191,8 +197,8 @@ const GimmickOverlay = React.forwardRef<
       <GridOverlay
         raidDuration={raidDuration}
         resizePanelSize={resizePanelSize}
-        majorInterval={60 * 60}
-        minorInterval={5 * 60}
+        majorInterval={MAJOR_GRID_INTERVAL}
+        minorInterval={minorInterval}
       />
     </div>
   );

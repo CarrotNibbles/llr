@@ -54,3 +54,17 @@ export const MAX_DISPLAY_COUNT = 3;
 
 export const ACTIVE_DAMAGE_OPTION_STYLE = 'font-bold';
 export const INACTIVE_DAMAGE_OPTION_STYLE = 'text-muted-foreground text-xs';
+
+export const MAJOR_GRID_INTERVAL = 60 * 60;
+export const AVAILABLE_GRID_MINOR_INTERVALS = [
+  1 * 60,
+  2 * 60,
+  3 * 60,
+  5 * 60,
+  10 * 60,
+  15 * 60,
+  20 * 60,
+  30 * 60,
+  60 * 60,
+];
+export const INTERVAL_RENDER_THRESHOLD = 50;
