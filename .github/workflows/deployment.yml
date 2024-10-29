@@ -1,0 +1,35 @@
+name: Deploy Image
+
+on:
+  push:
+    branches:
+      - prod
+    paths:
+      - .github/workflows/deployment.yml
+  workflow_run:
+    workflows:
+      - Build and Push Image
+    types:
+      - completed
+  workflow_dispatch:
+
+env:
+  DOCKER_TAG: ghcr.io/carrotnibbles/llr:latest
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+
+    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            docker pull ${{ env.DOCKER_TAG }}
+            docker stop llr || true
+            docker rm llr || true
+            docker run -d --name llr -p 7102:3000 --restart always --env-file ~/envs/llr.env ${{ env.DOCKER_TAG }}
