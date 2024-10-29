@@ -313,6 +313,10 @@
     "ModifiedTime": {
       "Created": "작성",
       "Modified": "수정"
+    },
+    "ProfileDropdown": {
+      "MyStrats": "내 전략",
+      "LikedStrats": "좋아요한 전략"
     }
   }
 }

@@ -313,6 +313,10 @@
     "ModifiedTime": {
       "Created": "作成",
       "Modified": "修正"
+    },
+    "ProfileDropdown": {
+      "MyStrats": "自分の戦略",
+      "LikedStrats": "いいねした戦略"
     }
   }
 }

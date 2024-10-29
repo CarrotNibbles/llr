@@ -313,6 +313,10 @@
     "ModifiedTime": {
       "Created": "Created",
       "Modified": "Modified"
+    },
+    "ProfileDropdown": {
+      "MyStrats": "My Strats",
+      "LikedStrats": "Liked Strats"
     }
   }
 }
