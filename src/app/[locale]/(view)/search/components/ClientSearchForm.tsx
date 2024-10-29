@@ -177,7 +177,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                           >
                             <div className="overflow-hidden">
                               {field.value
-                                ? raidsData.find((raid) => raid.semantic_key === field.value)?.name
+                                ? tRaids(raidsData.find((raid) => raid.semantic_key === field.value)?.semantic_key)
                                 : t("RaidAll")}
                             </div>
                             <CaretSortIcon className="ml-1 h-4 w-4 opacity-50" />
