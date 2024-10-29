@@ -6,7 +6,7 @@
     "schema_gen": "supabase gen types --lang=typescript --project-id jbgcbfblivbtdnhbkfab > src/lib/database.types.ts",
     "proto_gen": "buf generate protos/stratsync.proto && perl -pi -e 's/.js//g' src/lib/proto/stratsync_connect.ts",
     "dev": "next dev",
-    "build": "bun run proto_gen && bun run schema_gen && next build",
+    "build": "next build",
     "start": "next start",
     "check": "biome check",
     "fix": "biome check --fix",
