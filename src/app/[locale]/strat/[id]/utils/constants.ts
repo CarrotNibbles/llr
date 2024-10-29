@@ -6,6 +6,8 @@ export const jobIconWidth = 'w-8 lg:w-8';
 
 export const TIME_STEP = 1;
 
+export const COUNTDOWN_DURATION = 1800;
+
 export const BOTTOM_PADDING_PX = 60;
 
 export const ROLE_ICON_STYLE = {

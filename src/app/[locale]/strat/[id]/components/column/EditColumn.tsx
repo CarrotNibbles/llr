@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/context-menu';
 import { useToast } from '@/components/ui/use-toast';
 import type { ActionDataType, StrategyDataType } from '@/lib/queries/server';
-import { type ArrayElement, clamp } from '@/lib/utils';
+import type { ArrayElement } from '@/lib/utils';
 import { AnimatePresence, animate, motion, useDragControls, useMotionValue } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
@@ -16,15 +16,9 @@ import { type MouseEventHandler, useContext, useEffect, useMemo, useState } from
 
 import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvider';
 import { usePixelPerFrame } from '@/lib/states';
-import { BOTTOM_PADDING_PX, BOX_X_OFFSET, BOX_Z_INDEX, TIME_STEP, columnWidth } from '../../utils/constants';
-import { MultiIntervalSet } from '../../utils/helpers';
+import { BOX_X_OFFSET, BOX_Z_INDEX, columnWidth } from '../../utils/constants';
+import { MultiIntervalSet, getAreaHeight, timeToY, yToTime } from '../../utils/helpers';
 import { EntrySelectionContext } from './EntrySelectionContext';
-
-const snapToStep = (currentUseAt: number) => {
-  const clampedUseAt = currentUseAt > 0 ? currentUseAt : 0;
-
-  return TIME_STEP * Math.round(clampedUseAt / TIME_STEP);
-};
 
 function useEntryMutation() {
   const { mutateEntries, strategyData } = useStratSyncStore((state) => state);
@@ -140,7 +134,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
   const [holdingShift, setHoldingShift] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const xMotionValue = useMotionValue(BOX_X_OFFSET[slot]);
-  const yMotionValue = useMotionValue(useAt * pixelPerFrame);
+  const yMotionValue = useMotionValue(timeToY(useAt, pixelPerFrame));
 
   const { activeEntries, setActiveEntries, draggingCount, setDraggingCount } = useContext(EntrySelectionContext);
   const draggable = elevated && !isLocked;
@@ -158,13 +152,13 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    void animate(yMotionValue, useAt * pixelPerFrame);
+    void animate(yMotionValue, timeToY(useAt, pixelPerFrame));
   }, [pixelPerFrame, useAt]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (draggingCount === 0) {
-      void animate(yMotionValue, useAt * pixelPerFrame);
+      void animate(yMotionValue, timeToY(useAt, pixelPerFrame));
     }
   }, [draggingCount]);
 
@@ -236,7 +230,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
             yMotionValue.animation?.stop();
 
             const oldUseAt = useAt;
-            const newUseAt = snapToStep(clamp(yMotionValue.get() / pixelPerFrame, 0, raidDuration));
+            const newUseAt = yToTime(yMotionValue.get(), pixelPerFrame, raidDuration);
             const offset = newUseAt - oldUseAt;
 
             moveEntries(activeEntries.keys().toArray(), offset);
@@ -249,8 +243,8 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
               setActiveEntries(new Map());
 
               if (action.charges > 1 && !isDragging) {
-                const cursorY = e.clientY - e.currentTarget.getBoundingClientRect().top + useAt * pixelPerFrame;
-                const cursorUseAt = snapToStep(clamp(cursorY / pixelPerFrame, 0, raidDuration));
+                const cursorY = e.clientY - e.currentTarget.getBoundingClientRect().top + timeToY(useAt, pixelPerFrame);
+                const cursorUseAt = yToTime(cursorY, pixelPerFrame, raidDuration);
 
                 const success = insertEntry({
                   id: crypto.randomUUID(),
@@ -368,6 +362,8 @@ const EditSubColumn = ({ raidDuration, action, entries, playerId }: EditSubColum
   const t = useTranslations('StratPage.EditColumn');
 
   const pixelPerFrame = usePixelPerFrame();
+  const areaHeight = getAreaHeight(pixelPerFrame, raidDuration);
+
   const { insertEntry } = useEntryMutation();
   const { elevated } = useStratSyncStore((state) => state);
 
@@ -391,8 +387,7 @@ const EditSubColumn = ({ raidDuration, action, entries, playerId }: EditSubColum
 
   const createBox: MouseEventHandler<HTMLDivElement> = async (evt) => {
     const cursorY = evt.clientY - evt.currentTarget.getBoundingClientRect().top;
-    const cursorUseAt = cursorY / pixelPerFrame;
-    const useAt = snapToStep(cursorUseAt);
+    const cursorUseAt = yToTime(cursorY, pixelPerFrame, raidDuration);
 
     setActiveEntries(new Map());
 
@@ -400,7 +395,7 @@ const EditSubColumn = ({ raidDuration, action, entries, playerId }: EditSubColum
       id: crypto.randomUUID(),
       action: action.id,
       player: playerId,
-      use_at: useAt,
+      use_at: cursorUseAt,
     });
 
     if (!success) {
@@ -411,10 +406,7 @@ const EditSubColumn = ({ raidDuration, action, entries, playerId }: EditSubColum
   };
 
   return (
-    <div
-      className={`flex flex-shrink-0 ${columnWidth} overflow-hidden hover:bg-muted`}
-      style={{ height: `${raidDuration * pixelPerFrame + BOTTOM_PADDING_PX}px` }}
-    >
+    <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden hover:bg-muted`} style={{ height: areaHeight }}>
       <AnimatePresence>
         {...entries.map(({ id, use_at }, index) => (
           <DraggableBox
@@ -445,12 +437,10 @@ export type EditColumnProps = {
 
 export const EditColumn = ({ raidDuration, playerStrategy, actions }: EditColumnProps) => {
   const pixelPerFrame = usePixelPerFrame();
+  const areaHeight = getAreaHeight(pixelPerFrame, raidDuration);
 
   return (
-    <div
-      className="flex px-1 space-x-1 border-r-[1px]"
-      style={{ height: raidDuration * pixelPerFrame + BOTTOM_PADDING_PX }}
-    >
+    <div className="flex px-1 space-x-1 border-r-[1px] relative" style={{ height: areaHeight }}>
       {actions.map((action) => (
         <EditSubColumn
           key={`subcolumn-${playerStrategy.id}-${action.id}`}

@@ -6,6 +6,7 @@ import { type ArrayElement, cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 import React from 'react';
 import { GIMMICK_BORDER_STYLE, GIMMICK_TEXT_STYLE, MAX_DISPLAY_COUNT } from '../../utils/constants';
+import { timeToY } from '../../utils/helpers';
 import type { MergedGimmick, SuperMergedGimmick } from '../../utils/types';
 import { DamageText } from './DamageText';
 
@@ -38,7 +39,7 @@ const GimmickSubLine = ({
         <div
           className={`absolute border-0 border-t ${borderColor} right-0 ${lineType} z-10 pointer-events-none`}
           style={{
-            top: `${time * pixelPerFrame}px`,
+            top: `${timeToY(time, pixelPerFrame)}px`,
             width: `${resizePanelSize}vw`,
           }}
         />
@@ -46,10 +47,10 @@ const GimmickSubLine = ({
           <div
             className={`absolute ${textColor} text-xs z-10 right-0 pointer-events-none`}
             style={{
-              top: `${pixelPerFrame * time}px`,
+              top: `${timeToY(time, pixelPerFrame)}px`,
             }}
           >
-            <div className="text-xs font-thin right-0">{tGimmicks(semanticKey)}</div>
+            <div className="text-xs right-0">{tGimmicks(semanticKey)}</div>
           </div>
         )}
       </>
@@ -156,12 +157,9 @@ const GimmickLine = React.forwardRef<
       )}
       <div
         className={`absolute border-0 ${borderWidth} ${borderColor} w-[98dvw] right-0 z-10 pointer-events-none`}
-        style={{ top: `${prepareAt * pixelPerFrame}px` }}
+        style={{ top: `${timeToY(prepareAt, pixelPerFrame)}px` }}
       />
-      <div
-        className={`absolute top-[${prepareAt * pixelPerFrame}px] left-[2dvw]`}
-        style={{ top: `${prepareAt * pixelPerFrame}px` }}
-      >
+      <div className="absolute left-[2dvw]" style={{ top: `${timeToY(prepareAt, pixelPerFrame)}px` }}>
         <div className="space-y-1">
           <HoverCard openDelay={100}>
             <HoverCardTrigger>

@@ -8,6 +8,7 @@ import type { DragControls } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 
+import { getAreaHeight } from '../utils/helpers';
 import { EditColumn, EntrySelectionContext, HeadColumn } from './column';
 import { GimmickOverlay } from './overlay';
 
@@ -32,6 +33,8 @@ export const StratMain = () => {
 
   const raidDuration = strategyData.raids?.duration ?? 0;
   const raidLevel = strategyData.raids?.level ?? 0;
+
+  const areaHeight = getAreaHeight(pixelPerFrame, raidDuration);
 
   const availableActions = (actionData ?? []).filter(
     ({
@@ -69,7 +72,7 @@ export const StratMain = () => {
           <ResizablePanel
             defaultSize={80}
             maxSize={96}
-            className="z-10 flex flex-col overflow-auto border-r bg-background"
+            className="z-10 flex flex-col overflow-auto border-r"
             onResize={(size) => {
               setResizePanelSize(size);
             }}
@@ -87,7 +90,7 @@ export const StratMain = () => {
             </ScrollSyncPane>
             <ScrollSyncPane group={['x', 'y']}>
               <div className="overflow-scroll overscroll-none">
-                <div className="flex flex-grow relative" style={{ height: `${raidDuration * pixelPerFrame + 60}px` }}>
+                <div className="flex flex-grow relative" style={{ height: areaHeight }}>
                   {strategyData.strategy_players.map((playerStrategy) => (
                     <EditColumn
                       raidDuration={raidDuration}
