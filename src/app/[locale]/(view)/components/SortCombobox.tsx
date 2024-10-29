@@ -8,6 +8,7 @@ import { CaretDownIcon, CaretUpIcon } from '@radix-ui/react-icons';
 import type React from 'react';
 import { useState } from 'react';
 import { ViewLink } from './ViewLink';
+import { useTranslations } from 'next-intl';
 
 type SortComboboxProps = Readonly<
   ButtonProps & {
@@ -15,13 +16,9 @@ type SortComboboxProps = Readonly<
   }
 >;
 
-const sortOptionMap: Record<SortOption, string> = {
-  like: 'Most Likes',
-  recent: 'Most Recent',
-};
-
 const SortCombobox: React.FC<SortComboboxProps> = ({ currentSort, className, ...props }) => {
   const [open, setOpen] = useState(false);
+  const t = useTranslations('ViewPage.SortCombobox');
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -34,14 +31,14 @@ const SortCombobox: React.FC<SortComboboxProps> = ({ currentSort, className, ...
           {...props}
           variant="outline"
         >
-          {sortOptionMap[currentSort]}
+          {t(currentSort)}
           {open ? <CaretUpIcon className="w-6 h-6 mt-0.5" /> : <CaretDownIcon className="w-6 h-6" />}
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-auto rounded-none px-2 py-2 z-10">
         <Command>
           <CommandList>
-            <CommandEmpty>Choose the number of strats to show in a page</CommandEmpty>
+            <CommandEmpty>{t('Empty')}</CommandEmpty>
             <CommandGroup>
               {ALL_SORT_OPTIONS.map((sort) => (
                 <CommandItem
@@ -57,7 +54,7 @@ const SortCombobox: React.FC<SortComboboxProps> = ({ currentSort, className, ...
                     sort={sort}
                     className="w-full flex gap-x-2 items-center text-xs sm:text-sm px-3 sm:px-4 py-2"
                   >
-                    {sortOptionMap[sort]}
+                    {t(sort)}
                   </ViewLink>
                 </CommandItem>
               ))}

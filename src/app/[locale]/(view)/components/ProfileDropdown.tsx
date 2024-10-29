@@ -9,18 +9,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { createClient } from '@/lib/supabase/server';
 import { FileTextIcon, HeartIcon, PersonIcon } from '@radix-ui/react-icons';
+import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import type React from 'react';
 
 type ProfileDropdownProps = Readonly<ButtonProps & {}>;
 
 const ProfileDropdown: React.FC<ProfileDropdownProps> = async ({ className, ...props }) => {
-  const supabase = createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const t = await getTranslations("ViewPage.ProfileDropdown")
 
   return (
     <DropdownMenu>
@@ -36,7 +33,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = async ({ className, ...p
             <Button variant="ghost" className="flex w-full px-4 py-1">
               <FileTextIcon />
               <div className="flex-grow min-w-8" />
-              <div>My Strats</div>
+              <div>{t("MyStrats")}</div>
             </Button>
           </Link>
         </DropdownMenuItem>
@@ -45,7 +42,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = async ({ className, ...p
             <Button variant="ghost" className="flex w-full px-4 py-1">
               <HeartIcon />
               <div className="flex-grow min-w-8" />
-              <div>Liked Strats</div>
+              <div>{t("LikedStrats")}</div>
             </Button>
           </Link>
         </DropdownMenuItem>

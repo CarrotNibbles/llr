@@ -33,6 +33,7 @@ type CreateButtonProps = Readonly<
 
 const CreateButton = React.forwardRef<HTMLButtonElement, CreateButtonProps>(
   ({ raidsData, className, ...props }, ref) => {
+    const t = useTranslations('ViewPage.CreateButton');
     const isDesktop = useMediaQuery('(min-width: 640px)');
 
     return isDesktop ? (
@@ -40,12 +41,12 @@ const CreateButton = React.forwardRef<HTMLButtonElement, CreateButtonProps>(
         <DialogTrigger asChild>
           <Button className={className} {...props} ref={ref}>
             <Pencil1Icon className="mr-1" />
-            <div className="mx-1">공략 작성</div>
+            <div className="mx-1">{t('ButtonTitle')}</div>
           </Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>공략 생성</DialogTitle>
+            <DialogTitle>{t('DialogTitle')}</DialogTitle>
           </DialogHeader>
           <CreateForm raidsData={raidsData} />
           <DialogFooter />
@@ -56,11 +57,11 @@ const CreateButton = React.forwardRef<HTMLButtonElement, CreateButtonProps>(
         <DrawerTrigger asChild>
           <Button className={className} {...props} ref={ref}>
             <Pencil1Icon className="mr-1" />
-            <div className="mx-1">공략 작성</div>
+            <div className="mx-1">{t('ButtonTitle')}</div>
           </Button>
         </DrawerTrigger>
         <DrawerContent>
-          <DrawerHeader>공략 생성</DrawerHeader>
+          <DrawerHeader>{t('DialogTitle')}</DrawerHeader>
           <CreateForm raidsData={raidsData} className="px-8" />
           <DrawerFooter />
         </DrawerContent>
@@ -81,30 +82,31 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
   const [failMessage, setFailMessage] = useState<string | undefined>(undefined);
   const [raidPopoverOpen, setRaidPopoverOpen] = useState(false);
   const router = useRouter();
-  const t = useTranslations();
+  const t = useTranslations('ViewPage.CreateButton');
+  const tRaids = useTranslations('Common.Raids');
 
   const supabase = createClient();
 
   const formSchema = z.object({
     name: z
-      .string({ required_error: '이름을 입력하세요.' })
-      .min(2, '제목은 2글자 이상이어야 합니다.')
-      .max(50, '제목은 50글자 이하여야 합니다.'),
-    raid: z.string({ required_error: '레이드를 선택하세요.' }),
-    public: z.enum(['public', 'private'], {
-      required_error: '공개 여부를 선택하세요',
+      .string({ required_error: t('NameRequired') })
+      .min(2, t('NameTooShort'))
+      .max(50, t('NameTooLong')),
+    raid: z.string({ required_error: t('RaidRequired') }),
+    scope: z.enum(['public', 'private'], {
+      required_error: t('ScopeRequired'),
     }),
     password: z
-      .string({ required_error: '비밀번호를 설정하세요' })
-      .min(8, '비밀번호는 길이 8이어야 합니다.')
-      .max(8, '비밀번호는 길이 8이어야 합니다'),
+      .string({ required_error: t('PasswordRequired') })
+      .min(8, t('PasswordLengthMismatch'))
+      .max(8, t('PasswordLengthMismatch')),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: '',
-      public: 'public',
+      scope: 'public',
     },
   });
 
@@ -114,7 +116,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
     const userResponse = await supabase.auth.getUser();
 
     if (!userResponse.data.user) {
-      setFailMessage('글을 작성하려면 로그인하세요.');
+      setFailMessage(t('NotSignedIn'));
       return;
     }
 
@@ -123,7 +125,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
       raid: values.raid,
       author: userResponse.data.user.id,
       is_editable: true,
-      is_public: values.public === 'public',
+      is_public: values.scope === 'public',
       version: 7,
       subversion: 0, // TODO: Add something like current_version
       created_at: new Date().toISOString(),
@@ -136,7 +138,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
 
     if (!stratId) {
       console.error(stratResponse.error);
-      setFailMessage('공략 생성에 실패했습니다. 잠시 후 재시도해 주세요.');
+      setFailMessage(t('UnknownError'));
       setIsLoading(false);
       return;
     }
@@ -153,9 +155,9 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="inline-block">공략명</FormLabel>
+              <FormLabel className="inline-block">{t('NameLabel')}</FormLabel>
               <FormControl>
-                <Input className="inline-block" id="name" placeholder="공략명을 입력하세요..." {...field} />
+                <Input className="inline-block" id="name" placeholder={t('NamePlaceholder')} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -166,7 +168,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
           name="raid"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="inline-block">레이드</FormLabel>
+              <FormLabel className="inline-block">{t('RaidLabel')}</FormLabel>
               <Popover open={raidPopoverOpen} onOpenChange={(open) => setRaidPopoverOpen(open)}>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -180,7 +182,9 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
                       style={{ gridTemplateColumns: '1fr 1rem' }}
                     >
                       <div className="overflow-hidden">
-                        {field.value ? raidsData.find((raid) => raid.id === field.value)?.name : '레이드를 선택하세요'}
+                        {field.value
+                          ? tRaids(raidsData.find((raid) => raid.id === field.value)?.semantic_key)
+                          : t('RaidPlaceholder')}
                       </div>
                       <CaretSortIcon className="ml-1 h-4 w-4 opacity-50" />
                     </Button>
@@ -192,8 +196,8 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
                   style={{ width: 'var(--radix-popover-trigger-width)' }}
                 >
                   <Command {...field}>
-                    <CommandInput placeholder="레이드 검색..." className="h-9" />
-                    <CommandEmpty>레이드가 없습니다.</CommandEmpty>
+                    <CommandInput placeholder={t('RaidSearchPlaceholder')} className="h-9" />
+                    <CommandEmpty>{t('RaidEmpty')}</CommandEmpty>
                     <CommandGroup>
                       {raidsData.map((raid) => (
                         <CommandItem
@@ -204,7 +208,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
                             setRaidPopoverOpen(false);
                           }}
                         >
-                          {raid.name}
+                          {tRaids(raid.semantic_key)}
                           <CheckIcon
                             className={cn('ml-auto h-4 w-4', raid.id === field.value ? 'opacity-100' : 'opacity-0')}
                           />
@@ -220,10 +224,10 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
         />
         <FormField
           control={form.control}
-          name="public"
+          name="scope"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>공개 범위</FormLabel>
+              <FormLabel>{t('ScopeLabel')}</FormLabel>
               <FormControl>
                 <RadioGroup
                   className="grid items-center w-fit gap-x-2"
@@ -233,15 +237,13 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
                 >
                   <RadioGroupItem value="public" id="public" />
                   <div className="flex flex-col">
-                    <Label>전체공개</Label>
-                    <FormDescription className="mt-1">누구든지 공략을 열람할 수 있습니다.</FormDescription>
+                    <Label>{t('ScopePublicLabel')}</Label>
+                    <FormDescription className="mt-1">{t('ScopePublicDescription')}</FormDescription>
                   </div>
                   <RadioGroupItem value="private" id="private" />
                   <div className="flex flex-col">
-                    <Label>비공개</Label>
-                    <FormDescription className="mt-1">
-                      작성자 및 수정 권한이 부여된 사람만 공략을 열람할 수 있습니다.
-                    </FormDescription>
+                    <Label>{t('ScopePrivateLabel')}</Label>
+                    <FormDescription className="mt-1">{t('ScopePrivateDescription')}</FormDescription>
                   </div>
                 </RadioGroup>
               </FormControl>
@@ -254,7 +256,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{'비밀번호'}</FormLabel>
+              <FormLabel>{t('PasswordLabel')}</FormLabel>
               <FormControl>
                 <InputOTP maxLength={8} {...field}>
                   <InputOTPGroup>
@@ -270,7 +272,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
                   </InputOTPGroup>
                 </InputOTP>
               </FormControl>
-              <FormDescription>{'공략 수정 시 사용할 비밀번호 (작성자는 필요 없음)'}</FormDescription>
+              <FormDescription>{t('PasswordDescription')}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -278,7 +280,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
         {failMessage && <div className="text-red-500 text-sm">{failMessage}</div>}
         <div className="flex justify-end">
           <Button type="submit" disabled={isLoading}>
-            생성
+            {t("CreateConfirm")}
           </Button>
         </div>
       </form>

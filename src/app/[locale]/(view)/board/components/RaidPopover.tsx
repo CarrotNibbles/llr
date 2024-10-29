@@ -6,6 +6,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import type { RaidsDataType } from '@/lib/queries/server';
 import { DEFAULT_LIMIT, DEFAULT_SORT, buildBoardURL, cn } from '@/lib/utils';
 import { CaretDownIcon } from '@radix-ui/react-icons';
+import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import type React from 'react';
 
@@ -17,7 +18,8 @@ type RaidPopoverProps = Readonly<
 >;
 
 const RaidPopover: React.FC<RaidPopoverProps> = ({ name, raidsData, className, ...props }, ref) => {
-  const raidsDataByDungeon: { dungeon: string; raidsData: RaidsDataType }[] = [{ dungeon: 'Anabesios', raidsData }];
+  const tRaids = useTranslations('Common.Raids');
+  // const raidsDataByDungeon: { dungeon: string; raidsData: RaidsDataType }[] = [{ dungeon: 'Anabesios', raidsData }];
 
   return (
     <Popover>
@@ -33,11 +35,23 @@ const RaidPopover: React.FC<RaidPopoverProps> = ({ name, raidsData, className, .
         </Button>
       </PopoverTrigger>
       <PopoverContent align="start" className="border p-2 w-80">
-        <Accordion type="single" collapsible defaultValue={raidsDataByDungeon[0].dungeon}>
+        {/* <Accordion type="single" collapsible defaultValue={raidsDataByDungeon[0].dungeon}>
           {raidsDataByDungeon.map(({ dungeon, raidsData }) => (
             <RaidFoldout key={dungeon} name={dungeon} raidsData={raidsData} />
           ))}
-        </Accordion>
+        </Accordion> */}
+        <ul>
+          {raidsData.map((raidData) => (
+            <li key={raidData.id} className="text-end mt-1">
+              <Link
+                href={buildBoardURL({ page: 1, limit: DEFAULT_LIMIT, raid: raidData.semantic_key, sort: DEFAULT_SORT })}
+                className="w-full h-full flex p-2 hover:underline text-sm"
+              >
+                {tRaids(raidData.semantic_key)}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </PopoverContent>
     </Popover>
   );
@@ -52,8 +66,10 @@ type RaidFoldoutProps = Readonly<
 >;
 
 const RaidFoldout: React.FC<RaidFoldoutProps> = ({ name, raidsData, className, ...props }, ref) => {
+  const tRaids = useTranslations('Common.Raids');
+
   return (
-    <AccordionItem value={name}>
+    <AccordionItem value={name} ref={ref}>
       <AccordionTrigger className={cn(className, 'p-2')} {...props}>
         {name}
       </AccordionTrigger>
@@ -65,7 +81,7 @@ const RaidFoldout: React.FC<RaidFoldoutProps> = ({ name, raidsData, className, .
                 href={buildBoardURL({ page: 1, limit: DEFAULT_LIMIT, raid: raidData.semantic_key, sort: DEFAULT_SORT })}
                 className="w-full h-full flex p-2 hover:underline"
               >
-                {raidData.name}
+                {tRaids(raidData.semantic_key)}
               </Link>
             </li>
           ))}

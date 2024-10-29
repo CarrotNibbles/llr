@@ -2,6 +2,8 @@
 
 import { LocalizedDate } from '@/components/LocalizedDate';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 import type React from 'react';
 
 type ModifiedTimeProp = Readonly<
@@ -12,17 +14,25 @@ type ModifiedTimeProp = Readonly<
 >;
 
 const ModifiedTime: React.FC<ModifiedTimeProp> = ({ createdAt, modifiedAt, className, ...props }) => {
+  const t = useTranslations('ViewPage.ModifiedTime');
+
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <LocalizedDate dateISOString={modifiedAt} useDifference dateFormat="yyyy-MM-dd" className="text-center" />
+        <LocalizedDate
+          dateISOString={createdAt}
+          useDifference
+          dateFormat="yyyy-MM-dd"
+          className={cn(className, 'text-center')}
+          {...props}
+        />
       </TooltipTrigger>
       <TooltipContent>
         <div>
-          Created: <LocalizedDate dateISOString={createdAt} dateFormat="yyyy-MM-dd KK:mm aa" />
+          {t('Created')}: <LocalizedDate dateISOString={createdAt} dateFormat="yyyy-MM-dd KK:mm aa" />
         </div>
         <div>
-          Modified: <LocalizedDate dateISOString={modifiedAt} dateFormat="yyyy-MM-dd KK:mm aa" />
+          {t('Modified')}: <LocalizedDate dateISOString={modifiedAt} dateFormat="yyyy-MM-dd KK:mm aa" />
         </div>
       </TooltipContent>
     </Tooltip>

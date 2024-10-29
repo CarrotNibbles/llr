@@ -271,5 +271,76 @@
       "ErrorDescription": "サーバーへの接続が失われました。ページを再読み込みして、もう一度お試しください。",
       "Refresh": "再読み込み"
     }
+  },
+  "ViewPage": {
+    "CreateButton": {
+      "ButtonTitle": "戦略作成",
+      "DialogTitle": "戦略作成",
+      "NameLabel": "戦略名",
+      "NamePlaceholder": "戦略名を入力してください",
+      "NameRequired": "戦略名を入力してください",
+      "NameTooShort": "戦略名は2文字以上で入力してください",
+      "NameTooLong": "戦略名は50文字以内で入力してください",
+      "RaidLabel": "レイド",
+      "RaidPlaceholder": "レイドを選択してください",
+      "RaidSearchPlaceholder": "レイドを検索",
+      "RaidEmpty": "利用可能なレイドがありません",
+      "RaidRequired": "レイドを選択してください",
+      "ScopeLabel": "公開範囲",
+      "ScopePublicLabel": "公開",
+      "ScopePublicDescription": "誰でもこの戦略を閲覧できます",
+      "ScopePrivateLabel": "非公開",
+      "ScopePrivateDescription": "作成者のみがこの戦略を閲覧できます",
+      "ScopeRequired": "公開範囲を選択してください",
+      "PasswordLabel": "パスワード",
+      "PasswordDescription": "戦略を編集する際に必要なパスワード（作成者は不要）",
+      "PasswordRequired": "パスワードを設定してください",
+      "PasswordLengthMismatch": "パスワードは8文字である必要があります",
+      "CreateConfirm": "作成",
+      "NotSignedIn": "投稿するにはログインしてください",
+      "UnknownError": "戦略の作成に失敗しました。しばらくしてから再度お試しください。"
+    },
+    "LimitCombobox": {
+      "Current": "{currentLimit}件ずつ",
+      "Empty": "一度に表示する戦略の数を選択してください",
+      "Item": "{limit}件ずつ"
+    },
+    "SortCombobox": {
+      "like": "いいね順",
+      "recent": "最新順",
+      "Empty": "並び替え方法を選択"
+    },
+    "ModifiedTime": {
+      "Created": "作成",
+      "Modified": "修正"
+    },
+    "ProfileDropdown": {
+      "MyStrats": "自分の戦略",
+      "LikedStrats": "いいねした戦略"
+    },
+    "StrategyTable": {
+      "Strategy": "戦略",
+      "Author": "作成者",
+      "Patch": "バージョン",
+      "Likes": "いいね",
+      "Created": "作成日",
+      "NoStrategyFound": "戦略が見つかりませんでした"
+    },
+    "SearchForm": {
+      "FieldRequired": "少なくとも1つの条件を選択してください",
+      "NameLabel": "戦略名",
+      "SearchButton": "検索",
+      "AdvancedFilter": "詳細フィルター",
+      "RaidLabel": "レイド",
+      "RaidAll": "すべてのレイド",
+      "RaidSearchPlaceholder": "レイド検索",
+      "RaidEmpty": "レイドが見つかりません",
+      "JobLabel": "含まれる職業",
+      "JobAll": "すべての職業",
+      "JobDescription": "選択したすべての職業を含む戦略を検索",
+      "JobClear": "全選択解除",
+      "PatchLabel": "バージョン",
+      "PatchAll": "すべてのバージョン"
+    }
   }
 }
