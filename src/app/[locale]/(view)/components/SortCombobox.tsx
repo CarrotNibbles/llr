@@ -5,10 +5,10 @@ import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ALL_SORT_OPTIONS, DEFAULT_LIMIT, type SortOption, cn } from '@/lib/utils';
 import { CaretDownIcon, CaretUpIcon } from '@radix-ui/react-icons';
+import { useTranslations } from 'next-intl';
 import type React from 'react';
 import { useState } from 'react';
 import { ViewLink } from './ViewLink';
-import { useTranslations } from 'next-intl';
 
 type SortComboboxProps = Readonly<
   ButtonProps & {

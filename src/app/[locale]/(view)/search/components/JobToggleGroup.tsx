@@ -23,7 +23,7 @@ const JobToggleGroup = React.forwardRef<HTMLDivElement, JobToggleGroupProps>(
     const isControlled = externalValue !== undefined;
     const value = isControlled ? externalValue : nativeValue;
 
-    const t = useTranslations("ViewPage.SearchForm")
+    const t = useTranslations('ViewPage.SearchForm');
 
     const onValueChange = (value: SelectableJob[]) => {
       const newValue = sort ? sortJobs(value) : value;
@@ -37,7 +37,7 @@ const JobToggleGroup = React.forwardRef<HTMLDivElement, JobToggleGroupProps>(
 
     return (
       <div className="flex flex-col gap-y-2">
-        <h3 className="text-sm">{t("JobDescription")}</h3>
+        <h3 className="text-sm">{t('JobDescription')}</h3>
         <ToggleGroup
           value={value}
           onValueChange={onValueChange}
@@ -74,7 +74,7 @@ const JobToggleGroup = React.forwardRef<HTMLDivElement, JobToggleGroupProps>(
         </ToggleGroup>
         <div className="flex justify-end">
           <Button variant="destructive" className="flex gap-x-1 h-8 m-0 py-0" onClick={() => onValueChange([])}>
-            {t("JobClear")}
+            {t('JobClear')}
             <TrashIcon className="w-5 h-5" />
           </Button>
         </div>

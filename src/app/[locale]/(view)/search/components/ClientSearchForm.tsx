@@ -57,7 +57,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [raidsPopoverOpen, setRaidsPopoverOpen] = useState(false);
   const t = useTranslations('ViewPage.SearchForm');
-  const tRaids = useTranslations("Common.Raids");
+  const tRaids = useTranslations('Common.Raids');
   const tPatches = useTranslations('Common.FFXIVPatches');
 
   const formSchema = z.object({
@@ -90,7 +90,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
       patch === undefined &&
       (jobs === undefined || jobs.length === 0)
     ) {
-      setErrorMessage(t("FieldRequired"));
+      setErrorMessage(t('FieldRequired'));
       return;
     }
 
@@ -132,7 +132,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                   <FormControl>
                     <Input
                       type="search"
-                      placeholder={t("NameLabel")}
+                      placeholder={t('NameLabel')}
                       className="border-muted-foreground bg-background"
                       value={q ?? ''}
                       {...field}
@@ -147,14 +147,14 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
           />
           <Button type="submit" className="pl-7 pr-6 w-auto">
             <div className="flex gap-x-2 w-auto max-w-full">
-              {t("SearchButton")}
+              {t('SearchButton')}
               <MagnifyingGlassIcon className="w-5 h-5" />
             </div>
           </Button>
         </div>
         <Collapsible defaultOpen={true}>
           <CollapsibleTrigger className="flex gap-x-1 items-center mt-2 ml-2">
-            <Icons.filter /> {t("AdvancedFilter")}
+            <Icons.filter /> {t('AdvancedFilter')}
           </CollapsibleTrigger>
           <CollapsibleContent>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-7 gap-y-4 gap-x-6 mt-4 mx-4">
@@ -163,7 +163,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                 name="raid"
                 render={({ field }) => (
                   <FormItem className="md:col-span-2 xl:col-span-3">
-                    <FormLabel className="inline-block">{t("RaidLabel")}</FormLabel>
+                    <FormLabel className="inline-block">{t('RaidLabel')}</FormLabel>
                     <Popover open={raidsPopoverOpen} onOpenChange={setRaidsPopoverOpen}>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -178,7 +178,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                             <div className="overflow-hidden">
                               {field.value
                                 ? tRaids(raidsData.find((raid) => raid.semantic_key === field.value)?.semantic_key)
-                                : t("RaidAll")}
+                                : t('RaidAll')}
                             </div>
                             <CaretSortIcon className="ml-1 h-4 w-4 opacity-50" />
                           </Button>
@@ -190,8 +190,8 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                         style={{ width: 'var(--radix-popover-trigger-width)' }}
                       >
                         <Command>
-                          <CommandInput placeholder={t("RaidSearchPlaceholder")} className="h-9" />
-                          <CommandEmpty>{t("RaidEmpty")}</CommandEmpty>
+                          <CommandInput placeholder={t('RaidSearchPlaceholder')} className="h-9" />
+                          <CommandEmpty>{t('RaidEmpty')}</CommandEmpty>
                           <CommandGroup>
                             <CommandItem
                               onSelect={() => {
@@ -199,7 +199,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                                 setRaidsPopoverOpen(false);
                               }}
                             >
-                              {t("RaidAll")}
+                              {t('RaidAll')}
                               <CheckIcon
                                 className={cn('ml-auto h-4 w-4', field.value === '' ? 'opacity-100' : 'opacity-0')}
                               />
@@ -234,7 +234,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                 name="jobs"
                 render={({ field: { value: jobs, ...field } }) => (
                   <FormItem className="md:col-span-1 xl:col-span-2">
-                    <FormLabel>{t("JobLabel")}</FormLabel>
+                    <FormLabel>{t('JobLabel')}</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -247,7 +247,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                             )}
                           >
                             {jobs === undefined || jobs.length === 0 ? (
-                              t("JobAll")
+                              t('JobAll')
                             ) : (
                               <div className="grid grid-cols-4 xs:grid-cols-8 gap-2">
                                 {jobs.map((job) => (
@@ -271,7 +271,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                 name="patch"
                 render={({ field }) => (
                   <FormItem className="md:col-span-1 xl:col-span-2">
-                    <FormLabel>{t("PatchLabel")}</FormLabel>
+                    <FormLabel>{t('PatchLabel')}</FormLabel>
                     <Select
                       onValueChange={(value) => {
                         value !== 'none' ? field.onChange(value) : field.onChange(undefined);
@@ -290,7 +290,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                       </FormControl>
                       <SelectContent align="end">
                         <SelectItem value="none">
-                          <div className="px-1">{t("PatchAll")}</div>
+                          <div className="px-1">{t('PatchAll')}</div>
                         </SelectItem>
                         {ALL_PATCHES.map(({ version, subversion }) => (
                           <SelectItem key={`select-patch-${version}.${subversion}`} value={`${version}.${subversion}`}>

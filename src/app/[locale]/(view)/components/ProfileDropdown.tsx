@@ -17,7 +17,7 @@ import type React from 'react';
 type ProfileDropdownProps = Readonly<ButtonProps & {}>;
 
 const ProfileDropdown: React.FC<ProfileDropdownProps> = async ({ className, ...props }) => {
-  const t = await getTranslations("ViewPage.ProfileDropdown")
+  const t = await getTranslations('ViewPage.ProfileDropdown');
 
   return (
     <DropdownMenu>
@@ -33,7 +33,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = async ({ className, ...p
             <Button variant="ghost" className="flex w-full px-4 py-1">
               <FileTextIcon />
               <div className="flex-grow min-w-8" />
-              <div>{t("MyStrats")}</div>
+              <div>{t('MyStrats')}</div>
             </Button>
           </Link>
         </DropdownMenuItem>
@@ -42,7 +42,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = async ({ className, ...p
             <Button variant="ghost" className="flex w-full px-4 py-1">
               <HeartIcon />
               <div className="flex-grow min-w-8" />
-              <div>{t("LikedStrats")}</div>
+              <div>{t('LikedStrats')}</div>
             </Button>
           </Link>
         </DropdownMenuItem>

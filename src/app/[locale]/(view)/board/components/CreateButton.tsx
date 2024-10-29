@@ -280,7 +280,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
         {failMessage && <div className="text-red-500 text-sm">{failMessage}</div>}
         <div className="flex justify-end">
           <Button type="submit" disabled={isLoading}>
-            {t("CreateConfirm")}
+            {t('CreateConfirm')}
           </Button>
         </div>
       </form>
