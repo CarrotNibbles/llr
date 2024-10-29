@@ -35,7 +35,7 @@ const GridOverlay = ({ className, ...props }: { className?: string } & GridOverl
         style={{ top: `${timeToY(t, pixelPerFrame)}px`, width: `${resizePanelSize}vw` }}
       />
       <div
-        className="flex absolute pointer-events-none h-8 items-center justify-end text-xs text-zinc-100 dark:text-zinc-800 pr-1 tabular-nums"
+        className="flex absolute pointer-events-none h-8 items-center justify-end text-xs text-zinc-100 dark:text-zinc-800 pr-1 tabular-nums -z-10"
         style={{ top: `calc(${timeToY(t, pixelPerFrame)}px - 1rem)`, right: `${resizePanelSize}vw` }}
       >
         {getTimeRepresentation(t)}
@@ -50,7 +50,7 @@ const GridOverlay = ({ className, ...props }: { className?: string } & GridOverl
         style={{ top: `${timeToY(t, pixelPerFrame)}px`, width: `${resizePanelSize}vw` }}
       />
       <div
-        className="flex absolute pointer-events-none h-8 items-center justify-end text-xs font-extrabold text-foreground pr-1 tabular-nums"
+        className="flex absolute pointer-events-none h-8 items-center justify-end text-xs font-extrabold text-foreground pr-1 tabular-nums -z-10"
         style={{ top: `calc(${timeToY(t, pixelPerFrame)}px - 1rem)`, right: `${resizePanelSize}vw` }}
       >
         {getTimeRepresentation(t)}

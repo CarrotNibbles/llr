@@ -90,7 +90,7 @@ export const StratMain = () => {
             </ScrollSyncPane>
             <ScrollSyncPane group={['x', 'y']}>
               <div className="overflow-scroll overscroll-none">
-                <div className="flex flex-grow relative" style={{ height: areaHeight }}>
+                <div className="flex flex-grow relative bg-background" style={{ height: areaHeight }}>
                   {strategyData.strategy_players.map((playerStrategy) => (
                     <EditColumn
                       raidDuration={raidDuration}
