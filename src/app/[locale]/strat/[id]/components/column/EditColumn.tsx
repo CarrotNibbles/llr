@@ -263,11 +263,15 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
           }}
         >
           <div
-            className={`relative ${columnWidth} overflow-hidden border-zinc-300 dark:border-zinc-700 border-b-[2px]`}
+            className={`relative ${columnWidth} overflow-hidden`}
             style={{ height: `${action.cooldown * pixelPerFrame}px` }}
           >
             <div
-              className={`absolute top-0 mx-auto ${columnWidth} ml-[calc(50%-1.5px)] border-zinc-300 dark:border-zinc-700 border-l-[3px] border-dotted`}
+              className={`absolute top-0 ${columnWidth} ml-[calc(50%-1.5px)] border-zinc-300 dark:border-zinc-700 border-l-[3px] border-dotted`}
+              style={{ height: `${action.cooldown * pixelPerFrame}px` }}
+            />
+            <div
+              className={`absolute top-0 ${columnWidth} border-zinc-300 dark:border-zinc-700 border-b-[2px] border-solid`}
               style={{ height: `${action.cooldown * pixelPerFrame}px` }}
             />
             {otherDurations.length > 0 && (
