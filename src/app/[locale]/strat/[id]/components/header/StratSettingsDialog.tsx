@@ -136,7 +136,7 @@ export const StratSettingsDialog = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {ALL_PATCHES.map(({ version, subversion }) => (
+                      {ALL_PATCHES.toReversed().map(({ version, subversion }) => (
                         <SelectItem key={`select-patch-${version}.${subversion}`} value={`${version}.${subversion}`}>
                           {`${version}.${subversion}`} - {tPatches(`${version}.${subversion}`)}
                         </SelectItem>
