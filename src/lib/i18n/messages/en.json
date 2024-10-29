@@ -309,6 +309,10 @@
       "like": "Most Likes",
       "recent": "Most Recent",
       "Empty": "Choose sort order"
+    },
+    "ModifiedTime": {
+      "Created": "Created",
+      "Modified": "Modified"
     }
   }
 }

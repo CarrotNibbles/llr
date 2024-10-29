@@ -33,7 +33,7 @@ const StrategyTable: React.FC<StrategyTableProps> = ({ dataPromise, className, .
             <div className="flex justify-center">Likes</div>
           </TableHead>
           <TableHead className="w-32 hidden md:table-cell">
-            <div className="flex justify-center">Modified</div>
+            <div className="flex justify-center">Created</div>
           </TableHead>
         </TableRow>
       </TableHeader>

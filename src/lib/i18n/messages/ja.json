@@ -309,6 +309,10 @@
       "like": "いいね順",
       "recent": "最新順",
       "Empty": "並び替え方法を選択"
+    },
+    "ModifiedTime": {
+      "Created": "作成",
+      "Modified": "修正"
     }
   }
 }
