@@ -11,6 +11,7 @@ import Link from 'next/link';
 import type React from 'react';
 import { Suspense } from 'react';
 import { ModifiedTime } from './ModifiedTime';
+import { getTranslations } from 'next-intl/server';
 
 type StrategiesTableData = Awaited<ReturnType<typeof buildStrategiesDataQuery>>;
 type StrategyTableProps = Readonly<
@@ -19,21 +20,23 @@ type StrategyTableProps = Readonly<
   }
 >;
 
-const StrategyTable: React.FC<StrategyTableProps> = ({ dataPromise, className, ...props }) => {
+const StrategyTable: React.FC<StrategyTableProps> = async ({ dataPromise, className, ...props }) => {
+  const t = await getTranslations("ViewPage.StrategyTable")
+
   return (
     <Table className={cn(className, 'border-b')} {...props}>
       <TableHeader>
         <TableRow>
-          <TableHead>Strats</TableHead>
-          <TableHead className="w-36 hidden md:table-cell">Author</TableHead>
+          <TableHead>{t("Strategy")}</TableHead>
+          <TableHead className="w-36 hidden md:table-cell">{t("Author")}</TableHead>
           <TableHead className="w-16 md:w-20">
-            <div className="flex justify-center">Version</div>
+            <div className="flex justify-center">{t("Patch")}</div>
           </TableHead>
           <TableHead className="w-16 md:w-20">
-            <div className="flex justify-center">Likes</div>
+            <div className="flex justify-center">{t("Likes")}</div>
           </TableHead>
           <TableHead className="w-32 hidden md:table-cell">
-            <div className="flex justify-center">Modified</div>
+            <div className="flex justify-center">{t("Created")}</div>
           </TableHead>
         </TableRow>
       </TableHeader>
@@ -59,12 +62,15 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
   const { data: strategiesData, error } = (await dataPromise) ?? STRATEGY_TABLE_DEFAULT_DATA;
   if (strategiesData === null || error) throw error;
 
+  const t = await getTranslations("ViewPage.StrategyTable")
+  const tRaids = await getTranslations("Common.Raids")
+
   return (
     <TableBody className={className} {...props}>
       {strategiesData.length === 0 ? (
         <TableRow>
           <TableCell colSpan={5}>
-            <Alert className="text-base py-8">No Strategy Found</Alert>
+            <Alert className="text-base py-8">{t("NoStrategyFound")}</Alert>
           </TableCell>
         </TableRow>
       ) : (
@@ -74,7 +80,7 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
               <Link href={`/strat/${strategyData.id}`} className="w-full h-full flex items-center">
                 <div className="flex flex-col pl-4 py-4 pr-2">
                   <h2 className="text-base md:text-lg font-bold">{strategyData.name}</h2>
-                  <div className="text-xs md:text-sm text-muted-foreground">{strategyData.raid_name}</div>
+                  <div className="text-xs md:text-sm text-muted-foreground">{tRaids(strategyData.raid_semantic_key)}</div>
                   {strategyData.strategy_players !== null && strategyData.strategy_players.length !== 0 && (
                     <div>
                       <div className="inline-grid grid-cols-4 sm:grid-cols-8 gap-1 mt-2">

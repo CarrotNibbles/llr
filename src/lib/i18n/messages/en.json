@@ -271,5 +271,76 @@
       "ErrorDescription": "Lost connection to the server. Please refresh the page and try again.",
       "Refresh": "Refresh"
     }
+  },
+  "ViewPage": {
+    "CreateButton": {
+      "ButtonTitle": "Create Strategy",
+      "DialogTitle": "Create Strategy",
+      "NameLabel": "Strategy Name",
+      "NamePlaceholder": "Enter strategy name",
+      "NameRequired": "Please enter a strategy name",
+      "NameTooShort": "Strategy name must be at least 2 characters",
+      "NameTooLong": "Strategy name must be 50 characters or fewer",
+      "RaidLabel": "Raid",
+      "RaidPlaceholder": "Select a raid",
+      "RaidSearchPlaceholder": "Search raid",
+      "RaidEmpty": "No raids found",
+      "RaidRequired": "Please select a raid",
+      "ScopeLabel": "Visibility",
+      "ScopePublicLabel": "Public",
+      "ScopePublicDescription": "Anyone can view this strategy",
+      "ScopePrivateLabel": "Private",
+      "ScopePrivateDescription": "Only the author can view this strategy",
+      "ScopeRequired": "Please select visibility",
+      "PasswordLabel": "Password",
+      "PasswordDescription": "Password required to edit this strategy (not needed for author)",
+      "PasswordRequired": "Please set a password",
+      "PasswordLengthMismatch": "Password must be 8 characters long",
+      "CreateConfirm": "Create",
+      "NotSignedIn": "Please sign in to create a strategy",
+      "UnknownError": "Failed to create strategy. Please try again later."
+    },
+    "LimitCombobox": {
+      "Current": "{currentLimit} Strats in Page",
+      "Empty": "Choose the number of strats to show in a page",
+      "Item": "{limit} Strats per Page"
+    },
+    "SortCombobox": {
+      "like": "Most Likes",
+      "recent": "Most Recent",
+      "Empty": "Choose sort order"
+    },
+    "ModifiedTime": {
+      "Created": "Created",
+      "Modified": "Modified"
+    },
+    "ProfileDropdown": {
+      "MyStrats": "My Strats",
+      "LikedStrats": "Liked Strats"
+    },
+    "StrategyTable": {
+      "Strategy": "Strategy",
+      "Author": "Author",
+      "Patch": "Version",
+      "Likes": "Likes",
+      "Created": "Created",
+      "NoStrategyFound": "No Strategy Found"
+    },
+    "SearchForm": {
+      "FieldRequired": "Please select at least one condition",
+      "NameLabel": "Strategy Name",
+      "SearchButton": "Search",
+      "AdvancedFilter": "Advanced Filters",
+      "RaidLabel": "Raid",
+      "RaidAll": "All Raids",
+      "RaidSearchPlaceholder": "Search raid",
+      "RaidEmpty": "No raids found",
+      "JobLabel": "Jobs Included",
+      "JobAll": "All jobs",
+      "JobDescription": "Search for a strategy including all jobs selected",
+      "JobClear": "Clear",
+      "PatchLabel": "Version",
+      "PatchAll": "Version"
+    }
   }
 }
