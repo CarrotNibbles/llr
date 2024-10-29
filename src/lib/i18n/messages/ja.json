@@ -325,6 +325,22 @@
       "Likes": "いいね",
       "Created": "作成日",
       "NoStrategyFound": "戦略が見つかりませんでした"
+    },
+    "SearchForm": {
+      "FieldRequired": "少なくとも1つの条件を選択してください",
+      "NameLabel": "戦略名",
+      "SearchButton": "検索",
+      "AdvancedFilter": "詳細フィルター",
+      "RaidLabel": "レイド",
+      "RaidAll": "すべてのレイド",
+      "RaidSearchPlaceholder": "レイド検索",
+      "RaidEmpty": "レイドが見つかりません",
+      "JobLabel": "含まれる職業",
+      "JobAll": "すべての職業",
+      "JobDescription": "選択したすべての職業を含む戦略を検索",
+      "JobClear": "全選択解除",
+      "PatchLabel": "バージョン",
+      "PatchAll": "すべてのバージョン"
     }
   }
 }

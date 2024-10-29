@@ -284,7 +284,7 @@
       "RaidLabel": "Raid",
       "RaidPlaceholder": "Select a raid",
       "RaidSearchPlaceholder": "Search raid",
-      "RaidEmpty": "No raids available",
+      "RaidEmpty": "No raids found",
       "RaidRequired": "Please select a raid",
       "ScopeLabel": "Visibility",
       "ScopePublicLabel": "Public",
@@ -325,6 +325,22 @@
       "Likes": "Likes",
       "Created": "Created",
       "NoStrategyFound": "No Strategy Found"
+    },
+    "SearchForm": {
+      "FieldRequired": "Please select at least one condition",
+      "NameLabel": "Strategy Name",
+      "SearchButton": "Search",
+      "AdvancedFilter": "Advanced Filters",
+      "RaidLabel": "Raid",
+      "RaidAll": "All Raids",
+      "RaidSearchPlaceholder": "Search raid",
+      "RaidEmpty": "No raids found",
+      "JobLabel": "Jobs Included",
+      "JobAll": "All jobs",
+      "JobDescription": "Search for a strategy including all jobs selected",
+      "JobClear": "Clear",
+      "PatchLabel": "Version",
+      "PatchAll": "Version"
     }
   }
 }
