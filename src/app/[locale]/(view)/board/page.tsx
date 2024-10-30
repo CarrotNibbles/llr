@@ -63,9 +63,9 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
             currentPage={page}
             dataPromise={buildMaxPageQuery(supabase, limit, { raid_skey: raid, patch, jobs })}
           />
-          <div className="flex text-xs flex-row-reverse gap-x-2">
-            <LimitCombobox currentLimit={limit} />
+          <div className="flex text-xs flex-row justify-end gap-x-2">
             <SortCombobox currentSort={sort} />
+            <LimitCombobox currentLimit={limit} />
           </div>
         </div>
       </div>
