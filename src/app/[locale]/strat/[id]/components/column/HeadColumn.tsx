@@ -110,7 +110,7 @@ export const HeadColumn = ({
           <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
             <AlertDialog>
               <PopoverTrigger className={elevated ? 'cursor-pointer' : 'cursor-not-allowed'} disabled={!elevated}>
-                <span className="sr-only">Change job {job}</span>
+                <span className="sr-only select-none">Change job {job}</span>
                 <JobIcon job={job} role={getOrderedRole(job, order)} className={`${columnWidth}`} />
               </PopoverTrigger>
               <PopoverContent className="w-auto">
@@ -140,7 +140,7 @@ export const HeadColumn = ({
                                 disabled={job === newJob}
                                 className={job === newJob ? 'cursor-not-allowed' : undefined}
                               >
-                                <span className="sr-only">Change job to {job}</span>
+                                <span className="sr-only select-none">Change job to {job}</span>
                                 <JobIcon job={newJob} role={getOrderedRole(newJob, order)} className="w-6 h-6" />
                               </AlertDialogTrigger>
                               <AlertDialogContent>
@@ -162,7 +162,7 @@ export const HeadColumn = ({
                               className={job === newJob ? 'cursor-not-allowed' : undefined}
                               onClick={applyChange}
                             >
-                              <span className="sr-only">Change job to {job}</span>
+                              <span className="sr-only select-none">Change job to {job}</span>
                               <JobIcon job={newJob} role={getOrderedRole(newJob, order)} className="w-6 h-6" />
                             </button>
                           );

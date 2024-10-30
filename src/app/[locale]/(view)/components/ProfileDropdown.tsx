@@ -23,7 +23,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = async ({ className, ...p
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className={className} {...props}>
-          <span className="sr-only">Profile</span>
+          <span className="sr-only select-none">Profile</span>
           <PersonIcon className="w-6 h-6" />
         </Button>
       </DropdownMenuTrigger>

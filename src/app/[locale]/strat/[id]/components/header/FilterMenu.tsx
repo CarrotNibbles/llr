@@ -25,7 +25,7 @@ export const FilterMenu = () => {
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon">
-          <span className="sr-only">Adjust display filter</span>
+          <span className="sr-only select-none">Adjust display filter</span>
           <Icons.filter />
         </Button>
       </PopoverTrigger>

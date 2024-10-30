@@ -62,12 +62,12 @@ export const ElevationDialog = () => {
       <DialogTrigger asChild>
         {elevated ? (
           <Button size="icon">
-            <span className="sr-only">Strategy unlocked</span>
+            <span className="sr-only select-none">Strategy unlocked</span>
             <LockOpen2Icon />
           </Button>
         ) : (
           <Button variant="ghost" size="icon">
-            <span className="sr-only">Unlock this strategy</span>
+            <span className="sr-only select-none">Unlock this strategy</span>
             <LockClosedIcon />
           </Button>
         )}

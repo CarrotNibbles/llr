@@ -61,7 +61,7 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
               }
             }}
           >
-            <span className="sr-only">Share this strategy</span>
+            <span className="sr-only select-none">Share this strategy</span>
             <Share1Icon />
           </Button>
           <FilterMenu />

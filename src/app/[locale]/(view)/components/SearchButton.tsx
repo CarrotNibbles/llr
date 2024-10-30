@@ -266,7 +266,7 @@ const SearchButtonNew = forwardRef<HTMLButtonElement, SearchButtonProps>(({ clas
   return (
     <Button variant="ghost" size="icon" className={className} {...props} ref={ref}>
       <Link href={buildSearchURL(searchParams, { page: 1, limit: DEFAULT_LIMIT })}>
-        <span className="sr-only">Search</span>
+        <span className="sr-only select-none">Search</span>
         <MagnifyingGlassIcon className="w-6 h-6" />
       </Link>
     </Button>

@@ -100,7 +100,7 @@ export const StratSettingsDialog = () => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost" size="icon">
-          <span className="sr-only">Settings</span>
+          <span className="sr-only select-none">Settings</span>
           <GearIcon />
         </Button>
       </DialogTrigger>
