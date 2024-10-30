@@ -188,6 +188,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
           style={{
             x: xMotionValue,
             y: yMotionValue,
+            height: `${action.cooldown * pixelPerFrame}px`,
             zIndex: BOX_Z_INDEX[slot],
             cursor: draggable ? 'grab' : 'not-allowed',
             transitionProperty: 'filter',
@@ -203,7 +204,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
           dragMomentum={false}
           dragPropagation
           onPointerDown={(e) => {
-            if (effectiveDragControls) {
+            if (draggable) {
               if (!activeEntries.get(entryId)) {
                 if (!holdingShift) {
                   activeEntries.clear();
@@ -262,10 +263,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
             }
           }}
         >
-          <div
-            className={`relative ${columnWidth} overflow-hidden`}
-            style={{ height: `${action.cooldown * pixelPerFrame}px` }}
-          >
+          <div className="pointer-events-none">
             <div
               className={`absolute top-0 ${columnWidth} ml-[calc(50%-1.5px)] border-zinc-300 dark:border-zinc-700 border-l-[3px] border-dotted`}
               style={{ height: `${action.cooldown * pixelPerFrame}px` }}
@@ -294,7 +292,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
               className={`absolute top-0 ${columnWidth} border-zinc-500 dark:border-zinc-500 border-b-[2px] border-solid`}
               style={{ height: `${primaryDuration * pixelPerFrame}px` }}
             />
-            <div className="aspect-square relative w-full pointer-events-none">
+            <div className="aspect-square relative w-full">
               <Image
                 src={src}
                 alt={tActions(action.semantic_key)}
@@ -303,9 +301,6 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
                 }}
                 layout="fill"
                 objectFit="contain"
-                className="pointer-events-none select-none"
-                draggable={false}
-                unselectable="on"
               />
             </div>
           </div>
