@@ -46,7 +46,7 @@ const BoardSubheaderContent: React.FC<BoardSubheaderContentProps> = async ({ dat
   return (
     <nav>
       <div className={cn('rounded-none flex min-w-full items-center', className)} {...props}>
-        <ul className="hidden sm:flex gap-x-2">
+        <ul className="hidden sm:flex gap-x-2 self-start">
           {NAV_RAID_CATEGORIES.map((raidCategory) => (
             <li key={raidCategory}>
               <RaidPopover
@@ -57,7 +57,7 @@ const BoardSubheaderContent: React.FC<BoardSubheaderContentProps> = async ({ dat
           ))}
         </ul>
         <div className="flex-grow" />
-        {user && <CreateButton className="h-8" raidsData={raidsData} />}
+        {user && <CreateButton className="h-8 mt-2 mb-1 mr-4" raidsData={raidsData} />}
       </div>
     </nav>
   );

@@ -51,7 +51,7 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
     );
 
   return (
-    <div className="flex flex-col w-full max-w-screen-xl px-4 py-1">
+    <div className="flex flex-col w-full max-w-screen-xl px-2 py-1">
       <BoardSubheader />
       <div className="px-4 mt-2 mb-8">
         <StrategyTable

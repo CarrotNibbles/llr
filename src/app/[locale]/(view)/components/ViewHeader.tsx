@@ -24,7 +24,7 @@ const ViewHeader: React.FC<ViewHeaderProps> = async ({ className, ...props }, re
       className={cn('rounded-none min-w-full border-b flex py-2 h-15 items-center justify-center', className)}
       {...props}
     >
-      <div className="w-full max-w-screen-xl px-4 flex items-center">
+      <div className="w-full max-w-screen-xl px-3 flex items-center">
         <Link href="/" className="flex items-end gap-x-3">
           <StarFilledIcon className="mr h-7 w-7" />
           <div className="text-xl font-extrabold">
