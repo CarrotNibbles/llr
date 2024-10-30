@@ -36,7 +36,7 @@ const LimitCombobox: React.FC<LimitComboboxProps> = ({ currentLimit, className, 
           {open ? <CaretUpIcon className="w-6 h-6 mt-0.5" /> : <CaretDownIcon className="w-6 h-6" />}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-auto rounded-none px-2 py-2 z-10">
+      <PopoverContent align="end" side="top" className="w-auto rounded-none px-2 py-2 z-10">
         <Command>
           <CommandList>
             <CommandEmpty>{t('Empty')}</CommandEmpty>
