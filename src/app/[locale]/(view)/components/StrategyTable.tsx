@@ -24,26 +24,32 @@ const StrategyTable: React.FC<StrategyTableProps> = async ({ dataPromise, classN
   const t = await getTranslations('ViewPage.StrategyTable');
 
   return (
-    <Table className={cn(className, 'border-b')} {...props}>
-      <TableHeader>
-        <TableRow>
-          <TableHead>{t('Strategy')}</TableHead>
-          <TableHead className="w-36 hidden md:table-cell">{t('Author')}</TableHead>
-          <TableHead className="w-16 md:w-20">
-            <div className="flex justify-center">{t('Patch')}</div>
-          </TableHead>
-          <TableHead className="w-16 md:w-20">
-            <div className="flex justify-center">{t('Likes')}</div>
-          </TableHead>
-          <TableHead className="w-32 hidden md:table-cell">
-            <div className="flex justify-center">{t('Created')}</div>
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      <Suspense fallback={<StrategyTableBodySkeleton />}>
-        <StrategyTableBody dataPromise={dataPromise} />
-      </Suspense>
-    </Table>
+    <div className={cn(className, 'border-[1px] border-border rounded-md shadow-sm')}>
+      <Table {...props}>
+        <TableHeader>
+          <TableRow>
+            <TableHead>
+              <div className="pl-2">{t('Strategy')}</div>
+            </TableHead>
+            <TableHead className="w-36 hidden md:table-cell">
+              <div className="flex justify-center">{t('Author')}</div>
+            </TableHead>
+            <TableHead className="w-16 md:w-20">
+              <div className="flex justify-center">{t('Patch')}</div>
+            </TableHead>
+            <TableHead className="w-16 md:w-20">
+              <div className="flex justify-center">{t('Likes')}</div>
+            </TableHead>
+            <TableHead className="w-32 hidden md:table-cell">
+              <div className="flex justify-center">{t('Created')}</div>
+            </TableHead>
+          </TableRow>
+        </TableHeader>
+        <Suspense fallback={<StrategyTableBodySkeleton />}>
+          <StrategyTableBody dataPromise={dataPromise} />
+        </Suspense>
+      </Table>
+    </div>
   );
 };
 StrategyTable.displayName = 'StrategyTable';
@@ -78,14 +84,14 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
           <TableRow key={strategyData.id}>
             <TableCell className="p-0 h-0">
               <Link href={`/strat/${strategyData.id}`} className="w-full h-full flex items-center">
-                <div className="flex flex-col pl-4 py-4 pr-2">
+                <div className="flex flex-col pl-4 pr-2 py-4">
                   <h2 className="text-base md:text-lg font-bold">{strategyData.name}</h2>
                   <div className="text-xs md:text-sm text-muted-foreground">
                     {tRaids(strategyData.raid_semantic_key)}
                   </div>
                   {strategyData.strategy_players !== null && strategyData.strategy_players.length !== 0 && (
                     <div>
-                      <div className="inline-grid grid-cols-4 sm:grid-cols-8 gap-1 mt-2">
+                      <div className="inline-grid grid-cols-4 sm:grid-cols-8 gap-1 mt-3">
                         {strategyData.strategy_players.map((player) => (
                           <JobIcon
                             job={player.job}
@@ -104,7 +110,7 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
               <Link
                 href={`/strat/${strategyData.id}`}
                 className={cn(
-                  'w-full h-full flex items-center',
+                  'w-full h-full flex items-center justify-center',
                   strategyData.author_display_name && 'text-muted-foreground',
                 )}
               >

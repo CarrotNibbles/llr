@@ -21,10 +21,10 @@ const ViewHeader: React.FC<ViewHeaderProps> = async ({ className, ...props }, re
   return (
     <div
       ref={ref}
-      className={cn('rounded-none min-w-full border-b flex py-2 h-15 items-center justify-center', className)}
+      className={cn('rounded-none min-w-full border-b flex py-2 h-16 items-center justify-center', className)}
       {...props}
     >
-      <div className="w-full max-w-screen-xl px-3 flex items-center">
+      <div className="w-full max-w-screen-xl px-6 flex items-center">
         <Link href="/" className="flex items-end gap-x-3">
           <StarFilledIcon className="mr h-7 w-7" />
           <div className="text-xl font-extrabold">
@@ -32,11 +32,10 @@ const ViewHeader: React.FC<ViewHeaderProps> = async ({ className, ...props }, re
             <span className="md:hidden">LLR</span>
           </div>
         </Link>
-        <div className="text-xs font-extralight self-end hidden md:flex">or something idkwhatitwasok</div>
         <div className="flex-grow" />
-        <div className="flex gap-x-4">
-          <SearchButton />
-          <ModeToggle />
+        <div className="flex">
+          <SearchButton className="mr-3" />
+          <ModeToggle className="mr-5" />
           {user === null ? <SignInButton /> : <ProfileDropdown />}
         </div>
       </div>

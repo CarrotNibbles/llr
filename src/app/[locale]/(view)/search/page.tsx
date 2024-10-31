@@ -1,5 +1,6 @@
 'use server';
 
+import { Separator } from '@/components/ui/separator';
 import { buildMaxPageQuery, buildRaidsDataQuery, buildStrategiesDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
 import {
@@ -56,36 +57,35 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
     );
 
   return (
-    <div className="flex flex-col w-full max-w-screen-xl px-4 py-1">
-      <div className="px-4 mt-2 mb-8">
-        <SearchForm q={q} raid={raid} patch={patch} jobs={jobs} dataPromise={buildRaidsDataQuery(supabase)} />
-        {queried && paramsValid && (
-          <>
-            <StrategyTable
-              dataPromise={buildStrategiesDataQuery(supabase, {
-                q,
-                raid_skey: raid,
-                patch,
-                page,
-                lim: limit,
-                sort,
-                jobs,
-              })}
+    <div className="flex flex-col w-full max-w-screen-xl px-6 py-3">
+      <SearchForm q={q} raid={raid} patch={patch} jobs={jobs} dataPromise={buildRaidsDataQuery(supabase)} />
+      <Separator className="my-2" />
+      {queried && paramsValid && (
+        <div className="py-3">
+          <StrategyTable
+            dataPromise={buildStrategiesDataQuery(supabase, {
+              q,
+              raid_skey: raid,
+              patch,
+              page,
+              lim: limit,
+              sort,
+              jobs,
+            })}
+          />
+          <div className="w-full flex flex-col-reverse xl:grid xl:grid-cols-3 gap-y-2 mt-4">
+            <div />
+            <ViewPagination
+              currentPage={page}
+              dataPromise={buildMaxPageQuery(supabase, limit, { q, raid_skey: raid, patch, jobs })}
             />
-            <div className="w-full flex flex-col-reverse xl:grid xl:grid-cols-3 gap-y-2 mt-2">
-              <div />
-              <ViewPagination
-                currentPage={page}
-                dataPromise={buildMaxPageQuery(supabase, limit, { q, raid_skey: raid, patch, jobs })}
-              />
-              <div className="flex flex-row-reverse gap-x-2">
-                <LimitCombobox currentLimit={limit} />
-                <SortCombobox currentSort={sort} />
-              </div>
+            <div className="flex flex-row-reverse gap-x-2">
+              <LimitCombobox currentLimit={limit} />
+              <SortCombobox currentSort={sort} />
             </div>
-          </>
-        )}
-      </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

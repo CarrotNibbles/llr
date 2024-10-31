@@ -190,14 +190,14 @@
         "ConfirmTitle": "직업 변경 확인",
         "Confirm": "직업 변경",
         "Cancel": "취소",
-        "Warning": "직업을 변경할 경우 현재 직업의 전략이 초기화됩니다. 다시 직업을 변경하더라도 이전 직업의 전략은 복구되지 않습니다. 계속하시겠습니까?",
+        "Warning": "직업을 변경할 경우 현재 직업의 공략이 초기화됩니다. 다시 직업을 변경하더라도 이전 직업의 공략은 복구되지 않습니다. 계속하시겠습니까?",
         "Complete": "직업 변경이 완료되었습니다."
       }
     },
     "StratHeader": {
       "StratInfo": {
         "DialogTitle": "정보",
-        "StrategyTitle": "전략 제목",
+        "StrategyTitle": "공략 제목",
         "Duty": "임무명",
         "FFXIVPatch": "기준 패치 버전",
         "LevelSync": "레벨 조율",
@@ -219,7 +219,7 @@
         "Enrage": "전멸기"
       },
       "EditPermission": {
-        "Description": "이 전략의 수정 권한을 얻기 위한 비밀번호를 입력해주세요.",
+        "Description": "이 공략의 수정 권한을 얻기 위한 비밀번호를 입력해주세요.",
         "Acquire": "수정 권한 획득",
         "Submit": "제출",
         "Success": "수정 권한을 획득하였습니다.",
@@ -234,29 +234,29 @@
       },
       "StratSettings": {
         "Title": "설정",
-        "Name": "전략명",
-        "isPublic": "전략 공개",
-        "isPublicDescription": "전략을 공개하면 다른 사용자가 검색하여 볼 수 있습니다.",
+        "Name": "공략명",
+        "isPublic": "공략 공개",
+        "isPublicDescription": "공략을 공개하면 다른 사용자가 검색하여 볼 수 있습니다.",
         "isEditable": "수정 가능",
-        "isEditableDescription": "비밀번호로 전략을 수정할 수 있도록 설정합니다.",
+        "isEditableDescription": "비밀번호로 공략을 수정할 수 있도록 설정합니다.",
         "Patch": "기준 패치 버전",
         "PatchPlaceholder": "패치 버전을 선택해주세요.",
         "PatchDescription": "기준이 될 패치 버전을 선택합니다.",
         "Password": "수정 비밀번호",
-        "DeleteStrategy": "전략 삭제하기",
+        "DeleteStrategy": "공략 삭제하기",
         "AlertTitle": "주의",
         "AlertDescription": "아래를 더 제한된 설정으로 변경할 경우, 다른 세션의 연결이 해제됩니다.",
         "Save": "저장",
         "Saved": "저장되었습니다.",
         "Error": "저장 중 오류가 발생하였습니다.",
-        "NameError": "전략명을 입력해주세요.",
+        "NameError": "공략명을 입력해주세요.",
         "PasswordError": "비밀번호는 8자리 수여야 합니다."
       },
       "LikeButton": {
         "Liked": "좋아요가 추가되었습니다.",
         "Unliked": "좋아요가 취소되었습니다.",
         "CaptchaFailed": "CAPTCHA 확인에 실패하였습니다.",
-        "StrategyNotFound": "전략을 찾을 수 없습니다.",
+        "StrategyNotFound": "공략을 찾을 수 없습니다.",
         "AlreadyLiked": "이미 24시간 이내에 같은 IP에서 좋아요를 추가하셨습니다.",
         "Error": "좋아요를 추가하는 중 오류가 발생하였습니다.",
         "CaptchaHeading": "CAPTCHA 확인",
@@ -274,13 +274,13 @@
   },
   "ViewPage": {
     "CreateButton": {
-      "ButtonTitle": "전략 작성",
-      "DialogTitle": "전략 생성",
-      "NameLabel": "전략명",
-      "NamePlaceholder": "전략명을 입력하세요",
-      "NameRequired": "전략명을 입력하세요",
-      "NameTooShort": "전략명은 2글자 이상이어야 합니다",
-      "NameTooLong": "전략명은 50글자 이하여야 합니다",
+      "ButtonTitle": "공략 작성",
+      "DialogTitle": "공략 생성",
+      "NameLabel": "공략명",
+      "NamePlaceholder": "공략명을 입력하세요",
+      "NameRequired": "공략명을 입력하세요",
+      "NameTooShort": "공략명은 2글자 이상이어야 합니다",
+      "NameTooLong": "공략명은 50글자 이하여야 합니다",
       "RaidLabel": "레이드",
       "RaidPlaceholder": "레이드를 선택하세요",
       "RaidSearchPlaceholder": "레이드 검색",
@@ -288,21 +288,21 @@
       "RaidRequired": "레이드를 선택하세요",
       "ScopeLabel": "공개 범위",
       "ScopePublicLabel": "전체 공개",
-      "ScopePublicDescription": "누구든지 전략을 열람할 수 있습니다",
+      "ScopePublicDescription": "누구든지 공략을 열람할 수 있습니다",
       "ScopePrivateLabel": "비공개",
-      "ScopePrivateDescription": "작성자만 전략을 열람할 수 있습니다",
+      "ScopePrivateDescription": "작성자만 공략을 열람할 수 있습니다",
       "ScopeRequired": "공개 범위를 선택하세요",
       "PasswordLabel": "비밀번호",
-      "PasswordDescription": "전략 수정 시 필요한 비밀번호 (작성자는 필요 없음)",
+      "PasswordDescription": "공략 수정 시 필요한 비밀번호 (작성자는 필요 없음)",
       "PasswordRequired": "비밀번호를 설정하세요",
       "PasswordLengthMismatch": "비밀번호는 길이 8이어야 합니다",
       "CreateConfirm": "생성",
-      "NotSignedIn": "전략을 작성하려면 로그인하세요",
-      "UnknownError": "전략 생성에 실패했습니다. 잠시 후 재시도해 주세요."
+      "NotSignedIn": "공략을 작성하려면 로그인하세요",
+      "UnknownError": "공략 생성에 실패했습니다. 잠시 후 재시도해 주세요."
     },
     "LimitCombobox": {
       "Current": "{currentLimit}개씩",
-      "Empty": "한 번에 표시할 전략 수 선택",
+      "Empty": "한 번에 표시할 공략 수 선택",
       "Item": "{limit}개씩"
     },
     "SortCombobox": {
@@ -315,20 +315,20 @@
       "Modified": "수정"
     },
     "ProfileDropdown": {
-      "MyStrats": "내 전략",
-      "LikedStrats": "좋아요한 전략"
+      "MyStrats": "내 공략",
+      "LikedStrats": "좋아요한 공략"
     },
     "StrategyTable": {
-      "Strategy": "전략",
+      "Strategy": "공략",
       "Author": "작성자",
       "Patch": "버전",
       "Likes": "좋아요",
       "Created": "작성일",
-      "NoStrategyFound": "전략을 찾지 못했습니다"
+      "NoStrategyFound": "공략을 찾지 못했습니다"
     },
     "SearchForm": {
       "FieldRequired": "하나 이상의 조건을 선택해 주세요",
-      "NameLabel": "전략명",
+      "NameLabel": "공략명",
       "SearchButton": "검색",
       "AdvancedFilter": "추가 조건",
       "RaidLabel": "레이드",
@@ -337,7 +337,7 @@
       "RaidEmpty": "레이드가 없습니다",
       "JobLabel": "포함 직업",
       "JobAll": "모든 직업",
-      "JobDescription": "선택한 직업을 모두 포함하는 전략을 검색",
+      "JobDescription": "선택한 직업을 모두 포함하는 공략을 검색",
       "JobClear": "전체 선택 해제",
       "PatchLabel": "버전",
       "PatchAll": "모든 버전"
