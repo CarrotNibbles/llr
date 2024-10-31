@@ -2,7 +2,12 @@
   "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
   "files": {
     "include": ["./src/**/*.ts", "./src/**/*.tsx"],
-    "ignore": ["src/lib/proto/**", "src/components/ui/**", "src/components/icons.tsx", "src/lib/database.types.ts"]
+    "ignore": [
+      "src/lib/proto/**",
+      "src/components/ui/**",
+      "src/components/icons/MiscIcons.tsx",
+      "src/lib/database.types.ts"
+    ]
   },
   "formatter": {
     "enabled": true,

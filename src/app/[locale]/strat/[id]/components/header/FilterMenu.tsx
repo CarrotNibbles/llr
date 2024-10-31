@@ -1,5 +1,5 @@
 'use client';
-import { Icons } from '@/components/icons';
+import { MiscIcons } from '@/components/icons/MiscIcons';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Toggle } from '@/components/ui/toggle';
@@ -26,7 +26,7 @@ export const FilterMenu = () => {
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon">
           <span className="sr-only select-none">Adjust display filter</span>
-          <Icons.filter />
+          <MiscIcons.filter />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-72 p-3">

@@ -93,6 +93,9 @@ const config = {
       },
       dropShadow: {
         selection: '0 0 1.5px hsl(var(--muted-foreground))',
+      },
+      fill: {
+        primary: '#8400ff'
       }
   	}
   },

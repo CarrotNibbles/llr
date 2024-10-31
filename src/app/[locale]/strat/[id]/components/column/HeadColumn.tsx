@@ -1,4 +1,4 @@
-import { JobIcon } from '@/components/JobIcon';
+import { JobIcon } from '@/components/icons/JobIcon';
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import {
   AlertDialog,

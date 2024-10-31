@@ -1,18 +1,18 @@
 'use server';
 
-import { JobIcon } from '@/components/JobIcon';
+import { JobIcon } from '@/components/icons/JobIcon';
 import { TextSkeleton } from '@/components/TextSkeleton';
 import { Alert } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import type { buildStrategiesDataQuery } from '@/lib/queries/server';
 import { DEFAULT_LIMIT, cn, getOrderedRole, rangeInclusive } from '@/lib/utils';
+import { HeartFilledIcon } from '@radix-ui/react-icons';
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import type React from 'react';
 import { Suspense } from 'react';
 import { ModifiedTime } from './ModifiedTime';
-import { HeartFilledIcon } from '@radix-ui/react-icons';
 
 type StrategiesTableData = Awaited<ReturnType<typeof buildStrategiesDataQuery>>;
 type StrategyTableProps = Readonly<

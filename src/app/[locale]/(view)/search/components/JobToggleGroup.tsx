@@ -1,6 +1,6 @@
 'use client';
 
-import { JobIcon } from '@/components/JobIcon';
+import { JobIcon } from '@/components/icons/JobIcon';
 import { Button } from '@/components/ui/button';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { JOB_LAYOUT, type SelectableJob, cn, getRole, sortJobs } from '@/lib/utils';

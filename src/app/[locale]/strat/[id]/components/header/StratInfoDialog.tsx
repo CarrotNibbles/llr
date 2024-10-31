@@ -5,7 +5,7 @@ import { useEstimations } from '@/lib/calc/hooks';
 import { cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 
-export const StratInfoDialog = () => {
+export const StratInfoDialog = ({ className }: { className?: string }) => {
   const { name, raids, version, subversion, strategy_players } = useStratSyncStore((state) => state.strategyData);
   const estimations = useEstimations();
   const t = useTranslations('StratPage.StratHeader.StratInfo');
@@ -67,7 +67,7 @@ export const StratInfoDialog = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <h3 className="font-bold cursor-pointer">{name}</h3>
+        <h3 className={cn(className, 'font-bold cursor-pointer whitespace-nowrap')}>{name}</h3>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
