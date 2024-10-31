@@ -286,6 +286,7 @@
       "RaidSearchPlaceholder": "Search raid",
       "RaidEmpty": "No raids found",
       "RaidRequired": "Please select a raid",
+      "UnkownRaid": "Unknown raid selected, please select a valid raid",
       "ScopeLabel": "Visibility",
       "ScopePublicLabel": "Public",
       "ScopePublicDescription": "Anyone can view this strategy",

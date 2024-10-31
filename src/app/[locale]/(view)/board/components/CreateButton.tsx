@@ -120,9 +120,15 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
       return;
     }
 
+    const raid = raidsData.find((raid) => raid.semantic_key === values.raid);
+    if (raid === undefined) {
+      setFailMessage(t('UnknownRaid'));
+      return;
+    }
+
     const stratPrototype: Omit<Tables<'strategies'>, 'id'> = {
       name: values.name,
-      raid: values.raid,
+      raid: raid.id,
       author: userResponse.data.user.id,
       is_editable: true,
       is_public: values.scope === 'public',
