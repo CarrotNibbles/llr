@@ -27,7 +27,7 @@ export const AuthenticatedLikeButton = () => {
     const supabase = createClient();
 
     if ((user_likes?.length ?? 0) > 0) {
-      const response = await supabase.from('user_likes').delete().eq('liked_by', userId);
+      const response = await supabase.from('user_likes').delete().eq('liked_by', userId).eq('strategy', id);
 
       if (response.error) {
         toast({ variant: 'destructive', description: t('Error') });
