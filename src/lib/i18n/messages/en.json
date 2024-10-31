@@ -342,5 +342,9 @@
       "PatchLabel": "Version",
       "PatchAll": "Version"
     }
+  },
+  "Auth": {
+    "SignIn": "Sign In",
+    "SignOut": "Sign Out"
   }
 }

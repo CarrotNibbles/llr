@@ -342,5 +342,9 @@
       "PatchLabel": "버전",
       "PatchAll": "모든 버전"
     }
+  },
+  "Auth": {
+    "SignIn": "로그인",
+    "SignOut": "로그아웃"
   }
 }
