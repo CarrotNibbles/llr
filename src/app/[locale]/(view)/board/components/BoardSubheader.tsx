@@ -44,20 +44,20 @@ const BoardSubheaderContent: React.FC<BoardSubheaderContentProps> = async ({ dat
   const { raidsData } = (await dataPromise) ?? BOARD_SUBHEADER_CONTENT_DEFAULT_DATA;
 
   return (
-    <nav>
-      <div className={cn('rounded-none flex min-w-full items-center', className)} {...props}>
+    <nav className="py-3">
+      <div className={cn('rounded-none flex w-full items-center', className)} {...props}>
         <ul className="hidden sm:flex gap-x-2 self-start">
           {NAV_RAID_CATEGORIES.map((raidCategory) => (
             <li key={raidCategory}>
               <RaidPopover
-                name={raidCategory.toUpperCase()}
+                name={raidCategory}
                 raidsData={raidsData.filter((raidData) => raidData.category === raidCategory)}
               />
             </li>
           ))}
         </ul>
         <div className="flex-grow" />
-        {user && <CreateButton className="h-8 mt-2 mb-1 mr-4" raidsData={raidsData} />}
+        {user && <CreateButton raidsData={raidsData} />}
       </div>
     </nav>
   );

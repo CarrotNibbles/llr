@@ -26,14 +26,9 @@ const RaidPopover = React.forwardRef<HTMLButtonElement, RaidPopoverProps>(
     return (
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button
-            variant="ghost"
-            className={cn(className, 'text-md font-bold rounded-none gap-x-1 items-center')}
-            ref={ref}
-            {...props}
-          >
+          <Button variant="outline" className={cn(className, 'font-bold')} ref={ref} {...props}>
             {name}
-            <CaretDownIcon className="w-6 h-6" />
+            <CaretDownIcon className="ml-1 w-6 h-6" />
           </Button>
         </PopoverTrigger>
         <PopoverContent align="start" className="border p-2 w-80">
@@ -80,9 +75,7 @@ const RaidFoldout = React.forwardRef<HTMLDivElement, RaidFoldoutProps>(
 
     return (
       <AccordionItem value={name} ref={ref} {...props}>
-        <AccordionTrigger className={cn(className, 'p-2')}>
-          {name}
-        </AccordionTrigger>
+        <AccordionTrigger className={cn(className, 'p-2')}>{name}</AccordionTrigger>
         <AccordionContent className="p-0">
           <ul>
             {raidsData.map((raidData) => (

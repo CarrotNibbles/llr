@@ -99,7 +99,6 @@ const ViewPaginationLink: React.FC<PaginationLinkProps> = ({ page, className, is
           variant: isActive ? 'outline' : 'ghost',
           size,
         }),
-        'rounded-none',
         className,
       )}
       page={page}
