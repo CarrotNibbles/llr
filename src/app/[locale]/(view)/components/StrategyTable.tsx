@@ -12,6 +12,7 @@ import Link from 'next/link';
 import type React from 'react';
 import { Suspense } from 'react';
 import { ModifiedTime } from './ModifiedTime';
+import { HeartFilledIcon } from '@radix-ui/react-icons';
 
 type StrategiesTableData = Awaited<ReturnType<typeof buildStrategiesDataQuery>>;
 type StrategyTableProps = Readonly<
@@ -125,7 +126,10 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
             </TableCell>
             <TableCell className="p-0 w-0 h-0">
               <Link href={`/strat/${strategyData.id}`} className="w-full h-full flex justify-center items-center">
-                <div className="px-2 py-4">{strategyData.total_likes === null ? 0 : strategyData.total_likes}</div>
+                <div className="px-2 py-4 flex items-center">
+                  <HeartFilledIcon className="w-4 h-4 mr-1" />
+                  {strategyData.total_likes === null ? 0 : strategyData.total_likes}
+                </div>
               </Link>
             </TableCell>
             <TableCell className="p-0 w-0 h-0  hidden md:table-cell">
