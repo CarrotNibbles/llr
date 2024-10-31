@@ -237,7 +237,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
               <FormLabel>{t('ScopeLabel')}</FormLabel>
               <FormControl>
                 <RadioGroup
-                  className="grid items-center w-fit gap-x-2"
+                  className="grid items-start w-fit gap-x-2"
                   style={{ gridTemplateColumns: 'auto auto' }}
                   onValueChange={field.onChange}
                   defaultValue={field.value}
