@@ -166,61 +166,68 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
         <FormField
           control={form.control}
           name="raid"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="inline-block">{t('RaidLabel')}</FormLabel>
-              <Popover open={raidPopoverOpen} onOpenChange={(open) => setRaidPopoverOpen(open)}>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        'w-full inline-grid text-left justify-between',
-                        !field.value && 'text-muted-foreground',
-                      )}
-                      style={{ gridTemplateColumns: '1fr 1rem' }}
-                    >
-                      <div className="overflow-hidden">
-                        {field.value
-                          ? tRaids(raidsData.find((raid) => raid.id === field.value)?.semantic_key)
-                          : t('RaidPlaceholder')}
-                      </div>
-                      <CaretSortIcon className="ml-1 h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent
-                  align="start"
-                  className="p-0 pointer-events-auto"
-                  style={{ width: 'var(--radix-popover-trigger-width)' }}
+          render={({ field }) => {
+            const raidSelected = raidsData.some((raid) => raid.semantic_key === field.value);
+            return (
+              <FormItem>
+                <FormLabel className="inline-block">{t('RaidLabel')}</FormLabel>
+                <Popover
+                  open={raidPopoverOpen}
+                  onOpenChange={(open) => {
+                    if (!open && !raidSelected) form.resetField('raid');
+                    setRaidPopoverOpen(open);
+                  }}
                 >
-                  <Command {...field}>
-                    <CommandInput placeholder={t('RaidSearchPlaceholder')} className="h-9" />
-                    <CommandEmpty>{t('RaidEmpty')}</CommandEmpty>
-                    <CommandGroup>
-                      {raidsData.map((raid) => (
-                        <CommandItem
-                          value={raid.id}
-                          key={raid.id}
-                          onSelect={() => {
-                            form.setValue('raid', raid.id);
-                            setRaidPopoverOpen(false);
-                          }}
-                        >
-                          {tRaids(raid.semantic_key)}
-                          <CheckIcon
-                            className={cn('ml-auto h-4 w-4', raid.id === field.value ? 'opacity-100' : 'opacity-0')}
-                          />
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        className={cn(
+                          'w-full inline-grid text-left justify-between',
+                          !raidSelected && 'text-muted-foreground',
+                        )}
+                        style={{ gridTemplateColumns: '1fr 1rem' }}
+                      >
+                        <div className="overflow-hidden">
+                          {raidSelected ? tRaids(field.value) : t('RaidPlaceholder')}
+                        </div>
+                        <CaretSortIcon className="ml-1 h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    align="start"
+                    className="p-0 pointer-events-auto"
+                    style={{ width: 'var(--radix-popover-trigger-width)' }}
+                  >
+                    <Command {...field}>
+                      <CommandInput placeholder={t('RaidSearchPlaceholder')} className="h-9" />
+                      <CommandEmpty>{t('RaidEmpty')}</CommandEmpty>
+                      <CommandGroup>
+                        {raidsData.map((raid) => (
+                          <CommandItem
+                            value={raid.id}
+                            key={raid.id}
+                            onSelect={() => {
+                              form.setValue('raid', raid.semantic_key);
+                              setRaidPopoverOpen(false);
+                            }}
+                          >
+                            {tRaids(raid.semantic_key)}
+                            <CheckIcon
+                              className={cn('ml-auto h-4 w-4', raid.id === field.value ? 'opacity-100' : 'opacity-0')}
+                            />
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
         <FormField
           control={form.control}

@@ -64,7 +64,10 @@ export const StratMain = () => {
   return (
     <ScrollSync>
       <EntrySelectionContext.Provider value={{ activeEntries, setActiveEntries, draggingCount, setDraggingCount }}>
-        <ResizablePanelGroup direction="horizontal" className="relative flex w-screen flex-grow overflow-hidden select-none">
+        <ResizablePanelGroup
+          direction="horizontal"
+          className="relative flex w-screen flex-grow overflow-hidden select-none"
+        >
           <ResizablePanel defaultSize={20} minSize={4} className="border-r -z-50">
             <div className="min-h-20 h-20 border-b" />
           </ResizablePanel>

@@ -63,7 +63,7 @@ const ViewPaginationContent: React.FC<ViewPaginationContentProps> = async ({
         <PaginationItem>
           <ViewPaginationPrevious
             page={currentPage - 1}
-            className={cn('gap-1 pr-2.5', currentPage === 1 ? 'invisible' : 'visible  ')}
+            className={cn(currentPage === 1 ? 'invisible' : 'visible  ')}
           />
         </PaginationItem>
         {rangeInclusive(startPage, endPage).map((page) => (
@@ -76,7 +76,7 @@ const ViewPaginationContent: React.FC<ViewPaginationContentProps> = async ({
         <PaginationItem>
           <ViewPaginationNext
             page={currentPage + 1}
-            className={cn('gap-1 pr-2.5', currentPage === maxPage ? 'invisible' : 'visible  ')}
+            className={cn(currentPage === maxPage ? 'invisible' : 'visible  ')}
           />
         </PaginationItem>
       </PaginationContent>
@@ -109,15 +109,23 @@ const ViewPaginationLink: React.FC<PaginationLinkProps> = ({ page, className, is
 ViewPaginationLink.displayName = 'ViewPaginationLink';
 
 const ViewPaginationPrevious: React.FC<PaginationLinkProps> = ({ className, ...props }) => (
-  <ViewPaginationLink aria-label="Go to previous page" size="default" className={cn('pl-2.5', className)} {...props}>
-    <ChevronLeftIcon className="h-4 w-4" />
+  <ViewPaginationLink
+    aria-label="Go to previous page"
+    className={cn('flex items-center justify-center p-0', className)}
+    {...props}
+  >
+    <ChevronLeftIcon />
   </ViewPaginationLink>
 );
 ViewPaginationPrevious.displayName = 'ViewPaginationPrevious';
 
 const ViewPaginationNext: React.FC<PaginationLinkProps> = ({ className, ...props }) => (
-  <ViewPaginationLink aria-label="Go to next page" size="default" className={cn('pr-2.5', className)} {...props}>
-    <ChevronRightIcon className="h-4 w-4" />
+  <ViewPaginationLink
+    aria-label="Go to next page"
+    className={cn('flex items-center justify-center p-0', className)}
+    {...props}
+  >
+    <ChevronRightIcon />
   </ViewPaginationLink>
 );
 ViewPaginationNext.displayName = 'ViewPaginationNext';
