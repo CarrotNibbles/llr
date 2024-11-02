@@ -182,7 +182,6 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
                     <FormControl>
                       <Button
                         variant="outline"
-                        role="combobox"
                         className={cn(
                           'w-full inline-grid text-left justify-between',
                           !raidSelected && 'text-muted-foreground',

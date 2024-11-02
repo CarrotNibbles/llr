@@ -159,7 +159,6 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                       <FormControl>
                         <Button
                           variant="outline"
-                          role="combobox"
                           className={cn(
                             'w-full inline-flex text-left justify-between hover:bg-background hover:ring-ring hover:ring-1',
                             !raidSelected && 'text-muted-foreground',
@@ -227,7 +226,6 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                     <FormControl>
                       <Button
                         variant="outline"
-                        role="combobox"
                         className={cn(
                           'w-full h-auto min-h-9 inline-flex text-left justify-between hover:bg-background hover:ring-ring hover:ring-1',
                           jobs === undefined || (jobs.length === 0 && 'text-muted-foreground'),

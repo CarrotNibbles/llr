@@ -14,11 +14,10 @@ import { createClient } from '@/lib/supabase/server';
 import { FileTextIcon, HeartIcon } from '@radix-ui/react-icons';
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
-import type React from 'react';
 
 type ProfileDropdownProps = Readonly<ButtonProps & {}>;
 
-const ProfileDropdown: React.FC<ProfileDropdownProps> = async ({ className, ...props }) => {
+const ProfileDropdown = async ({ className, ...props }: { className?: string } & ProfileDropdownProps) => {
   const t = await getTranslations('ViewPage.ProfileDropdown');
 
   const supabase = createClient();

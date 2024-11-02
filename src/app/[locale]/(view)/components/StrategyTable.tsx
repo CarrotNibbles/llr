@@ -1,7 +1,7 @@
 'use server';
 
-import { JobIcon } from '@/components/icons/JobIcon';
 import { TextSkeleton } from '@/components/TextSkeleton';
+import { JobIcon } from '@/components/icons/JobIcon';
 import { Alert } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -21,7 +21,7 @@ type StrategyTableProps = Readonly<
   }
 >;
 
-const StrategyTable: React.FC<StrategyTableProps> = async ({ dataPromise, className, ...props }) => {
+const StrategyTable = async ({ dataPromise, className, ...props }: { className?: string } & StrategyTableProps) => {
   const t = await getTranslations('ViewPage.StrategyTable');
 
   return (

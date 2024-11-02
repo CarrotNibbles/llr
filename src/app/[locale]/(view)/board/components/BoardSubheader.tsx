@@ -10,7 +10,7 @@ import { RaidPopover } from './RaidPopover';
 
 type BoardSubheaderProps = Readonly<React.HTMLAttributes<HTMLDivElement>>;
 
-const BoardSubheader: React.FC<BoardSubheaderProps> = ({ className, ...props }) => {
+const BoardSubheader = async ({ className, ...props }: { className?: string } & BoardSubheaderProps) => {
   const supabase = createClient();
 
   const fecthData = async () => {

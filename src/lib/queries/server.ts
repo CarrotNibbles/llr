@@ -5,7 +5,7 @@ import type { Database } from '../database.types';
 import type { createClient } from '../supabase/server';
 import type { ArrayElement, Patch, SelectableJob, SortOption } from '../utils';
 
-export const buildActionDataQuery = (supabase: ReturnType<typeof createClient>) => {
+export const buildActionDataQuery = async (supabase: ReturnType<typeof createClient>) => {
   return supabase.from('actions').select('*, mitigations(*)').order('priority');
 };
 

@@ -18,7 +18,12 @@ type ViewPaginationProps = Readonly<
   }
 >;
 
-const ViewPagination: React.FC<ViewPaginationProps> = ({ dataPromise, currentPage, className, ...props }) => {
+const ViewPagination = async ({
+  dataPromise,
+  currentPage,
+  className,
+  ...props
+}: { className?: string } & ViewPaginationProps) => {
   return (
     <Suspense fallback={<ViewPaginationContent currentPage={currentPage} className={className} {...props} />}>
       <ViewPaginationContent dataPromise={dataPromise} currentPage={currentPage} className={className} {...props} />

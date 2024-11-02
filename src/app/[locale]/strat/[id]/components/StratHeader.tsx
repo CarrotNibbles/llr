@@ -1,12 +1,14 @@
 'use client';
 
 import { ModeToggle } from '@/components/ModeToggle';
+import { BrandIdentity } from '@/components/icons/BrandIdentity';
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
 import { Share1Icon, ZoomInIcon } from '@radix-ui/react-icons';
 import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 import React from 'react';
 import {
   AnonymousLikeButton,
@@ -17,8 +19,6 @@ import {
   StratSettingsDialog,
   ZoomSlider,
 } from './header';
-import Link from 'next/link';
-import { BrandIdentity } from '@/components/icons/BrandIdentity';
 
 const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & React.ComponentPropsWithoutRef<'div'>>(
   ({ className, ...props }, ref) => {
