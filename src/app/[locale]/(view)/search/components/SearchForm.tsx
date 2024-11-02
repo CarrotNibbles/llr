@@ -16,7 +16,15 @@ type SearchFormProps = Readonly<
   }
 >;
 
-const SearchForm: React.FC<SearchFormProps> = ({ q, raid, patch, jobs, dataPromise, className, ...props }) => (
+const SearchForm = async ({
+  q,
+  raid,
+  patch,
+  jobs,
+  dataPromise,
+  className,
+  ...props
+}: { className?: string } & SearchFormProps) => (
   <Suspense fallback={<SearchFormContent q={q} raid={raid} patch={patch} jobs={jobs} />}>
     <SearchFormContent
       q={q}
