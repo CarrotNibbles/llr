@@ -5,7 +5,7 @@ import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { usePixelPerFrame, useZoomState } from '@/lib/states';
 import type { DragControls } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 
 import { getAreaHeight } from '../utils/helpers';
@@ -36,30 +36,41 @@ export const StratMain = () => {
 
   const areaHeight = getAreaHeight(pixelPerFrame, raidDuration);
 
-  const availableActions = (actionData ?? []).filter(
-    ({
-      available_level,
-      superseding_level,
-      updated_version,
-      updated_subversion,
-      deleted_version,
-      deleted_subversion,
-    }) => {
-      const currentVersion = strategyData.version;
-      const currentSubversion = strategyData.subversion * 10 + 9.9;
+  const availableActions = useMemo(() => {
+    return (actionData ?? []).filter(
+      ({
+        available_level,
+        superseding_level,
+        updated_version,
+        updated_subversion,
+        deleted_version,
+        deleted_subversion,
+      }) => {
+        const currentVersion = strategyData.version;
+        const currentSubversion = strategyData.subversion * 10 + 9.9;
 
-      if (available_level > raidLevel) return false;
-      if (superseding_level && superseding_level <= raidLevel) return false;
-      if (updated_version > currentVersion) return false;
-      if (updated_version === currentVersion && updated_subversion > currentSubversion) return false;
-      if (deleted_version && deleted_subversion) {
-        if (deleted_version < currentVersion) return false;
-        if (deleted_version === currentVersion && deleted_subversion <= currentSubversion) return false;
-      }
+        if (available_level > raidLevel) return false;
+        if (superseding_level && superseding_level <= raidLevel) return false;
+        if (updated_version > currentVersion) return false;
+        if (updated_version === currentVersion && updated_subversion > currentSubversion) return false;
+        if (deleted_version && deleted_subversion) {
+          if (deleted_version < currentVersion) return false;
+          if (deleted_version === currentVersion && deleted_subversion <= currentSubversion) return false;
+        }
 
-      return true;
-    },
-  );
+        return true;
+      },
+    );
+  }, [actionData, strategyData.version, strategyData.subversion, raidLevel]);
+
+  const jobActionsMetaRecord = useMemo(() => {
+    const record: Record<string, { id: string; semantic_key: string }[]> = {};
+    for (const { id, job, semantic_key } of availableActions) {
+      if (!record[job]) record[job] = [];
+      record[job].push({ id, semantic_key });
+    }
+    return record;
+  }, [availableActions]);
 
   return (
     <ScrollSync>
@@ -82,11 +93,13 @@ export const StratMain = () => {
           >
             <ScrollSyncPane group="x">
               <div className="min-h-20 h-20 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide border-b flex flex-row">
-                {strategyData.strategy_players.map((playerStrategy) => (
+                {strategyData.strategy_players.map(({ id, job, order }) => (
                   <HeadColumn
-                    playerStrategy={playerStrategy}
-                    actions={availableActions.filter(({ job }) => job === playerStrategy.job)}
-                    key={`headcolumn-${playerStrategy.id}`}
+                    playerId={id}
+                    job={job}
+                    order={order}
+                    actionsMeta={job ? jobActionsMetaRecord[job] : []}
+                    key={`headcolumn-${id}`}
                   />
                 ))}
               </div>

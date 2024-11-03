@@ -21,15 +21,13 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 export const StratSettingsDialog = () => {
-  const {
-    id,
-    name,
-    is_public: isPublic,
-    is_editable: isEditable,
-    version,
-    subversion,
-  } = useStratSyncStore((state) => state.strategyData);
-  const { clearOtherSessions } = useStratSyncStore((state) => state);
+  const id = useStratSyncStore((state) => state.strategyData.id);
+  const name = useStratSyncStore((state) => state.strategyData.name);
+  const isPublic = useStratSyncStore((state) => state.strategyData.is_public);
+  const isEditable = useStratSyncStore((state) => state.strategyData.is_editable);
+  const version = useStratSyncStore((state) => state.strategyData.version);
+  const subversion = useStratSyncStore((state) => state.strategyData.subversion);
+  const clearOtherSessions = useStratSyncStore((state) => state.clearOtherSessions);
   const { toast } = useToast();
   const t = useTranslations('StratPage.StratHeader.StratSettings');
   const tPatches = useTranslations('Common.FFXIVPatches');

@@ -1,5 +1,5 @@
 import type { DragControls } from 'framer-motion';
-import { createContext } from 'react';
+import { createContext } from 'use-context-selector';
 
 type EntrySelectionContextType = {
   activeEntries: Map<string, DragControls>;

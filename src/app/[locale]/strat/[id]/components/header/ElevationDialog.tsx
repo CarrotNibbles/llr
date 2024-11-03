@@ -15,7 +15,9 @@ import { z } from 'zod';
 export const ElevationDialog = () => {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
-  const { elevated, elevate } = useStratSyncStore((state) => state);
+  const elevated = useStratSyncStore((state) => state.elevated);
+  const elevate = useStratSyncStore((state) => state.elevate);
+
   const t = useTranslations('StratPage.StratHeader.EditPermission');
 
   const formSchema = z.object({

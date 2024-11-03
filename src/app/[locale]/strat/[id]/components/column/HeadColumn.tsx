@@ -15,93 +15,112 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/components/ui/use-toast';
-import type { ActionDataType, StrategyDataType } from '@/lib/queries/server';
-import { type ArrayElement, JOB_LAYOUT, getOrderedRole } from '@/lib/utils';
+import type { Enums } from '@/lib/database.types';
+import { JOB_LAYOUT, getOrderedRole } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
-import { useContext, useState } from 'react';
+import { memo, useState } from 'react';
+import { useContextSelector } from 'use-context-selector';
 import { columnWidth } from '../../utils/constants';
 import { EntrySelectionContext } from './EntrySelectionContext';
 
-const HeadSubColumn = ({
-  playerStrategy,
-  action,
-}: {
-  playerStrategy: ArrayElement<StrategyDataType['strategy_players']>;
-  action: ArrayElement<ActionDataType>;
-}) => {
-  const tActions = useTranslations('Common.Actions');
-  const { setActiveEntries } = useContext(EntrySelectionContext);
-  const { elevated, mutateEntries } = useStratSyncStore((state) => state);
+const HeadSubColumn = memo(
+  ({
+    playerId,
+    job,
+    actionMeta,
+  }: {
+    playerId: string;
+    job: Enums<'job'> | null;
+    actionMeta: { id: string; semantic_key: string };
+  }) => {
+    const tActions = useTranslations('Common.Actions');
+    const setActiveEntries = useContextSelector(EntrySelectionContext, (context) => context.setActiveEntries);
+    const elevated = useStratSyncStore((state) => state.elevated);
+    const getStore = useStratSyncStore((state) => state.getStore);
 
-  const { job } = playerStrategy;
-  const src = job && action.semantic_key ? `/icons/action/${job}/${action.semantic_key}.png` : null;
+    const src = job && actionMeta.semantic_key ? `/icons/action/${job}/${actionMeta.semantic_key}.png` : null;
 
-  return (
-    <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden justify-center items-end relative`}>
-      <Tooltip delayDuration={0}>
-        <ContextMenu>
-          <TooltipTrigger asChild>
-            <ContextMenuTrigger asChild disabled={!elevated}>
-              <div className="aspect-square relative w-full cursor-pointer">
-                {src && (
-                  <Image
-                    src={src}
-                    alt={tActions(action.semantic_key)}
-                    layout="fill"
-                    objectFit="contain"
-                    className="pointer-events-none select-none"
-                    draggable={false}
-                    unselectable="on"
-                  />
-                )}
-              </div>
-            </ContextMenuTrigger>
-          </TooltipTrigger>
-          <TooltipContent className="pointer-events-none">{tActions(action.semantic_key)}</TooltipContent>
-          <ContextMenuContent>
-            <ContextMenuItem
-              onClick={() => {
-                const deletes = playerStrategy.strategy_player_entries.filter((entry) => entry.action === action.id);
+    return (
+      <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden justify-center items-end relative`}>
+        <Tooltip delayDuration={0}>
+          <ContextMenu>
+            <TooltipTrigger asChild>
+              <ContextMenuTrigger asChild disabled={!elevated}>
+                <div className="aspect-square relative w-full cursor-pointer">
+                  {src && (
+                    <Image
+                      src={src}
+                      alt={tActions(actionMeta.semantic_key)}
+                      layout="fill"
+                      objectFit="contain"
+                      className="pointer-events-none select-none"
+                      draggable={false}
+                      unselectable="on"
+                    />
+                  )}
+                </div>
+              </ContextMenuTrigger>
+            </TooltipTrigger>
+            <TooltipContent className="pointer-events-none">{tActions(actionMeta.semantic_key)}</TooltipContent>
+            <ContextMenuContent>
+              <ContextMenuItem
+                onClick={() => {
+                  const playerStrategy = getStore().strategyData.strategy_players.find(
+                    (player) => player.id === playerId,
+                  );
+                  const mutateEntries = getStore().mutateEntries;
 
-                setActiveEntries((prev) => {
-                  const newActiveEntries = new Map(prev);
-                  for (const entry of deletes) {
-                    newActiveEntries.delete(entry.id);
+                  if (!playerStrategy) {
+                    return;
                   }
-                  return newActiveEntries;
-                });
 
-                mutateEntries(
-                  [],
-                  deletes.map((entry) => entry.id),
-                  false,
-                );
-              }}
-            >
-              열 전체 삭제
-            </ContextMenuItem>
-          </ContextMenuContent>
-        </ContextMenu>
-      </Tooltip>
-    </div>
-  );
-};
+                  const deletes = playerStrategy.strategy_player_entries.filter(
+                    (entry) => entry.action === actionMeta.id,
+                  );
+
+                  setActiveEntries((prev) => {
+                    const newActiveEntries = new Map(prev);
+                    for (const entry of deletes) {
+                      newActiveEntries.delete(entry.id);
+                    }
+                    return newActiveEntries;
+                  });
+
+                  mutateEntries(
+                    [],
+                    deletes.map((entry) => entry.id),
+                    false,
+                  );
+                }}
+              >
+                열 전체 삭제
+              </ContextMenuItem>
+            </ContextMenuContent>
+          </ContextMenu>
+        </Tooltip>
+      </div>
+    );
+  },
+);
 
 export const HeadColumn = ({
-  playerStrategy,
-  actions,
+  playerId,
+  job,
+  order,
+  actionsMeta,
 }: {
-  playerStrategy: ArrayElement<StrategyDataType['strategy_players']>;
-  actions: ActionDataType;
+  playerId: string;
+  job: Enums<'job'> | null;
+  order: number;
+  actionsMeta: { id: string; semantic_key: string }[];
 }) => {
   const { toast } = useToast();
-  const { elevated, updatePlayerJob } = useStratSyncStore((state) => state);
-  const { job, order, id: playerId } = playerStrategy;
+  const elevated = useStratSyncStore((state) => state.elevated);
+  const updatePlayerJob = useStratSyncStore((state) => state.updatePlayerJob);
 
   const [popoverOpen, setPopoverOpen] = useState(false);
   const t = useTranslations('StratPage.HeadColumn');
-  const tActions = useTranslations('Common.Actions');
 
   return (
     <div className="flex flex-col p-1 border-r-[1px] justify-center items-center space-y-1">
@@ -177,15 +196,16 @@ export const HeadColumn = ({
         </div>
       </div>
       <div className="flex space-x-1">
-        {actions.map((action) => (
+        {actionsMeta.map((actionMeta) => (
           <HeadSubColumn
-            key={`subcolumn-header-${playerId}-${action.id}`}
-            playerStrategy={playerStrategy}
-            action={action}
+            key={`subcolumn-header-${playerId}-${actionMeta.id}`}
+            job={job}
+            playerId={playerId}
+            actionMeta={actionMeta}
           />
         ))}
 
-        {actions.length === 0 && (
+        {actionsMeta.length === 0 && (
           <>
             <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden justify-center items-end relative`}>
               <div className="aspect-square relative w-full" />

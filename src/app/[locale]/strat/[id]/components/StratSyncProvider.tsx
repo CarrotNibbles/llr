@@ -26,7 +26,10 @@ export type StratSyncProviderProps = {
 
 const StratSyncLoader = (props: { strategy: string; isAuthor: boolean; editable: boolean }) => {
   const supabase = createClient();
-  const { connect, abort, connectionAborted, updateStrategyData } = useStratSyncStore((state) => state);
+  const connect = useStratSyncStore((state) => state.connect);
+  const abort = useStratSyncStore((state) => state.abort);
+  const connectionAborted = useStratSyncStore((state) => state.connectionAborted);
+  const updateStrategyData = useStratSyncStore((state) => state.updateStrategyData);
   const t = useTranslations('StratPage.StratSyncProvider');
 
   useEffect(() => {

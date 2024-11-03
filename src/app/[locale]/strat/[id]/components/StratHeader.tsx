@@ -24,12 +24,10 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
   ({ className, ...props }, ref) => {
     const { toast } = useToast();
 
-    const {
-      userId,
-      elevatable,
-      isAuthor,
-      strategyData: { raids },
-    } = useStratSyncStore((state) => state);
+    const userId = useStratSyncStore((state) => state.userId);
+    const elevatable = useStratSyncStore((state) => state.elevatable);
+    const isAuthor = useStratSyncStore((state) => state.isAuthor);
+    const raids = useStratSyncStore((state) => state.strategyData.raids);
     const t = useTranslations('StratPage.StratHeader');
     const tRaids = useTranslations('Common.Raids');
 

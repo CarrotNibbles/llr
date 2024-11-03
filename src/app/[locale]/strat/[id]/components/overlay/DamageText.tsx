@@ -57,7 +57,8 @@ const SingleTankBuster = (props: DamageTextProps) => {
   const { damageType, defaultDamage, currentDamage, primaryTarget } = props;
 
   const [mainTank, offTank] = useTank();
-  const { upsertDamageOption, elevated } = useStratSyncStore((state) => state);
+  const elevated = useStratSyncStore((state) => state.elevated);
+  const upsertDamageOption = useStratSyncStore((state) => state.upsertDamageOption);
 
   const activeOption = primaryTarget === offTank ? 1 : 0;
   const cursorStyle = elevated ? 'cursor-pointer' : 'cursor-not-allowed';
@@ -110,7 +111,8 @@ const ShareTankBuster = (props: DamageTextProps) => {
   const { damageType, defaultDamage, currentDamage, primaryTarget } = props;
 
   const [mainTank, offTank] = useTank();
-  const { upsertDamageOption, elevated } = useStratSyncStore((state) => state);
+  const elevated = useStratSyncStore((state) => state.elevated);
+  const upsertDamageOption = useStratSyncStore((state) => state.upsertDamageOption);
 
   const activeOption = primaryTarget === undefined ? 0 : primaryTarget === mainTank ? 1 : 2;
   const cursorStyle = elevated ? 'cursor-pointer' : 'cursor-not-allowed';
@@ -213,7 +215,8 @@ const RaidWide = (props: DamageTextProps) => {
 const ShareHalfRaidWide = (props: DamageTextProps) => {
   const { damageType, defaultDamage, currentDamage, numShared } = props;
 
-  const { upsertDamageOption, elevated } = useStratSyncStore((state) => state);
+  const elevated = useStratSyncStore((state) => state.elevated);
+  const upsertDamageOption = useStratSyncStore((state) => state.upsertDamageOption);
 
   const activeOption = numShared === 3 ? 0 : 1;
   const cursorStyle = elevated ? 'cursor-pointer' : 'cursor-not-allowed';

@@ -22,6 +22,7 @@ export type StratSyncState = {
 };
 
 export type StratSyncActions = {
+  getStore: () => StratSyncStore;
   updateStrategyData: (data: Partial<StrategyDataType>) => void;
   connect: (strategy: string, isAuthor: boolean, editable: boolean) => Promise<void>;
   elevate: (password: string) => Promise<boolean>;
@@ -113,25 +114,30 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
         local: boolean,
       ) =>
       (state: StratSyncStore) => {
+        const start = performance.now();
         if (!state.client || !state.token || !state.elevated) return state;
-        const updatedState = localHandler(state);
-        if (!local)
-          (async () => {
-            try {
-              if (!state.client) return;
 
-              await asyncDispatcher(state);
-            } catch (e) {
-              console.error(e);
+        set(localHandler);
+        console.log('Local first dispatch took', performance.now() - start, 'ms');
 
-              set(
-                produce((state: StratSyncStore) => {
-                  state.connectionAborted = true;
-                }),
-              );
-            }
-          })();
-        return updatedState;
+        // if (!local)
+        //   (async () => {
+        //     try {
+        //       console.log('On async dispatch: ', performance.now() - start, 'ms');
+
+        //       await asyncDispatcher(state);
+
+        //       console.log('Async dispatch took', performance.now() - start, 'ms');
+        //     } catch (e) {
+        //       console.error(e);
+
+        //       set(
+        //         produce((state: StratSyncStore) => {
+        //           state.connectionAborted = true;
+        //         }),
+        //       );
+        //     }
+        //   })();
       };
 
     return {
@@ -195,18 +201,18 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
             if (event.case === 'upsertDamageOptionEvent') {
               if (event.value.damageOption) {
                 const { damageOption } = event.value;
-                set((state: StratSyncStore) => handleUpsertDamageOption(damageOption)(state));
+                set(handleUpsertDamageOption(damageOption));
               }
             }
 
             if (event.case === 'mutateEntriesEvent') {
               const { upserts, deletes } = event.value;
-              set((state: StratSyncStore) => handleMutateEntries(upserts, deletes)(state));
+              set(handleMutateEntries(upserts, deletes));
             }
 
             if (event.case === 'updatePlayerJobEvent') {
               const { id, job } = event.value;
-              set((state: StratSyncStore) => handleUpdatePlayerJob(id, job)(state));
+              set(handleUpdatePlayerJob(id, job));
             }
           }
         } catch (e) {
@@ -226,6 +232,7 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
           }),
         );
       },
+      getStore: get,
       abort: () => {
         set(
           produce((state: StratSyncStore) => {
@@ -266,29 +273,28 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
           return false;
         }
       },
-      upsertDamageOption: (damageOption: PlainMessage<DamageOption>, local = false) =>
-        set(
-          localFirstDispatch(
-            handleUpsertDamageOption(damageOption),
-            (state: StratSyncState) => state.client?.upsertDamageOption({ token: state.token, damageOption }),
-            local,
-          ),
-        ),
-      mutateEntries: (upserts: PlainMessage<Entry>[], deletes: string[], local = false) =>
-        set(
-          localFirstDispatch(
-            handleMutateEntries(upserts, deletes),
-            (state: StratSyncState) => state.client?.mutateEntries({ token: state.token, upserts, deletes }),
-            local,
-          ),
-        ),
-      updatePlayerJob: (id: string, job: string | undefined, local = false) =>
-        set(
-          localFirstDispatch(
-            handleUpdatePlayerJob(id, job),
-            (state: StratSyncState) => state.client?.updatePlayerJob({ token: state.token, id, job }),
-            local,
-          ),
-        ),
+      upsertDamageOption: (damageOption: PlainMessage<DamageOption>, local = false) => {
+        localFirstDispatch(
+          handleUpsertDamageOption(damageOption),
+          (state: StratSyncState) => state.client?.upsertDamageOption({ token: state.token, damageOption }),
+          local,
+        )(get());
+      },
+      mutateEntries: (upserts: PlainMessage<Entry>[], deletes: string[], local = false) => {
+        console.log('Mutating entries', upserts, deletes);
+
+        localFirstDispatch(
+          handleMutateEntries(upserts, deletes),
+          (state: StratSyncState) => state.client?.mutateEntries({ token: state.token, upserts, deletes }),
+          local,
+        )(get());
+      },
+      updatePlayerJob: (id: string, job: string | undefined, local = false) => {
+        localFirstDispatch(
+          handleUpdatePlayerJob(id, job),
+          (state: StratSyncState) => state.client?.updatePlayerJob({ token: state.token, id, job }),
+          local,
+        )(get());
+      },
     };
   });

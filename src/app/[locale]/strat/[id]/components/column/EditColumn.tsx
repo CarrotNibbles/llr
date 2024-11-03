@@ -12,19 +12,22 @@ import type { ArrayElement } from '@/lib/utils';
 import { AnimatePresence, animate, motion, useDragControls, useMotionValue } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
-import { type MouseEventHandler, useContext, useEffect, useMemo, useState } from 'react';
+import { type MouseEventHandler, useEffect, useMemo, useState } from 'react';
 
 import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvider';
 import { usePixelPerFrame } from '@/lib/states';
+import { useContext } from 'use-context-selector';
 import { BOX_X_OFFSET, BOX_Z_INDEX, columnWidth } from '../../utils/constants';
 import { MultiIntervalSet, getAreaHeight, timeToY, yToTime } from '../../utils/helpers';
 import { EntrySelectionContext } from './EntrySelectionContext';
 
 function useEntryMutation() {
-  const { mutateEntries, strategyData } = useStratSyncStore((state) => state);
-  const { actionData } = useStaticDataStore((state) => state);
+  const getStore = useStratSyncStore((state) => state.getStore);
+  const actionData = useStaticDataStore((state) => state.actionData);
 
   const moveEntries = (ids: string[], offset: number) => {
+    const { strategyData, mutateEntries } = getStore();
+
     const upserts = strategyData.strategy_players
       .flatMap((player) => {
         const targetActions = new Set(
@@ -72,6 +75,8 @@ function useEntryMutation() {
   const insertEntry = (
     entry: ArrayElement<ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries']>,
   ) => {
+    const { strategyData, mutateEntries } = getStore();
+
     const { id, player: playerId, action: actionId, use_at } = entry;
     const playerData = strategyData.strategy_players.find((p) => p.id === playerId);
 
@@ -119,6 +124,7 @@ type DraggableBoxProps = {
 };
 
 const DraggableBox = ({ action, entry, slot, raidDuration, durations }: DraggableBoxProps) => {
+  console.log('rerender DraggableBox', entry.use_at, entry.use_at);
   const { use_at: useAt, id: entryId, action: actionId, player: playerId } = entry;
 
   const t = useTranslations('StratPage.EditColumn');
@@ -128,7 +134,8 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
 
   const { toast } = useToast();
 
-  const { mutateEntries, elevated } = useStratSyncStore((state) => state);
+  const elevated = useStratSyncStore((state) => state.elevated);
+  const mutateEntries = useStratSyncStore((state) => state.mutateEntries);
   const { insertEntry, moveEntries } = useEntryMutation();
 
   const [holdingShift, setHoldingShift] = useState(false);
@@ -147,12 +154,13 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    void animate(xMotionValue, BOX_X_OFFSET[slot]);
+    animate(xMotionValue, BOX_X_OFFSET[slot]);
   }, [slot]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    void animate(yMotionValue, timeToY(useAt, pixelPerFrame));
+    // yMotionValue.animation?.stop();
+    animate(yMotionValue, timeToY(useAt, pixelPerFrame), { onUpdate: (v) => console.log(v) });
   }, [pixelPerFrame, useAt]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -228,13 +236,14 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
           }}
           onDragEnd={() => {
             setIsDragging(false);
-            yMotionValue.animation?.stop();
+            // yMotionValue.animation?.stop();
 
             const oldUseAt = useAt;
             const newUseAt = yToTime(yMotionValue.get(), pixelPerFrame, raidDuration);
             const offset = newUseAt - oldUseAt;
 
             moveEntries(activeEntries.keys().toArray(), offset);
+
             setActiveEntries(new Map());
 
             setDraggingCount((prev) => prev - 1);
@@ -364,7 +373,7 @@ const EditSubColumn = ({ raidDuration, action, entries, playerId }: EditSubColum
   const areaHeight = getAreaHeight(pixelPerFrame, raidDuration);
 
   const { insertEntry } = useEntryMutation();
-  const { elevated } = useStratSyncStore((state) => state);
+  const elevated = useStratSyncStore((state) => state.elevated);
 
   const { setActiveEntries } = useContext(EntrySelectionContext);
 
