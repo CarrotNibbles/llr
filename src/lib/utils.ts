@@ -9,6 +9,7 @@ export function cn(...inputs: ClassValue[]): string {
 
 export type NonEmptyArray<T> = [T, ...T[]];
 export type ArrayElement<T> = T extends Array<infer R> ? R : never;
+export type NullablePartial<T> = { [K in keyof T]?: T[K] | null };
 
 const notNullOrUndefined = <ValueType>(value: ValueType | undefined): value is ValueType =>
   value !== null && value !== undefined;

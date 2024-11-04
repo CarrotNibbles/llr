@@ -63,7 +63,6 @@ const RaidPopover = React.forwardRef<HTMLButtonElement, RaidPopoverProps>(
     );
   },
 );
-RaidPopover.displayName = 'RaidPopover';
 
 type RaidFoldoutProps = Readonly<
   React.HTMLAttributes<HTMLDivElement> & {
@@ -102,7 +101,6 @@ const RaidFoldout = React.forwardRef<HTMLDivElement, RaidFoldoutProps>(
     );
   },
 );
-RaidFoldout.displayName = 'RaidPopover';
 
 type RaidSearchPopoverProps = Readonly<
   ButtonProps & {
@@ -123,6 +121,7 @@ const RaidSearchPopover = React.forwardRef<HTMLButtonElement, RaidSearchPopoverP
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
+            ref={ref}
             variant="outline"
             className={cn(
               className,
@@ -144,12 +143,12 @@ const RaidSearchPopover = React.forwardRef<HTMLButtonElement, RaidSearchPopoverP
             <CommandInput placeholder={t('RaidSearchPlaceholder')} className="h-9" />
             <CommandEmpty>{t('RaidEmpty')}</CommandEmpty>
             <CommandGroup>
-              <CommandItem
-                onSelect={() => {
-                  setOpen(false);
-                }}
-              >
-                <ViewLink raid='' className='w-full inline-flex items-center'>
+              <CommandItem>
+                <ViewLink
+                  raid={null}
+                  className='w-full inline-flex items-center'
+                  onClick={() => { setOpen(false); }}
+                >
                   {t('RaidAll')}
                   <CheckIcon
                     className={cn('ml-auto h-4 w-4', raidSelected === '' || raidSelected === null ? 'opacity-100' : 'opacity-0')}
@@ -161,7 +160,11 @@ const RaidSearchPopover = React.forwardRef<HTMLButtonElement, RaidSearchPopoverP
                   value={raid.semantic_key}
                   key={raid.id}
                 >
-                  <ViewLink raid={raid.semantic_key} className='w-full inline-flex items-center'>
+                  <ViewLink
+                    raid={raid.semantic_key}
+                    className='w-full inline-flex items-center'
+                    onClick={() => { setOpen(false); }}
+                  >
                     {tRaids(raid.semantic_key)}
                     <CheckIcon
                       className={cn(
@@ -179,5 +182,9 @@ const RaidSearchPopover = React.forwardRef<HTMLButtonElement, RaidSearchPopoverP
     );
   },
 );
+
+RaidPopover.displayName = 'RaidPopover';
+RaidFoldout.displayName = 'RaidPopover';
+RaidSearchPopover.displayName = 'RaidSearchPopover';
 
 export { RaidPopover, RaidSearchPopover, RaidFoldout };
