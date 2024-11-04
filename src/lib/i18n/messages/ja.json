@@ -286,6 +286,7 @@
       "RaidSearchPlaceholder": "レイドを検索",
       "RaidEmpty": "利用可能なレイドがありません",
       "RaidRequired": "レイドを選択してください",
+      "UnkownRaid": "不明なレイドが選択されました。有効なレイドを選択してください",
       "ScopeLabel": "公開範囲",
       "ScopePublicLabel": "公開",
       "ScopePublicDescription": "誰でもこの戦略を閲覧できます",
@@ -347,5 +348,9 @@
       "PatchLabel": "バージョン",
       "PatchAll": "すべてのバージョン"
     }
+  },
+  "Auth": {
+    "SignIn": "サインイン",
+    "SignOut": "サインアウト"
   }
 }

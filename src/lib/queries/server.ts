@@ -3,7 +3,7 @@
 import type { QueryData } from '@supabase/supabase-js';
 import type { Database } from '../database.types';
 import type { createClient } from '../supabase/server';
-import type { ArrayElement, Patch, SelectableJob, SortOption } from '../utils';
+import { removeUndefinedFields, type ArrayElement, type Patch, type SelectableJob, type SortOption } from '../utils';
 
 export const buildActionDataQuery = async (supabase: ReturnType<typeof createClient>) => {
   return supabase.from('actions').select('*, mitigations(*)').order('priority');
@@ -42,7 +42,7 @@ export const buildStrategiesDataQuery = async (
     jobs?: SelectableJob[];
   },
 ) => {
-  const { data, error } = await supabase.rpc('select_strategies', params);
+  const { data, error } = await supabase.rpc('select_strategies', removeUndefinedFields(params));
   if (data === null || error) return { data: null, error };
   return { data: data as ViewStrategiesDataType, error };
 };

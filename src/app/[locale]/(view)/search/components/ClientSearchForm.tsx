@@ -83,7 +83,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
 
     if (
       (q === undefined || q === '') &&
-      raid === undefined &&
+      (raid === undefined || raid === '') &&
       patch === undefined &&
       (jobs === undefined || jobs.length === 0)
     ) {
