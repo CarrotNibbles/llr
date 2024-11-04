@@ -116,7 +116,7 @@ export const getOrderedRole = (job: Enums<'job'> | null, order: number): Role =>
   return getRole(job);
 };
 
-export const DEFAULT_LIMIT = 5;
+export const DEFAULT_LIMIT = 10;
 export const SEARCH_BUTTON_LIMIT = 5;
 export const SEARCH_BUTTON_MOBILE_LIMIT = 3;
 export const PAGINATION_OFFSET = 2;

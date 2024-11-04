@@ -16,7 +16,7 @@ type LimitComboboxProps = Readonly<
   }
 >;
 
-const LIMIT_OPTIONS = [5, 10, 15, 20];
+const LIMIT_OPTIONS = [10, 20, 30, 50];
 const LimitCombobox: React.FC<LimitComboboxProps> = ({ currentLimit, className, ...props }) => {
   const [open, setOpen] = useState(false);
   const t = useTranslations('ViewPage.LimitCombobox');
