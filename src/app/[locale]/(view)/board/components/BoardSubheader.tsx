@@ -6,7 +6,7 @@ import { NAV_RAID_CATEGORIES, cn } from '@/lib/utils';
 import type React from 'react';
 import { Suspense } from 'react';
 import { CreateButton } from './CreateButton';
-import { RaidPopover } from './RaidPopover';
+import { RaidPopover, RaidSearchPopover } from './RaidPopover';
 
 type BoardSubheaderProps = Readonly<React.HTMLAttributes<HTMLDivElement>>;
 
@@ -45,8 +45,11 @@ const BoardSubheaderContent: React.FC<BoardSubheaderContentProps> = async ({ dat
 
   return (
     <nav className="py-3">
-      <div className={cn('rounded-none flex w-full items-center', className)} {...props}>
-        <ul className="hidden sm:flex gap-x-2 self-start">
+      <div className={cn('rounded-none flex w-full items-center space-x-1', className)} {...props}>
+        {/* <ul className="hidden sm:flex gap-x-2 self-start">
+          <li>
+
+          </li>
           {NAV_RAID_CATEGORIES.map((raidCategory) => (
             <li key={raidCategory}>
               <RaidPopover
@@ -55,7 +58,8 @@ const BoardSubheaderContent: React.FC<BoardSubheaderContentProps> = async ({ dat
               />
             </li>
           ))}
-        </ul>
+        </ul> */}
+        <RaidSearchPopover className='sm:w-80 w-full' raidsData={raidsData} />
         <div className="flex-grow" />
         {user && <CreateButton raidsData={raidsData} />}
       </div>

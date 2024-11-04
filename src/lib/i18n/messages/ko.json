@@ -300,6 +300,11 @@
       "NotSignedIn": "공략을 작성하려면 로그인하세요",
       "UnknownError": "공략 생성에 실패했습니다. 잠시 후 재시도해 주세요."
     },
+    "RaidSearchPopover": {
+      "RaidAll": "모든 레이드",
+      "RaidSearchPlaceholder": "레이드 검색",
+      "RaidEmpty": "레이드가 없습니다"
+    },
     "LimitCombobox": {
       "Current": "{currentLimit}개씩",
       "Empty": "한 번에 표시할 공략 수 선택",

@@ -16,7 +16,7 @@ import type React from 'react';
 
 type ViewLinkProps = Readonly<Omit<React.ComponentProps<typeof Link>, 'href'> & Partial<SearchSearchParamsParsed>>;
 
-const ViewLink: React.FC<ViewLinkProps> = ({ raid, patch, page, limit, sort, q, className, ...props }) => {
+const ViewLink: React.FC<ViewLinkProps> = ({ raid, patch, page, limit, sort, q, className, children, ...props }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -32,7 +32,9 @@ const ViewLink: React.FC<ViewLinkProps> = ({ raid, patch, page, limit, sort, q, 
         q: q ?? searchParams.get(Q_PARAM),
       })}
       {...props}
-    />
+    >
+      {children}
+    </Link>
   );
 };
 ViewLink.displayName = 'ViewLink';

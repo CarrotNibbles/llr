@@ -300,6 +300,11 @@
       "NotSignedIn": "投稿するにはログインしてください",
       "UnknownError": "戦略の作成に失敗しました。しばらくしてから再度お試しください。"
     },
+    "RaidSearchPopover": {
+      "RaidAll": "すべてのレイド",
+      "RaidSearchPlaceholder": "レイド検索",
+      "RaidEmpty": "レイドが見つかりません"
+    },
     "LimitCombobox": {
       "Current": "{currentLimit}件ずつ",
       "Empty": "一度に表示する戦略の数を選択してください",

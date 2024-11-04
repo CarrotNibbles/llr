@@ -27,7 +27,7 @@ const StrategyTable = async ({ dataPromise, className, ...props }: { className?:
   return (
     <div className={cn(className, 'border-[1px] border-border rounded-md shadow-sm')}>
       <Table {...props}>
-        <TableHeader>
+        <TableHeader className='pointer-events-none'>
           <TableRow>
             <TableHead>
               <div className="pl-2">{t('Strategy')}</div>

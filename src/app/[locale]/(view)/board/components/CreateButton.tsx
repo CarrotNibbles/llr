@@ -40,8 +40,8 @@ const CreateButton = React.forwardRef<HTMLButtonElement, CreateButtonProps>(
       <Dialog>
         <DialogTrigger asChild>
           <Button className={className} {...props} ref={ref}>
-            <Pencil1Icon className="mr-1" />
-            <div className="mx-1">{t('ButtonTitle')}</div>
+            <Pencil1Icon />
+            <div className="ml-2 mr-1 sm:block hidden">{t('ButtonTitle')}</div>
           </Button>
         </DialogTrigger>
         <DialogContent>
@@ -56,8 +56,8 @@ const CreateButton = React.forwardRef<HTMLButtonElement, CreateButtonProps>(
       <Drawer>
         <DrawerTrigger asChild>
           <Button className={className} {...props} ref={ref}>
-            <Pencil1Icon className="mr-1" />
-            <div className="mx-1">{t('ButtonTitle')}</div>
+            <Pencil1Icon />
+            <div className="ml-2 mr-1 sm:block hidden">{t('ButtonTitle')}</div>
           </Button>
         </DrawerTrigger>
         <DrawerContent>

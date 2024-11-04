@@ -300,6 +300,11 @@
       "NotSignedIn": "Please sign in to create a strategy",
       "UnknownError": "Failed to create strategy. Please try again later."
     },
+    "RaidSearchPopover": {
+      "RaidAll": "All Raids",
+      "RaidSearchPlaceholder": "Search raid",
+      "RaidEmpty": "No raids found"
+    },
     "LimitCombobox": {
       "Current": "{currentLimit} Strats in Page",
       "Empty": "Choose the number of strats to show in a page",

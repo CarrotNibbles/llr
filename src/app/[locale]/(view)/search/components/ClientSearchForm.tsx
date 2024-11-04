@@ -160,7 +160,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                         <Button
                           variant="outline"
                           className={cn(
-                            'w-full inline-flex text-left justify-between hover:bg-background hover:ring-ring hover:ring-1',
+                            'w-full inline-flex text-left justify-between hover:bg-background hover:ring-ring hover:ring-1 transition-all',
                             !raidSelected && 'text-muted-foreground',
                           )}
                         >
@@ -227,7 +227,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                       <Button
                         variant="outline"
                         className={cn(
-                          'w-full h-auto min-h-9 inline-flex text-left justify-between hover:bg-background hover:ring-ring hover:ring-1',
+                          'w-full h-auto min-h-9 inline-flex text-left justify-between hover:bg-background hover:ring-ring hover:ring-1 transition-all',
                           jobs === undefined || (jobs.length === 0 && 'text-muted-foreground'),
                         )}
                       >
@@ -266,7 +266,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                   <FormControl>
                     <SelectTrigger
                       className={cn(
-                        'w-full inline-flex text-left justify-between bg-background hover:ring-ring hover:ring-1 hover:text-accent-foreground hover:font-semibold',
+                        'w-full inline-flex text-left justify-between bg-background hover:ring-ring hover:ring-1 hover:text-accent-foreground hover:font-semibold transition-all',
                         field.value === '' && 'text-muted-foreground',
                       )}
                     >
@@ -277,7 +277,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                     <SelectItem value="none">
                       <div className="px-1">{t('PatchAll')}</div>
                     </SelectItem>
-                    {ALL_PATCHES.map(({ version, subversion }) => (
+                    {ALL_PATCHES.toReversed().map(({ version, subversion }) => (
                       <SelectItem key={`select-patch-${version}.${subversion}`} value={`${version}.${subversion}`}>
                         <div className="px-1">
                           {`${version}.${subversion}`} - {tPatches(`${version}.${subversion}`)}
