@@ -288,10 +288,8 @@ export const JOB_LAYOUT = [
   [null],
 ] satisfies (Enums<'job'> | null)[][];
 
-export const removeUndefinedFields = <T extends Record<string, unknown>> (obj: T) => {
-  return Object.fromEntries(
-    Object.entries(obj).filter(([_, value]) => value !== undefined)
-  ) as {
+export const removeUndefinedFields = <T extends Record<string, unknown>>(obj: T) => {
+  return Object.fromEntries(Object.entries(obj).filter(([_, value]) => value !== undefined)) as {
     [K in keyof T]: Exclude<T[K], undefined>;
   };
-}
+};

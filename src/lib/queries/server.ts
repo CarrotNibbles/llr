@@ -3,7 +3,7 @@
 import type { QueryData } from '@supabase/supabase-js';
 import type { Database } from '../database.types';
 import type { createClient } from '../supabase/server';
-import { removeUndefinedFields, type ArrayElement, type Patch, type SelectableJob, type SortOption } from '../utils';
+import { type ArrayElement, type Patch, type SelectableJob, type SortOption, removeUndefinedFields } from '../utils';
 
 export const buildActionDataQuery = async (supabase: ReturnType<typeof createClient>) => {
   return supabase.from('actions').select('*, mitigations(*)').order('priority');

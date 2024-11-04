@@ -21,7 +21,7 @@ import {
   patchRegex,
 } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
+import { CaretSortIcon, CheckIcon, MagnifyingGlassIcon, ResetIcon } from '@radix-ui/react-icons';
 import { useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -66,7 +66,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { q, raid: '', patch: '', jobs: [] },
+    defaultValues: { q: q ?? '', raid: '', patch: '', jobs: [] },
   });
 
   useEffect(() => {
@@ -97,12 +97,12 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
       buildSearchURL(
         searchParams,
         {
-          raid: raid,
-          jobs: jobs,
+          raid: raid === '' ? undefined : raid,
+          jobs: jobs?.length === 0 ? undefined : jobs,
           page: 1,
           limit: DEFAULT_LIMIT,
           sort: DEFAULT_SORT,
-          q: values.q,
+          q: values.q === '' ? undefined : values.q,
         },
         {
           patch: patch,
@@ -134,8 +134,8 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
           />
           <Button type="submit" className="pl-7 pr-6 w-auto">
             <div className="flex gap-x-2 w-auto max-w-full">
+              <MagnifyingGlassIcon className="w-5 h-5 -ml-2" />
               {t('SearchButton')}
-              {/* <MagnifyingGlassIcon className="w-5 h-5" /> */}
             </div>
           </Button>
         </div>
@@ -220,6 +220,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
             name="jobs"
             render={({ field: { value: jobs, ...field } }) => (
               <FormItem className="md:col-span-1 xl:col-span-2">
+                <ResetIcon className="float-right mt-1 h-4 w-4 cursor-pointer" onClick={() => field.onChange([])} />
                 <FormLabel>{t('JobLabel')}</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -244,7 +245,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent>
+                  <PopoverContent className="w-auto" align="end">
                     <JobToggleGroup sort maxCount={8} value={jobs ?? []} {...field} />
                   </PopoverContent>
                 </Popover>

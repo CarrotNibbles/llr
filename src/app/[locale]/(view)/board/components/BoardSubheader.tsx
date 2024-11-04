@@ -2,11 +2,11 @@
 
 import { type RaidsDataType, buildRaidsDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
-import { NAV_RAID_CATEGORIES, cn } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import type React from 'react';
 import { Suspense } from 'react';
 import { CreateButton } from './CreateButton';
-import { RaidPopover, RaidSearchPopover } from './RaidPopover';
+import { RaidSearchPopover } from './RaidPopover';
 
 type BoardSubheaderProps = Readonly<React.HTMLAttributes<HTMLDivElement>>;
 
@@ -59,7 +59,7 @@ const BoardSubheaderContent: React.FC<BoardSubheaderContentProps> = async ({ dat
             </li>
           ))}
         </ul> */}
-        <RaidSearchPopover className='sm:w-80 w-full' raidsData={raidsData} />
+        <RaidSearchPopover className="sm:w-80 w-full" raidsData={raidsData} />
         <div className="flex-grow" />
         {user && <CreateButton raidsData={raidsData} />}
       </div>

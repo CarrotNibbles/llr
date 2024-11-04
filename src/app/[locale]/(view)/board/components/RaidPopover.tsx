@@ -111,7 +111,7 @@ type RaidSearchPopoverProps = Readonly<
 const RaidSearchPopover = React.forwardRef<HTMLButtonElement, RaidSearchPopoverProps>(
   ({ raidsData, className, ...props }, ref) => {
     const [open, setOpen] = useState(false);
-    const t = useTranslations('ViewPage.RaidSearchPopover')
+    const t = useTranslations('ViewPage.RaidSearchPopover');
     const tRaids = useTranslations('Common.Raids');
     const searchParams = useSearchParams();
 
@@ -134,11 +134,7 @@ const RaidSearchPopover = React.forwardRef<HTMLButtonElement, RaidSearchPopoverP
             <CaretSortIcon className="ml-1 h-4 w-4 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent
-          align="start"
-          className="p-0"
-          style={{ width: 'var(--radix-popover-trigger-width)' }}
-        >
+        <PopoverContent align="start" className="p-0" style={{ width: 'var(--radix-popover-trigger-width)' }}>
           <Command>
             <CommandInput placeholder={t('RaidSearchPlaceholder')} className="h-9" />
             <CommandEmpty>{t('RaidEmpty')}</CommandEmpty>
@@ -146,24 +142,28 @@ const RaidSearchPopover = React.forwardRef<HTMLButtonElement, RaidSearchPopoverP
               <CommandItem>
                 <ViewLink
                   raid={null}
-                  className='w-full inline-flex items-center'
-                  onClick={() => { setOpen(false); }}
+                  className="w-full inline-flex items-center"
+                  onClick={() => {
+                    setOpen(false);
+                  }}
                 >
                   {t('RaidAll')}
                   <CheckIcon
-                    className={cn('ml-auto h-4 w-4', raidSelected === '' || raidSelected === null ? 'opacity-100' : 'opacity-0')}
+                    className={cn(
+                      'ml-auto h-4 w-4',
+                      raidSelected === '' || raidSelected === null ? 'opacity-100' : 'opacity-0',
+                    )}
                   />
                 </ViewLink>
               </CommandItem>
               {raidsData.map((raid) => (
-                <CommandItem
-                  value={raid.semantic_key}
-                  key={raid.id}
-                >
+                <CommandItem value={raid.semantic_key} key={raid.id}>
                   <ViewLink
                     raid={raid.semantic_key}
-                    className='w-full inline-flex items-center'
-                    onClick={() => { setOpen(false); }}
+                    className="w-full inline-flex items-center"
+                    onClick={() => {
+                      setOpen(false);
+                    }}
                   >
                     {tRaids(raid.semantic_key)}
                     <CheckIcon

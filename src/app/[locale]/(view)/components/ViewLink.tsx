@@ -2,7 +2,7 @@
 
 import {
   LIMIT_PARAM,
-  NullablePartial,
+  type NullablePartial,
   PAGE_PARAM,
   PATCH_PARAM,
   Q_PARAM,
@@ -15,7 +15,9 @@ import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import type React from 'react';
 
-type ViewLinkProps = Readonly<Omit<React.ComponentProps<typeof Link>, 'href'> & NullablePartial<SearchSearchParamsParsed>>;
+type ViewLinkProps = Readonly<
+  Omit<React.ComponentProps<typeof Link>, 'href'> & NullablePartial<SearchSearchParamsParsed>
+>;
 
 const ViewLink: React.FC<ViewLinkProps> = ({ raid, patch, page, limit, sort, q, className, children, ...props }) => {
   const pathname = usePathname();

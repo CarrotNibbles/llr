@@ -343,7 +343,7 @@
       "RaidEmpty": "No raids found",
       "JobLabel": "Jobs Included",
       "JobAll": "All jobs",
-      "JobDescription": "Search for a strategy including all jobs selected",
+      "JobDescription": "Includes all the following:",
       "JobClear": "Clear",
       "PatchLabel": "Version",
       "PatchAll": "Version"

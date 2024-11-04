@@ -2,7 +2,6 @@
 
 import { TextSkeleton } from '@/components/TextSkeleton';
 import { JobIcon } from '@/components/icons/JobIcon';
-import { Alert } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import type { buildStrategiesDataQuery } from '@/lib/queries/server';
@@ -27,7 +26,7 @@ const StrategyTable = async ({ dataPromise, className, ...props }: { className?:
   return (
     <div className={cn(className, 'border-[1px] border-border rounded-md shadow-sm')}>
       <Table {...props}>
-        <TableHeader className='pointer-events-none'>
+        <TableHeader className="pointer-events-none">
           <TableRow>
             <TableHead>
               <div className="pl-2">{t('Strategy')}</div>
@@ -76,8 +75,8 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
     <TableBody className={className} {...props}>
       {strategiesData.length === 0 ? (
         <TableRow>
-          <TableCell colSpan={5}>
-            <Alert className="text-base py-8">{t('NoStrategyFound')}</Alert>
+          <TableCell colSpan={5} className="pointer-events-none py-8 text-center text-muted-foreground">
+            {t('NoStrategyFound')}
           </TableCell>
         </TableRow>
       ) : (
