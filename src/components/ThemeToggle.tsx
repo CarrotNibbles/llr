@@ -10,9 +10,11 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useTranslations } from 'next-intl';
 
 export function ThemeToggle({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme();
+  const t = useTranslations('ThemeToggle');
 
   return (
     <DropdownMenu>
@@ -30,7 +32,7 @@ export function ThemeToggle({ className }: { className?: string }) {
             setTheme('light');
           }}
         >
-          Light
+          {t('Light')}
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
           checked={theme === 'dark'}
@@ -38,7 +40,7 @@ export function ThemeToggle({ className }: { className?: string }) {
             setTheme('dark');
           }}
         >
-          Dark
+          {t('Dark')}
         </DropdownMenuCheckboxItem>
         <DropdownMenuCheckboxItem
           checked={theme === 'system'}
@@ -46,7 +48,7 @@ export function ThemeToggle({ className }: { className?: string }) {
             setTheme('system');
           }}
         >
-          System
+          {t('System')}
         </DropdownMenuCheckboxItem>
       </DropdownMenuContent>
     </DropdownMenu>

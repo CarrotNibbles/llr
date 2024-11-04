@@ -352,5 +352,10 @@
   "Auth": {
     "SignIn": "로그인",
     "SignOut": "로그아웃"
+  },
+  "ThemeToggle": {
+    "Light": "밝게",
+    "Dark": "어둡게",
+    "System": "시스템 설정에 맞게"
   }
 }

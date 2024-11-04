@@ -352,5 +352,10 @@
   "Auth": {
     "SignIn": "Sign In",
     "SignOut": "Sign Out"
+  },
+  "ThemeToggle": {
+    "Light": "Light",
+    "Dark": "Dark",
+    "System": "Match system"
   }
 }

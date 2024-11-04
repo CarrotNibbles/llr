@@ -352,5 +352,10 @@
   "Auth": {
     "SignIn": "サインイン",
     "SignOut": "サインアウト"
+  },
+  "ThemeToggle": {
+    "Light": "明るく",
+    "Dark": "暗く",
+    "System": "システムに合わせて"
   }
 }
