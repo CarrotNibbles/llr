@@ -64,27 +64,29 @@ const ViewPaginationContent: React.FC<ViewPaginationContentProps> = async ({
 
   return (
     <Pagination className={className} {...props}>
-      <PaginationContent>
-        <PaginationItem>
-          <ViewPaginationPrevious
-            page={currentPage - 1}
-            className={cn(currentPage === 1 ? 'invisible' : 'visible  ')}
-          />
-        </PaginationItem>
-        {rangeInclusive(startPage, endPage).map((page) => (
-          <PaginationItem key={page}>
-            <ViewPaginationLink page={page} isActive={page === currentPage}>
-              {page}
-            </ViewPaginationLink>
+      {startPage <= endPage && (
+        <PaginationContent>
+          <PaginationItem>
+            <ViewPaginationPrevious
+              page={currentPage - 1}
+              className={cn(currentPage === 1 ? 'invisible' : 'visible  ')}
+            />
           </PaginationItem>
-        ))}
-        <PaginationItem>
-          <ViewPaginationNext
-            page={currentPage + 1}
-            className={cn(currentPage === maxPage ? 'invisible' : 'visible  ')}
-          />
-        </PaginationItem>
-      </PaginationContent>
+          {rangeInclusive(startPage, endPage).map((page) => (
+            <PaginationItem key={page}>
+              <ViewPaginationLink page={page} isActive={page === currentPage}>
+                {page}
+              </ViewPaginationLink>
+            </PaginationItem>
+          ))}
+          <PaginationItem>
+            <ViewPaginationNext
+              page={currentPage + 1}
+              className={cn(currentPage === maxPage ? 'invisible' : 'visible  ')}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      )}
     </Pagination>
   );
 };
