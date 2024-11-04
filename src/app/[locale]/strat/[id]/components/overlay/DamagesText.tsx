@@ -1,16 +1,16 @@
 'use client';
 
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
-import { useMitigatedDamages, useTank } from '@/lib/calc/hooks';
+import { useTank } from '@/lib/calc/hooks';
 import type { Enums } from '@/lib/database.types';
 import type { StrategyDataType } from '@/lib/queries/server';
 import { type ArrayElement, cn } from '@/lib/utils';
+import { deepEqual } from 'fast-equals';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
-import { ACTIVE_DAMAGE_OPTION_STYLE, INACTIVE_DAMAGE_OPTION_STYLE } from '../../utils/constants';
 import React from 'react';
-import { deepEqual } from 'fast-equals';
 import { useContextSelector } from 'use-context-selector';
+import { ACTIVE_DAMAGE_OPTION_STYLE, INACTIVE_DAMAGE_OPTION_STYLE } from '../../utils/constants';
 import { MitigatedDamagesContext } from './MitigatedDamagesContext';
 
 type DamageAmountsProps = {
@@ -294,36 +294,46 @@ const componentSelector = (target: 'Raidwide' | 'Tankbuster', numTargets: number
   return Unknown;
 };
 
-const DamageText = React.memo(({ damage }: { damage: ArrayElement<ArrayElement<Exclude<StrategyDataType['raids'], null>['gimmicks']>['damages']> }) => {
-  const mitigatedDamage = useContextSelector(MitigatedDamagesContext, (mitigatedDamages) => mitigatedDamages[damage.id]);
+const DamageText = React.memo(
+  ({
+    damage,
+  }: { damage: ArrayElement<ArrayElement<Exclude<StrategyDataType['raids'], null>['gimmicks']>['damages']> }) => {
+    const mitigatedDamage = useContextSelector(
+      MitigatedDamagesContext,
+      (mitigatedDamages) => mitigatedDamages[damage.id],
+    );
 
-  const textProps = {
-    damageId: damage.id,
-    damageType: damage.type,
-    defaultDamage: damage.combined_damage,
-    currentDamage: mitigatedDamage ?? damage.combined_damage,
-    primaryTarget: damage.strategy_damage_options?.[0]?.primary_target ?? undefined,
-    numShared: damage.strategy_damage_options?.[0]?.num_shared ?? undefined,
-  };
+    const textProps = {
+      damageId: damage.id,
+      damageType: damage.type,
+      defaultDamage: damage.combined_damage,
+      currentDamage: mitigatedDamage ?? damage.combined_damage,
+      primaryTarget: damage.strategy_damage_options?.[0]?.primary_target ?? undefined,
+      numShared: damage.strategy_damage_options?.[0]?.num_shared ?? undefined,
+    };
 
-  const TextComponent = componentSelector(damage.target, damage.num_targets, damage.max_shared);
+    const TextComponent = componentSelector(damage.target, damage.num_targets, damage.max_shared);
 
-  return <TextComponent {...textProps} />;
-})
+    return <TextComponent {...textProps} />;
+  },
+);
 
-const DamagesText = React.memo(({
-  damages,
-}: {
-  damages: ArrayElement<Exclude<StrategyDataType['raids'], null>['gimmicks']>['damages'];
-}) => {
-  return (
-    <>
-      {damages.map((damage) => (
-        <DamageText key={`damagetext-${damage.id}`} damage={damage} />
-      ))}
-    </>
-  );
-}, deepEqual);
+const DamagesText = React.memo(
+  ({
+    damages,
+  }: {
+    damages: ArrayElement<Exclude<StrategyDataType['raids'], null>['gimmicks']>['damages'];
+  }) => {
+    return (
+      <>
+        {damages.map((damage) => (
+          <DamageText key={`damagetext-${damage.id}`} damage={damage} />
+        ))}
+      </>
+    );
+  },
+  deepEqual,
+);
 
 DamageText.displayName = 'DamageText';
 DamagesText.displayName = 'DamagesText';

@@ -1,5 +1,6 @@
 'use client';
 
+import { useMitigatedDamages } from '@/lib/calc/hooks';
 import type { StrategyDataType } from '@/lib/queries/server';
 import { useFilterState, usePixelPerFrame } from '@/lib/states';
 import { type ArrayElement, cn } from '@/lib/utils';
@@ -15,7 +16,6 @@ import {
 import { getAreaHeight, timeToY } from '../../utils/helpers';
 import type { MergedGimmick } from '../../utils/types';
 import { GimmickLine } from './GimmickLine';
-import { useMitigatedDamages } from '@/lib/calc/hooks';
 import { MitigatedDamagesContext } from './MitigatedDamagesContext';
 
 type GridOverlayProps = {
@@ -147,8 +147,8 @@ const GimmickOverlay = React.forwardRef<
       if (
         i + 1 >= gimmicksWithMerged.length ||
         (gimmicksWithMerged[i + 1].prepare_at - gimmicksWithMerged[i].prepare_at) * pixelPerFrame >=
-        MERGE_THRESHOLD_DEFAULT +
-        MERGE_THRESHOLD_INCREMENTAL * (gimmicksWithMerged[i].damageDisplayGimmick?.damages.length ?? 0) ||
+          MERGE_THRESHOLD_DEFAULT +
+            MERGE_THRESHOLD_INCREMENTAL * (gimmicksWithMerged[i].damageDisplayGimmick?.damages.length ?? 0) ||
         gimmicksWithMerged[i + 1].type === 'Enrage'
       )
         continue;
@@ -163,8 +163,8 @@ const GimmickOverlay = React.forwardRef<
         while (
           j + 1 < gimmicksWithMerged.length &&
           (gimmicksWithMerged[j + 1].prepare_at - gimmicksWithMerged[j].prepare_at) * pixelPerFrame <
-          MERGE_THRESHOLD_DEFAULT +
-          MERGE_THRESHOLD_INCREMENTAL * (gimmicksWithMerged[i].damageDisplayGimmick?.damages.length ?? 0) &&
+            MERGE_THRESHOLD_DEFAULT +
+              MERGE_THRESHOLD_INCREMENTAL * (gimmicksWithMerged[i].damageDisplayGimmick?.damages.length ?? 0) &&
           gimmicksWithMerged[i + 1].type !== 'Enrage'
         ) {
           if (
@@ -197,11 +197,7 @@ const GimmickOverlay = React.forwardRef<
     <div ref={ref} className={cn(className, 'absolute top-0 left-0 w-screen')} style={{ height: areaHeight }}>
       <MitigatedDamagesContext.Provider value={mitigatedDamages}>
         {gimmicksWithMerged.map((value) => (
-          <GimmickLine
-            {...value}
-            resizePanelSize={resizePanelSize}
-            key={`gimmick-${value.id}`}
-          />
+          <GimmickLine {...value} resizePanelSize={resizePanelSize} key={`gimmick-${value.id}`} />
         ))}
         <GridOverlay
           raidDuration={raidDuration}

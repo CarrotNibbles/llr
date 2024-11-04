@@ -8,12 +8,11 @@ import type { DragControls } from 'framer-motion';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 
+import type { Tables } from '@/lib/database.types';
 import type { ActionDataType } from '@/lib/queries/server';
 import { getAreaHeight } from '../utils/helpers';
 import { EditColumn, EntrySelectionContext, HeadColumn } from './column';
 import { GimmickOverlay } from './overlay';
-import { ArrayElement } from '@/lib/utils';
-import type { Tables } from '@/lib/database.types';
 
 export const StratMain = () => {
   const [zoom, _] = useZoomState();
@@ -88,7 +87,9 @@ export const StratMain = () => {
     const record: Record<string, Tables<'strategy_player_entries'>[]> = {};
 
     for (const playerStrategy of strategyData.strategy_players) {
-      record[playerStrategy.id] = playerStrategy.strategy_player_entries.toSorted((lhs, rhs) => lhs.use_at - rhs.use_at);
+      record[playerStrategy.id] = playerStrategy.strategy_player_entries.toSorted(
+        (lhs, rhs) => lhs.use_at - rhs.use_at,
+      );
     }
 
     return record;
