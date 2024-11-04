@@ -80,8 +80,6 @@ function useEntryMutation() {
         useAt: use_at,
       }));
 
-    console.log(upserts);
-
     mutateEntries(upserts, [], false);
   };
 
