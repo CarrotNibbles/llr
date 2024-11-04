@@ -104,7 +104,7 @@ const HeadSubColumn = React.memo(
   },
 );
 
-export const HeadColumn = React.memo(
+const HeadColumn = React.memo(
   ({
     playerId,
     job,
@@ -226,3 +226,7 @@ export const HeadColumn = React.memo(
     );
   },
 );
+
+HeadColumn.displayName = 'HeadColumn';
+
+export { HeadColumn };
