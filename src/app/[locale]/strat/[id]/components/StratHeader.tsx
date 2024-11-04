@@ -1,6 +1,6 @@
 'use client';
 
-import { ModeToggle } from '@/components/ModeToggle';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { BrandIdentity } from '@/components/icons/BrandIdentity';
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { Button } from '@/components/ui/button';
@@ -72,7 +72,7 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
             <Share1Icon />
           </Button>
           <FilterMenu />
-          <ModeToggle />
+          <ThemeToggle />
         </div>
         {userId ? <AuthenticatedLikeButton /> : <AnonymousLikeButton />}
       </div>

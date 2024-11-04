@@ -1,6 +1,6 @@
 'use server';
 
-import { ModeToggle } from '@/components/ModeToggle';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { SignInButton } from '@/components/auth/SignInButton';
 import { BrandIdentity } from '@/components/icons/BrandIdentity';
 import { createClient } from '@/lib/supabase/server';
@@ -30,7 +30,7 @@ const ViewHeader = async ({ className, ...props }: { className?: string } & View
         <div className="flex-grow" />
         <div className="flex">
           <SearchButton className="mr-3" />
-          <ModeToggle className="mr-5" />
+          <ThemeToggle className="mr-5" />
           {user === null ? <SignInButton /> : <ProfileDropdown />}
         </div>
       </div>
