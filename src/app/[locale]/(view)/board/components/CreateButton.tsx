@@ -155,7 +155,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
 
   return (
     <Form {...form}>
-      <form className={cn('py-4 space-y-2', className)} onSubmit={form.handleSubmit(onSubmit)} ref={ref} {...props}>
+      <form className={cn('space-y-6', className)} onSubmit={form.handleSubmit(onSubmit)} ref={ref} {...props}>
         <FormField
           control={form.control}
           name="name"
