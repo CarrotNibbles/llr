@@ -8,7 +8,7 @@ import React from 'react';
 import { GIMMICK_BORDER_STYLE, GIMMICK_TEXT_STYLE, MAX_DISPLAY_COUNT } from '../../utils/constants';
 import { timeToY } from '../../utils/helpers';
 import type { MergedGimmick, SuperMergedGimmick } from '../../utils/types';
-import { DamageText } from './DamageText';
+import { DamagesText } from './DamagesText';
 
 type GimmickSubLineProps = {
   time: number;
@@ -179,7 +179,9 @@ const GimmickLine = React.memo(
                         {tGimmicks(mergedGimmick.translationKey)}
                       </div>
                       <div className="grid text-sm gap-x-2 gap-y-1" style={{ gridTemplateColumns: 'auto auto auto' }}>
-                        <DamageText damages={mergedGimmick.damages} />
+                        <DamagesText
+                          damages={mergedGimmick.damages}
+                        />
                       </div>
                       {index !== mergedGimmicks.length - 1 && <Separator className="mt-1" />}
                     </div>
@@ -189,7 +191,9 @@ const GimmickLine = React.memo(
             {mergedGimmicks.length > 0 && displayDamage && damageDisplayGimmick && (
               <div className={className}>
                 <div className="inline-grid text-sm gap-x-2 gap-y-1" style={{ gridTemplateColumns: 'auto auto auto' }}>
-                  <DamageText damages={damageDisplayGimmick.damages} />
+                  <DamagesText
+                    damages={damageDisplayGimmick.damages}
+                  />
                 </div>
               </div>
             )}
@@ -197,7 +201,7 @@ const GimmickLine = React.memo(
         </div>
       </div>
     );
-  }),
+  })
 );
 
 GimmickSubLine.displayName = 'GimmickSubLine';

@@ -15,6 +15,8 @@ import {
 import { getAreaHeight, timeToY } from '../../utils/helpers';
 import type { MergedGimmick } from '../../utils/types';
 import { GimmickLine } from './GimmickLine';
+import { useMitigatedDamages } from '@/lib/calc/hooks';
+import { MitigatedDamagesContext } from './MitigatedDamagesContext';
 
 type GridOverlayProps = {
   raidDuration: number;
@@ -108,7 +110,9 @@ const GimmickOverlay = React.forwardRef<
     MAJOR_GRID_INTERVAL;
   const [filterState, _] = useFilterState();
 
-  const mergedGimmicks = useMemo(() => {
+  const mitigatedDamages = useMitigatedDamages();
+
+  const gimmicksWithMerged = useMemo(() => {
     const gimmicksWithMerged = gimmicks
       .filter((gimmick) => filterState.get(gimmick.type))
       .toSorted((gimmick1, gimmick2) => gimmick1.prepare_at - gimmick2.prepare_at)
@@ -143,8 +147,8 @@ const GimmickOverlay = React.forwardRef<
       if (
         i + 1 >= gimmicksWithMerged.length ||
         (gimmicksWithMerged[i + 1].prepare_at - gimmicksWithMerged[i].prepare_at) * pixelPerFrame >=
-          MERGE_THRESHOLD_DEFAULT +
-            MERGE_THRESHOLD_INCREMENTAL * (gimmicksWithMerged[i].damageDisplayGimmick?.damages.length ?? 0) ||
+        MERGE_THRESHOLD_DEFAULT +
+        MERGE_THRESHOLD_INCREMENTAL * (gimmicksWithMerged[i].damageDisplayGimmick?.damages.length ?? 0) ||
         gimmicksWithMerged[i + 1].type === 'Enrage'
       )
         continue;
@@ -159,8 +163,8 @@ const GimmickOverlay = React.forwardRef<
         while (
           j + 1 < gimmicksWithMerged.length &&
           (gimmicksWithMerged[j + 1].prepare_at - gimmicksWithMerged[j].prepare_at) * pixelPerFrame <
-            MERGE_THRESHOLD_DEFAULT +
-              MERGE_THRESHOLD_INCREMENTAL * (gimmicksWithMerged[i].damageDisplayGimmick?.damages.length ?? 0) &&
+          MERGE_THRESHOLD_DEFAULT +
+          MERGE_THRESHOLD_INCREMENTAL * (gimmicksWithMerged[i].damageDisplayGimmick?.damages.length ?? 0) &&
           gimmicksWithMerged[i + 1].type !== 'Enrage'
         ) {
           if (
@@ -191,15 +195,21 @@ const GimmickOverlay = React.forwardRef<
 
   return (
     <div ref={ref} className={cn(className, 'absolute top-0 left-0 w-screen')} style={{ height: areaHeight }}>
-      {mergedGimmicks.map((value) => (
-        <GimmickLine {...value} resizePanelSize={resizePanelSize} key={`gimmick-${value.id}`} />
-      ))}
-      <GridOverlay
-        raidDuration={raidDuration}
-        resizePanelSize={resizePanelSize}
-        majorInterval={MAJOR_GRID_INTERVAL}
-        minorInterval={minorInterval}
-      />
+      <MitigatedDamagesContext.Provider value={mitigatedDamages}>
+        {gimmicksWithMerged.map((value) => (
+          <GimmickLine
+            {...value}
+            resizePanelSize={resizePanelSize}
+            key={`gimmick-${value.id}`}
+          />
+        ))}
+        <GridOverlay
+          raidDuration={raidDuration}
+          resizePanelSize={resizePanelSize}
+          majorInterval={MAJOR_GRID_INTERVAL}
+          minorInterval={minorInterval}
+        />
+      </MitigatedDamagesContext.Provider>
     </div>
   );
 });

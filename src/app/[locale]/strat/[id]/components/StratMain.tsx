@@ -12,6 +12,8 @@ import type { ActionDataType } from '@/lib/queries/server';
 import { getAreaHeight } from '../utils/helpers';
 import { EditColumn, EntrySelectionContext, HeadColumn } from './column';
 import { GimmickOverlay } from './overlay';
+import { ArrayElement } from '@/lib/utils';
+import type { Tables } from '@/lib/database.types';
 
 export const StratMain = () => {
   const [zoom, _] = useZoomState();
@@ -82,6 +84,16 @@ export const StratMain = () => {
     return record;
   }, [availableActions]);
 
+  const playerEntriesRecord = useMemo(() => {
+    const record: Record<string, Tables<'strategy_player_entries'>[]> = {};
+
+    for (const playerStrategy of strategyData.strategy_players) {
+      record[playerStrategy.id] = playerStrategy.strategy_player_entries.toSorted((lhs, rhs) => lhs.use_at - rhs.use_at);
+    }
+
+    return record;
+  }, [strategyData.strategy_players]);
+
   const scrollSyncGroup = useMemo(() => ['x', 'y'], []);
 
   return (
@@ -119,12 +131,13 @@ export const StratMain = () => {
             <ScrollSyncPane group={scrollSyncGroup}>
               <div className="overflow-scroll overscroll-none">
                 <div className="flex flex-grow relative bg-background" style={{ height: areaHeight }}>
-                  {strategyData.strategy_players.map((playerStrategy) => (
+                  {strategyData.strategy_players.map(({ id, job }) => (
                     <EditColumn
+                      playerId={id}
                       raidDuration={raidDuration}
-                      playerStrategy={playerStrategy}
-                      actions={playerStrategy.job ? jobActionsRecord[playerStrategy.job] : []}
-                      key={`editcolumn-${playerStrategy.id}`}
+                      entries={playerEntriesRecord[id]}
+                      actions={job ? jobActionsRecord[job] : []}
+                      key={`editcolumn-${id}`}
                     />
                   ))}
                 </div>

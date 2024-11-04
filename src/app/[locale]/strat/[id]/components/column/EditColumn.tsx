@@ -18,8 +18,9 @@ import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvid
 import { usePixelPerFrame } from '@/lib/states';
 import { useContext } from 'use-context-selector';
 import { BOX_X_OFFSET, BOX_Z_INDEX, columnWidth } from '../../utils/constants';
-import { MultiIntervalSet, getAreaHeight, timeToY, yToTime } from '../../utils/helpers';
+import { MultiIntervalSet, getAreaHeight, timeToY, yToTime, yToTimeUnclamped } from '../../utils/helpers';
 import { EntrySelectionContext } from './EntrySelectionContext';
+import { deepEqual } from 'fast-equals';
 
 function useEntryMutation() {
   const getStore = useStratSyncStore((state) => state.getStore);
@@ -191,7 +192,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
     <ContextMenu>
       <ContextMenuTrigger className="relative" disabled={!elevated}>
         <motion.div
-          className={`${columnWidth} h-0 absolute z-[5] shadow-xl filter ${activeEntries.get(entryId) ? 'drop-shadow-selection' : ''}`}
+          className={`${columnWidth} h-0 absolute z-[5] filter ${activeEntries.get(entryId) ? 'drop-shadow-selection' : ''}`}
           style={{
             x: xMotionValue,
             y: yMotionValue,
@@ -235,15 +236,16 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
           }}
           onDragEnd={() => {
             setIsDragging(false);
-            // yMotionValue.animation?.stop();
 
-            const oldUseAt = useAt;
-            const newUseAt = yToTime(yMotionValue.get(), pixelPerFrame, raidDuration);
-            const offset = newUseAt - oldUseAt;
+            if (activeEntries.keys().next().value === entryId) {
+              const oldUseAt = useAt;
+              const newUseAt = yToTimeUnclamped(yMotionValue.get(), pixelPerFrame);
+              const offset = newUseAt - oldUseAt;
 
-            moveEntries(activeEntries.keys().toArray(), offset);
+              moveEntries(activeEntries.keys().toArray(), offset);
 
-            setActiveEntries(new Map());
+              setActiveEntries(new Map());
+            }
 
             setDraggingCount((prev) => prev - 1);
           }}
@@ -415,7 +417,7 @@ const EditSubColumn = React.memo(({ raidDuration, action, entries, playerId }: E
   return (
     <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden hover:bg-muted`} style={{ height: areaHeight }}>
       <AnimatePresence>
-        {...entries.map(({ id, use_at }, index) => (
+        {entries.map(({ id }, index) => (
           <DraggableBox
             key={`draggable-box-${id}`}
             action={action}
@@ -433,22 +435,23 @@ const EditSubColumn = React.memo(({ raidDuration, action, entries, playerId }: E
       </AnimatePresence>
     </div>
   );
-});
+}, deepEqual);
 
 export type EditColumnProps = {
+  playerId: string;
   raidDuration: number;
-  playerStrategy: ArrayElement<StrategyDataType['strategy_players']>;
+  entries: ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries'];
   actions: ActionDataType;
 };
 
-export const EditColumn = ({ raidDuration, playerStrategy, actions }: EditColumnProps) => {
+const EditColumn = React.memo(({ playerId, raidDuration, entries, actions }: EditColumnProps) => {
   const pixelPerFrame = usePixelPerFrame();
   const areaHeight = getAreaHeight(pixelPerFrame, raidDuration);
 
   const actionEntriesRecord = useMemo(() => {
     const record: Record<string, ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries']> = {};
 
-    for (const entry of playerStrategy.strategy_player_entries) {
+    for (const entry of entries) {
       if (record[entry.action] === undefined) {
         record[entry.action] = [];
       }
@@ -456,22 +459,18 @@ export const EditColumn = ({ raidDuration, playerStrategy, actions }: EditColumn
       record[entry.action].push(entry);
     }
 
-    for (const key in record) {
-      record[key].sort((a, b) => a.use_at - b.use_at);
-    }
-
     return record;
-  }, [playerStrategy.strategy_player_entries]);
+  }, [entries]);
 
   return (
     <div className="flex px-1 space-x-1 border-r-[1px] relative" style={{ height: areaHeight }}>
       {actions.map((action) => (
         <EditSubColumn
-          key={`subcolumn-${playerStrategy.id}-${action.id}`}
+          key={`subcolumn-${playerId}-${action.id}`}
+          playerId={playerId}
           raidDuration={raidDuration}
           action={action}
           entries={actionEntriesRecord[action.id] ?? []}
-          playerId={playerStrategy.id}
         />
       ))}
       {actions.length === 0 && (
@@ -483,4 +482,9 @@ export const EditColumn = ({ raidDuration, playerStrategy, actions }: EditColumn
       )}
     </div>
   );
-};
+}, deepEqual);
+
+EditSubColumn.displayName = 'EditSubColumn';
+EditColumn.displayName = 'EditColumn';
+
+export { EditColumn };

@@ -6,6 +6,9 @@ export const yToTime = (y: number, pixelPerFrame: number, raidDuration: number) 
   Math.round((clamp(y / pixelPerFrame, 0, raidDuration + COUNTDOWN_DURATION) - COUNTDOWN_DURATION) / TIME_STEP) *
   TIME_STEP;
 
+export const yToTimeUnclamped = (y: number, pixelPerFrame: number) =>
+  Math.round((y / pixelPerFrame - COUNTDOWN_DURATION) / TIME_STEP) * TIME_STEP;
+
 export const timeToY = (time: number, pixelPerFrame: number) => (time + COUNTDOWN_DURATION) * pixelPerFrame;
 
 export const getAreaHeight = (pixelPerFrame: number, raidDuration: number) =>

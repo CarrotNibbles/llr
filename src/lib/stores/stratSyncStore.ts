@@ -118,26 +118,21 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
         if (!state.client || !state.token || !state.elevated) return state;
 
         set(localHandler);
-        console.log('Local first dispatch took', performance.now() - start, 'ms');
 
-        // if (!local)
-        //   (async () => {
-        //     try {
-        //       console.log('On async dispatch: ', performance.now() - start, 'ms');
+        if (!local)
+          (async () => {
+            try {
+              await asyncDispatcher(state);
+            } catch (e) {
+              console.error(e);
 
-        //       await asyncDispatcher(state);
-
-        //       console.log('Async dispatch took', performance.now() - start, 'ms');
-        //     } catch (e) {
-        //       console.error(e);
-
-        //       set(
-        //         produce((state: StratSyncStore) => {
-        //           state.connectionAborted = true;
-        //         }),
-        //       );
-        //     }
-        //   })();
+              set(
+                produce((state: StratSyncStore) => {
+                  state.connectionAborted = true;
+                }),
+              );
+            }
+          })();
       };
 
     return {
@@ -281,8 +276,6 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
         )(get());
       },
       mutateEntries: (upserts: PlainMessage<Entry>[], deletes: string[], local = false) => {
-        console.log('Mutating entries', upserts, deletes);
-
         localFirstDispatch(
           handleMutateEntries(upserts, deletes),
           (state: StratSyncState) => state.client?.mutateEntries({ token: state.token, upserts, deletes }),
