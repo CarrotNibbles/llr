@@ -17,7 +17,7 @@ import React, { type MouseEventHandler, useEffect, useMemo, useState } from 'rea
 import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvider';
 import { usePixelPerFrame } from '@/lib/states';
 import { useContext } from 'use-context-selector';
-import { BOX_X_OFFSET, BOX_Z_INDEX, columnWidth } from '../../utils/constants';
+import { BOX_X_OFFSET, BOX_Z_INDEX, columnWidth, COUNTDOWN_DURATION } from '../../utils/constants';
 import { MultiIntervalSet, getAreaHeight, timeToY, yToTime, yToTimeUnclamped } from '../../utils/helpers';
 import { EntrySelectionContext } from './EntrySelectionContext';
 import { deepEqual } from 'fast-equals';
@@ -28,6 +28,8 @@ function useEntryMutation() {
 
   const moveEntries = (ids: string[], offset: number) => {
     const { strategyData, mutateEntries } = getStore();
+
+    const raidDuration = strategyData.raids?.duration ?? 0;
 
     const upserts = strategyData.strategy_players
       .flatMap((player) => {
@@ -50,17 +52,42 @@ function useEntryMutation() {
             const fixedIntervals = entries
               .filter((entry) => !ids.includes(entry.id))
               .map((entry) => [entry.use_at, entry.use_at + action.cooldown] as [number, number]);
-            const upserts = entries.filter((entry) => ids.includes(entry.id)).toReversed();
 
-            let currentOffset = offset;
-            const mis = new MultiIntervalSet(action.charges, fixedIntervals);
-            return upserts.map((entry) => {
-              currentOffset = mis.offsetSearch([entry.use_at, entry.use_at + action.cooldown], currentOffset);
+            if (offset == 0 || fixedIntervals.length === entries.length) {
+              const upserts = entries.filter((entry) => ids.includes(entry.id));
 
-              mis.insertInterval([entry.use_at + currentOffset, entry.use_at + action.cooldown + currentOffset]);
+              return upserts.map((entry) => {
+                return { ...entry, use_at: entry.use_at };
+              });
+            } else if (offset > 0) {
+              const upserts = entries.filter((entry) => ids.includes(entry.id)).toReversed();
 
-              return { ...entry, use_at: entry.use_at + currentOffset };
-            });
+              let currentOffset = offset;
+              currentOffset = Math.min(currentOffset, raidDuration - upserts[0].use_at);
+
+              const mis = new MultiIntervalSet(action.charges, fixedIntervals);
+              return upserts.map((entry) => {
+                currentOffset = mis.offsetSearch([entry.use_at, entry.use_at + action.cooldown], currentOffset);
+
+                mis.insertInterval([entry.use_at + currentOffset, entry.use_at + action.cooldown + currentOffset]);
+
+                return { ...entry, use_at: entry.use_at + currentOffset };
+              });
+            } else {
+              const upserts = entries.filter((entry) => ids.includes(entry.id));
+
+              let currentOffset = offset;
+              currentOffset = Math.max(currentOffset, -COUNTDOWN_DURATION - upserts[0].use_at);
+
+              const mis = new MultiIntervalSet(action.charges, fixedIntervals);
+              return upserts.map((entry) => {
+                currentOffset = mis.offsetSearch([entry.use_at, entry.use_at + action.cooldown], currentOffset);
+
+                mis.insertInterval([entry.use_at + currentOffset, entry.use_at + action.cooldown + currentOffset]);
+
+                return { ...entry, use_at: entry.use_at + currentOffset };
+              });
+            }
           });
       })
       .map(({ id, action, player, use_at }) => ({
