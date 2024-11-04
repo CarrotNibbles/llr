@@ -11,6 +11,8 @@ import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 import { getAreaHeight } from '../utils/helpers';
 import { EditColumn, EntrySelectionContext, HeadColumn } from './column';
 import { GimmickOverlay } from './overlay';
+import { ArrayElement } from '@/lib/utils';
+import type { ActionDataType } from '@/lib/queries/server';
 
 export const StratMain = () => {
   const [zoom, _] = useZoomState();
@@ -64,13 +66,24 @@ export const StratMain = () => {
   }, [actionData, strategyData.version, strategyData.subversion, raidLevel]);
 
   const jobActionsMetaRecord = useMemo(() => {
-    const record: Record<string, { id: string; semantic_key: string }[]> = {};
+    const record: Record<string, { id: string; job: string; semantic_key: string }[]> = {};
     for (const { id, job, semantic_key } of availableActions) {
       if (!record[job]) record[job] = [];
-      record[job].push({ id, semantic_key });
+      record[job].push({ id, job, semantic_key });
     }
     return record;
   }, [availableActions]);
+
+  const jobActionsRecord = useMemo(() => {
+    const record: Record<string, ActionDataType> = {};
+    for (const action of availableActions) {
+      if (!record[action.job]) record[action.job] = [];
+      record[action.job].push(action);
+    }
+    return record;
+  }, [availableActions]);
+
+  const scrollSyncGroup = useMemo(() => ['x', 'y'], []);
 
   return (
     <ScrollSync>
@@ -104,14 +117,14 @@ export const StratMain = () => {
                 ))}
               </div>
             </ScrollSyncPane>
-            <ScrollSyncPane group={['x', 'y']}>
+            <ScrollSyncPane group={scrollSyncGroup}>
               <div className="overflow-scroll overscroll-none">
                 <div className="flex flex-grow relative bg-background" style={{ height: areaHeight }}>
                   {strategyData.strategy_players.map((playerStrategy) => (
                     <EditColumn
                       raidDuration={raidDuration}
                       playerStrategy={playerStrategy}
-                      actions={availableActions.filter(({ job }) => job === playerStrategy.job)}
+                      actions={playerStrategy.job ? jobActionsRecord[playerStrategy.job] : []}
                       key={`editcolumn-${playerStrategy.id}`}
                     />
                   ))}

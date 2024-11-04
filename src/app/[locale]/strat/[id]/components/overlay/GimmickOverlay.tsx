@@ -3,7 +3,7 @@
 import type { StrategyDataType } from '@/lib/queries/server';
 import { useFilterState, usePixelPerFrame } from '@/lib/states';
 import { type ArrayElement, cn } from '@/lib/utils';
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   AVAILABLE_GRID_MINOR_INTERVALS,
   COUNTDOWN_DURATION,
@@ -108,7 +108,7 @@ const GimmickOverlay = React.forwardRef<
     MAJOR_GRID_INTERVAL;
   const [filterState, _] = useFilterState();
 
-  const mergeGimmicks = (gimmicks: GimmickOverlayProps['gimmicks']) => {
+  const mergedGimmicks = useMemo(() => {
     const gimmicksWithMerged = gimmicks
       .filter((gimmick) => filterState.get(gimmick.type))
       .toSorted((gimmick1, gimmick2) => gimmick1.prepare_at - gimmick2.prepare_at)
@@ -187,11 +187,11 @@ const GimmickOverlay = React.forwardRef<
     }
 
     return gimmicksWithMerged;
-  };
+  }, [gimmicks, filterState, pixelPerFrame]);
 
   return (
     <div ref={ref} className={cn(className, 'absolute top-0 left-0 w-screen')} style={{ height: areaHeight }}>
-      {mergeGimmicks(gimmicks).map((value) => (
+      {mergedGimmicks.map((value) => (
         <GimmickLine {...value} resizePanelSize={resizePanelSize} key={`gimmick-${value.id}`} />
       ))}
       <GridOverlay

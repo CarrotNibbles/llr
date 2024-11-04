@@ -12,7 +12,7 @@ import type { ArrayElement } from '@/lib/utils';
 import { AnimatePresence, animate, motion, useDragControls, useMotionValue } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
-import { type MouseEventHandler, useEffect, useMemo, useState } from 'react';
+import { memo, type MouseEventHandler, useEffect, useMemo, useState } from 'react';
 
 import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvider';
 import { usePixelPerFrame } from '@/lib/states';
@@ -120,12 +120,11 @@ type DraggableBoxProps = {
   entry: ArrayElement<ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries']>;
   slot: number;
   raidDuration: number;
-  durations: number[];
 };
 
-const DraggableBox = ({ action, entry, slot, raidDuration, durations }: DraggableBoxProps) => {
-  console.log('rerender DraggableBox', entry.use_at, entry.use_at);
-  const { use_at: useAt, id: entryId, action: actionId, player: playerId } = entry;
+const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) => {
+  const { use_at: useAt, id: entryId, player: playerId } = entry;
+  const durations = action.mitigations.map(({ duration }) => duration);
 
   const t = useTranslations('StratPage.EditColumn');
   const tActions = useTranslations('Common.Actions');
@@ -160,7 +159,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     // yMotionValue.animation?.stop();
-    animate(yMotionValue, timeToY(useAt, pixelPerFrame), { onUpdate: (v) => console.log(v) });
+    animate(yMotionValue, timeToY(useAt, pixelPerFrame));
   }, [pixelPerFrame, useAt]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
@@ -258,7 +257,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
 
                 const success = insertEntry({
                   id: crypto.randomUUID(),
-                  action: actionId,
+                  action: action.id,
                   player: playerId,
                   use_at: cursorUseAt,
                 });
@@ -365,7 +364,7 @@ type EditSubColumnProps = {
   playerId: string;
 };
 
-const EditSubColumn = ({ raidDuration, action, entries, playerId }: EditSubColumnProps) => {
+const EditSubColumn = memo(({ raidDuration, action, entries, playerId }: EditSubColumnProps) => {
   const { toast } = useToast();
   const t = useTranslations('StratPage.EditColumn');
 
@@ -423,7 +422,6 @@ const EditSubColumn = ({ raidDuration, action, entries, playerId }: EditSubColum
             entry={entries[index]}
             slot={slotMap.get(id) ?? 0}
             raidDuration={raidDuration}
-            durations={action.mitigations.map(({ duration }) => duration)}
           />
         ))}
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
@@ -435,7 +433,7 @@ const EditSubColumn = ({ raidDuration, action, entries, playerId }: EditSubColum
       </AnimatePresence>
     </div>
   );
-};
+});
 
 export type EditColumnProps = {
   raidDuration: number;
@@ -447,6 +445,24 @@ export const EditColumn = ({ raidDuration, playerStrategy, actions }: EditColumn
   const pixelPerFrame = usePixelPerFrame();
   const areaHeight = getAreaHeight(pixelPerFrame, raidDuration);
 
+  const actionEntriesRecord = useMemo(() => {
+    const record: Record<string, ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries']> = {};
+
+    for (const entry of playerStrategy.strategy_player_entries) {
+      if (record[entry.action] === undefined) {
+        record[entry.action] = [];
+      }
+
+      record[entry.action].push(entry);
+    }
+
+    for (const key in record) {
+      record[key].sort((a, b) => a.use_at - b.use_at);
+    }
+
+    return record;
+  }, [playerStrategy.strategy_player_entries])
+
   return (
     <div className="flex px-1 space-x-1 border-r-[1px] relative" style={{ height: areaHeight }}>
       {actions.map((action) => (
@@ -454,7 +470,7 @@ export const EditColumn = ({ raidDuration, playerStrategy, actions }: EditColumn
           key={`subcolumn-${playerStrategy.id}-${action.id}`}
           raidDuration={raidDuration}
           action={action}
-          entries={playerStrategy.strategy_player_entries.filter(({ action: actionId }) => actionId === action.id)}
+          entries={actionEntriesRecord[action.id] ?? []}
           playerId={playerStrategy.id}
         />
       ))}

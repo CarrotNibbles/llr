@@ -107,96 +107,98 @@ export type GimmickLineProps = ArrayElement<Exclude<StrategyDataType['raids'], n
   resizePanelSize: number;
 };
 
-const GimmickLine = React.forwardRef<
-  HTMLDivElement,
-  GimmickLineProps & {
-    className?: string;
-  } & React.ComponentPropsWithoutRef<'div'>
->(({ className, ...props }, ref) => {
-  const tGimmicks = useTranslations('Common.Gimmicks');
-  const {
-    semantic_key: semanticKey,
-    type: gimmickType,
-    prepare_at: prepareAt,
-    cast_at: castAt,
-    resolve_at: resolveAt,
-    displayDamage,
-    damageDisplayGimmick,
-    mergedGimmicks,
-    resizePanelSize,
-  } = props;
-  const pixelPerFrame = usePixelPerFrame();
-  const textColor = GIMMICK_TEXT_STYLE[gimmickType];
-  const borderColor = GIMMICK_BORDER_STYLE[gimmickType];
-  const borderWidth = gimmickType === 'Enrage' ? 'border-t-4' : 'border-t-2';
-  const titleWeight = gimmickType === 'Enrage' ? 'font-extrabold' : 'font-bold';
+const GimmickLine = React.memo(
+  React.forwardRef<
+    HTMLDivElement,
+    GimmickLineProps & {
+      className?: string;
+    } & React.ComponentPropsWithoutRef<'div'>
+  >(({ className, ...props }, ref) => {
+    const tGimmicks = useTranslations('Common.Gimmicks');
+    const {
+      semantic_key: semanticKey,
+      type: gimmickType,
+      prepare_at: prepareAt,
+      cast_at: castAt,
+      resolve_at: resolveAt,
+      displayDamage,
+      damageDisplayGimmick,
+      mergedGimmicks,
+      resizePanelSize,
+    } = props;
+    const pixelPerFrame = usePixelPerFrame();
+    const textColor = GIMMICK_TEXT_STYLE[gimmickType];
+    const borderColor = GIMMICK_BORDER_STYLE[gimmickType];
+    const borderWidth = gimmickType === 'Enrage' ? 'border-t-4' : 'border-t-2';
+    const titleWeight = gimmickType === 'Enrage' ? 'font-extrabold' : 'font-bold';
 
-  return (
-    <div ref={ref}>
-      {castAt && (
-        <GimmickSubLine
-          time={castAt}
-          primaryTime={prepareAt}
-          textColor={textColor}
-          borderColor={borderColor}
-          resizePanelSize={resizePanelSize}
-          semanticKey={semanticKey}
-          lineType="border-dashed"
+    return (
+      <div ref={ref}>
+        {castAt && (
+          <GimmickSubLine
+            time={castAt}
+            primaryTime={prepareAt}
+            textColor={textColor}
+            borderColor={borderColor}
+            resizePanelSize={resizePanelSize}
+            semanticKey={semanticKey}
+            lineType="border-dashed"
+          />
+        )}
+        {resolveAt && (
+          <GimmickSubLine
+            time={resolveAt}
+            primaryTime={prepareAt}
+            textColor={textColor}
+            borderColor={borderColor}
+            resizePanelSize={resizePanelSize}
+            semanticKey={semanticKey}
+            lineType=""
+          />
+        )}
+        <div
+          className={`absolute border-0 ${borderWidth} ${borderColor} w-[98dvw] right-0 z-10 pointer-events-none`}
+          style={{ top: `${timeToY(prepareAt, pixelPerFrame)}px` }}
         />
-      )}
-      {resolveAt && (
-        <GimmickSubLine
-          time={resolveAt}
-          primaryTime={prepareAt}
-          textColor={textColor}
-          borderColor={borderColor}
-          resizePanelSize={resizePanelSize}
-          semanticKey={semanticKey}
-          lineType=""
-        />
-      )}
-      <div
-        className={`absolute border-0 ${borderWidth} ${borderColor} w-[98dvw] right-0 z-10 pointer-events-none`}
-        style={{ top: `${timeToY(prepareAt, pixelPerFrame)}px` }}
-      />
-      <div className="absolute left-[2dvw]" style={{ top: `${timeToY(prepareAt, pixelPerFrame)}px` }}>
-        <div className="space-y-1">
-          <HoverCard openDelay={100}>
-            <HoverCardTrigger>
-              {mergedGimmicks.length > 0 && (
-                <GimmicksNames
-                  mergedGimmicks={mergedGimmicks}
-                  className={cn(titleWeight, gimmickType === 'Enrage' && 'mt-1', 'cursor-pointer')}
-                />
-              )}
-            </HoverCardTrigger>
-            <HoverCardContent className="w-auto" align="start">
-              {mergedGimmicks.length > 0 &&
-                mergedGimmicks.map((mergedGimmick, index) => (
-                  <div key={mergedGimmick.id} className={cn(className, 'space-y-1 mb-1')}>
-                    <div className={cn(GIMMICK_TEXT_STYLE[mergedGimmick.type], 'text-xs', 'font-bold')}>
-                      {tGimmicks(mergedGimmick.translationKey)}
+        <div className="absolute left-[2dvw]" style={{ top: `${timeToY(prepareAt, pixelPerFrame)}px` }}>
+          <div className="space-y-1">
+            <HoverCard openDelay={100}>
+              <HoverCardTrigger>
+                {mergedGimmicks.length > 0 && (
+                  <GimmicksNames
+                    mergedGimmicks={mergedGimmicks}
+                    className={cn(titleWeight, gimmickType === 'Enrage' && 'mt-1', 'cursor-pointer')}
+                  />
+                )}
+              </HoverCardTrigger>
+              <HoverCardContent className="w-auto" align="start">
+                {mergedGimmicks.length > 0 &&
+                  mergedGimmicks.map((mergedGimmick, index) => (
+                    <div key={mergedGimmick.id} className={cn(className, 'space-y-1 mb-1')}>
+                      <div className={cn(GIMMICK_TEXT_STYLE[mergedGimmick.type], 'text-xs', 'font-bold')}>
+                        {tGimmicks(mergedGimmick.translationKey)}
+                      </div>
+                      <div className="grid text-sm gap-x-2 gap-y-1" style={{ gridTemplateColumns: 'auto auto auto' }}>
+                        <DamageText damages={mergedGimmick.damages} />
+                      </div>
+                      {index !== mergedGimmicks.length - 1 && <Separator className="mt-1" />}
                     </div>
-                    <div className="grid text-sm gap-x-2 gap-y-1" style={{ gridTemplateColumns: 'auto auto auto' }}>
-                      <DamageText damages={mergedGimmick.damages} />
-                    </div>
-                    {index !== mergedGimmicks.length - 1 && <Separator className="mt-1" />}
-                  </div>
-                ))}
-            </HoverCardContent>
-          </HoverCard>
-          {mergedGimmicks.length > 0 && displayDamage && damageDisplayGimmick && (
-            <div className={className}>
-              <div className="inline-grid text-sm gap-x-2 gap-y-1" style={{ gridTemplateColumns: 'auto auto auto' }}>
-                <DamageText damages={damageDisplayGimmick.damages} />
+                  ))}
+              </HoverCardContent>
+            </HoverCard>
+            {mergedGimmicks.length > 0 && displayDamage && damageDisplayGimmick && (
+              <div className={className}>
+                <div className="inline-grid text-sm gap-x-2 gap-y-1" style={{ gridTemplateColumns: 'auto auto auto' }}>
+                  <DamageText damages={damageDisplayGimmick.damages} />
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  }),
+);
 
 GimmickSubLine.displayName = 'GimmickSubLine';
 GimmicksNames.displayName = 'GimmicksNames';

@@ -104,121 +104,125 @@ const HeadSubColumn = memo(
   },
 );
 
-export const HeadColumn = ({
-  playerId,
-  job,
-  order,
-  actionsMeta,
-}: {
-  playerId: string;
-  job: Enums<'job'> | null;
-  order: number;
-  actionsMeta: { id: string; semantic_key: string }[];
-}) => {
-  const { toast } = useToast();
-  const elevated = useStratSyncStore((state) => state.elevated);
-  const updatePlayerJob = useStratSyncStore((state) => state.updatePlayerJob);
+export const HeadColumn = memo(
+  ({
+    playerId,
+    job,
+    order,
+    actionsMeta,
+  }: {
+    playerId: string;
+    job: Enums<'job'> | null;
+    order: number;
+    actionsMeta: { id: string; semantic_key: string }[];
+  }) => {
+    const { toast } = useToast();
+    const elevated = useStratSyncStore((state) => state.elevated);
+    const updatePlayerJob = useStratSyncStore((state) => state.updatePlayerJob);
 
-  const [popoverOpen, setPopoverOpen] = useState(false);
-  const t = useTranslations('StratPage.HeadColumn');
+    const [popoverOpen, setPopoverOpen] = useState(false);
+    const t = useTranslations('StratPage.HeadColumn');
 
-  return (
-    <div className="flex flex-col p-1 border-r-[1px] justify-center items-center space-y-1">
-      <div className="flex flex-grow relative">
-        <div className={`aspect-square relative ${columnWidth} flex items-center`}>
-          <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
-            <AlertDialog>
-              <PopoverTrigger className={elevated ? 'cursor-pointer' : 'cursor-not-allowed'} disabled={!elevated}>
-                <span className="sr-only select-none">Change job {job}</span>
-                <JobIcon job={job} role={getOrderedRole(job, order)} className={`${columnWidth}`} />
-              </PopoverTrigger>
-              <PopoverContent className="w-auto">
-                <div className="space-y-3">
-                  <div className="text-xs font-bold">{t(job ? 'JobChange.JobChange' : 'JobChange.JobAssign')}</div>
-                  <div className="flex space-x-2">
-                    {JOB_LAYOUT.map((row, i) => (
-                      <div
-                        key={`job-col-${playerId}-${
-                          // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                          i
-                        }`}
-                        className="flex flex-col space-y-2"
-                      >
-                        {row.map((newJob) => {
-                          const applyChange = () => {
-                            updatePlayerJob(playerId, newJob ?? undefined, false);
-                            setPopoverOpen(false);
-                            toast({
-                              description: t('JobChange.Complete'),
-                            });
-                          };
+    return (
+      <div className="flex flex-col p-1 border-r-[1px] justify-center items-center space-y-1">
+        <div className="flex flex-grow relative">
+          <div className={`aspect-square relative ${columnWidth} flex items-center`}>
+            <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+              <AlertDialog>
+                <PopoverTrigger className={elevated ? 'cursor-pointer' : 'cursor-not-allowed'} disabled={!elevated}>
+                  <span className="sr-only select-none">Change job {job}</span>
+                  <JobIcon job={job} role={getOrderedRole(job, order)} className={`${columnWidth}`} />
+                </PopoverTrigger>
+                <PopoverContent className="w-auto">
+                  <div className="space-y-3">
+                    <div className="text-xs font-bold">{t(job ? 'JobChange.JobChange' : 'JobChange.JobAssign')}</div>
+                    <div className="flex space-x-2">
+                      {JOB_LAYOUT.map((row, i) => (
+                        <div
+                          key={`job-col-${playerId}-${
+                            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                            i
+                          }`}
+                          className="flex flex-col space-y-2"
+                        >
+                          {row.map((newJob) => {
+                            const applyChange = () => {
+                              updatePlayerJob(playerId, newJob ?? undefined, false);
+                              setPopoverOpen(false);
+                              toast({
+                                description: t('JobChange.Complete'),
+                              });
+                            };
 
-                          return job ? (
-                            <AlertDialog key={`job-icon-change-${newJob}`}>
-                              <AlertDialogTrigger
+                            return job ? (
+                              <AlertDialog key={`job-icon-change-${newJob}`}>
+                                <AlertDialogTrigger
+                                  disabled={job === newJob}
+                                  className={job === newJob ? 'cursor-not-allowed' : undefined}
+                                >
+                                  <span className="sr-only select-none">Change job to {job}</span>
+                                  <JobIcon job={newJob} role={getOrderedRole(newJob, order)} className="w-6 h-6" />
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>{t('JobChange.ConfirmTitle')}</AlertDialogTitle>
+                                    <AlertDialogDescription>{t('JobChange.Warning')}</AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>{t('JobChange.Cancel')}</AlertDialogCancel>
+                                    <AlertDialogAction onClick={applyChange}>
+                                      {t('JobChange.Confirm')}
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            ) : (
+                              <button
+                                type="button"
+                                key={`job-icon-assign-${newJob}`}
                                 disabled={job === newJob}
                                 className={job === newJob ? 'cursor-not-allowed' : undefined}
+                                onClick={applyChange}
                               >
                                 <span className="sr-only select-none">Change job to {job}</span>
                                 <JobIcon job={newJob} role={getOrderedRole(newJob, order)} className="w-6 h-6" />
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>{t('JobChange.ConfirmTitle')}</AlertDialogTitle>
-                                  <AlertDialogDescription>{t('JobChange.Warning')}</AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>{t('JobChange.Cancel')}</AlertDialogCancel>
-                                  <AlertDialogAction onClick={applyChange}>{t('JobChange.Confirm')}</AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
-                          ) : (
-                            <button
-                              type="button"
-                              key={`job-icon-assign-${newJob}`}
-                              disabled={job === newJob}
-                              className={job === newJob ? 'cursor-not-allowed' : undefined}
-                              onClick={applyChange}
-                            >
-                              <span className="sr-only select-none">Change job to {job}</span>
-                              <JobIcon job={newJob} role={getOrderedRole(newJob, order)} className="w-6 h-6" />
-                            </button>
-                          );
-                        })}
-                      </div>
-                    ))}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </PopoverContent>
-            </AlertDialog>
-          </Popover>
+                </PopoverContent>
+              </AlertDialog>
+            </Popover>
+          </div>
+        </div>
+        <div className="flex space-x-1">
+          {actionsMeta.map((actionMeta) => (
+            <HeadSubColumn
+              key={`subcolumn-header-${playerId}-${actionMeta.id}`}
+              job={job}
+              playerId={playerId}
+              actionMeta={actionMeta}
+            />
+          ))}
+
+          {actionsMeta.length === 0 && (
+            <>
+              <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden justify-center items-end relative`}>
+                <div className="aspect-square relative w-full" />
+              </div>
+              <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden justify-center items-end relative`}>
+                <div className="aspect-square relative w-full" />
+              </div>
+              <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden justify-center items-end relative`}>
+                <div className="aspect-square relative w-full" />
+              </div>
+            </>
+          )}
         </div>
       </div>
-      <div className="flex space-x-1">
-        {actionsMeta.map((actionMeta) => (
-          <HeadSubColumn
-            key={`subcolumn-header-${playerId}-${actionMeta.id}`}
-            job={job}
-            playerId={playerId}
-            actionMeta={actionMeta}
-          />
-        ))}
-
-        {actionsMeta.length === 0 && (
-          <>
-            <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden justify-center items-end relative`}>
-              <div className="aspect-square relative w-full" />
-            </div>
-            <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden justify-center items-end relative`}>
-              <div className="aspect-square relative w-full" />
-            </div>
-            <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden justify-center items-end relative`}>
-              <div className="aspect-square relative w-full" />
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  );
-};
+    );
+  },
+);
