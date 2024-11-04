@@ -8,11 +8,10 @@ import type { DragControls } from 'framer-motion';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 
+import type { ActionDataType } from '@/lib/queries/server';
 import { getAreaHeight } from '../utils/helpers';
 import { EditColumn, EntrySelectionContext, HeadColumn } from './column';
 import { GimmickOverlay } from './overlay';
-import { ArrayElement } from '@/lib/utils';
-import type { ActionDataType } from '@/lib/queries/server';
 
 export const StratMain = () => {
   const [zoom, _] = useZoomState();

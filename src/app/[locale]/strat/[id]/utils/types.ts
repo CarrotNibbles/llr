@@ -21,4 +21,4 @@ export type ActionMeta = {
   job: Enums<'job'> | null;
   cooldown: number;
   charges: number;
-}
+};

@@ -12,7 +12,7 @@ import type { ArrayElement } from '@/lib/utils';
 import { AnimatePresence, animate, motion, useDragControls, useMotionValue } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
-import { memo, type MouseEventHandler, useEffect, useMemo, useState } from 'react';
+import React, { type MouseEventHandler, useEffect, useMemo, useState } from 'react';
 
 import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvider';
 import { usePixelPerFrame } from '@/lib/states';
@@ -364,7 +364,7 @@ type EditSubColumnProps = {
   playerId: string;
 };
 
-const EditSubColumn = memo(({ raidDuration, action, entries, playerId }: EditSubColumnProps) => {
+const EditSubColumn = React.memo(({ raidDuration, action, entries, playerId }: EditSubColumnProps) => {
   const { toast } = useToast();
   const t = useTranslations('StratPage.EditColumn');
 
@@ -461,7 +461,7 @@ export const EditColumn = ({ raidDuration, playerStrategy, actions }: EditColumn
     }
 
     return record;
-  }, [playerStrategy.strategy_player_entries])
+  }, [playerStrategy.strategy_player_entries]);
 
   return (
     <div className="flex px-1 space-x-1 border-r-[1px] relative" style={{ height: areaHeight }}>

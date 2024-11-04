@@ -13,7 +13,12 @@ type ModifiedTimeProp = Readonly<
   }
 >;
 
-const ModifiedTime: React.FC<ModifiedTimeProp> = ({ createdAt, modifiedAt, className, ...props }) => {
+const ModifiedTime = async ({
+  createdAt,
+  modifiedAt,
+  className,
+  ...props
+}: { className?: string } & ModifiedTimeProp) => {
   const t = useTranslations('ViewPage.ModifiedTime');
 
   return (

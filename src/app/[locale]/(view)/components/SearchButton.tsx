@@ -4,11 +4,11 @@ import { DEFAULT_LIMIT, buildSearchURL } from '@/lib/utils';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { forwardRef } from 'react';
+import React from 'react';
 
 type SearchButtonProps = Readonly<ButtonProps & {}>;
 
-// const SearchButton = forwardRef<HTMLButtonElement, SearchButtonProps>(({ className, ...props }, ref) => {
+// const SearchButton = React.forwardRef<HTMLButtonElement, SearchButtonProps>(({ className, ...props }, ref) => {
 //   const isDesktop = useMediaQuery('(min-width: 640px)');
 //   const [isOpen, setIsOpen] = useState(false);
 
@@ -260,7 +260,7 @@ type SearchButtonProps = Readonly<ButtonProps & {}>;
 // };
 // SearchButtonResult.displayName = 'SearchButtonResult';
 
-const SearchButtonNew = forwardRef<HTMLButtonElement, SearchButtonProps>(({ className, ...props }, ref) => {
+const SearchButtonNew = React.forwardRef<HTMLButtonElement, SearchButtonProps>(({ className, ...props }, ref) => {
   const searchParams = useSearchParams();
 
   return (

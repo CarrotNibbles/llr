@@ -19,12 +19,12 @@ import type { Enums } from '@/lib/database.types';
 import { JOB_LAYOUT, getOrderedRole } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
-import { memo, useState } from 'react';
+import React, { useState } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { columnWidth } from '../../utils/constants';
 import { EntrySelectionContext } from './EntrySelectionContext';
 
-const HeadSubColumn = memo(
+const HeadSubColumn = React.memo(
   ({
     playerId,
     job,
@@ -104,7 +104,7 @@ const HeadSubColumn = memo(
   },
 );
 
-export const HeadColumn = memo(
+export const HeadColumn = React.memo(
   ({
     playerId,
     job,
