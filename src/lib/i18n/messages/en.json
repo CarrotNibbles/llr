@@ -349,11 +349,10 @@
       "PatchAll": "Version"
     },
     "Footer": {
-      "Copyright": "© {yearString} CarrotNibbles.",
       "Trademark": "The company names, product names, and system names mentioned are trademarks or registered trademarks of their respective owners.",
-      "FFCopyright": "© {yearString} SQUARE ENIX CO., LTD. Published in Korea by ACTOZ SOFT CO., LTD.",
       "NotAffiliated": "LLR is not affiliated with SQUARE ENIX CO., LTD. or ACTOZ SOFT CO., LTD.",
-      "PrivacyPolicy": "Privacy Policy"
+      "PrivacyPolicy": "Privacy Policy",
+      "TermsOfService": "Terms of Service"
     }
   },
   "Auth": {
