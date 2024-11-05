@@ -142,6 +142,7 @@ const RaidSearchPopover = React.forwardRef<HTMLButtonElement, RaidSearchPopoverP
               <CommandItem>
                 <ViewLink
                   raid={null}
+                  page={1}
                   className="w-full inline-flex items-center"
                   onClick={() => {
                     setOpen(false);
@@ -160,6 +161,7 @@ const RaidSearchPopover = React.forwardRef<HTMLButtonElement, RaidSearchPopoverP
                 <CommandItem value={raid.semantic_key} key={raid.id}>
                   <ViewLink
                     raid={raid.semantic_key}
+                    page={1}
                     className="w-full inline-flex items-center"
                     onClick={() => {
                       setOpen(false);
