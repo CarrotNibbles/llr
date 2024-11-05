@@ -209,17 +209,23 @@ export const useMitigatedDamages = () => {
         const mitigations = actionRecord[entry.action].mitigations;
         const semanticKey = semanticKeyTransform(actionRecord[entry.action].semantic_key);
 
-        mitigations.forEach((mitigation, index) => {
+        const mitigationTypeMultiplicity = new Map<string, number>();
+
+        for (const mitigation of mitigations) {
+          const currentMultiplicity = mitigationTypeMultiplicity.get(mitigation.type) ?? 0;
+
           timeline.push({
             type: 'MITIGATION_ACQUIRE',
             at: entry.use_at,
             by: player.id,
-            via: `${semanticKey}.${mitigation.type}`,
+            via: `${semanticKey}.${mitigation.type}.${currentMultiplicity}`,
             role: getRole(job),
             gcd,
             mitigation,
           });
-        });
+
+          mitigationTypeMultiplicity.set(mitigation.type, currentMultiplicity + 1);
+        }
       }
     }
 
@@ -427,9 +433,14 @@ export const useMitigatedDamages = () => {
 
         if (gcd && personalEffect[timelineEntry.by].activeAmp > 1) {
           for (const semanticKey of ACTIONS_ACTIVEAMP_ONCE) {
-            const via = `${semanticKey}.ActiveAmp`;
-            const activeEffectKey = effectKeyMapPersonal[timelineEntry.by].get(via);
-            if (activeEffectKey) {
+            let index = 0;
+
+            while (true) {
+              const via = `${semanticKey}.ActiveAmp.${index}`;
+              const activeEffectKey = effectKeyMapPersonal[timelineEntry.by].get(via);
+
+              if (!activeEffectKey) break;
+
               const activeEffect =
                 activePersonalEffects[timelineEntry.by].getElementByKey(activeEffectKey) ?? IDENTITY_EFFECT;
               personalEffect[timelineEntry.by] = addEffect(
@@ -437,6 +448,8 @@ export const useMitigatedDamages = () => {
                 inverseEffect(activeEffect),
               );
               activePersonalEffects[timelineEntry.by].eraseElementByKey(activeEffectKey);
+
+              index += 1
             }
           }
         }
