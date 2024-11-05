@@ -449,7 +449,7 @@ export const useMitigatedDamages = () => {
               );
               activePersonalEffects[timelineEntry.by].eraseElementByKey(activeEffectKey);
 
-              index += 1
+              index += 1;
             }
           }
         }
