@@ -25,7 +25,7 @@ const ViewHeader = async ({ className, ...props }: { className?: string } & View
     >
       <div className="w-full max-w-screen-xl px-6 flex items-center">
         <Link href="/" className="flex items-end gap-x-3">
-          <BrandIdentity variant="text" className="fill-primary h-11" />
+          <BrandIdentity variant="text" className="fill-brand h-11" />
         </Link>
         <div className="flex-grow" />
         <div className="flex">

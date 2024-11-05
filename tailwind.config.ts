@@ -29,6 +29,7 @@ const config = {
   			ring: 'hsl(var(--ring))',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
+        brand: 'hsl(var(--brand))',
   			primary: {
   				DEFAULT: 'hsl(var(--primary))',
   				foreground: 'hsl(var(--primary-foreground))'
@@ -94,9 +95,6 @@ const config = {
       dropShadow: {
         selection: '0 0 1.5px hsl(var(--muted-foreground))',
       },
-      fill: {
-        primary: '#8400ff'
-      }
   	}
   },
   plugins: [require('tailwindcss-animate'), require('tailwind-scrollbar-hide')],
