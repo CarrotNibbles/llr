@@ -1,10 +1,11 @@
 'use client';
 
-import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from '@/lib/i18n';
+import { cn } from '@/lib/utils';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 type LocaleSwitchLinkProps = Readonly<
-  Omit<React.ComponentProps<typeof Link>, 'href'> & {
+  React.HTMLAttributes<HTMLSpanElement> & {
     locale: string;
   }
 >;
@@ -21,21 +22,20 @@ export function LocaleSwitchLink({
   const searchParams = useSearchParams();
 
   const rest = pathname.split('/').slice(2);
-  const newPathname = ['', locale, ...rest].join('/');
+  const newPathname = ['', ...rest].join('/');
   const searchParamsAsString = new URLSearchParams(searchParams).toString();
 
   return (
-    <Link
+    <span
       {...props}
-      href={`${newPathname}?${searchParamsAsString}`}
       onClick={(arg) => {
         if (onClick) onClick(arg);
 
-        router.refresh();
+        router.replace(`${newPathname}?${searchParamsAsString}`, { locale: locale });
       }}
-      className={className}
+      className={cn(className, 'cursor-pointer')}
     >
       {children}
-    </Link>
+    </span>
   );
 }
