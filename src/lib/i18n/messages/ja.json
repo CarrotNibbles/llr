@@ -347,6 +347,13 @@
       "JobClear": "全選択解除",
       "PatchLabel": "バージョン",
       "PatchAll": "すべてのバージョン"
+    },
+    "Footer": {
+      "Copyright": "© {yearString} CarrotNibbles.",
+      "Trademark": "記載されている会社名・製品名・システム名は、各所有者の商標または登録商標です。",
+      "FFCopyright": "FINAL FANTASY © {yearString} SQUARE ENIX CO., LTD. All Rights Reserved. Published in Korea by ACTOZ SOFT CO., LTD.",
+      "NotAffiliated": "LLRはSQUARE ENIX CO., LTD.やACTOZ SOFT CO., LTD.とは関係がありません。",
+      "PrivacyPolicy": "プライバシーポリシー"
     }
   },
   "Auth": {
