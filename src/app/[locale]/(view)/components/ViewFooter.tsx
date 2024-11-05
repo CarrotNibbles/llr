@@ -21,8 +21,8 @@ export async function ViewFooter({ className, ...props }: { className?: string }
 
   return (
     <div className={cn(className, 'min-w-full flex items-center justify-center py-8 bg-secondary')} {...props}>
-      <div className="w-full max-w-screen-xl px-6 space-y-6 lg:space-y-0 lg:flex lg:flex-row-reverse lg:items-center lg:justify-between">
-        <div className="space-y-2 lg:text-right">
+      <div className="w-full max-w-screen-xl px-6 space-y-6 md:space-y-0 md:flex md:flex-row-reverse md:items-center md:justify-between">
+        <div className="space-y-2 md:text-right">
           <p className="text-muted-foreground sm:text-xs text-2xs font-bold">
             <Link href="link-to-privacy-policy" className="hover:underline">
               {t('PrivacyPolicy')}
@@ -37,7 +37,7 @@ export async function ViewFooter({ className, ...props }: { className?: string }
           </p>
         </div>
         <div className="flex sm:space-x-4 space-x-2 items-center">
-          <BrandIdentity variant="light" className="fill-muted-foreground lg:h-11 sm:h-9 h-7" />
+          <BrandIdentity variant="light" className="fill-muted-foreground md:h-11 sm:h-9 h-7" />
           <p className="text-muted-foreground sm:text-xs text-2xs">
             {t('Copyright', { yearString: getYearString(2024, year) })}
             <br />
@@ -50,7 +50,7 @@ export async function ViewFooter({ className, ...props }: { className?: string }
             </LocaleSwitchLink>
             {' · '}
             <LocaleSwitchLink locale="ja" className="hover:underline">
-              日本語
+              日本語(β)
             </LocaleSwitchLink>
             <br />
             <Link href="link-to-x" className="hover:underline">
