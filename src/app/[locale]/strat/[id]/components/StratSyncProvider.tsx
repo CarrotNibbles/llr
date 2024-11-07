@@ -24,6 +24,8 @@ export type StratSyncProviderProps = {
   editable: boolean;
 };
 
+let connectRequested = false;
+
 const StratSyncLoader = (props: { strategy: string; isAuthor: boolean; editable: boolean }) => {
   const supabase = createClient();
   const connect = useStratSyncStore((state) => state.connect);
@@ -33,7 +35,10 @@ const StratSyncLoader = (props: { strategy: string; isAuthor: boolean; editable:
   const t = useTranslations('StratPage.StratSyncProvider');
 
   useEffect(() => {
+    if (connectRequested) return;
+
     connect(props.strategy, props.isAuthor, props.editable);
+    connectRequested = true;
   }, [connect, props.strategy, props.isAuthor, props.editable]);
 
   useEffect(() => {

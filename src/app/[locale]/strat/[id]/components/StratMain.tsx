@@ -8,6 +8,7 @@ import type { DragControls } from 'framer-motion';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 
+import { useToast } from '@/components/ui/use-toast';
 import type { Tables } from '@/lib/database.types';
 import type { ActionDataType } from '@/lib/queries/server';
 import { getAreaHeight } from '../utils/helpers';
@@ -15,12 +16,15 @@ import { EditColumn, EntrySelectionContext, HeadColumn } from './column';
 import { GimmickOverlay } from './overlay';
 
 export const StratMain = () => {
+  const { toast } = useToast();
   const [zoom, _] = useZoomState();
   const [resizePanelSize, setResizePanelSize] = useState(20);
   const pixelPerFrame = usePixelPerFrame();
 
   const actionData = useStaticDataStore((state) => state.actionData);
   const strategyData = useStratSyncStore((state) => state.strategyData);
+  const undoEntryMutation = useStratSyncStore((state) => state.undoEntryMutation);
+  const redoEntryMutation = useStratSyncStore((state) => state.redoEntryMutation);
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -96,6 +100,43 @@ export const StratMain = () => {
   }, [strategyData.strategy_players]);
 
   const scrollSyncGroup = useMemo(() => ['x', 'y'], []);
+
+  useEffect(() => {
+    window.addEventListener('keydown', (e) => {
+      e.stopImmediatePropagation();
+
+      const isMac = navigator.userAgent.toLowerCase().includes('mac');
+      const isCtrl = isMac ? e.metaKey : e.ctrlKey;
+
+      // TODO: add i18n
+
+      if (isCtrl && draggingCount === 0) {
+        if (e.key === 'z') {
+          e.preventDefault();
+
+          if (!e.shiftKey) {
+            if (!undoEntryMutation()) {
+              toast({
+                description: 'No more undo',
+                variant: 'destructive',
+              });
+            }
+          } else {
+            if (!redoEntryMutation()) {
+              toast({
+                description: 'No more redo',
+                variant: 'destructive',
+              });
+            }
+          }
+        }
+      }
+    });
+
+    return () => {
+      window.removeEventListener('keydown', () => {});
+    };
+  });
 
   return (
     <ScrollSync>

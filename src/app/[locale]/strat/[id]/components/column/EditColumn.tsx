@@ -80,7 +80,13 @@ function useEntryMutation() {
         useAt: use_at,
       }));
 
-    mutateEntries(upserts, [], false);
+    mutateEntries(
+      {
+        upserts,
+        deletes: [],
+      },
+      false,
+    );
   };
 
   const insertEntry = (
@@ -107,15 +113,17 @@ function useEntryMutation() {
 
     if (insertable) {
       mutateEntries(
-        [
-          {
-            id,
-            action: actionId,
-            player: playerId,
-            useAt: use_at,
-          },
-        ],
-        [],
+        {
+          upserts: [
+            {
+              id,
+              action: actionId,
+              player: playerId,
+              useAt: use_at,
+            },
+          ],
+          deletes: [],
+        },
         false,
       );
     }
@@ -343,7 +351,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
         <ContextMenuItem
           inset
           onClick={() => {
-            mutateEntries([], [entryId], false);
+            mutateEntries({ upserts: [], deletes: [entryId] }, false);
             setActiveEntries((prev) => {
               const newActiveEntries = new Map(prev);
               newActiveEntries.delete(entryId);
@@ -357,7 +365,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
           <ContextMenuItem
             inset
             onClick={() => {
-              mutateEntries([], activeEntries.keys().toArray(), false);
+              mutateEntries({ upserts: [], deletes: activeEntries.keys().toArray() }, false);
               setActiveEntries(new Map());
             }}
           >

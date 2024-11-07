@@ -88,8 +88,10 @@ const HeadSubColumn = React.memo(
                   });
 
                   mutateEntries(
-                    [],
-                    deletes.map((entry) => entry.id),
+                    {
+                      upserts: [],
+                      deletes: deletes.map((entry) => entry.id),
+                    },
                     false,
                   );
                 }}
