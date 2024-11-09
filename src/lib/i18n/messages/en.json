@@ -169,7 +169,10 @@
     "GoHome": "Return to home"
   },
   "StratPage": {
-    "CoreArea": {},
+    "StratMain": {
+      "NoMoreUndo": "No more undo actions available.",
+      "NoMoreRedo": "No more redo actions available."
+    },
     "DamageText": {
       "DamageOption": {
         "Share": "Stack",

@@ -14,14 +14,17 @@ import type { ActionDataType } from '@/lib/queries/server';
 import { getAreaHeight } from '../utils/helpers';
 import { EditColumn, EntrySelectionContext, HeadColumn } from './column';
 import { GimmickOverlay } from './overlay';
+import { useTranslations } from 'next-intl';
 
 export const StratMain = () => {
   const { toast } = useToast();
+  const t = useTranslations('StratPage.StratMain');
   const [zoom, _] = useZoomState();
   const [resizePanelSize, setResizePanelSize] = useState(20);
   const pixelPerFrame = usePixelPerFrame();
 
   const actionData = useStaticDataStore((state) => state.actionData);
+  const elevated = useStratSyncStore((state) => state.elevated);
   const strategyData = useStratSyncStore((state) => state.strategyData);
   const undoEntryMutation = useStratSyncStore((state) => state.undoEntryMutation);
   const redoEntryMutation = useStratSyncStore((state) => state.redoEntryMutation);
@@ -106,7 +109,7 @@ export const StratMain = () => {
       const isMac = navigator.userAgent.toLowerCase().includes('mac');
       const isCtrl = isMac ? e.metaKey : e.ctrlKey;
 
-      // TODO: add i18n
+      if (!elevated) return;
 
       if (isCtrl && draggingCount === 0) {
         if (e.key === 'z') {
@@ -115,14 +118,14 @@ export const StratMain = () => {
           if (!e.shiftKey) {
             if (!undoEntryMutation()) {
               toast({
-                description: 'No more undo',
+                description: t('NoMoreUndo'),
                 variant: 'destructive',
               });
             }
           } else {
             if (!redoEntryMutation()) {
               toast({
-                description: 'No more redo',
+                description: t('NoMoreRedo'),
                 variant: 'destructive',
               });
             }
@@ -136,7 +139,7 @@ export const StratMain = () => {
     return () => {
       window.removeEventListener('keydown', undoHandler);
     };
-  }, [undoEntryMutation, redoEntryMutation, draggingCount, toast]);
+  }, [undoEntryMutation, redoEntryMutation, draggingCount, toast, elevated]);
 
   return (
     <ScrollSync>

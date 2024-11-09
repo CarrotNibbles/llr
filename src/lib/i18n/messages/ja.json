@@ -169,7 +169,10 @@
     "GoHome": "ホームに戻る"
   },
   "StratPage": {
-    "CoreArea": {},
+    "StratMain": {
+      "NoMoreUndo": "これ以上元に戻せません。",
+      "NoMoreRedo": "これ以上やり直せません。"
+    },
     "DamageText": {
       "DamageOption": {
         "Share": "頭割り",
