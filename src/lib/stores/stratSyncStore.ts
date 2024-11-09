@@ -398,6 +398,8 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
         )(get());
       },
       mutateEntries: (entryMutation: EntryMutation, local = false) => {
+        if (entryMutation.upserts.length === 0 && entryMutation.deletes.length === 0) return;
+
         get().entryMutationHistory.push(
           entryMutation,
           get().strategyData.strategy_players.flatMap((p) => p.strategy_player_entries),

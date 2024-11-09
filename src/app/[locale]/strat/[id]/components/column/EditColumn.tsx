@@ -255,38 +255,44 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
           onDragEnd={() => {
             setIsDragging(false);
 
+            if (activeEntries.size === 1) {
+              setActiveEntries(new Map());
+            }
+
             if (activeEntries.keys().next().value === entryId) {
               const oldUseAt = useAt;
               const newUseAt = yToTimeUnclamped(yMotionValue.get(), pixelPerFrame);
               const offset = newUseAt - oldUseAt;
 
-              moveEntries(activeEntries.keys().toArray(), offset);
-
-              setActiveEntries(new Map());
+              if (activeEntries.size === draggingCount) {
+                moveEntries(activeEntries.keys().toArray(), offset);
+              }
             }
 
             setDraggingCount((prev) => prev - 1);
           }}
           onClick={(e) => {
-            if (!holdingShift) {
-              setActiveEntries(new Map());
+            if (draggable && holdingShift && activeEntries.has(entryId)) {
+              activeEntries.delete(entryId);
+              setActiveEntries(new Map(activeEntries));
+              setDraggingCount(activeEntries.size);
+            }
 
-              if (action.charges > 1 && !isDragging) {
-                const cursorY = e.clientY - e.currentTarget.getBoundingClientRect().top + timeToY(useAt, pixelPerFrame);
-                const cursorUseAt = yToTime(cursorY, pixelPerFrame, raidDuration);
+            if (!holdingShift && action.charges > 1 && !isDragging) {
+              const cursorY = e.clientY - e.currentTarget.getBoundingClientRect().top + timeToY(useAt, pixelPerFrame);
+              const cursorUseAt = yToTime(cursorY, pixelPerFrame, raidDuration);
 
-                const success = insertEntry({
-                  id: crypto.randomUUID(),
-                  action: action.id,
-                  player: playerId,
-                  use_at: cursorUseAt,
+              const success = insertEntry({
+                id: crypto.randomUUID(),
+                action: action.id,
+                player: playerId,
+                use_at: cursorUseAt,
+              });
+
+              if (!success) {
+                toast({
+                  description: t('ActionOverlapError'),
                 });
-
-                if (!success) {
-                  toast({
-                    description: t('ActionOverlapError'),
-                  });
-                }
               }
             }
           }}

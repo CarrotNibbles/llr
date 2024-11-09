@@ -102,9 +102,7 @@ export const StratMain = () => {
   const scrollSyncGroup = useMemo(() => ['x', 'y'], []);
 
   useEffect(() => {
-    window.addEventListener('keydown', (e) => {
-      e.stopImmediatePropagation();
-
+    const undoHandler = (e: KeyboardEvent) => {
       const isMac = navigator.userAgent.toLowerCase().includes('mac');
       const isCtrl = isMac ? e.metaKey : e.ctrlKey;
 
@@ -131,12 +129,14 @@ export const StratMain = () => {
           }
         }
       }
-    });
+    };
+
+    window.addEventListener('keydown', undoHandler);
 
     return () => {
-      window.removeEventListener('keydown', () => {});
+      window.removeEventListener('keydown', undoHandler);
     };
-  });
+  }, [undoEntryMutation, redoEntryMutation, draggingCount, toast]);
 
   return (
     <ScrollSync>
