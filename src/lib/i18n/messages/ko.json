@@ -330,7 +330,8 @@
       "Patch": "버전",
       "Likes": "좋아요",
       "Created": "작성일",
-      "NoStrategyFound": "공략을 찾지 못했습니다"
+      "NoStrategyFound": "공략을 찾지 못했습니다",
+      "DeletedUser": "삭제된 사용자"
     },
     "SearchForm": {
       "FieldRequired": "하나 이상의 조건을 선택해 주세요",

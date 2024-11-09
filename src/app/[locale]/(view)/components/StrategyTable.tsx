@@ -111,11 +111,10 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
                 href={`/strat/${strategyData.id}`}
                 className={cn(
                   'w-full h-full flex items-center justify-center',
-                  strategyData.author_display_name && 'text-muted-foreground',
+                  strategyData.author_display_name ? '' : 'text-muted-foreground',
                 )}
               >
-                <div className="px-2 py-4">{strategyData.author_display_name ?? 'Deleted User'}</div>
-                {/* TODO: Add i18n */}
+                <div className="px-2 py-4">{strategyData.author_display_name ?? t('DeletedUser')}</div>
               </Link>
             </TableCell>
             <TableCell className="p-0 w-0 h-0">

@@ -330,7 +330,8 @@
       "Patch": "Version",
       "Likes": "Likes",
       "Created": "Created",
-      "NoStrategyFound": "No Strategy Found"
+      "NoStrategyFound": "No Strategy Found",
+      "DeletedUser": "Deleted User"
     },
     "SearchForm": {
       "FieldRequired": "Please select at least one condition",
@@ -349,7 +350,7 @@
       "PatchAll": "Version"
     },
     "Footer": {
-      "Trademark": "The company names, product names, and system names mentioned are trademarks or registered trademarks of their respective owners.",
+      "Trademark": "The company/product/system names mentioned are (registered) trademarks of their respective owners.",
       "NotAffiliated": "LLR is not affiliated with SQUARE ENIX CO., LTD. or ACTOZ SOFT CO., LTD.",
       "PrivacyPolicy": "Privacy Policy",
       "TermsOfService": "Terms of Service"

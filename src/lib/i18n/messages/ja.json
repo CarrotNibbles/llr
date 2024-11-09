@@ -330,7 +330,8 @@
       "Patch": "バージョン",
       "Likes": "いいね",
       "Created": "作成日",
-      "NoStrategyFound": "戦略が見つかりませんでした"
+      "NoStrategyFound": "戦略が見つかりませんでした",
+      "DeletedUser": "削除されたユーザー"
     },
     "SearchForm": {
       "FieldRequired": "少なくとも1つの条件を選択してください",
