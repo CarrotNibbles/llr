@@ -305,7 +305,7 @@
       "PasswordLabel": "Password",
       "PasswordDescription": "Password required to edit this strategy (not needed for author)",
       "PasswordRequired": "Please set a password",
-      "PasswordLengthMismatch": "Password must be 8 characters long",
+      "PasswordError": "The password must be an 8-digit number.",
       "CreateConfirm": "Create",
       "NotSignedIn": "Please sign in to create a strategy",
       "UnknownError": "Failed to create strategy. Please try again later."

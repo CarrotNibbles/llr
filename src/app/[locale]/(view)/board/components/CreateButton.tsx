@@ -98,8 +98,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
     }),
     password: z
       .string({ required_error: t('PasswordRequired') })
-      .min(8, t('PasswordLengthMismatch'))
-      .max(8, t('PasswordLengthMismatch')),
+      .regex(/^\d{8}$/, t('PasswordError'))
   });
 
   const form = useForm<z.infer<typeof formSchema>>({

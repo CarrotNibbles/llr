@@ -305,7 +305,7 @@
       "PasswordLabel": "비밀번호",
       "PasswordDescription": "공략 수정 시 필요한 비밀번호 (작성자는 필요 없음)",
       "PasswordRequired": "비밀번호를 설정하세요",
-      "PasswordLengthMismatch": "비밀번호는 길이 8이어야 합니다",
+      "PasswordError": "비밀번호는 8자리 수여야 합니다.",
       "CreateConfirm": "생성",
       "NotSignedIn": "공략을 작성하려면 로그인하세요",
       "UnknownError": "공략 생성에 실패했습니다. 잠시 후 재시도해 주세요."

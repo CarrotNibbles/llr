@@ -305,7 +305,7 @@
       "PasswordLabel": "パスワード",
       "PasswordDescription": "戦略を編集する際に必要なパスワード（作成者は不要）",
       "PasswordRequired": "パスワードを設定してください",
-      "PasswordLengthMismatch": "パスワードは8文字である必要があります",
+      "PasswordError": "パスワードは8桁の数字である必要があります。",
       "CreateConfirm": "作成",
       "NotSignedIn": "投稿するにはログインしてください",
       "UnknownError": "戦略の作成に失敗しました。しばらくしてから再度お試しください。"
