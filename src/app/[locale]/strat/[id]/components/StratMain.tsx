@@ -31,7 +31,6 @@ export const StratMain = () => {
   const redoEntryMutation = useStratSyncStore((state) => state.redoEntryMutation);
 
   const [activeEntries, setActiveEntries] = useState<Map<string, DragControls>>(new Map());
-  const [draggingCount, setDraggingCount] = useState(0);
 
   const overlayRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
@@ -126,7 +125,7 @@ export const StratMain = () => {
       }
 
       const timeDiff = time - (startedTime ?? time);
-      const calculatedScroll = (timeDiff / 1000 * 60 + startedFrame) * pixelPerFrame;
+      const calculatedScroll = ((timeDiff / 1000) * 60 + startedFrame) * pixelPerFrame;
 
       if (calculatedScroll > areaHeight - overlayRef.current.clientHeight) {
         setAutoScroll({ active: false, context: null });
@@ -148,7 +147,7 @@ export const StratMain = () => {
 
       if (!elevated) return;
 
-      if (isCtrl && draggingCount === 0) {
+      if (isCtrl) {
         if (e.key === 'z') {
           e.preventDefault();
 
@@ -176,7 +175,7 @@ export const StratMain = () => {
     return () => {
       window.removeEventListener('keydown', undoHandler);
     };
-  }, [undoEntryMutation, redoEntryMutation, draggingCount, toast, elevated, t]);
+  }, [undoEntryMutation, redoEntryMutation, toast, elevated, t]);
 
   useEffect(() => {
     const autoScrollHandler = (e: KeyboardEvent) => {
@@ -199,7 +198,7 @@ export const StratMain = () => {
 
   return (
     <ScrollSync horizontal vertical={!autoScroll.active}>
-      <EntrySelectionContext.Provider value={{ activeEntries, setActiveEntries, draggingCount, setDraggingCount }}>
+      <EntrySelectionContext.Provider value={{ activeEntries, setActiveEntries }}>
         <ResizablePanelGroup
           direction="horizontal"
           className="relative flex w-screen flex-grow overflow-hidden select-none"

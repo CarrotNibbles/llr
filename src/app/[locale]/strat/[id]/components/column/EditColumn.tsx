@@ -161,7 +161,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
   const xMotionValue = useMotionValue(BOX_X_OFFSET[slot]);
   const yMotionValue = useMotionValue(timeToY(useAt, pixelPerFrame));
 
-  const { activeEntries, setActiveEntries, draggingCount, setDraggingCount } = useContext(EntrySelectionContext);
+  const { activeEntries, setActiveEntries } = useContext(EntrySelectionContext);
   const draggable = elevated && !isLocked;
   const [isDragging, setIsDragging] = useState(false);
 
@@ -183,10 +183,10 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (draggingCount === 0) {
+    if (!isDragging) {
       void animate(yMotionValue, timeToY(useAt, pixelPerFrame));
     }
-  }, [draggingCount]);
+  }, [isDragging]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -245,16 +245,12 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
               for (const dc of activeEntries.values()) {
                 dc.start(e);
               }
-
-              setDraggingCount(activeEntries.size);
             }
           }}
           onDragStart={() => {
             setIsDragging(true);
           }}
           onDragEnd={() => {
-            setIsDragging(false);
-
             if (activeEntries.size === 1) {
               setActiveEntries(new Map());
             }
@@ -264,12 +260,12 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
               const newUseAt = yToTimeUnclamped(yMotionValue.get(), pixelPerFrame);
               const offset = newUseAt - oldUseAt;
 
-              if (activeEntries.size === draggingCount) {
+              if (offset !== 0) {
                 moveEntries(activeEntries.keys().toArray(), offset);
               }
             }
 
-            setDraggingCount((prev) => prev - 1);
+            setIsDragging(false);
           }}
           onClick={(e) => {
             if (!holdingShift && action.charges > 1 && !isDragging) {
