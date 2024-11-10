@@ -3,8 +3,8 @@
 import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvider';
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
-import { usePixelPerFrame, useZoomState } from '@/lib/states';
-import type { DragControls } from 'framer-motion';
+import { useAutoScrollState, usePixelPerFrame, useZoomState } from '@/lib/states';
+import { useAnimationFrame, type DragControls } from 'framer-motion';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 
@@ -29,20 +29,14 @@ export const StratMain = () => {
   const undoEntryMutation = useStratSyncStore((state) => state.undoEntryMutation);
   const redoEntryMutation = useStratSyncStore((state) => state.redoEntryMutation);
 
-  const ref = useRef<HTMLDivElement>(null);
-
   const [activeEntries, setActiveEntries] = useState<Map<string, DragControls>>(new Map());
   const [draggingCount, setDraggingCount] = useState(0);
 
-  useEffect(() => {
-    if (ref.current) {
-      ref.current.scrollTop *= zoom.changeRatio;
-    }
-  }, [zoom.changeRatio]);
+  const ref = useRef<HTMLDivElement>(null);
+  const [autoScroll, setAutoScroll] = useAutoScrollState();
 
   const raidDuration = strategyData.raids?.duration ?? 0;
   const raidLevel = strategyData.raids?.level ?? 0;
-
   const areaHeight = getAreaHeight(pixelPerFrame, raidDuration);
 
   const availableActions = useMemo(() => {
@@ -105,6 +99,38 @@ export const StratMain = () => {
   const scrollSyncGroup = useMemo(() => ['x', 'y'], []);
 
   useEffect(() => {
+    if (ref.current) {
+      ref.current.scrollTop *= zoom.changeRatio;
+    }
+  }, [zoom.changeRatio]);
+
+  useAnimationFrame((time) => {
+    const { active, context } = autoScroll;
+
+    if (ref.current && active) {
+      const initialContext = {
+        startedTime: time,
+        startedFrame: ref.current.scrollTop / zoom.changeRatio,
+      }
+
+      const { startedTime, startedFrame } = context ?? initialContext;
+
+      if (!context) {
+        setAutoScroll({ active, context: initialContext });
+      }
+
+      const calculatedScroll = (time - (startedTime ?? time)) * pixelPerFrame * 60 / 1000 + startedFrame * zoom.changeRatio;
+
+      if (calculatedScroll > areaHeight) {
+        setAutoScroll({ active: false, context: null });
+        return;
+      }
+
+      ref.current.scrollTop = calculatedScroll;
+    }
+  })
+
+  useEffect(() => {
     const undoHandler = (e: KeyboardEvent) => {
       const isMac = navigator.userAgent.toLowerCase().includes('mac');
       const isCtrl = isMac ? e.metaKey : e.ctrlKey;
@@ -140,6 +166,25 @@ export const StratMain = () => {
       window.removeEventListener('keydown', undoHandler);
     };
   }, [undoEntryMutation, redoEntryMutation, draggingCount, toast, elevated]);
+
+  useEffect(() => {
+    const autoScrollHandler = (e: KeyboardEvent) => {
+      if (e.key === ' ') {
+        e.preventDefault();
+
+        setAutoScroll((prev) => ({
+          active: !prev.active,
+          context: null,
+        }));
+      }
+    };
+
+    window.addEventListener('keydown', autoScrollHandler);
+
+    return () => {
+      window.removeEventListener('keydown', autoScrollHandler);
+    };
+  }, [])
 
   return (
     <ScrollSync>
