@@ -116,11 +116,11 @@ class EntryMutationHistory {
     this.ensureCapacity();
   }
 
-  undoAvailable(): boolean {
+  isUndoAvailable(): boolean {
     return this.past.size() > 0;
   }
 
-  redoAvailable(): boolean {
+  isRedoAvailable(): boolean {
     return this.future.size() > 0;
   }
 }
@@ -168,6 +168,11 @@ const defaultState = {
   undoAvailable: false,
   redoAvailable: false,
 };
+
+const refreshUndoRedoAvailability = produce((state: StratSyncStore) => {
+  state.undoAvailable = state.entryMutationHistory.isUndoAvailable();
+  state.redoAvailable = state.entryMutationHistory.isRedoAvailable();
+});
 
 const handleUpsertDamageOption = (damageOption: PlainMessage<DamageOption>) =>
   produce((state: StratSyncStore) => {
@@ -423,10 +428,10 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
               entryMutation,
               state.strategyData.strategy_players.flatMap((p) => p.strategy_player_entries),
             );
-            state.undoAvailable = state.entryMutationHistory.undoAvailable();
-            state.redoAvailable = state.entryMutationHistory.redoAvailable();
           }),
         );
+
+        set(refreshUndoRedoAvailability);
 
         optimisticDispatch(
           handleMutateEntries(entryMutation),
@@ -455,12 +460,7 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
           )(get());
         }
 
-        set(
-          produce((state: StratSyncStore) => {
-            state.undoAvailable = state.entryMutationHistory.undoAvailable();
-            state.redoAvailable = state.entryMutationHistory.redoAvailable();
-          }),
-        );
+        set(refreshUndoRedoAvailability);
 
         return backwardMutation;
       },
@@ -480,12 +480,7 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
           )(get());
         }
 
-        set(
-          produce((state: StratSyncStore) => {
-            state.undoAvailable = state.entryMutationHistory.undoAvailable();
-            state.redoAvailable = state.entryMutationHistory.redoAvailable();
-          }),
-        );
+        set(refreshUndoRedoAvailability);
 
         return forwardMutation;
       },
