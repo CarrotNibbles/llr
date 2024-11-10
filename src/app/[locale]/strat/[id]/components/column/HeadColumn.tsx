@@ -148,12 +148,15 @@ const HeadColumn = React.memo(
                           className="flex flex-col space-y-2"
                         >
                           {row.map((newJob) => {
-                            const applyChange = () => {
+                            const applyChange = (showToast: boolean) => {
                               updatePlayerJob(playerId, newJob ?? undefined, false);
                               setPopoverOpen(false);
-                              toast({
-                                description: t('JobChange.Complete'),
-                              });
+
+                              if (showToast) {
+                                toast({
+                                  description: t('JobChange.Complete'),
+                                });
+                              }
                             };
 
                             return job ? (
@@ -172,7 +175,7 @@ const HeadColumn = React.memo(
                                   </AlertDialogHeader>
                                   <AlertDialogFooter>
                                     <AlertDialogCancel>{t('JobChange.Cancel')}</AlertDialogCancel>
-                                    <AlertDialogAction onClick={applyChange}>
+                                    <AlertDialogAction onClick={() => applyChange(true)}>
                                       {t('JobChange.Confirm')}
                                     </AlertDialogAction>
                                   </AlertDialogFooter>
@@ -184,7 +187,7 @@ const HeadColumn = React.memo(
                                 key={`job-icon-assign-${newJob}`}
                                 disabled={job === newJob}
                                 className={job === newJob ? 'cursor-not-allowed' : undefined}
-                                onClick={applyChange}
+                                onClick={() => applyChange(false)}
                               >
                                 <span className="sr-only select-none">Change job to {job}</span>
                                 <JobIcon job={newJob} role={getOrderedRole(newJob, order)} className="w-6 h-6" />
