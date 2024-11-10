@@ -180,14 +180,14 @@ export const useMitigatedDamages = () => {
           combined_damage: damage.combined_damage,
           num_shared: damage.strategy_damage_options?.[0]?.num_shared ?? damage.max_shared,
           num_targets: damage.num_targets,
-          primary_target: damage.strategy_damage_options?.[0]?.primary_target,
+          primary_target: damage.strategy_damage_options?.[0]?.primary_target ?? null,
           target: damage.target,
           type: damage.type,
         };
 
         if (
           damageApplied.primary_target === null &&
-          gimmick.type === 'Tankbuster' &&
+          damageApplied.target === 'Tankbuster' &&
           damageApplied.num_targets === 1 &&
           damageApplied.num_shared === 1
         ) {
