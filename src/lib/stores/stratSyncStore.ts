@@ -115,6 +115,14 @@ class EntryMutationHistory {
 
     this.ensureCapacity();
   }
+
+  undoAvailable(): boolean {
+    return this.past.size() > 0;
+  }
+
+  redoAvailable(): boolean {
+    return this.future.size() > 0;
+  }
 }
 
 export type StratSyncState = {
@@ -129,6 +137,8 @@ export type StratSyncState = {
   client?: StratSyncClient;
   strategyData: StrategyDataType;
   entryMutationHistory: EntryMutationHistory;
+  undoAvailable: boolean;
+  redoAvailable: boolean;
 };
 
 export type StratSyncActions = {
@@ -155,6 +165,8 @@ const defaultState = {
   connectionAborted: false,
   strategyData: {} as StrategyDataType,
   entryMutationHistory: new EntryMutationHistory(),
+  undoAvailable: false,
+  redoAvailable: false,
 };
 
 const handleUpsertDamageOption = (damageOption: PlainMessage<DamageOption>) =>
@@ -405,9 +417,15 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
       mutateEntries: (entryMutation: EntryMutation, local = false) => {
         if (entryMutation.upserts.length === 0 && entryMutation.deletes.length === 0) return;
 
-        get().entryMutationHistory.push(
-          entryMutation,
-          get().strategyData.strategy_players.flatMap((p) => p.strategy_player_entries),
+        set(
+          produce((state: StratSyncStore) => {
+            state.entryMutationHistory.push(
+              entryMutation,
+              state.strategyData.strategy_players.flatMap((p) => p.strategy_player_entries),
+            );
+            state.undoAvailable = state.entryMutationHistory.undoAvailable();
+            state.redoAvailable = state.entryMutationHistory.redoAvailable();
+          }),
         );
 
         optimisticDispatch(
@@ -437,6 +455,13 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
           )(get());
         }
 
+        set(
+          produce((state: StratSyncStore) => {
+            state.undoAvailable = state.entryMutationHistory.undoAvailable();
+            state.redoAvailable = state.entryMutationHistory.redoAvailable();
+          }),
+        );
+
         return backwardMutation;
       },
       redoEntryMutation: () => {
@@ -454,6 +479,13 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
             false,
           )(get());
         }
+
+        set(
+          produce((state: StratSyncStore) => {
+            state.undoAvailable = state.entryMutationHistory.undoAvailable();
+            state.redoAvailable = state.entryMutationHistory.redoAvailable();
+          }),
+        );
 
         return forwardMutation;
       },

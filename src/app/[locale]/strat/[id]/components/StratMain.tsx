@@ -12,23 +12,18 @@ import { useToast } from '@/components/ui/use-toast';
 import type { Tables } from '@/lib/database.types';
 import type { ActionDataType } from '@/lib/queries/server';
 import { cn } from '@/lib/utils';
-import { useTranslations } from 'next-intl';
 import { getAreaHeight } from '../utils/helpers';
 import { EditColumn, EntrySelectionContext, HeadColumn } from './column';
 import { GimmickOverlay } from './overlay';
 
 export const StratMain = () => {
   const { toast } = useToast();
-  const t = useTranslations('StratPage.StratMain');
   const [zoom, _] = useZoomState();
   const [resizePanelSize, setResizePanelSize] = useState(20);
   const pixelPerFrame = usePixelPerFrame();
 
   const actionData = useStaticDataStore((state) => state.actionData);
-  const elevated = useStratSyncStore((state) => state.elevated);
   const strategyData = useStratSyncStore((state) => state.strategyData);
-  const undoEntryMutation = useStratSyncStore((state) => state.undoEntryMutation);
-  const redoEntryMutation = useStratSyncStore((state) => state.redoEntryMutation);
 
   const [activeEntries, setActiveEntries] = useState<Map<string, DragControls>>(new Map());
 
@@ -139,62 +134,6 @@ export const StratMain = () => {
       }
     }
   });
-
-  useEffect(() => {
-    const undoHandler = (e: KeyboardEvent) => {
-      const isMac = navigator.userAgent.toLowerCase().includes('mac');
-      const isCtrl = isMac ? e.metaKey : e.ctrlKey;
-
-      if (!elevated) return;
-
-      if (isCtrl) {
-        if (e.key === 'z') {
-          e.preventDefault();
-
-          if (!e.shiftKey) {
-            if (!undoEntryMutation()) {
-              toast({
-                description: t('NoMoreUndo'),
-                variant: 'destructive',
-              });
-            }
-          } else {
-            if (!redoEntryMutation()) {
-              toast({
-                description: t('NoMoreRedo'),
-                variant: 'destructive',
-              });
-            }
-          }
-        }
-      }
-    };
-
-    window.addEventListener('keydown', undoHandler);
-
-    return () => {
-      window.removeEventListener('keydown', undoHandler);
-    };
-  }, [undoEntryMutation, redoEntryMutation, toast, elevated, t]);
-
-  useEffect(() => {
-    const autoScrollHandler = (e: KeyboardEvent) => {
-      if (e.key === ' ') {
-        e.preventDefault();
-
-        setAutoScroll((prev) => ({
-          active: !prev.active,
-          context: null,
-        }));
-      }
-    };
-
-    window.addEventListener('keydown', autoScrollHandler);
-
-    return () => {
-      window.removeEventListener('keydown', autoScrollHandler);
-    };
-  }, [setAutoScroll]);
 
   return (
     <ScrollSync horizontal vertical={!autoScroll.active}>

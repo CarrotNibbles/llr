@@ -169,7 +169,7 @@
     "GoHome": "ホームに戻る"
   },
   "StratPage": {
-    "StratMain": {
+    "StratToolbar": {
       "NoMoreUndo": "これ以上元に戻せません。",
       "NoMoreRedo": "これ以上やり直せません。"
     },

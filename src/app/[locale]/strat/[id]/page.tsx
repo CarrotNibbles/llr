@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { StratHeader } from './components/StratHeader';
 import { StratMain } from './components/StratMain';
 import { StratSyncProvider } from './components/StratSyncProvider';
+import { StratToolbar } from './components/StratToolbar';
 
 export default async function StratPage({
   params: { id, locale },
@@ -41,6 +42,7 @@ export default async function StratPage({
       >
         <StratHeader />
         <StratMain />
+        <StratToolbar className="fixed bottom-8 right-8 z-20" />
       </StratSyncProvider>
     </div>
   );

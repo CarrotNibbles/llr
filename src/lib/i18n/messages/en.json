@@ -169,7 +169,7 @@
     "GoHome": "Return to home"
   },
   "StratPage": {
-    "StratMain": {
+    "StratToolbar": {
       "NoMoreUndo": "No more undo actions available.",
       "NoMoreRedo": "No more redo actions available."
     },
