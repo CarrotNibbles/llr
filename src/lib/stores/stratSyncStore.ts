@@ -264,6 +264,7 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
               state.eventStream = eventStream;
               state.strategy = strategy;
               state.token = event.value.token;
+              state.entryMutationHistory = new EntryMutationHistory();
 
               state.isAuthor = isAuthor;
               state.elevatable = !isAuthor && editable;
@@ -300,6 +301,10 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
           );
 
           for await (const { event } of eventStream) {
+            if (get().eventStream !== eventStream) {
+              return;
+            }
+
             if (event.case === 'initializationEvent') {
               // This should never happen, but just in case
               throw new Error('Received initialization event after initial connection');
