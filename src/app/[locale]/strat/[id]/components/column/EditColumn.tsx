@@ -272,12 +272,6 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
             setDraggingCount((prev) => prev - 1);
           }}
           onClick={(e) => {
-            if (draggable && holdingShift && activeEntries.has(entryId)) {
-              activeEntries.delete(entryId);
-              setActiveEntries(new Map(activeEntries));
-              setDraggingCount(activeEntries.size);
-            }
-
             if (!holdingShift && action.charges > 1 && !isDragging) {
               const cursorY = e.clientY - e.currentTarget.getBoundingClientRect().top + timeToY(useAt, pixelPerFrame);
               const cursorUseAt = yToTime(cursorY, pixelPerFrame, raidDuration);

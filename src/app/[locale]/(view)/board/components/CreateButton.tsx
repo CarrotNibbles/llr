@@ -96,9 +96,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
     scope: z.enum(['public', 'private'], {
       required_error: t('ScopeRequired'),
     }),
-    password: z
-      .string({ required_error: t('PasswordRequired') })
-      .regex(/^\d{8}$/, t('PasswordError'))
+    password: z.string({ required_error: t('PasswordRequired') }).regex(/^\d{8}$/, t('PasswordError')),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({

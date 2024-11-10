@@ -1,4 +1,4 @@
-import { atom, selector, useRecoilValue } from 'recoil';
+import { atom } from 'recoil';
 import { useCheckedRecoilState } from '.';
 
 type AutoScrollState = {

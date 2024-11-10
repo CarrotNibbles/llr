@@ -4,17 +4,18 @@ import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvid
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { useAutoScrollState, usePixelPerFrame, useZoomState } from '@/lib/states';
-import { useAnimationFrame, type DragControls } from 'framer-motion';
+import { type DragControls, useAnimationFrame } from 'framer-motion';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 
 import { useToast } from '@/components/ui/use-toast';
 import type { Tables } from '@/lib/database.types';
 import type { ActionDataType } from '@/lib/queries/server';
+import { cn } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 import { getAreaHeight } from '../utils/helpers';
 import { EditColumn, EntrySelectionContext, HeadColumn } from './column';
 import { GimmickOverlay } from './overlay';
-import { useTranslations } from 'next-intl';
 
 export const StratMain = () => {
   const { toast } = useToast();
@@ -32,7 +33,8 @@ export const StratMain = () => {
   const [activeEntries, setActiveEntries] = useState<Map<string, DragControls>>(new Map());
   const [draggingCount, setDraggingCount] = useState(0);
 
-  const ref = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const mainRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useAutoScrollState();
 
   const raidDuration = strategyData.raids?.duration ?? 0;
@@ -99,19 +101,23 @@ export const StratMain = () => {
   const scrollSyncGroup = useMemo(() => ['x', 'y'], []);
 
   useEffect(() => {
-    if (ref.current) {
-      ref.current.scrollTop *= zoom.changeRatio;
+    if (overlayRef.current) {
+      overlayRef.current.scrollTop *= zoom.changeRatio;
+    }
+
+    if (mainRef.current) {
+      mainRef.current.scrollTop *= zoom.changeRatio;
     }
   }, [zoom.changeRatio]);
 
   useAnimationFrame((time) => {
     const { active, context } = autoScroll;
 
-    if (ref.current && active) {
+    if (overlayRef.current && active) {
       const initialContext = {
         startedTime: time,
-        startedFrame: ref.current.scrollTop / zoom.changeRatio,
-      }
+        startedFrame: overlayRef.current.scrollTop / pixelPerFrame,
+      };
 
       const { startedTime, startedFrame } = context ?? initialContext;
 
@@ -119,16 +125,21 @@ export const StratMain = () => {
         setAutoScroll({ active, context: initialContext });
       }
 
-      const calculatedScroll = (time - (startedTime ?? time)) * pixelPerFrame * 60 / 1000 + startedFrame * zoom.changeRatio;
+      const timeDiff = time - (startedTime ?? time);
+      const calculatedScroll = (timeDiff / 1000 * 60 + startedFrame) * pixelPerFrame;
 
-      if (calculatedScroll > areaHeight) {
+      if (calculatedScroll > areaHeight - overlayRef.current.clientHeight) {
         setAutoScroll({ active: false, context: null });
         return;
       }
 
-      ref.current.scrollTop = calculatedScroll;
+      overlayRef.current.scrollTop = calculatedScroll;
+
+      if (mainRef.current) {
+        mainRef.current.scrollTop = calculatedScroll;
+      }
     }
-  })
+  });
 
   useEffect(() => {
     const undoHandler = (e: KeyboardEvent) => {
@@ -165,7 +176,7 @@ export const StratMain = () => {
     return () => {
       window.removeEventListener('keydown', undoHandler);
     };
-  }, [undoEntryMutation, redoEntryMutation, draggingCount, toast, elevated]);
+  }, [undoEntryMutation, redoEntryMutation, draggingCount, toast, elevated, t]);
 
   useEffect(() => {
     const autoScrollHandler = (e: KeyboardEvent) => {
@@ -184,10 +195,10 @@ export const StratMain = () => {
     return () => {
       window.removeEventListener('keydown', autoScrollHandler);
     };
-  }, [])
+  }, [setAutoScroll]);
 
   return (
-    <ScrollSync>
+    <ScrollSync horizontal vertical={!autoScroll.active}>
       <EntrySelectionContext.Provider value={{ activeEntries, setActiveEntries, draggingCount, setDraggingCount }}>
         <ResizablePanelGroup
           direction="horizontal"
@@ -218,8 +229,13 @@ export const StratMain = () => {
                 ))}
               </div>
             </ScrollSyncPane>
-            <ScrollSyncPane group={scrollSyncGroup}>
-              <div className="overflow-scroll overscroll-none">
+            <ScrollSyncPane group={scrollSyncGroup} innerRef={mainRef}>
+              <div
+                className={cn(
+                  'overscroll-none overflow-x-scroll',
+                  autoScroll.active ? 'overflow-y-hidden' : 'overflow-y-scroll',
+                )}
+              >
                 <div className="flex flex-grow relative bg-background" style={{ height: areaHeight }}>
                   {strategyData.strategy_players.map(({ id, job }) => (
                     <EditColumn
@@ -234,8 +250,13 @@ export const StratMain = () => {
               </div>
             </ScrollSyncPane>
           </ResizablePanel>
-          <ScrollSyncPane group="y" innerRef={ref}>
-            <div className="absolute top-20 left-0 w-screen h-[calc(100%-5rem)] overflow-y-scroll scrollbar-hide">
+          <ScrollSyncPane group="y" innerRef={overlayRef}>
+            <div
+              className={cn(
+                'overscroll-none absolute top-20 left-0 w-screen h-[calc(100%-5rem)] scrollbar-hide',
+                autoScroll.active ? 'overflow-y-hidden' : 'overflow-y-scroll',
+              )}
+            >
               <GimmickOverlay
                 resizePanelSize={resizePanelSize}
                 raidDuration={strategyData.raids?.duration ?? 0}
