@@ -1,6 +1,7 @@
 'use client';
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -9,13 +10,14 @@ import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/comp
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/components/ui/use-toast';
-import { buildClientUpdateStrategyQuery } from '@/lib/queries/client';
+import { buildClientDeleteStrategyQuery, buildClientUpdateStrategyQuery } from '@/lib/queries/client';
 import { createClient } from '@/lib/supabase/client';
 import { ALL_PATCHES, patchRegex } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ExclamationTriangleIcon, GearIcon } from '@radix-ui/react-icons';
 import { bcrypt, sha1, sha256 } from 'hash-wasm';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -32,6 +34,7 @@ export const StratSettingsDialog = () => {
   const t = useTranslations('StratPage.StratHeader.StratSettings');
   const tPatches = useTranslations('Common.FFXIVPatches');
   const [open, setOpen] = useState(false);
+  const router = useRouter();
 
   const formSchema = z.object({
     name: z.string().min(1, t('NameError')),
@@ -93,6 +96,27 @@ export const StratSettingsDialog = () => {
       setOpen(false);
     }
   });
+
+  const deleteStrategy = () => {
+    const supabase = createClient();
+
+    (async () => {
+      const response = await buildClientDeleteStrategyQuery(supabase, id);
+
+      if (response.error) {
+        toast({
+          description: t('EDeleterror'),
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          description: t('Deleted'),
+        });
+
+        router.push('/');
+      }
+    })();
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -218,9 +242,25 @@ export const StratSettingsDialog = () => {
           </Form>
           <DialogFooter>
             <div className="flex flex-row justify-between w-full">
-              <Button variant="link" className="text-muted-foreground text-xs my-auto font-regular p-0">
-                {t('DeleteStrategy')}
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="link" className="text-muted-foreground text-xs my-auto font-regular p-0">
+                    {t('DeleteStrategy')}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>{t('DeleteConfirmationTitle')}</AlertDialogTitle>
+                    <AlertDialogDescription>{t('DeleteConfirmationDescription')}</AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>{t('Cancel')}</AlertDialogCancel>
+                    <AlertDialogAction onClick={deleteStrategy}>
+                      {t('Delete')}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
               <Button type="submit">{t('Save')}</Button>
             </div>
           </DialogFooter>
