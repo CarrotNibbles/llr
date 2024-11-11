@@ -5,6 +5,7 @@ import { useNoteState, usePixelPerFrame } from '@/lib/states';
 import { cn } from '@/lib/utils';
 import { deepEqual } from 'fast-equals';
 import { animate, motion, useMotionValue } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 import { blockOffsetToXFactory, timeToY, xToBlockOffsetFactory, yToTime } from '../../utils/helpers';
 
@@ -18,6 +19,7 @@ const NoteEntry = React.memo(
     HTMLDivElement,
     { className?: string } & React.ComponentPropsWithRef<typeof motion.div> & NoteEntryProps
   >(({ className, note, raidDuration, ...props }, ref) => {
+    const t = useTranslations('StratPage.Note');
     const pixelPerFrame = usePixelPerFrame();
     const mutateNote = useStratSyncStore((state) => state.mutateNote);
     const [noteState, setNoteState] = useNoteState();
@@ -90,7 +92,7 @@ const NoteEntry = React.memo(
             />
           </ContextMenuTrigger>
           <ContextMenuContent>
-            <ContextMenuItem onClick={() => mutateNote({ delete: note.id })}>{'Delete Note'}</ContextMenuItem>
+            <ContextMenuItem onClick={() => mutateNote({ delete: note.id })}>{t('DeleteNote')}</ContextMenuItem>
           </ContextMenuContent>
         </ContextMenu>
         {isEditing ? (

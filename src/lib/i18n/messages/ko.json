@@ -279,6 +279,10 @@
       "ErrorTitle": "연결 오류",
       "ErrorDescription": "서버와의 연결이 끊어졌습니다. 페이지를 새로고침하여 다시 시도해주세요.",
       "Refresh": "새로고침"
+    },
+    "Note": {
+      "NewNote": "새로운 메모",
+      "DeleteNote": "메모 삭제"
     }
   },
   "ViewPage": {

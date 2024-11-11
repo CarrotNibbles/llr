@@ -12,11 +12,11 @@ import type { ArrayElement } from '../utils';
 
 export type NoteMutation =
   | {
-    upsert: PlainMessage<Note>;
-  }
+      upsert: PlainMessage<Note>;
+    }
   | {
-    delete: string;
-  };
+      delete: string;
+    };
 
 function inverseNoteMutation(mut: NoteMutation, currentNotes: Tables<'notes'>[]): NoteMutation {
   if ('upsert' in mut) {
@@ -83,25 +83,25 @@ function inverseEntryMutation(
 
 type UndoableMutation =
   | {
-    type: 'entry';
-    mutation: EntryMutation;
-  }
+      type: 'entry';
+      mutation: EntryMutation;
+    }
   | {
-    type: 'note';
-    mutation: NoteMutation;
-  };
+      type: 'note';
+      mutation: NoteMutation;
+    };
 
 type UndoableHistory =
   | {
-    type: 'entry';
-    forward: EntryMutation;
-    backward: EntryMutation;
-  }
+      type: 'entry';
+      forward: EntryMutation;
+      backward: EntryMutation;
+    }
   | {
-    type: 'note';
-    forward: NoteMutation;
-    backward: NoteMutation;
-  };
+      type: 'note';
+      forward: NoteMutation;
+      backward: NoteMutation;
+    };
 
 const pickForward = (history: UndoableHistory | undefined): UndoableMutation | undefined => {
   if (!history) return undefined;
@@ -339,26 +339,26 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
         asyncDispatcher: (state: StratSyncStore) => Promise<T> | undefined,
         local: boolean,
       ) =>
-        (state: StratSyncStore) => {
-          if (!state.client || !state.token || !state.elevated) return state;
+      (state: StratSyncStore) => {
+        if (!state.client || !state.token || !state.elevated) return state;
 
-          set(localHandler);
+        set(localHandler);
 
-          if (!local)
-            (async () => {
-              try {
-                await asyncDispatcher(state);
-              } catch (e) {
-                console.error(e);
+        if (!local)
+          (async () => {
+            try {
+              await asyncDispatcher(state);
+            } catch (e) {
+              console.error(e);
 
-                set(
-                  produce((state: StratSyncStore) => {
-                    state.connectionAborted = true;
-                  }),
-                );
-              }
-            })();
-        };
+              set(
+                produce((state: StratSyncStore) => {
+                  state.connectionAborted = true;
+                }),
+              );
+            }
+          })();
+      };
 
     return {
       ...defaultState,

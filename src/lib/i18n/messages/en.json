@@ -279,6 +279,10 @@
       "ErrorTitle": "Connection Lost",
       "ErrorDescription": "Lost connection to the server. Please refresh the page and try again.",
       "Refresh": "Refresh"
+    },
+    "Note": {
+      "NewNote": "New Note",
+      "DeleteNote": "Delete Note"
     }
   },
   "ViewPage": {

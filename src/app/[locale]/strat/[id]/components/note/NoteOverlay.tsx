@@ -5,6 +5,7 @@ import { useNoteState, usePixelPerFrame } from '@/lib/states';
 import { cn } from '@/lib/utils';
 import { deepEqual } from 'fast-equals';
 import { AnimatePresence } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import React from 'react';
 import { xToBlockOffsetFactory, yToTime } from '../../utils/helpers';
 import { NoteEntry } from './NoteEntry';
@@ -17,6 +18,7 @@ type NoteOverlayProps = {
 const NoteOverlay = React.memo(
   React.forwardRef<HTMLDivElement, { className?: string } & React.ComponentPropsWithoutRef<'div'> & NoteOverlayProps>(
     ({ className, raidDuration, notes, ...props }, ref) => {
+      const t = useTranslations('StratPage.Note');
       const [noteState, setNoteState] = useNoteState();
       const pixelPerFrame = usePixelPerFrame();
 
@@ -47,7 +49,7 @@ const NoteOverlay = React.memo(
                   at,
                   block,
                   offset,
-                  content: 'New Note',
+                  content: t('NewNote'),
                 },
               });
 

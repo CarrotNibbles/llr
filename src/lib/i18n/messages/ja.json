@@ -279,6 +279,10 @@
       "ErrorTitle": "接続切断",
       "ErrorDescription": "サーバーへの接続が失われました。ページを再読み込みして、もう一度お試しください。",
       "Refresh": "再読み込み"
+    },
+    "Note": {
+      "NewNote": "新しいメモ",
+      "DeleteNote": "メモを削除"
     }
   },
   "ViewPage": {
