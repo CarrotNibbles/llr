@@ -2,8 +2,9 @@
 
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { Button } from '@/components/ui/button';
+import { Toggle } from '@/components/ui/toggle';
 import { useToast } from '@/components/ui/use-toast';
-import { useAutoScrollState } from '@/lib/states';
+import { useAutoScrollState, useNoteState } from '@/lib/states';
 import { cn } from '@/lib/utils';
 import { Pencil2Icon, PlayIcon, ResetIcon, StopIcon } from '@radix-ui/react-icons';
 import { useTranslations } from 'next-intl';
@@ -17,10 +18,11 @@ export const StratToolbar = React.forwardRef<
   const t = useTranslations('StratPage.StratToolbar');
 
   const [autoScroll, setAutoScroll] = useAutoScrollState();
+  const [noteState, setNoteState] = useNoteState();
 
   const elevated = useStratSyncStore((state) => state.elevated);
-  const undoEntryMutation = useStratSyncStore((state) => state.undoEntryMutation);
-  const redoEntryMutation = useStratSyncStore((state) => state.redoEntryMutation);
+  const undo = useStratSyncStore((state) => state.undo);
+  const redo = useStratSyncStore((state) => state.redo);
   const undoAvailable = useStratSyncStore((state) => state.undoAvailable);
   const redoAvailable = useStratSyncStore((state) => state.redoAvailable);
 
@@ -34,28 +36,30 @@ export const StratToolbar = React.forwardRef<
   const undoAction = useCallback(() => {
     if (!elevated) return;
 
-    if (!undoEntryMutation()) {
+    if (!undo()) {
       toast({
         description: t('NoMoreUndo'),
         variant: 'destructive',
       });
     }
-  }, [elevated, toast, undoEntryMutation, t]);
+  }, [elevated, toast, undo, t]);
 
   const redoAction = useCallback(() => {
     if (!elevated) return;
 
-    if (!redoEntryMutation()) {
+    if (!redo()) {
       toast({
         description: t('NoMoreRedo'),
         variant: 'destructive',
       });
     }
-  }, [elevated, toast, redoEntryMutation, t]);
+  }, [elevated, toast, redo, t]);
 
   useEffect(() => {
     const autoScrollHandler = (e: KeyboardEvent) => {
       if (e.key === ' ') {
+        if (['input', 'textarea', 'button'].includes((e.target as HTMLElement).tagName.toLowerCase())) return;
+
         e.preventDefault();
 
         toggleAutoScrollAction();
@@ -96,10 +100,14 @@ export const StratToolbar = React.forwardRef<
 
   return (
     <div ref={ref} className={cn('bg-background rounded-lg border shadow-sm flex py-1 px-2', className)} {...props}>
-      <Button variant="ghost" size="icon">
-        <span className="sr-only select-none">New Note</span>
+      <Toggle
+        aria-label="New Note"
+        disabled={!elevated}
+        pressed={noteState.inserting}
+        onPressedChange={(pressed) => setNoteState({ ...noteState, inserting: pressed })}
+      >
         <Pencil2Icon />
-      </Button>
+      </Toggle>
       <Button variant="ghost" size="icon" onClick={toggleAutoScrollAction}>
         <span className="sr-only select-none">Play/Stop</span>
         {autoScroll.active ? <StopIcon /> : <PlayIcon />}

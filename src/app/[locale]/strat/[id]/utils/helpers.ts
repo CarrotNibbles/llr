@@ -22,6 +22,35 @@ export const weightedCompareFunction =
   (item1: ValueType, item2: ValueType): number =>
     compareFn1(item1, item2) === 0 ? compareFn2(item1, item2) : compareFn1(item1, item2);
 
+export const blockOffsetToXFactory = (editColumnWidths: number[]) => (block: number, offset: number) => {
+  const clampedBlock = clamp(block, 1, 9);
+  const clampedOffset = clamp(offset, 0, 1);
+
+  let horizontalPosition = 1;
+  for (let idx = 0; idx < clampedBlock - 1; idx++) {
+    horizontalPosition += editColumnWidths[idx];
+  }
+  horizontalPosition += editColumnWidths[clampedBlock - 1] * clampedOffset;
+
+  return horizontalPosition;
+};
+
+export const xToBlockOffsetFactory = (editColumnWidths: number[]) => (x: number) => {
+  let clampedX = clamp(x - 1, 0);
+
+  let block = 1;
+  while (block < 9 && clampedX > editColumnWidths[block - 1]) {
+    clampedX -= editColumnWidths[block - 1];
+    block++;
+  }
+
+  let offset = clampedX / editColumnWidths[block - 1];
+
+  if (offset > 1) offset = 1;
+
+  return { block, offset };
+};
+
 export class MultiIntervalSet {
   intervalSets: OrderedSet<[number, number]>[] = [];
   multiplicity = 0;

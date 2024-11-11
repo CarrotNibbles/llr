@@ -226,6 +226,41 @@ export type Database = {
           },
         ]
       }
+      notes: {
+        Row: {
+          at: number
+          block: number
+          content: string
+          id: string
+          offset: number
+          strategy: string
+        }
+        Insert: {
+          at: number
+          block: number
+          content: string
+          id?: string
+          offset: number
+          strategy: string
+        }
+        Update: {
+          at?: number
+          block?: number
+          content?: string
+          id?: string
+          offset?: number
+          strategy?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notes_strategy_fkey"
+            columns: ["strategy"]
+            isOneToOne: false
+            referencedRelation: "strategies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           display_name: string | null

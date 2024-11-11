@@ -197,6 +197,67 @@ export class Entry extends Message<Entry> {
 }
 
 /**
+ * @generated from message stratsync.Note
+ */
+export class Note extends Message<Note> {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id = "";
+
+  /**
+   * @generated from field: int32 block = 2;
+   */
+  block = 0;
+
+  /**
+   * @generated from field: float offset = 3;
+   */
+  offset = 0;
+
+  /**
+   * @generated from field: int32 at = 4;
+   */
+  at = 0;
+
+  /**
+   * @generated from field: string content = 5;
+   */
+  content = "";
+
+  constructor(data?: PartialMessage<Note>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "stratsync.Note";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "block", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 3, name: "offset", kind: "scalar", T: 2 /* ScalarType.FLOAT */ },
+    { no: 4, name: "at", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 5, name: "content", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): Note {
+    return new Note().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): Note {
+    return new Note().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): Note {
+    return new Note().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: Note | PlainMessage<Note> | undefined, b: Note | PlainMessage<Note> | undefined): boolean {
+    return proto3.util.equals(Note, a, b);
+  }
+}
+
+/**
  * @generated from message stratsync.InitializationEvent
  */
 export class InitializationEvent extends Message<InitializationEvent> {
@@ -469,6 +530,92 @@ export class UpdatePlayerJobRequest extends Message<UpdatePlayerJobRequest> {
 
   static equals(a: UpdatePlayerJobRequest | PlainMessage<UpdatePlayerJobRequest> | undefined, b: UpdatePlayerJobRequest | PlainMessage<UpdatePlayerJobRequest> | undefined): boolean {
     return proto3.util.equals(UpdatePlayerJobRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message stratsync.UpsertNoteRequest
+ */
+export class UpsertNoteRequest extends Message<UpsertNoteRequest> {
+  /**
+   * @generated from field: string token = 1;
+   */
+  token = "";
+
+  /**
+   * @generated from field: stratsync.Note note = 2;
+   */
+  note?: Note;
+
+  constructor(data?: PartialMessage<UpsertNoteRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "stratsync.UpsertNoteRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "note", kind: "message", T: Note },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): UpsertNoteRequest {
+    return new UpsertNoteRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): UpsertNoteRequest {
+    return new UpsertNoteRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): UpsertNoteRequest {
+    return new UpsertNoteRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: UpsertNoteRequest | PlainMessage<UpsertNoteRequest> | undefined, b: UpsertNoteRequest | PlainMessage<UpsertNoteRequest> | undefined): boolean {
+    return proto3.util.equals(UpsertNoteRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message stratsync.DeleteNoteRequest
+ */
+export class DeleteNoteRequest extends Message<DeleteNoteRequest> {
+  /**
+   * @generated from field: string token = 1;
+   */
+  token = "";
+
+  /**
+   * @generated from field: string id = 2;
+   */
+  id = "";
+
+  constructor(data?: PartialMessage<DeleteNoteRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "stratsync.DeleteNoteRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "token", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): DeleteNoteRequest {
+    return new DeleteNoteRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): DeleteNoteRequest {
+    return new DeleteNoteRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): DeleteNoteRequest {
+    return new DeleteNoteRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: DeleteNoteRequest | PlainMessage<DeleteNoteRequest> | undefined, b: DeleteNoteRequest | PlainMessage<DeleteNoteRequest> | undefined): boolean {
+    return proto3.util.equals(DeleteNoteRequest, a, b);
   }
 }
 

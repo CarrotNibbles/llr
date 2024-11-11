@@ -3,22 +3,22 @@
 import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvider';
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
-import { useAutoScrollState, usePixelPerFrame, useZoomState } from '@/lib/states';
+import { useAutoScrollState, useNoteState, usePixelPerFrame, useZoomState } from '@/lib/states';
 import { type DragControls, useAnimationFrame } from 'framer-motion';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
 
-import { useToast } from '@/components/ui/use-toast';
 import type { Tables } from '@/lib/database.types';
 import type { ActionDataType } from '@/lib/queries/server';
 import { cn } from '@/lib/utils';
+import { COLUMN_WIDTH_PX } from '../utils/constants';
 import { getAreaHeight } from '../utils/helpers';
 import { EditColumn, EntrySelectionContext, HeadColumn } from './column';
+import { NoteOverlay } from './note/NoteOverlay';
 import { GimmickOverlay } from './overlay';
 
 export const StratMain = () => {
-  const { toast } = useToast();
-  const [zoom, _] = useZoomState();
+  const [zoom, _setZoom] = useZoomState();
   const [resizePanelSize, setResizePanelSize] = useState(20);
   const pixelPerFrame = usePixelPerFrame();
 
@@ -29,7 +29,9 @@ export const StratMain = () => {
 
   const overlayRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
+  const editRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useAutoScrollState();
+  const [_noteState, setNoteState] = useNoteState();
 
   const raidDuration = strategyData.raids?.duration ?? 0;
   const raidLevel = strategyData.raids?.level ?? 0;
@@ -79,6 +81,16 @@ export const StratMain = () => {
     }
     return record;
   }, [availableActions]);
+
+  useEffect(() => {
+    const editColumnWidths: number[] = [];
+    for (const { job } of strategyData.strategy_players) {
+      const nActions = job ? jobActionsMetaRecord[job]?.length : 0;
+      editColumnWidths.push((nActions === 0 ? 3 : nActions) * COLUMN_WIDTH_PX + 5);
+    }
+
+    setNoteState((prev) => ({ ...prev, editColumnWidths }));
+  }, [strategyData.strategy_players, jobActionsMetaRecord, setNoteState]);
 
   const playerEntriesRecord = useMemo(() => {
     const record: Record<string, Tables<'strategy_player_entries'>[]> = {};
@@ -170,11 +182,11 @@ export const StratMain = () => {
             <ScrollSyncPane group={scrollSyncGroup} innerRef={mainRef}>
               <div
                 className={cn(
-                  'overscroll-none overflow-x-scroll',
+                  'relative overscroll-none overflow-x-scroll',
                   autoScroll.active ? 'overflow-y-hidden' : 'overflow-y-scroll',
                 )}
               >
-                <div className="flex flex-grow relative bg-background" style={{ height: areaHeight }}>
+                <div className="flex flex-grow relative bg-background" style={{ height: areaHeight }} ref={editRef}>
                   {strategyData.strategy_players.map(({ id, job }) => (
                     <EditColumn
                       playerId={id}
@@ -185,6 +197,16 @@ export const StratMain = () => {
                     />
                   ))}
                 </div>
+                <NoteOverlay
+                  className="absolute z-20 top-0 left-0 w-full"
+                  style={{
+                    height: areaHeight,
+                    width: editRef.current?.scrollWidth,
+                    maxWidth: editRef.current?.scrollWidth,
+                  }}
+                  raidDuration={raidDuration}
+                  notes={strategyData.notes}
+                />
               </div>
             </ScrollSyncPane>
           </ResizablePanel>

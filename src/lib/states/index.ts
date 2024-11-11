@@ -20,3 +20,4 @@ export { useFilterState } from './filter';
 export { useUserState } from './user';
 export { useZoomState, usePixelPerFrame } from './zoom';
 export { useAutoScrollState } from './autoscroll';
+export { useNoteState } from './note';

@@ -10,6 +10,8 @@ service StratSync {
     rpc Elevate (ElevationRequest) returns (google.protobuf.Empty);
     rpc UpsertDamageOption (UpsertDamageOptionRequest) returns (google.protobuf.Empty);
     rpc MutateEntries (MutateEntriesRequest) returns (google.protobuf.Empty);
+    rpc UpsertNote (UpsertNoteRequest) returns (google.protobuf.Empty);
+    rpc DeleteNote (DeleteNoteRequest) returns (google.protobuf.Empty);
     rpc UpdatePlayerJob (UpdatePlayerJobRequest) returns (google.protobuf.Empty);
 }
 
@@ -34,6 +36,14 @@ message Entry {
     string player = 2;
     string action = 3;
     int32 use_at = 4;
+}
+
+message Note {
+    string id = 1;
+    int32 block = 2;
+    float offset = 3;
+    int32 at = 4;
+    string content = 5;
 }
 
 message InitializationEvent {
@@ -67,6 +77,16 @@ message UpdatePlayerJobRequest {
     string token = 1;
     string id = 2;
     optional string job = 3;
+}
+
+message UpsertNoteRequest {
+    string token = 1;
+    Note note = 2;
+}
+
+message DeleteNoteRequest {
+    string token = 1;
+    string id = 2;
 }
 
 message UpsertDamageOptionEvent {
