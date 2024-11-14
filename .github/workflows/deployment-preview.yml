@@ -3,18 +3,18 @@ name: Deploy Image
 on:
   push:
     branches:
-      - prod
+      - preview
     paths:
-      - .github/workflows/deployment.yml
+      - .github/workflows/deployment-preview.yml
   workflow_run:
     workflows:
-      - Build and Push Image
+      - Build and Push Image (Preview)
     types:
       - completed
   workflow_dispatch:
 
 env:
-  DOCKER_TAG: ghcr.io/carrotnibbles/llr:latest
+  DOCKER_TAG: ghcr.io/carrotnibbles/llr-preview:latest
 
 jobs:
   push:
@@ -30,6 +30,6 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             docker pull ${{ env.DOCKER_TAG }}
-            docker stop llr || true
-            docker rm llr || true
-            docker run -d --name llr -p 7102:3000 --restart unless-stopped --env-file ~/envs/llr.env ${{ env.DOCKER_TAG }}
+            docker stop llr-preview || true
+            docker rm llr-preview || true
+            docker run -d --name llr-preview -p 7103:3000 --restart unless-stopped --env-file ~/envs/llr.env ${{ env.DOCKER_TAG }}
