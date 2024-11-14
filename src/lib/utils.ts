@@ -55,6 +55,7 @@ export const ALL_PATCHES = [
   { version: 6, subversion: 4 },
   { version: 6, subversion: 5 },
   { version: 7, subversion: 0 },
+  { version: 7, subversion: 1 },
 ] as const satisfies Patch[];
 
 export type Role = 'Tank' | 'Healer' | 'DPS' | 'Others';
