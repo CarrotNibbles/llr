@@ -32,4 +32,4 @@ jobs:
             docker pull ${{ env.DOCKER_TAG }}
             docker stop llr-preview || true
             docker rm llr-preview || true
-            docker run -d --name llr-preview -p 7103:3000 --restart unless-stopped --env-file ~/envs/llr.env ${{ env.DOCKER_TAG }}
+            docker run -d --name llr-preview -p 7103:3000 --restart unless-stopped --env-file ~/envs/llr-preview.env ${{ env.DOCKER_TAG }}
