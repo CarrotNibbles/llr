@@ -1,4 +1,4 @@
-name: Deploy Image
+name: Deploy Image (Preview)
 
 on:
   push:
