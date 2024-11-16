@@ -1,11 +1,12 @@
 'use client';
-import { MiscIcons } from '@/components/icons/MiscIcons';
+import { CustomIcons } from '@/components/icons/CustomIcons';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Toggle } from '@/components/ui/toggle';
+import { filterAtom } from '@/lib/atoms';
 import type { Enums } from '@/lib/database.types';
-import { useFilterState } from '@/lib/states';
 import { cn } from '@/lib/utils';
+import { useAtom } from 'jotai';
 import { useTranslations } from 'next-intl';
 import { GIMMICK_BACKGROUND_STYLE } from '../../utils/constants';
 
@@ -18,7 +19,8 @@ export const FilterMenu = () => {
     'Hybrid',
     'Enrage',
   ];
-  const [filterState, setFilterState] = useFilterState();
+
+  const [filterState, setFilterState] = useAtom(filterAtom);
   const t = useTranslations('StratPage.StratHeader.GimmickType');
 
   return (
@@ -26,7 +28,7 @@ export const FilterMenu = () => {
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon">
           <span className="sr-only select-none">Adjust display filter</span>
-          <MiscIcons.filter />
+          <CustomIcons.filter />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-72 p-3">
@@ -41,9 +43,9 @@ export const FilterMenu = () => {
               className="flex justify-start text-start h-7 px-3 m-[2px]"
               aria-label="h"
               key={gimmickType}
-              pressed={filterState.get(gimmickType)}
+              pressed={filterState[gimmickType]}
               onPressedChange={(pressed) => {
-                setFilterState(new Map(filterState).set(gimmickType, pressed));
+                setFilterState({ ...filterState, [gimmickType]: pressed });
               }}
             >
               <div className={cn('rounded-sm mr-2 w-[8px] h-[8px]', GIMMICK_BACKGROUND_STYLE[gimmickType])} />

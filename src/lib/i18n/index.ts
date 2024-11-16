@@ -13,10 +13,10 @@ export const routing = defineRouting({
 
 export const { Link, redirect, usePathname, useRouter } = createNavigation(routing);
 
-export default getRequestConfig(async ({ locale: l }) => {
-  const locale = l as Locale;
+export default getRequestConfig(async ({ requestLocale }) => {
+  const locale = await requestLocale;
 
-  if (!SUPPORTED_LOCALES.includes(locale)) notFound();
+  if (!locale || !SUPPORTED_LOCALES.includes(locale as Locale)) notFound();
 
   return {
     messages: (await import(`./messages/${locale}.json`)).default,

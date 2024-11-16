@@ -15,12 +15,11 @@ import Image from 'next/legacy/image';
 import React, { type MouseEventHandler, useEffect, useMemo, useState } from 'react';
 
 import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvider';
-import { usePixelPerFrame } from '@/lib/states';
+import { activeEntriesAtom, pixelPerFrameAtom } from '@/lib/atoms';
 import { deepEqual } from 'fast-equals';
-import { useContext } from 'use-context-selector';
+import { useAtom, useAtomValue } from 'jotai';
 import { BOX_X_OFFSET, BOX_Z_INDEX, COUNTDOWN_DURATION, columnWidth } from '../../utils/constants';
 import { MultiIntervalSet, getAreaHeight, timeToY, yToTime, yToTimeUnclamped } from '../../utils/helpers';
-import { EntrySelectionContext } from './EntrySelectionContext';
 
 function useEntryMutation() {
   const getStore = useStratSyncStore((state) => state.getStore);
@@ -147,7 +146,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
 
   const t = useTranslations('StratPage.EditColumn');
   const tActions = useTranslations('Common.Actions');
-  const pixelPerFrame = usePixelPerFrame();
+  const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
   const src = `/icons/action/${action.job}/${action.semantic_key}.png`;
 
   const { toast } = useToast();
@@ -161,7 +160,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
   const xMotionValue = useMotionValue(BOX_X_OFFSET[slot]);
   const yMotionValue = useMotionValue(timeToY(useAt, pixelPerFrame));
 
-  const { activeEntries, setActiveEntries } = useContext(EntrySelectionContext);
+  const [activeEntries, setActiveEntries] = useAtom(activeEntriesAtom);
   const draggable = elevated && !isLocked;
   const [isDragging, setIsDragging] = useState(false);
 
@@ -384,13 +383,12 @@ const EditSubColumn = React.memo(({ raidDuration, action, entries, playerId }: E
   const { toast } = useToast();
   const t = useTranslations('StratPage.EditColumn');
 
-  const pixelPerFrame = usePixelPerFrame();
+  const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
   const areaHeight = getAreaHeight(pixelPerFrame, raidDuration);
 
   const { insertEntry } = useEntryMutation();
   const elevated = useStratSyncStore((state) => state.elevated);
-
-  const { setActiveEntries } = useContext(EntrySelectionContext);
+  const [activeEntries, setActiveEntries] = useAtom(activeEntriesAtom);
 
   const slotMap: Map<string, number> = useMemo(() => {
     const slots: { id: string; use_at: number }[][] = Array.from({ length: action.charges }, () => []);
@@ -459,7 +457,7 @@ export type EditColumnProps = {
 };
 
 const EditColumn = React.memo(({ playerId, raidDuration, entries, actions }: EditColumnProps) => {
-  const pixelPerFrame = usePixelPerFrame();
+  const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
   const areaHeight = getAreaHeight(pixelPerFrame, raidDuration);
 
   const actionEntriesRecord = useMemo(() => {

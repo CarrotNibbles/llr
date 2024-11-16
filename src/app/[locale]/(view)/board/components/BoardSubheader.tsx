@@ -11,7 +11,7 @@ import { RaidSearchPopover } from './RaidPopover';
 type BoardSubheaderProps = Readonly<React.HTMLAttributes<HTMLDivElement>>;
 
 const BoardSubheader = async ({ className, ...props }: { className?: string } & BoardSubheaderProps) => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const fecthData = async () => {
     const { data: raidsData, error: raidsDataQueryError } = await buildRaidsDataQuery(supabase);
@@ -37,7 +37,7 @@ type BoardSubheaderContentProps = Readonly<
 
 const BOARD_SUBHEADER_CONTENT_DEFAULT_DATA: BoardSubheaderContentData = { raidsData: [] };
 const BoardSubheaderContent: React.FC<BoardSubheaderContentProps> = async ({ dataPromise, className, ...props }) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

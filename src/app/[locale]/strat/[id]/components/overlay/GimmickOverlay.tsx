@@ -1,9 +1,10 @@
 'use client';
 
+import { filterAtom, pixelPerFrameAtom } from '@/lib/atoms';
 import { useMitigatedDamages } from '@/lib/calc/hooks';
 import type { StrategyDataType } from '@/lib/queries/server';
-import { useFilterState, usePixelPerFrame } from '@/lib/states';
 import { type ArrayElement, cn } from '@/lib/utils';
+import { useAtomValue } from 'jotai';
 import React, { useMemo } from 'react';
 import {
   AVAILABLE_GRID_MINOR_INTERVALS,
@@ -27,7 +28,7 @@ type GridOverlayProps = {
 
 const GridOverlay = ({ className, ...props }: { className?: string } & GridOverlayProps) => {
   const { raidDuration, resizePanelSize, minorInterval, majorInterval } = props;
-  const pixelPerFrame = usePixelPerFrame();
+  const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
 
   const getTimeRepresentation = (t: number) => {
     const seconds = Math.floor(Math.abs(t) / 60);
@@ -102,19 +103,19 @@ const GimmickOverlay = React.forwardRef<
   GimmickOverlayProps & { className?: string } & React.ComponentPropsWithoutRef<'div'>
 >(({ className, ...props }, ref) => {
   const { gimmicks, raidDuration, resizePanelSize } = props;
-  const pixelPerFrame = usePixelPerFrame();
+  const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
   const areaHeight = getAreaHeight(pixelPerFrame, raidDuration);
 
   const minorInterval =
     AVAILABLE_GRID_MINOR_INTERVALS.find((intv) => pixelPerFrame * intv >= INTERVAL_RENDER_THRESHOLD) ??
     MAJOR_GRID_INTERVAL;
-  const [filterState, _] = useFilterState();
+  const filterState = useAtomValue(filterAtom);
 
   const mitigatedDamages = useMitigatedDamages();
 
   const gimmicksWithMerged = useMemo(() => {
     const gimmicksWithMerged = gimmicks
-      .filter((gimmick) => filterState.get(gimmick.type))
+      .filter((gimmick) => filterState[gimmick.type])
       .toSorted((gimmick1, gimmick2) => gimmick1.prepare_at - gimmick2.prepare_at)
       .map<
         ArrayElement<GimmickOverlayProps['gimmicks']> & {

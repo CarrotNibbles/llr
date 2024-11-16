@@ -13,7 +13,7 @@ import { SearchButton } from './SearchButton';
 type ViewHeaderProps = Readonly<React.HTMLAttributes<HTMLDivElement> & {}>;
 
 const ViewHeader = async ({ className, ...props }: { className?: string } & ViewHeaderProps) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

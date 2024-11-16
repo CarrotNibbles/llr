@@ -4,9 +4,10 @@ import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider
 import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
 import { useToast } from '@/components/ui/use-toast';
-import { useAutoScrollState, useNoteState } from '@/lib/states';
+import { autoScrollAtom, noteAtom } from '@/lib/atoms';
 import { cn } from '@/lib/utils';
 import { Pencil2Icon, PlayIcon, ResetIcon, StopIcon } from '@radix-ui/react-icons';
+import { useAtom } from 'jotai';
 import { useTranslations } from 'next-intl';
 import React, { useCallback, useEffect } from 'react';
 
@@ -17,8 +18,8 @@ export const StratToolbar = React.forwardRef<
   const { toast } = useToast();
   const t = useTranslations('StratPage.StratToolbar');
 
-  const [autoScroll, setAutoScroll] = useAutoScrollState();
-  const [noteState, setNoteState] = useNoteState();
+  const [autoScroll, setAutoScroll] = useAtom(autoScrollAtom);
+  const [noteState, setNoteState] = useAtom(noteAtom);
 
   const elevated = useStratSyncStore((state) => state.elevated);
   const undo = useStratSyncStore((state) => state.undo);

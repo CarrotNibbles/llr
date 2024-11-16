@@ -1,10 +1,11 @@
 'use client';
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
+import { noteAtom, pixelPerFrameAtom } from '@/lib/atoms';
 import type { Tables } from '@/lib/database.types';
-import { useNoteState, usePixelPerFrame } from '@/lib/states';
 import { cn } from '@/lib/utils';
 import { deepEqual } from 'fast-equals';
 import { AnimatePresence } from 'framer-motion';
+import { useAtom, useAtomValue } from 'jotai';
 import { useTranslations } from 'next-intl';
 import React from 'react';
 import { xToBlockOffsetFactory, yToTime } from '../../utils/helpers';
@@ -19,8 +20,8 @@ const NoteOverlay = React.memo(
   React.forwardRef<HTMLDivElement, { className?: string } & React.ComponentPropsWithoutRef<'div'> & NoteOverlayProps>(
     ({ className, raidDuration, notes, ...props }, ref) => {
       const t = useTranslations('StratPage.Note');
-      const [noteState, setNoteState] = useNoteState();
-      const pixelPerFrame = usePixelPerFrame();
+      const [noteState, setNoteState] = useAtom(noteAtom);
+      const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
 
       const xToBlockOffset = xToBlockOffsetFactory(noteState.editColumnWidths);
 

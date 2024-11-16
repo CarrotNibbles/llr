@@ -4,7 +4,7 @@ import { discordSignIn } from '@/lib/auth/action';
 import { useTranslations } from 'next-intl';
 import type React from 'react';
 import { useState } from 'react';
-import { MiscIcons } from '../icons/MiscIcons';
+import { CustomIcons } from '../icons/CustomIcons';
 import { Button, type ButtonProps } from '../ui/button';
 
 type SignInButtonProps = ButtonProps & {};
@@ -22,9 +22,9 @@ export const SignInButton: React.FC<SignInButtonProps> = ({ className, ...props 
   return (
     <Button className={className} type="button" disabled={isLoading} onClick={onDiscordSubmit} {...props}>
       {isLoading ? (
-        <MiscIcons.spinner className="mr-2 h-4 w-4 animate-spin" />
+        <CustomIcons.spinner className="mr-2 h-4 w-4 animate-spin" />
       ) : (
-        <MiscIcons.discord className="mr-2 h-4 w-4" />
+        <CustomIcons.discord className="mr-2 h-4 w-4" />
       )}{' '}
       {t('SignIn')}
     </Button>

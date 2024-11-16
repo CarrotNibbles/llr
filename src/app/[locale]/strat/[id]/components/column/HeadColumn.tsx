@@ -15,14 +15,14 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } 
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/components/ui/use-toast';
+import { activeEntriesAtom } from '@/lib/atoms';
 import type { Enums } from '@/lib/database.types';
 import { JOB_LAYOUT, getOrderedRole } from '@/lib/utils';
+import { useSetAtom } from 'jotai';
 import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
 import React, { useState } from 'react';
-import { useContextSelector } from 'use-context-selector';
 import { columnWidth } from '../../utils/constants';
-import { EntrySelectionContext } from './EntrySelectionContext';
 
 const HeadSubColumn = React.memo(
   ({
@@ -35,7 +35,7 @@ const HeadSubColumn = React.memo(
     actionMeta: { id: string; semantic_key: string };
   }) => {
     const tActions = useTranslations('Common.Actions');
-    const setActiveEntries = useContextSelector(EntrySelectionContext, (context) => context.setActiveEntries);
+    const setActiveEntries = useSetAtom(activeEntriesAtom);
     const elevated = useStratSyncStore((state) => state.elevated);
     const getStore = useStratSyncStore((state) => state.getStore);
 

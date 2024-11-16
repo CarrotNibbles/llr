@@ -7,12 +7,14 @@ import { StratMain } from './components/StratMain';
 import { StratSyncProvider } from './components/StratSyncProvider';
 import { StratToolbar } from './components/StratToolbar';
 
-export default async function StratPage({
-  params: { id, locale },
-}: Readonly<{
-  params: { id: string; locale: Locale };
-}>) {
-  const supabase = createClient();
+export default async function StratPage(
+  props: Readonly<{
+    params: { id: string; locale: Locale };
+  }>,
+) {
+  const id = (await props.params).id;
+
+  const supabase = await createClient();
 
   const [
     { data: strategyData, error: strategyDataQueryError },

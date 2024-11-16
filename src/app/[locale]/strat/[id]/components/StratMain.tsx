@@ -3,24 +3,30 @@
 import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvider';
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
-import { useAutoScrollState, useNoteState, usePixelPerFrame, useZoomState } from '@/lib/states';
-import { type DragControls, useAnimationFrame } from 'framer-motion';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { ScrollSync, ScrollSyncPane } from 'react-scroll-sync';
-
+import { autoScrollAtom, noteAtom, pixelPerFrameAtom, zoomAtom } from '@/lib/atoms';
 import type { Tables } from '@/lib/database.types';
 import type { ActionDataType } from '@/lib/queries/server';
 import { cn } from '@/lib/utils';
+import { type DragControls, useAnimationFrame } from 'framer-motion';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import type React from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { ScrollSync, ScrollSyncPane, type ScrollSyncPaneProps, type ScrollSyncProps } from 'react-scroll-sync';
 import { COLUMN_WIDTH_PX } from '../utils/constants';
 import { getAreaHeight } from '../utils/helpers';
-import { EditColumn, EntrySelectionContext, HeadColumn } from './column';
+import { EditColumn, HeadColumn } from './column';
 import { NoteOverlay } from './note/NoteOverlay';
 import { GimmickOverlay } from './overlay';
 
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+const ScrollSyncFixed: (props: ScrollSyncProps) => React.ReactNode = ScrollSync as any;
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+const ScrollSyncPaneFixed: (props: ScrollSyncPaneProps) => React.ReactNode = ScrollSyncPane as any;
+
 export const StratMain = () => {
-  const [zoom, _setZoom] = useZoomState();
   const [resizePanelSize, setResizePanelSize] = useState(20);
-  const pixelPerFrame = usePixelPerFrame();
+  const zoom = useAtomValue(zoomAtom);
+  const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
 
   const actionData = useStaticDataStore((state) => state.actionData);
   const strategyData = useStratSyncStore((state) => state.strategyData);
@@ -30,8 +36,8 @@ export const StratMain = () => {
   const overlayRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
   const editRef = useRef<HTMLDivElement>(null);
-  const [autoScroll, setAutoScroll] = useAutoScrollState();
-  const [_noteState, setNoteState] = useNoteState();
+  const [autoScroll, setAutoScroll] = useAtom(autoScrollAtom);
+  const setNoteState = useSetAtom(noteAtom);
 
   const raidDuration = strategyData.raids?.duration ?? 0;
   const raidLevel = strategyData.raids?.level ?? 0;
@@ -148,84 +154,82 @@ export const StratMain = () => {
   });
 
   return (
-    <ScrollSync horizontal vertical={!autoScroll.active}>
-      <EntrySelectionContext.Provider value={{ activeEntries, setActiveEntries }}>
-        <ResizablePanelGroup
-          direction="horizontal"
-          className="relative flex w-screen flex-grow overflow-hidden select-none"
+    <ScrollSyncFixed horizontal vertical={!autoScroll.active}>
+      <ResizablePanelGroup
+        direction="horizontal"
+        className="relative flex w-screen flex-grow overflow-hidden select-none"
+      >
+        <ResizablePanel defaultSize={20} minSize={4} className="border-r -z-50">
+          <div className="min-h-20 h-20 border-b" />
+        </ResizablePanel>
+        <ResizableHandle className="w-0" withHandle />
+        <ResizablePanel
+          defaultSize={80}
+          maxSize={96}
+          className="z-10 flex flex-col overflow-auto border-r"
+          onResize={(size) => {
+            setResizePanelSize(size);
+          }}
         >
-          <ResizablePanel defaultSize={20} minSize={4} className="border-r -z-50">
-            <div className="min-h-20 h-20 border-b" />
-          </ResizablePanel>
-          <ResizableHandle className="w-0" withHandle />
-          <ResizablePanel
-            defaultSize={80}
-            maxSize={96}
-            className="z-10 flex flex-col overflow-auto border-r"
-            onResize={(size) => {
-              setResizePanelSize(size);
-            }}
-          >
-            <ScrollSyncPane group="x">
-              <div className="min-h-20 h-20 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide border-b flex flex-row">
-                {strategyData.strategy_players.map(({ id, job, order }) => (
-                  <HeadColumn
-                    playerId={id}
-                    job={job}
-                    order={order}
-                    actionsMeta={job ? jobActionsMetaRecord[job] : []}
-                    key={`headcolumn-${id}`}
-                  />
-                ))}
-              </div>
-            </ScrollSyncPane>
-            <ScrollSyncPane group={scrollSyncGroup} innerRef={mainRef}>
-              <div
-                className={cn(
-                  'relative overscroll-none overflow-x-scroll',
-                  autoScroll.active ? 'overflow-y-hidden' : 'overflow-y-scroll',
-                )}
-              >
-                <div className="flex flex-grow relative bg-background" style={{ height: areaHeight }} ref={editRef}>
-                  {strategyData.strategy_players.map(({ id, job }) => (
-                    <EditColumn
-                      playerId={id}
-                      raidDuration={raidDuration}
-                      entries={playerEntriesRecord[id]}
-                      actions={job ? jobActionsRecord[job] : []}
-                      key={`editcolumn-${id}`}
-                    />
-                  ))}
-                </div>
-                <NoteOverlay
-                  className="absolute z-20 top-0 left-0 w-full"
-                  style={{
-                    height: areaHeight,
-                    width: editRef.current?.scrollWidth,
-                    maxWidth: editRef.current?.scrollWidth,
-                  }}
-                  raidDuration={raidDuration}
-                  notes={strategyData.notes}
+          <ScrollSyncPaneFixed group="x">
+            <div className="min-h-20 h-20 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide border-b flex flex-row">
+              {strategyData.strategy_players.map(({ id, job, order }) => (
+                <HeadColumn
+                  playerId={id}
+                  job={job}
+                  order={order}
+                  actionsMeta={job ? jobActionsMetaRecord[job] : []}
+                  key={`headcolumn-${id}`}
                 />
-              </div>
-            </ScrollSyncPane>
-          </ResizablePanel>
-          <ScrollSyncPane group="y" innerRef={overlayRef}>
+              ))}
+            </div>
+          </ScrollSyncPaneFixed>
+          <ScrollSyncPaneFixed group={scrollSyncGroup} innerRef={mainRef}>
             <div
               className={cn(
-                'overscroll-none absolute top-20 left-0 w-screen h-[calc(100%-5rem)] scrollbar-hide',
+                'relative overscroll-none overflow-x-scroll',
                 autoScroll.active ? 'overflow-y-hidden' : 'overflow-y-scroll',
               )}
             >
-              <GimmickOverlay
-                resizePanelSize={resizePanelSize}
-                raidDuration={strategyData.raids?.duration ?? 0}
-                gimmicks={strategyData.raids?.gimmicks ?? []}
+              <div className="flex flex-grow relative bg-background" style={{ height: areaHeight }} ref={editRef}>
+                {strategyData.strategy_players.map(({ id, job }) => (
+                  <EditColumn
+                    playerId={id}
+                    raidDuration={raidDuration}
+                    entries={playerEntriesRecord[id]}
+                    actions={job ? jobActionsRecord[job] : []}
+                    key={`editcolumn-${id}`}
+                  />
+                ))}
+              </div>
+              <NoteOverlay
+                className="absolute z-20 top-0 left-0 w-full"
+                style={{
+                  height: areaHeight,
+                  width: editRef.current?.scrollWidth,
+                  maxWidth: editRef.current?.scrollWidth,
+                }}
+                raidDuration={raidDuration}
+                notes={strategyData.notes}
               />
             </div>
-          </ScrollSyncPane>
-        </ResizablePanelGroup>
-      </EntrySelectionContext.Provider>
-    </ScrollSync>
+          </ScrollSyncPaneFixed>
+        </ResizablePanel>
+        <ScrollSyncPaneFixed group="y" innerRef={overlayRef}>
+          <div
+            className={cn(
+              'overscroll-none absolute top-20 left-0 w-screen h-[calc(100%-5rem)] scrollbar-hide',
+              autoScroll.active ? 'overflow-y-hidden' : 'overflow-y-scroll',
+            )}
+          >
+            <GimmickOverlay
+              resizePanelSize={resizePanelSize}
+              raidDuration={strategyData.raids?.duration ?? 0}
+              gimmicks={strategyData.raids?.gimmicks ?? []}
+            />
+          </div>
+        </ScrollSyncPaneFixed>
+      </ResizablePanelGroup>
+    </ScrollSyncFixed>
   );
 };

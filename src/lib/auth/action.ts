@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 import { createClient } from '../supabase/server';
 
 export async function discordSignIn() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'discord',
@@ -28,7 +28,7 @@ export async function discordSignIn() {
 }
 
 export async function signOut() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { error } = await supabase.auth.signOut();
 

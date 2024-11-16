@@ -1,10 +1,11 @@
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from '@/components/ui/context-menu';
+import { noteAtom, pixelPerFrameAtom } from '@/lib/atoms';
 import type { Tables } from '@/lib/database.types';
-import { useNoteState, usePixelPerFrame } from '@/lib/states';
 import { cn } from '@/lib/utils';
 import { deepEqual } from 'fast-equals';
 import { animate, motion, useMotionValue } from 'framer-motion';
+import { useAtom, useAtomValue } from 'jotai';
 import { useTranslations } from 'next-intl';
 import React, { useEffect, useState } from 'react';
 import { blockOffsetToXFactory, timeToY, xToBlockOffsetFactory, yToTime } from '../../utils/helpers';
@@ -20,9 +21,9 @@ const NoteEntry = React.memo(
     { className?: string } & React.ComponentPropsWithRef<typeof motion.div> & NoteEntryProps
   >(({ className, note, raidDuration, ...props }, ref) => {
     const t = useTranslations('StratPage.Note');
-    const pixelPerFrame = usePixelPerFrame();
+    const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
     const mutateNote = useStratSyncStore((state) => state.mutateNote);
-    const [noteState, setNoteState] = useNoteState();
+    const [noteState, setNoteState] = useAtom(noteAtom);
 
     const blockOffsetToX = blockOffsetToXFactory(noteState.editColumnWidths);
     const xToBlockOffset = xToBlockOffsetFactory(noteState.editColumnWidths);

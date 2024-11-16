@@ -5,7 +5,7 @@
     "ignore": [
       "src/lib/proto/**",
       "src/components/ui/**",
-      "src/components/icons/MiscIcons.tsx",
+      "src/components/icons/CustomIcons.tsx",
       "src/lib/database.types.ts"
     ]
   },

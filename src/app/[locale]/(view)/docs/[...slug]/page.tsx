@@ -2,7 +2,11 @@ import { ProseArticle } from '@/components/ProseArticle';
 import { getLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
-export default async function DocumentPage({ params: { slug } }: { params: { slug: string[] } }) {
+export default async function DocumentPage(props: { params: Promise<{ slug: string[] }> }) {
+  const params = await props.params;
+
+  const { slug } = params;
+
   const locale = await getLocale();
 
   try {

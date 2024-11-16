@@ -2,7 +2,7 @@
 
 import { SignOutButton } from '@/components/auth/SignOutButton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button, type ButtonProps } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,13 +14,14 @@ import { createClient } from '@/lib/supabase/server';
 import { FileTextIcon, HeartIcon } from '@radix-ui/react-icons';
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
+import type React from 'react';
 
-type ProfileDropdownProps = Readonly<ButtonProps & {}>;
+type ProfileDropdownProps = Readonly<React.ComponentProps<typeof Avatar> & {}>;
 
 const ProfileDropdown = async ({ className, ...props }: { className?: string } & ProfileDropdownProps) => {
   const t = await getTranslations('ViewPage.ProfileDropdown');
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -28,7 +29,7 @@ const ProfileDropdown = async ({ className, ...props }: { className?: string } &
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Avatar className="border-[1px] border-border cursor-pointer">
+        <Avatar className="border-[1px] border-border cursor-pointer" {...props}>
           <AvatarImage src={user?.user_metadata.picture} />
           <AvatarFallback>{user?.user_metadata.name[0] ?? ''}</AvatarFallback>
         </Avatar>

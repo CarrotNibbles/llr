@@ -14,7 +14,7 @@ export interface StratSyncStoreProviderProps {
 }
 
 export const StratSyncStoreProvider = ({ initState, children }: StratSyncStoreProviderProps) => {
-  const storeRef = useRef<StratSyncStoreApi>();
+  const storeRef = useRef<StratSyncStoreApi>(undefined);
   if (!storeRef.current) {
     storeRef.current = createStratSyncStore(initState);
   }

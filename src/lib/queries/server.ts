@@ -5,21 +5,23 @@ import type { Database } from '../database.types';
 import type { createClient } from '../supabase/server';
 import { type ArrayElement, type Patch, type SelectableJob, type SortOption, removeUndefinedFields } from '../utils';
 
-export const buildActionDataQuery = async (supabase: ReturnType<typeof createClient>) => {
+type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
+
+export const buildActionDataQuery = async (supabase: SupabaseServerClient) => {
   return supabase.from('actions').select('*, mitigations(*)').order('priority');
 };
 
 export type ActionDataType = QueryData<ReturnType<typeof buildActionDataQuery>>;
 
 export const buildStrategyCountQuery = async (
-  supabase: ReturnType<typeof createClient>,
+  supabase: SupabaseServerClient,
   params: { q?: string; raid_skey?: string; patch?: Patch; jobs?: SelectableJob[] },
 ) => {
   return supabase.rpc('count_strategies', params);
 };
 
 export const buildMaxPageQuery = async (
-  supabase: ReturnType<typeof createClient>,
+  supabase: SupabaseServerClient,
   limit: number,
   params: { q?: string; raid_skey?: string; patch?: Patch; jobs?: SelectableJob[] },
 ) => {
@@ -31,7 +33,7 @@ export const buildMaxPageQuery = async (
 };
 
 export const buildStrategiesDataQuery = async (
-  supabase: ReturnType<typeof createClient>,
+  supabase: SupabaseServerClient,
   params: {
     q?: string;
     raid_skey?: string;
@@ -60,7 +62,7 @@ type ViewStrategyType = Readonly<
 >;
 export type ViewStrategiesDataType = Readonly<ViewStrategyType[]>;
 
-export const buildStrategyDataQuery = async (supabase: ReturnType<typeof createClient>, strategyId: string) => {
+export const buildStrategyDataQuery = async (supabase: SupabaseServerClient, strategyId: string) => {
   const res = await supabase
     .from('strategies')
     .select(
@@ -81,6 +83,6 @@ export const buildStrategyDataQuery = async (supabase: ReturnType<typeof createC
 
 export type StrategyDataType = QueryData<ReturnType<typeof buildStrategyDataQuery>>;
 
-export const buildRaidsDataQuery = async (supabase: ReturnType<typeof createClient>) => supabase.from('raids').select();
+export const buildRaidsDataQuery = async (supabase: SupabaseServerClient) => supabase.from('raids').select();
 
 export type RaidsDataType = QueryData<ReturnType<typeof buildRaidsDataQuery>>;

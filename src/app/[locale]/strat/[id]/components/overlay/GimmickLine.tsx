@@ -1,8 +1,9 @@
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Separator } from '@/components/ui/separator';
+import { pixelPerFrameAtom } from '@/lib/atoms';
 import type { StrategyDataType } from '@/lib/queries/server';
-import { usePixelPerFrame } from '@/lib/states';
 import { type ArrayElement, cn } from '@/lib/utils';
+import { useAtomValue } from 'jotai';
 import { useTranslations } from 'next-intl';
 import React from 'react';
 import { GIMMICK_BORDER_STYLE, GIMMICK_TEXT_STYLE, MAX_DISPLAY_COUNT } from '../../utils/constants';
@@ -30,7 +31,7 @@ const GimmickSubLine = ({
   lineType,
 }: GimmickSubLineProps) => {
   const tGimmicks = useTranslations('Common.Gimmicks');
-  const pixelPerFrame = usePixelPerFrame();
+  const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
 
   return (
     time &&
@@ -126,7 +127,7 @@ const GimmickLine = React.memo(
       mergedGimmicks,
       resizePanelSize,
     } = props;
-    const pixelPerFrame = usePixelPerFrame();
+    const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
     const textColor = GIMMICK_TEXT_STYLE[gimmickType];
     const borderColor = GIMMICK_BORDER_STYLE[gimmickType];
     const borderWidth = gimmickType === 'Enrage' ? 'border-t-4' : 'border-t-2';

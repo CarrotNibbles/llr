@@ -1,6 +1,7 @@
 import createNextIntlPlugin from "next-intl/plugin";
 import createMDX from '@next/mdx';
 import remarkGfm from 'remark-gfm';
+import { NextConfig } from "next";
 
 const withMDX = createMDX({
   extension: /\.mdx$/,
@@ -26,6 +27,9 @@ const nextConfig = {
       },
     ],
   },
+  experimental: {
+    mdxRs: true,
+  },
   webpack: (config, { isServer, webpack }) => {
     if (!isServer) {
       config.resolve.fallback = {
@@ -35,6 +39,6 @@ const nextConfig = {
 
     return config;
   },
-};
+} satisfies NextConfig;
 
 export default withMDX(withNextIntl(nextConfig));

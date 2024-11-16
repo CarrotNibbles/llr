@@ -1,213 +1,13 @@
 import type { PlainMessage } from '@bufbuild/protobuf';
-import { LinkList } from '@js-sdsl/link-list';
 import { sha256 } from 'hash-wasm';
 import { produce } from 'immer';
 import { createStore } from 'zustand';
-import type { Enums, Tables } from '../database.types';
-import type { DamageOption, Entry, EventResponse, Note } from '../proto/stratsync_pb';
+import type { Enums } from '../database.types';
+import type { DamageOption, EventResponse } from '../proto/stratsync_pb';
 import type { StrategyDataType } from '../queries/server';
 import { type StratSyncClient, StratSyncClientFactory } from '../stratSyncClient';
 import { createClient } from '../supabase/client';
-import type { ArrayElement } from '../utils';
-
-export type NoteMutation =
-  | {
-      upsert: PlainMessage<Note>;
-    }
-  | {
-      delete: string;
-    };
-
-function inverseNoteMutation(mut: NoteMutation, currentNotes: Tables<'notes'>[]): NoteMutation {
-  if ('upsert' in mut) {
-    const existingNote = currentNotes.find((n) => n.id === mut.upsert.id);
-
-    if (existingNote) {
-      return { upsert: existingNote };
-    }
-
-    return { delete: mut.upsert.id };
-  }
-  const existingNote = currentNotes.find((n) => n.id === mut.delete);
-
-  if (existingNote) {
-    return { upsert: existingNote };
-  }
-
-  throw new Error(`Note with id ${mut.delete} not found`);
-}
-
-export type EntryMutation = {
-  upserts: PlainMessage<Entry>[];
-  deletes: string[];
-};
-
-function inverseEntryMutation(
-  { upserts, deletes }: EntryMutation,
-  currentEntries: ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries'],
-): EntryMutation {
-  const invertedUpserts: PlainMessage<Entry>[] = [];
-  const invertedDeletes: string[] = [];
-
-  for (const entry of upserts) {
-    const existingEntry = currentEntries.find((e) => e.id === entry.id);
-    if (existingEntry) {
-      invertedUpserts.push({
-        action: existingEntry.action,
-        id: existingEntry.id,
-        player: existingEntry.player,
-        useAt: existingEntry.use_at,
-      });
-    } else {
-      invertedDeletes.push(entry.id);
-    }
-  }
-
-  for (const id of deletes) {
-    const existingEntry = currentEntries.find((e) => e.id === id);
-    if (existingEntry) {
-      invertedUpserts.push({
-        action: existingEntry.action,
-        id: existingEntry.id,
-        player: existingEntry.player,
-        useAt: existingEntry.use_at,
-      });
-    }
-  }
-
-  return {
-    upserts: invertedUpserts,
-    deletes: invertedDeletes,
-  };
-}
-
-type UndoableMutation =
-  | {
-      type: 'entry';
-      mutation: EntryMutation;
-    }
-  | {
-      type: 'note';
-      mutation: NoteMutation;
-    };
-
-type UndoableHistory =
-  | {
-      type: 'entry';
-      forward: EntryMutation;
-      backward: EntryMutation;
-    }
-  | {
-      type: 'note';
-      forward: NoteMutation;
-      backward: NoteMutation;
-    };
-
-const pickForward = (history: UndoableHistory | undefined): UndoableMutation | undefined => {
-  if (!history) return undefined;
-
-  if (history.type === 'entry') {
-    return { type: 'entry', mutation: history.forward };
-  }
-  return { type: 'note', mutation: history.forward };
-};
-
-const pickBackward = (history: UndoableHistory | undefined): UndoableMutation | undefined => {
-  if (!history) return undefined;
-
-  if (history.type === 'entry') {
-    return { type: 'entry', mutation: history.backward };
-  }
-  return { type: 'note', mutation: history.backward };
-};
-
-class UndoProvider {
-  static MAX_HISTORY_CAPACITY = 256;
-
-  private past: LinkList<UndoableHistory> = new LinkList();
-  private future: LinkList<UndoableHistory> = new LinkList();
-
-  undo(): UndoableMutation | undefined {
-    const history = this.past.popBack();
-
-    if (history) this.future.pushFront(history);
-
-    return pickBackward(history);
-  }
-
-  redo(): UndoableMutation | undefined {
-    const history = this.future.popFront();
-
-    if (history) this.past.pushBack(history);
-
-    return pickForward(history);
-  }
-
-  lockEntries(ids: string[]): void {
-    const lockedEntries = new Set(ids);
-
-    for (const { type, forward, backward } of this.past) {
-      if (type === 'entry') {
-        forward.upserts = forward.upserts.filter((entry) => !lockedEntries.has(entry.id));
-        forward.deletes = forward.deletes.filter((id) => !lockedEntries.has(id));
-        backward.upserts = backward.upserts.filter((entry) => !lockedEntries.has(entry.id));
-        backward.deletes = backward.deletes.filter((id) => !lockedEntries.has(id));
-      }
-    }
-
-    for (const { type, forward, backward } of this.future) {
-      if (type === 'entry') {
-        forward.upserts = forward.upserts.filter((entry) => !lockedEntries.has(entry.id));
-        forward.deletes = forward.deletes.filter((id) => !lockedEntries.has(id));
-        backward.upserts = backward.upserts.filter((entry) => !lockedEntries.has(entry.id));
-        backward.deletes = backward.deletes.filter((id) => !lockedEntries.has(id));
-      }
-    }
-  }
-
-  ensureCapacity(): void {
-    if (this.future.size() > UndoProvider.MAX_HISTORY_CAPACITY) {
-      throw new Error('Future history is too large');
-    }
-
-    while (this.past.size() + this.future.size() > UndoProvider.MAX_HISTORY_CAPACITY) this.past.popFront();
-  }
-
-  pushEntryMutation(
-    mutation: EntryMutation,
-    currentEntries: ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries'],
-  ): void {
-    this.past.pushBack({
-      type: 'entry',
-      forward: mutation,
-      backward: inverseEntryMutation(mutation, currentEntries),
-    });
-
-    this.future.clear();
-
-    this.ensureCapacity();
-  }
-
-  pushNoteMutation(mutation: NoteMutation, currentNotes: Tables<'notes'>[]): void {
-    this.past.pushBack({
-      type: 'note',
-      forward: mutation,
-      backward: inverseNoteMutation(mutation, currentNotes),
-    });
-
-    this.future.clear();
-
-    this.ensureCapacity();
-  }
-
-  isUndoAvailable(): boolean {
-    return this.past.size() > 0;
-  }
-
-  isRedoAvailable(): boolean {
-    return this.future.size() > 0;
-  }
-}
+import { type EntryMutation, type NoteMutation, UndoManager, type UndoableMutation } from './undoManager';
 
 export type StratSyncState = {
   strategy: string;
@@ -220,7 +20,7 @@ export type StratSyncState = {
   eventStream?: AsyncIterable<EventResponse>;
   client?: StratSyncClient;
   strategyData: StrategyDataType;
-  undoProvider: UndoProvider;
+  undoManager: UndoManager;
   undoAvailable: boolean;
   redoAvailable: boolean;
 };
@@ -234,10 +34,10 @@ export type StratSyncActions = {
   abort: () => void;
   upsertDamageOption: (damageOption: PlainMessage<DamageOption>, local: boolean) => void;
   mutateEntries: (entryMutation: EntryMutation, local: boolean) => void;
+  mutateNote: (noteMutation: NoteMutation) => void;
+  updatePlayerJob: (id: string, job: string | undefined, local: boolean) => void;
   undo: () => UndoableMutation | undefined;
   redo: () => UndoableMutation | undefined;
-  updatePlayerJob: (id: string, job: string | undefined, local: boolean) => void;
-  mutateNote: (noteMutation: NoteMutation) => void;
 };
 
 export type StratSyncStore = StratSyncState & StratSyncActions;
@@ -249,14 +49,14 @@ const defaultState = {
   elevatable: false,
   connectionAborted: false,
   strategyData: {} as StrategyDataType,
-  undoProvider: new UndoProvider(),
+  undoManager: new UndoManager(),
   undoAvailable: false,
   redoAvailable: false,
 };
 
 const refreshUndoRedoAvailability = produce((state: StratSyncStore) => {
-  state.undoAvailable = state.undoProvider.isUndoAvailable();
-  state.redoAvailable = state.undoProvider.isRedoAvailable();
+  state.undoAvailable = state.undoManager.isUndoAvailable();
+  state.redoAvailable = state.undoManager.isRedoAvailable();
 });
 
 const handleUpsertDamageOption = (damageOption: PlainMessage<DamageOption>) =>
@@ -316,7 +116,6 @@ const handleUpdatePlayerJob = (id: string, job: string | undefined) =>
 
 const handleMutateNote = (mut: NoteMutation) =>
   produce((state: StratSyncStore) => {
-    console.log('handleMutateNote');
     if ('upsert' in mut) {
       state.strategyData.notes = state.strategyData.notes.filter((n) => n.id !== mut.upsert.id);
       state.strategyData.notes.push({ ...mut.upsert, strategy: state.strategyData.id });
@@ -363,6 +162,7 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
     return {
       ...defaultState,
       ...initState,
+      getStore: () => get(),
       connect: async (strategy: string, isAuthor: boolean, editable: boolean) => {
         try {
           const client = new StratSyncClientFactory().client;
@@ -377,7 +177,7 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
               state.eventStream = eventStream;
               state.strategy = strategy;
               state.token = event.value.token;
-              state.undoProvider = new UndoProvider();
+              state.undoManager = new UndoManager();
 
               state.isAuthor = isAuthor;
               state.elevatable = !isAuthor && editable;
@@ -432,13 +232,13 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
 
             if (event.case === 'mutateEntriesEvent') {
               const { upserts, deletes } = event.value;
-              get().undoProvider.lockEntries([...upserts.map((e) => e.id), ...deletes]);
+              get().undoManager.lockEntries([...upserts.map((e) => e.id), ...deletes]);
               set(handleMutateEntries({ upserts, deletes }));
             }
 
             if (event.case === 'updatePlayerJobEvent') {
               const { id, job } = event.value;
-              get().undoProvider.lockEntries(
+              get().undoManager.lockEntries(
                 get()
                   .strategyData.strategy_players.find((p) => p.id === id)
                   ?.strategy_player_entries.map((e) => e.id) ?? [],
@@ -463,7 +263,6 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
           }),
         );
       },
-      getStore: get,
       abort: () => {
         set(
           produce((state: StratSyncStore) => {
@@ -520,7 +319,7 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
 
         set(
           produce((state: StratSyncStore) => {
-            state.undoProvider.pushEntryMutation(
+            state.undoManager.pushEntryMutation(
               entryMutation,
               state.strategyData.strategy_players.flatMap((p) => p.strategy_player_entries),
             );
@@ -541,7 +340,7 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
         )(get());
       },
       undo: () => {
-        const backwardMutation = get().undoProvider.undo();
+        const backwardMutation = get().undoManager.undo();
 
         if (backwardMutation) {
           if (backwardMutation.type === 'entry') {
@@ -583,7 +382,7 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
         return backwardMutation;
       },
       redo: () => {
-        const forwardMutation = get().undoProvider.redo();
+        const forwardMutation = get().undoManager.redo();
 
         if (forwardMutation) {
           if (forwardMutation.type === 'entry') {
@@ -625,7 +424,7 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
         return forwardMutation;
       },
       updatePlayerJob: (id: string, job: string | undefined, local = false) => {
-        get().undoProvider.lockEntries(
+        get().undoManager.lockEntries(
           get()
             .strategyData.strategy_players.find((p) => p.id === id)
             ?.strategy_player_entries.map((e) => e.id) ?? [],
@@ -638,7 +437,7 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
         )(get());
       },
       mutateNote: (noteMutation: NoteMutation) => {
-        get().undoProvider.pushNoteMutation(noteMutation, get().strategyData.notes);
+        get().undoManager.pushNoteMutation(noteMutation, get().strategyData.notes);
 
         optimisticDispatch(
           handleMutateNote(noteMutation),

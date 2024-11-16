@@ -24,8 +24,10 @@ type BoardPageProps = Readonly<{
   searchParams: Partial<SearchSearchParamsRaw>;
 }>;
 
-export default async function BoardPage({ params: { locale }, searchParams }: BoardPageProps) {
-  const supabase = createClient();
+export default async function BoardPage(props: BoardPageProps) {
+  const searchParams = await props.searchParams;
+
+  const supabase = await createClient();
 
   const q = searchParams.q;
   const raid = searchParams.raid;
