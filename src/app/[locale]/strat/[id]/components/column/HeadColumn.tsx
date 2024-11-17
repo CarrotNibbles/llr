@@ -65,7 +65,7 @@ const HeadSubColumn = React.memo(
             <TooltipContent className="pointer-events-none">{tActions(actionMeta.semantic_key)}</TooltipContent>
             <ContextMenuContent>
               <ContextMenuItem
-                onClick={() => {
+                onSelect={() => {
                   const playerStrategy = getStore().strategyData.strategy_players.find(
                     (player) => player.id === playerId,
                   );

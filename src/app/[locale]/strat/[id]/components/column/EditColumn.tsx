@@ -345,7 +345,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
         </ContextMenuCheckboxItem>
         <ContextMenuItem
           inset
-          onClick={() => {
+          onSelect={() => {
             mutateEntries({ upserts: [], deletes: [entryId] }, false);
             setActiveEntries((prev) => {
               const newActiveEntries = new Map(prev);
@@ -359,7 +359,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
         {activeEntries.size > 1 && (
           <ContextMenuItem
             inset
-            onClick={() => {
+            onSelect={() => {
               mutateEntries({ upserts: [], deletes: activeEntries.keys().toArray() }, false);
               setActiveEntries(new Map());
             }}
