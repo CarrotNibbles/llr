@@ -84,7 +84,7 @@ const NoteEntry = React.memo(
           setNoteState({ ...noteState, moving: false });
         }}
         ref={ref}
-        className={cn('flex space-x-2 items-center h-8 ml-[-0.35355rem] mt-[-1rem]', className)}
+        className={cn('flex space-x-2 items-center h-8 ml-[-0.35355rem] mt-[-1rem] pr-2', className)}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
