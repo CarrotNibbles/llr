@@ -7,7 +7,7 @@ import { deepEqual } from 'fast-equals';
 import { animate, motion, useMotionValue } from 'framer-motion';
 import { useAtom, useAtomValue } from 'jotai';
 import { useTranslations } from 'next-intl';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { blockOffsetToXFactory, timeToY, xToBlockOffsetFactory, yToTime } from '../../utils/helpers';
 
 type NoteEntryProps = {
@@ -29,15 +29,26 @@ const NoteEntry = React.memo(
     const xToBlockOffset = xToBlockOffsetFactory(noteState.editColumnWidths);
 
     const [open, setOpen] = useState(true);
-    const [isEditing, setIsEditing] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
     const [currentNote, setCurrentNote] = useState(note);
 
     const xMotionValue = useMotionValue(blockOffsetToX(note.block, note.offset));
     const yMotionValue = useMotionValue(timeToY(note.at, pixelPerFrame));
 
+    const inputRef = useRef<HTMLInputElement>(null);
+    const [isComposing, setIsComposing] = useState(false);
+    const [dispatchRequested, setDispatchRequested] = useState(false);
+
+    useEffect(() => {
+      if (!isComposing && dispatchRequested) {
+        setDispatchRequested(false);
+        inputRef.current?.blur();
+      }
+    }, [isComposing, dispatchRequested]);
+
     // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
-      setIsEditing(false);
+      inputRef.current?.blur();
       setCurrentNote(note);
 
       void animate(xMotionValue, blockOffsetToX(note.block, note.offset));
@@ -83,7 +94,7 @@ const NoteEntry = React.memo(
         }}
         {...props}
       >
-        <ContextMenu>
+        <ContextMenu modal={false}>
           <ContextMenuTrigger asChild>
             <motion.div
               className="bg-amber-600 dark:bg-amber-400 w-2 h-2 cursor-pointer"
@@ -93,42 +104,52 @@ const NoteEntry = React.memo(
             />
           </ContextMenuTrigger>
           <ContextMenuContent>
-            <ContextMenuItem onClick={() => mutateNote({ delete: note.id })}>{t('DeleteNote')}</ContextMenuItem>
+            <ContextMenuItem
+              onSelect={() => {
+                inputRef.current?.focus();
+              }}
+            >
+              {t('EditNote')}
+            </ContextMenuItem>
+            <ContextMenuItem onSelect={() => mutateNote({ delete: note.id })}>{t('DeleteNote')}</ContextMenuItem>
           </ContextMenuContent>
         </ContextMenu>
-        {isEditing ? (
-          <motion.input
-            className="text-amber-600 dark:text-amber-400 text-xs font-bold bg-transparent w-32 outline-none cursor-text"
-            animate={{ opacity: open ? 1 : 0 }}
-            type="text"
-            value={currentNote.content}
-            onChange={(e) =>
-              setCurrentNote({
-                ...currentNote,
-                content: e.target.value,
-              })
+        <motion.input
+          ref={inputRef}
+          className={cn(
+            'text-amber-600 dark:text-amber-400 decoration-dotted decoration-2 text-xs font-bold bg-transparent w-32 outline-none cursor-text',
+            isFocused ? 'underline' : 'no-underline',
+          )}
+          animate={{ opacity: open ? 1 : 0 }}
+          type="text"
+          value={currentNote.content}
+          onChange={(e) =>
+            setCurrentNote({
+              ...currentNote,
+              content: e.target.value,
+            })
+          }
+          onFocus={() => {
+            console.log('focus');
+            setIsFocused(true);
+          }}
+          onBlur={() => {
+            setDispatchRequested(false);
+            setIsFocused(false);
+            mutateNote({ upsert: currentNote });
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              setDispatchRequested(true);
             }
-            autoFocus
-            onBlur={() => {
-              mutateNote({ upsert: currentNote });
-              setIsEditing(false);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                mutateNote({ upsert: currentNote });
-                setIsEditing(false);
-              }
-            }}
-          />
-        ) : (
-          <motion.div
-            className="text-xs text-amber-600 dark:text-amber-400 font-bold whitespace-nowrap cursor-text"
-            animate={{ opacity: open ? 1 : 0 }}
-            onDoubleClick={() => setIsEditing(true)}
-          >
-            {currentNote.content}
-          </motion.div>
-        )}
+          }}
+          onCompositionStart={() => {
+            setIsComposing(true);
+          }}
+          onCompositionEnd={() => {
+            setIsComposing(false);
+          }}
+        />
       </motion.div>
     );
   }),

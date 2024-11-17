@@ -283,7 +283,8 @@
     },
     "Note": {
       "NewNote": "新しいメモ",
-      "DeleteNote": "メモを削除"
+      "DeleteNote": "メモを削除",
+      "EditNote": "メモを編集"
     }
   },
   "ViewPage": {

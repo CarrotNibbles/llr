@@ -283,7 +283,8 @@
     },
     "Note": {
       "NewNote": "New Note",
-      "DeleteNote": "Delete Note"
+      "DeleteNote": "Delete Note",
+      "EditNote": "Edit Note"
     }
   },
   "ViewPage": {

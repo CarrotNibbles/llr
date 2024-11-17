@@ -283,7 +283,8 @@
     },
     "Note": {
       "NewNote": "새로운 메모",
-      "DeleteNote": "메모 삭제"
+      "DeleteNote": "메모 삭제",
+      "EditNote": "메모 수정"
     }
   },
   "ViewPage": {

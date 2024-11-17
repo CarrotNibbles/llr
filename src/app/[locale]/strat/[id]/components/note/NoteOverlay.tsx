@@ -33,7 +33,7 @@ const NoteOverlay = React.memo(
           className={cn(
             className,
             noteState.moving || noteState.inserting ? 'pointer-events-auto' : 'pointer-events-none',
-            noteState.inserting ? 'cursor-pointer' : 'cursor-default',
+            noteState.inserting ? 'cursor-crosshair' : 'cursor-default',
           )}
           onClick={(e) => {
             if (noteState.inserting) {
