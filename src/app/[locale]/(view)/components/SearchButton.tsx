@@ -268,7 +268,7 @@ const SearchButtonNew = React.forwardRef<HTMLButtonElement, SearchButtonProps>((
     <Button variant="ghost" size="icon" className={className} {...props} ref={ref}>
       <Link href={buildSearchURL(searchParams, { page: 1, limit: DEFAULT_LIMIT })}>
         <span className="sr-only select-none">Search</span>
-        <MagnifyingGlassIcon className="w-6 h-6" />
+        <MagnifyingGlassIcon className="h-4 w-4" />
       </Link>
     </Button>
   );

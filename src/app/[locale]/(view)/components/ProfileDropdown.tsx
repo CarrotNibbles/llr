@@ -29,7 +29,7 @@ const ProfileDropdown = async ({ className, ...props }: { className?: string } &
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Avatar className="border-[1px] border-border cursor-pointer" {...props}>
+        <Avatar className="border-[1px] border-border cursor-pointer md:h-10 md:w-10 h-8 w-8" {...props}>
           <AvatarImage src={user?.user_metadata.picture} />
           <AvatarFallback>{user?.user_metadata.name[0] ?? ''}</AvatarFallback>
         </Avatar>

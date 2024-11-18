@@ -53,7 +53,7 @@ export default async function BoardPage(props: BoardPageProps) {
         <StrategyTable
           dataPromise={buildStrategiesDataQuery(supabase, { raid_skey: raid, patch, page, lim: limit, sort, jobs })}
         />
-        <div className="w-full flex flex-col-reverse lg:grid lg:grid-cols-3 gap-y-2 mt-4">
+        <div className="w-full flex flex-col-reverse lg:grid lg:grid-cols-3 gap-y-4 mt-2 lg:mt-4">
           <div />
           <ViewPagination
             currentPage={page}

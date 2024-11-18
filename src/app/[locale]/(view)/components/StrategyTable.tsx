@@ -31,19 +31,19 @@ const StrategyTable = async ({ dataPromise, className, ...props }: { className?:
         <TableHeader className="pointer-events-none">
           <TableRow>
             <TableHead>
-              <div className="pl-2">{t('Strategy')}</div>
+              <div className="pl-2 text-xs md:text-sm">{t('Strategy')}</div>
             </TableHead>
             <TableHead className="w-36 hidden md:table-cell">
-              <div className="flex justify-center">{t('Author')}</div>
+              <div className="flex justify-center text-xs md:text-sm">{t('Author')}</div>
             </TableHead>
             <TableHead className="w-16 md:w-20">
-              <div className="flex justify-center">{t('Patch')}</div>
+              <div className="flex justify-center text-xs md:text-sm">{t('Patch')}</div>
             </TableHead>
             <TableHead className="w-16 md:w-20">
-              <div className="flex justify-center">{t('Likes')}</div>
+              <div className="flex justify-center text-xs md:text-sm">{t('Likes')}</div>
             </TableHead>
             <TableHead className="w-32 hidden md:table-cell">
-              <div className="flex justify-center">{t('Created')}</div>
+              <div className="flex justify-center text-xs md:text-sm">{t('Created')}</div>
             </TableHead>
           </TableRow>
         </TableHeader>

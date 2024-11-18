@@ -21,8 +21,8 @@ export async function ViewFooter({ className, ...props }: { className?: string }
 
   return (
     <div className={cn(className, 'min-w-full flex items-center justify-center py-8 bg-secondary')} {...props}>
-      <div className="w-full max-w-screen-xl px-6 space-y-6 text-muted-foreground sm:text-xs text-2xs md:space-y-0 md:flex md:flex-row-reverse md:items-center md:justify-between">
-        <div className="space-y-2 md:text-right">
+      <div className="w-full max-w-screen-xl px-6 space-y-6 text-muted-foreground md:text-xs text-2xs sm:space-y-0 sm:flex sm:flex-row-reverse sm:items-center sm:justify-between">
+        <div className="space-y-2 sm:text-right">
           <p>
             <Link href="/docs/terms" className="hover:underline">
               {t('TermsOfService')}
@@ -40,7 +40,7 @@ export async function ViewFooter({ className, ...props }: { className?: string }
             {t('NotAffiliated')}
           </p>
         </div>
-        <div className="flex sm:space-x-4 space-x-2 items-center">
+        <div className="flex md:space-x-4 space-x-2 items-center">
           <BrandIdentity variant="light" className="fill-muted-foreground md:h-11 sm:h-9 h-7" />
           <p>
             © {getYearString(2024, year)} <span className="font-bold">CarrotNibbles.</span>
