@@ -2,7 +2,7 @@
 
 import { filterAtom, pixelPerFrameAtom } from '@/lib/atoms';
 import { useMitigatedDamages } from '@/lib/calc/hooks';
-import type { StrategyDataType } from '@/lib/queries/server';
+import type { ActionDataType, StrategyDataType } from '@/lib/queries/server';
 import { cn } from '@/lib/utils/helpers';
 import type { ArrayElement } from '@/lib/utils/types';
 import { useAtomValue } from 'jotai';
@@ -96,6 +96,7 @@ const GridOverlay = ({ className, ...props }: { className?: string } & GridOverl
 
 type GimmickOverlayProps = {
   gimmicks: Exclude<StrategyDataType['raids'], null>['gimmicks'];
+  availableActions: ActionDataType;
   raidDuration: number;
   resizePanelSize: number;
 };
@@ -104,7 +105,7 @@ const GimmickOverlay = React.forwardRef<
   HTMLDivElement,
   GimmickOverlayProps & { className?: string } & React.ComponentPropsWithoutRef<'div'>
 >(({ className, ...props }, ref) => {
-  const { gimmicks, raidDuration, resizePanelSize } = props;
+  const { gimmicks, raidDuration, resizePanelSize, availableActions } = props;
   const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
   const { areaHeight } = verticalTransformsFactory(raidDuration, pixelPerFrame);
 
@@ -113,7 +114,7 @@ const GimmickOverlay = React.forwardRef<
     MAJOR_GRID_INTERVAL;
   const filterState = useAtomValue(filterAtom);
 
-  const mitigatedDamages = useMitigatedDamages();
+  const mitigatedDamages = useMitigatedDamages(availableActions);
 
   const gimmicksWithMerged = useMemo(() => {
     const gimmicksWithMerged = gimmicks

@@ -1,8 +1,8 @@
-import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvider';
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { OrderedMap } from '@js-sdsl/ordered-map';
 import { useMemo } from 'react';
 import type { Tables } from '../database.types';
+import type { ActionDataType } from '../queries/server';
 import { getDiversedRole, getRole } from '../utils/helpers';
 import type { ArrayElement, Role } from '../utils/types';
 import { estimateAll } from './estimations';
@@ -118,7 +118,7 @@ const semanticKeyTransform = (key: string): string => {
   return key;
 };
 
-export const useMitigatedDamages = () => {
+export const useMitigatedDamages = (actionData: ActionDataType) => {
   type DamageApplied = {
     id: string;
     combined_damage: number;
@@ -150,7 +150,6 @@ export const useMitigatedDamages = () => {
   type ActiveEffectMapKey = { at: number; _auto_incrementing_key: number };
   type ActiveEffectMap = OrderedMap<ActiveEffectMapKey, Effect>;
 
-  const { actionData } = useStaticDataStore((state) => state);
   const [mainTank, offTank] = useTank();
   const { strategyData } = useStratSyncStore((state) => state);
   const { hpHealer, hpTank, potencyCoefficientHealer, potencyCoefficientTank } = useEstimations();
@@ -203,6 +202,10 @@ export const useMitigatedDamages = () => {
       for (const entry of player.strategy_player_entries) {
         if (player.job === null) {
           throw new Error('ERROR: Job must be defined');
+        }
+
+        if (actionRecord[entry.action] === undefined) {
+          continue;
         }
 
         const job = player.job;
@@ -519,5 +522,5 @@ export const useMitigatedDamages = () => {
     }
 
     return mitigatedDamages;
-  }, [strategyData]);
+  }, [actionData, strategyData]);
 };
