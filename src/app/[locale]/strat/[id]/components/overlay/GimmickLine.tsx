@@ -7,7 +7,7 @@ import { useAtomValue } from 'jotai';
 import { useTranslations } from 'next-intl';
 import React from 'react';
 import { GIMMICK_BORDER_STYLE, GIMMICK_TEXT_STYLE, MAX_DISPLAY_COUNT } from '../../utils/constants';
-import { timeToY } from '../../utils/helpers';
+import { verticalTransformsFactory } from '../../utils/helpers';
 import type { MergedGimmick, SuperMergedGimmick } from '../../utils/types';
 import { DamagesText } from './DamagesText';
 
@@ -31,7 +31,9 @@ const GimmickSubLine = ({
   lineType,
 }: GimmickSubLineProps) => {
   const tGimmicks = useTranslations('Common.Gimmicks');
+
   const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
+  const { timeToY } = verticalTransformsFactory(Number.NaN, pixelPerFrame);
 
   return (
     time &&
@@ -40,7 +42,7 @@ const GimmickSubLine = ({
         <div
           className={`absolute border-0 border-t ${borderColor} right-0 ${lineType} z-10 pointer-events-none`}
           style={{
-            top: `${timeToY(time, pixelPerFrame)}px`,
+            top: `${timeToY(time)}px`,
             width: `${resizePanelSize}vw`,
           }}
         />
@@ -48,7 +50,7 @@ const GimmickSubLine = ({
           <div
             className={`absolute ${textColor} text-xs z-10 right-0 pointer-events-none`}
             style={{
-              top: `${timeToY(time, pixelPerFrame)}px`,
+              top: `${timeToY(time)}px`,
             }}
           >
             <div className="text-xs right-0">{tGimmicks(semanticKey)}</div>
@@ -128,6 +130,8 @@ const GimmickLine = React.memo(
       resizePanelSize,
     } = props;
     const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
+    const { timeToY } = verticalTransformsFactory(Number.NaN, pixelPerFrame);
+
     const textColor = GIMMICK_TEXT_STYLE[gimmickType];
     const borderColor = GIMMICK_BORDER_STYLE[gimmickType];
     const borderWidth = gimmickType === 'Enrage' ? 'border-t-4' : 'border-t-2';
@@ -159,9 +163,9 @@ const GimmickLine = React.memo(
         )}
         <div
           className={`absolute border-0 ${borderWidth} ${borderColor} w-[98dvw] right-0 z-10 pointer-events-none`}
-          style={{ top: `${timeToY(prepareAt, pixelPerFrame)}px` }}
+          style={{ top: `${timeToY(prepareAt)}px` }}
         />
-        <div className="absolute left-[2dvw]" style={{ top: `${timeToY(prepareAt, pixelPerFrame)}px` }}>
+        <div className="absolute left-[2dvw]" style={{ top: `${timeToY(prepareAt)}px` }}>
           <div className="space-y-1">
             <HoverCard openDelay={100}>
               <HoverCardTrigger>

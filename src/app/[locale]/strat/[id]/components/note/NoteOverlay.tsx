@@ -8,7 +8,7 @@ import { AnimatePresence } from 'framer-motion';
 import { useAtom, useAtomValue } from 'jotai';
 import { useTranslations } from 'next-intl';
 import React from 'react';
-import { xToBlockOffsetFactory, yToTime } from '../../utils/helpers';
+import { horizontalTransformsFactory, verticalTransformsFactory } from '../../utils/helpers';
 import { NoteEntry } from './NoteEntry';
 
 type NoteOverlayProps = {
@@ -23,7 +23,8 @@ const NoteOverlay = React.memo(
       const [noteState, setNoteState] = useAtom(noteAtom);
       const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
 
-      const xToBlockOffset = xToBlockOffsetFactory(noteState.editColumnWidths);
+      const { xToBlockOffset } = horizontalTransformsFactory(noteState.editColumnWidths);
+      const { yToTime } = verticalTransformsFactory(raidDuration, pixelPerFrame);
 
       const mutateNote = useStratSyncStore((state) => state.mutateNote);
 
@@ -42,7 +43,7 @@ const NoteOverlay = React.memo(
               const y = e.clientY - rect.top;
 
               const { block, offset } = xToBlockOffset(x);
-              const at = yToTime(y, pixelPerFrame, raidDuration);
+              const at = yToTime(y);
 
               mutateNote({
                 upsert: {

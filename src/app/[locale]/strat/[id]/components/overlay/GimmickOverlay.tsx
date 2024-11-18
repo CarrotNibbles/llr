@@ -14,7 +14,7 @@ import {
   MERGE_THRESHOLD_DEFAULT,
   MERGE_THRESHOLD_INCREMENTAL,
 } from '../../utils/constants';
-import { getAreaHeight, timeToY } from '../../utils/helpers';
+import { verticalTransformsFactory } from '../../utils/helpers';
 import type { MergedGimmick } from '../../utils/types';
 import { GimmickLine } from './GimmickLine';
 import { MitigatedDamagesContext } from './MitigatedDamagesContext';
@@ -29,6 +29,7 @@ type GridOverlayProps = {
 const GridOverlay = ({ className, ...props }: { className?: string } & GridOverlayProps) => {
   const { raidDuration, resizePanelSize, minorInterval, majorInterval } = props;
   const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
+  const { timeToY } = verticalTransformsFactory(raidDuration, pixelPerFrame);
 
   const getTimeRepresentation = (t: number) => {
     const seconds = Math.floor(Math.abs(t) / 60);
@@ -42,7 +43,7 @@ const GridOverlay = ({ className, ...props }: { className?: string } & GridOverl
     <>
       <div
         className="flex absolute pointer-events-none h-8 items-center justify-end text-2xs text-zinc-300 dark:text-zinc-700 pr-1 tabular-nums -z-10"
-        style={{ top: `calc(${timeToY(t, pixelPerFrame)}px - 1rem)`, right: `${resizePanelSize}vw` }}
+        style={{ top: `calc(${timeToY(t)}px - 1rem)`, right: `${resizePanelSize}vw` }}
       >
         {getTimeRepresentation(t)}
       </div>
@@ -53,11 +54,11 @@ const GridOverlay = ({ className, ...props }: { className?: string } & GridOverl
     <>
       <div
         className="absolute border-0 border-t-2 border-foreground right-0 pointer-events-none z-10"
-        style={{ top: `${timeToY(t, pixelPerFrame)}px`, width: `${resizePanelSize}vw` }}
+        style={{ top: `${timeToY(t)}px`, width: `${resizePanelSize}vw` }}
       />
       <div
         className="flex absolute pointer-events-none h-8 items-center justify-end text-xs font-extrabold text-foreground pr-1 tabular-nums -z-10"
-        style={{ top: `calc(${timeToY(t, pixelPerFrame)}px - 1rem)`, right: `${resizePanelSize}vw` }}
+        style={{ top: `calc(${timeToY(t)}px - 1rem)`, right: `${resizePanelSize}vw` }}
       >
         {getTimeRepresentation(t)}
       </div>
@@ -104,7 +105,7 @@ const GimmickOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => {
   const { gimmicks, raidDuration, resizePanelSize } = props;
   const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
-  const areaHeight = getAreaHeight(pixelPerFrame, raidDuration);
+  const { areaHeight } = verticalTransformsFactory(raidDuration, pixelPerFrame);
 
   const minorInterval =
     AVAILABLE_GRID_MINOR_INTERVALS.find((intv) => pixelPerFrame * intv >= INTERVAL_RENDER_THRESHOLD) ??

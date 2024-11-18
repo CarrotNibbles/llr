@@ -1,9 +1,9 @@
 import type { Enums } from '@/lib/database.types';
 import type { Role } from '@/lib/utils';
 
-export const columnWidth = 'w-6 lg:w-6';
-export const jobIconWidth = 'w-8 lg:w-8';
 export const COLUMN_WIDTH_PX = 28;
+export const COLUMN_WIDTH_CLS = 'w-6';
+export const JOB_ICON_WIDTH_CLS = 'w-8';
 
 export const TIME_STEP = 1;
 

@@ -8,7 +8,7 @@ import { animate, motion, useMotionValue } from 'framer-motion';
 import { useAtom, useAtomValue } from 'jotai';
 import { useTranslations } from 'next-intl';
 import React, { useEffect, useRef, useState } from 'react';
-import { blockOffsetToXFactory, timeToY, xToBlockOffsetFactory, yToTime } from '../../utils/helpers';
+import { horizontalTransformsFactory, verticalTransformsFactory } from '../../utils/helpers';
 
 type NoteEntryProps = {
   note: Tables<'notes'>;
@@ -25,15 +25,15 @@ const NoteEntry = React.memo(
     const mutateNote = useStratSyncStore((state) => state.mutateNote);
     const [noteState, setNoteState] = useAtom(noteAtom);
 
-    const blockOffsetToX = blockOffsetToXFactory(noteState.editColumnWidths);
-    const xToBlockOffset = xToBlockOffsetFactory(noteState.editColumnWidths);
+    const { blockOffsetToX, xToBlockOffset } = horizontalTransformsFactory(noteState.editColumnWidths);
+    const { timeToY, yToTime } = verticalTransformsFactory(raidDuration, pixelPerFrame);
 
     const [open, setOpen] = useState(true);
     const [isFocused, setIsFocused] = useState(false);
     const [currentNote, setCurrentNote] = useState(note);
 
     const xMotionValue = useMotionValue(blockOffsetToX(note.block, note.offset));
-    const yMotionValue = useMotionValue(timeToY(note.at, pixelPerFrame));
+    const yMotionValue = useMotionValue(timeToY(note.at));
 
     const inputRef = useRef<HTMLInputElement>(null);
     const [isComposing, setIsComposing] = useState(false);
@@ -52,13 +52,13 @@ const NoteEntry = React.memo(
       setCurrentNote(note);
 
       void animate(xMotionValue, blockOffsetToX(note.block, note.offset));
-      void animate(yMotionValue, timeToY(note.at, pixelPerFrame));
+      void animate(yMotionValue, timeToY(note.at));
     }, [note]);
 
     // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
     useEffect(() => {
       void animate(xMotionValue, blockOffsetToX(note.block, note.offset));
-      void animate(yMotionValue, timeToY(note.at, pixelPerFrame));
+      void animate(yMotionValue, timeToY(note.at));
     }, [noteState.editColumnWidths, pixelPerFrame]);
 
     return (
@@ -70,7 +70,7 @@ const NoteEntry = React.memo(
         }}
         onDragEnd={() => {
           const { block, offset } = xToBlockOffset(xMotionValue.get());
-          const at = yToTime(yMotionValue.get(), pixelPerFrame, raidDuration);
+          const at = yToTime(yMotionValue.get());
 
           const newNote = {
             ...currentNote,

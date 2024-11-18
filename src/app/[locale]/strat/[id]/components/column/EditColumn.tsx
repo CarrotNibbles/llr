@@ -18,8 +18,8 @@ import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvid
 import { activeEntriesAtom, pixelPerFrameAtom } from '@/lib/atoms';
 import { deepEqual } from 'fast-equals';
 import { useAtom, useAtomValue } from 'jotai';
-import { BOX_X_OFFSET, BOX_Z_INDEX, COUNTDOWN_DURATION, columnWidth } from '../../utils/constants';
-import { MultiIntervalSet, getAreaHeight, timeToY, yToTime, yToTimeUnclamped } from '../../utils/helpers';
+import { BOX_X_OFFSET, BOX_Z_INDEX, COLUMN_WIDTH_CLS, COUNTDOWN_DURATION } from '../../utils/constants';
+import { MultiIntervalSet, verticalTransformsFactory } from '../../utils/helpers';
 
 function useEntryMutation() {
   const getStore = useStratSyncStore((state) => state.getStore);
@@ -146,7 +146,10 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
 
   const t = useTranslations('StratPage.EditColumn');
   const tActions = useTranslations('Common.Actions');
+
   const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
+  const { timeToY, yToTime, yToTimeUnclamped } = verticalTransformsFactory(raidDuration, pixelPerFrame);
+
   const src = `/icons/action/${action.job}/${action.semantic_key}.png`;
 
   const { toast } = useToast();
@@ -158,7 +161,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
   const [holdingShift, setHoldingShift] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const xMotionValue = useMotionValue(BOX_X_OFFSET[slot]);
-  const yMotionValue = useMotionValue(timeToY(useAt, pixelPerFrame));
+  const yMotionValue = useMotionValue(timeToY(useAt));
 
   const [activeEntries, setActiveEntries] = useAtom(activeEntriesAtom);
   const draggable = elevated && !isLocked;
@@ -177,13 +180,13 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     // yMotionValue.animation?.stop();
-    animate(yMotionValue, timeToY(useAt, pixelPerFrame));
+    animate(yMotionValue, timeToY(useAt));
   }, [pixelPerFrame, useAt]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (!isDragging) {
-      void animate(yMotionValue, timeToY(useAt, pixelPerFrame));
+      void animate(yMotionValue, timeToY(useAt));
     }
   }, [isDragging]);
 
@@ -209,7 +212,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
     <ContextMenu>
       <ContextMenuTrigger className="relative" disabled={!elevated}>
         <motion.div
-          className={`${columnWidth} h-0 absolute z-[5] filter ${activeEntries.get(entryId) ? 'drop-shadow-selection' : ''}`}
+          className={`${COLUMN_WIDTH_CLS} h-0 absolute z-[5] filter ${activeEntries.get(entryId) ? 'drop-shadow-selection' : ''}`}
           style={{
             x: xMotionValue,
             y: yMotionValue,
@@ -256,7 +259,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
 
             if (activeEntries.keys().next().value === entryId) {
               const oldUseAt = useAt;
-              const newUseAt = yToTimeUnclamped(yMotionValue.get(), pixelPerFrame);
+              const newUseAt = yToTimeUnclamped(yMotionValue.get());
               const offset = newUseAt - oldUseAt;
 
               if (offset !== 0) {
@@ -268,8 +271,8 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
           }}
           onClick={(e) => {
             if (!holdingShift && action.charges > 1 && !isDragging) {
-              const cursorY = e.clientY - e.currentTarget.getBoundingClientRect().top + timeToY(useAt, pixelPerFrame);
-              const cursorUseAt = yToTime(cursorY, pixelPerFrame, raidDuration);
+              const cursorY = e.clientY - e.currentTarget.getBoundingClientRect().top + timeToY(useAt);
+              const cursorUseAt = yToTime(cursorY);
 
               const success = insertEntry({
                 id: crypto.randomUUID(),
@@ -288,31 +291,31 @@ const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) 
         >
           <div className="pointer-events-none">
             <div
-              className={`absolute top-0 ${columnWidth} ml-[calc(50%-1.5px)] border-zinc-300 dark:border-zinc-700 border-l-[3px] border-dotted`}
+              className={`absolute top-0 ${COLUMN_WIDTH_CLS} ml-[calc(50%-1.5px)] border-zinc-300 dark:border-zinc-700 border-l-[3px] border-dotted`}
               style={{ height: `${action.cooldown * pixelPerFrame}px` }}
             />
             <div
-              className={`absolute top-0 ${columnWidth} border-zinc-300 dark:border-zinc-700 border-b-[2px] border-solid`}
+              className={`absolute top-0 ${COLUMN_WIDTH_CLS} border-zinc-300 dark:border-zinc-700 border-b-[2px] border-solid`}
               style={{ height: `${action.cooldown * pixelPerFrame}px` }}
             />
             {otherDurations.length > 0 && (
               <>
                 <div
-                  className={`absolute top-0 ${columnWidth} ml-[calc(50%-1.5px)] border-zinc-400 dark:border-zinc-600 border-l-[3px] border-solid`}
+                  className={`absolute top-0 ${COLUMN_WIDTH_CLS} ml-[calc(50%-1.5px)] border-zinc-400 dark:border-zinc-600 border-l-[3px] border-solid`}
                   style={{ height: `${otherDurations[0] * pixelPerFrame}px` }}
                 />
                 <div
-                  className={`absolute top-0 ${columnWidth} border-zinc-400 dark:border-zinc-600 border-b-[2px] border-solid`}
+                  className={`absolute top-0 ${COLUMN_WIDTH_CLS} border-zinc-400 dark:border-zinc-600 border-b-[2px] border-solid`}
                   style={{ height: `${otherDurations[0] * pixelPerFrame}px` }}
                 />
               </>
             )}
             <div
-              className={`absolute top-0 ${columnWidth} ml-[calc(50%-1.5px)] border-zinc-500 dark:border-zinc-500 border-l-[3px] border-solid`}
+              className={`absolute top-0 ${COLUMN_WIDTH_CLS} ml-[calc(50%-1.5px)] border-zinc-500 dark:border-zinc-500 border-l-[3px] border-solid`}
               style={{ height: `${primaryDuration * pixelPerFrame}px` }}
             />
             <div
-              className={`absolute top-0 ${columnWidth} border-zinc-500 dark:border-zinc-500 border-b-[2px] border-solid`}
+              className={`absolute top-0 ${COLUMN_WIDTH_CLS} border-zinc-500 dark:border-zinc-500 border-b-[2px] border-solid`}
               style={{ height: `${primaryDuration * pixelPerFrame}px` }}
             />
             <div className="aspect-square relative w-full">
@@ -384,7 +387,7 @@ const EditSubColumn = React.memo(({ raidDuration, action, entries, playerId }: E
   const t = useTranslations('StratPage.EditColumn');
 
   const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
-  const areaHeight = getAreaHeight(pixelPerFrame, raidDuration);
+  const { areaHeight, yToTime } = verticalTransformsFactory(raidDuration, pixelPerFrame);
 
   const { insertEntry } = useEntryMutation();
   const elevated = useStratSyncStore((state) => state.elevated);
@@ -408,7 +411,7 @@ const EditSubColumn = React.memo(({ raidDuration, action, entries, playerId }: E
 
   const createBox: MouseEventHandler<HTMLDivElement> = async (evt) => {
     const cursorY = evt.clientY - evt.currentTarget.getBoundingClientRect().top;
-    const cursorUseAt = yToTime(cursorY, pixelPerFrame, raidDuration);
+    const cursorUseAt = yToTime(cursorY);
 
     setActiveEntries(new Map());
 
@@ -427,7 +430,10 @@ const EditSubColumn = React.memo(({ raidDuration, action, entries, playerId }: E
   };
 
   return (
-    <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden hover:bg-muted`} style={{ height: areaHeight }}>
+    <div
+      className={`flex flex-shrink-0 ${COLUMN_WIDTH_CLS} overflow-hidden hover:bg-muted`}
+      style={{ height: areaHeight }}
+    >
       <AnimatePresence>
         {entries.map(({ id }, index) => (
           <DraggableBox
@@ -458,7 +464,7 @@ export type EditColumnProps = {
 
 const EditColumn = React.memo(({ playerId, raidDuration, entries, actions }: EditColumnProps) => {
   const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
-  const areaHeight = getAreaHeight(pixelPerFrame, raidDuration);
+  const { areaHeight } = verticalTransformsFactory(raidDuration, pixelPerFrame);
 
   const actionEntriesRecord = useMemo(() => {
     const record: Record<string, ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries']> = {};
@@ -487,9 +493,9 @@ const EditColumn = React.memo(({ playerId, raidDuration, entries, actions }: Edi
       ))}
       {actions.length === 0 && (
         <>
-          <div className={`${columnWidth}`} />
-          <div className={`${columnWidth}`} />
-          <div className={`${columnWidth}`} />
+          <div className={`${COLUMN_WIDTH_CLS}`} />
+          <div className={`${COLUMN_WIDTH_CLS}`} />
+          <div className={`${COLUMN_WIDTH_CLS}`} />
         </>
       )}
     </div>

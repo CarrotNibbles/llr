@@ -22,7 +22,7 @@ import { useSetAtom } from 'jotai';
 import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
 import React, { useState } from 'react';
-import { columnWidth } from '../../utils/constants';
+import { COLUMN_WIDTH_CLS } from '../../utils/constants';
 
 const HeadSubColumn = React.memo(
   ({
@@ -42,7 +42,7 @@ const HeadSubColumn = React.memo(
     const src = job && actionMeta.semantic_key ? `/icons/action/${job}/${actionMeta.semantic_key}.png` : null;
 
     return (
-      <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden justify-center items-end relative`}>
+      <div className={`flex flex-shrink-0 ${COLUMN_WIDTH_CLS} overflow-hidden justify-center items-end relative`}>
         <Tooltip delayDuration={0}>
           <ContextMenu>
             <TooltipTrigger asChild>
@@ -128,12 +128,12 @@ const HeadColumn = React.memo(
     return (
       <div className="flex flex-col p-1 border-r-[1px] justify-center items-center space-y-1">
         <div className="flex flex-grow relative">
-          <div className={`aspect-square relative ${columnWidth} flex items-center`}>
+          <div className={`aspect-square relative ${COLUMN_WIDTH_CLS} flex items-center`}>
             <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
               <AlertDialog>
                 <PopoverTrigger className={elevated ? 'cursor-pointer' : 'cursor-not-allowed'} disabled={!elevated}>
                   <span className="sr-only select-none">Change job {job}</span>
-                  <JobIcon job={job} role={getOrderedRole(job, order)} className={`${columnWidth}`} />
+                  <JobIcon job={job} role={getOrderedRole(job, order)} className={`${COLUMN_WIDTH_CLS}`} />
                 </PopoverTrigger>
                 <PopoverContent className="w-auto">
                   <div className="space-y-3">
@@ -215,13 +215,19 @@ const HeadColumn = React.memo(
 
           {actionsMeta.length === 0 && (
             <>
-              <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden justify-center items-end relative`}>
+              <div
+                className={`flex flex-shrink-0 ${COLUMN_WIDTH_CLS} overflow-hidden justify-center items-end relative`}
+              >
                 <div className="aspect-square relative w-full" />
               </div>
-              <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden justify-center items-end relative`}>
+              <div
+                className={`flex flex-shrink-0 ${COLUMN_WIDTH_CLS} overflow-hidden justify-center items-end relative`}
+              >
                 <div className="aspect-square relative w-full" />
               </div>
-              <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden justify-center items-end relative`}>
+              <div
+                className={`flex flex-shrink-0 ${COLUMN_WIDTH_CLS} overflow-hidden justify-center items-end relative`}
+              >
                 <div className="aspect-square relative w-full" />
               </div>
             </>

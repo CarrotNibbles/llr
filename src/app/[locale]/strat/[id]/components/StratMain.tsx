@@ -13,7 +13,7 @@ import type React from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ScrollSync, ScrollSyncPane, type ScrollSyncPaneProps, type ScrollSyncProps } from 'react-scroll-sync';
 import { COLUMN_WIDTH_PX, RIGHT_PADDING_CLS, RIGHT_PADDING_PX } from '../utils/constants';
-import { getAreaHeight } from '../utils/helpers';
+import { verticalTransformsFactory } from '../utils/helpers';
 import { EditColumn, HeadColumn } from './column';
 import { NoteOverlay } from './note/NoteOverlay';
 import { GimmickOverlay } from './overlay';
@@ -39,7 +39,7 @@ export const StratMain = () => {
 
   const raidDuration = strategyData.raids?.duration ?? 0;
   const raidLevel = strategyData.raids?.level ?? 0;
-  const areaHeight = getAreaHeight(pixelPerFrame, raidDuration);
+  const { areaHeight } = verticalTransformsFactory(raidDuration, pixelPerFrame);
 
   const availableActions = useMemo(() => {
     return (actionData ?? []).filter(

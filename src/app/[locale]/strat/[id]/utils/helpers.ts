@@ -2,18 +2,6 @@ import { clamp } from '@/lib/utils';
 import { OrderedSet } from '@js-sdsl/ordered-set';
 import { BOTTOM_PADDING_PX, COUNTDOWN_DURATION, TIME_STEP } from './constants';
 
-export const yToTime = (y: number, pixelPerFrame: number, raidDuration: number) =>
-  Math.round((clamp(y / pixelPerFrame, 0, raidDuration + COUNTDOWN_DURATION) - COUNTDOWN_DURATION) / TIME_STEP) *
-  TIME_STEP;
-
-export const yToTimeUnclamped = (y: number, pixelPerFrame: number) =>
-  Math.round((y / pixelPerFrame - COUNTDOWN_DURATION) / TIME_STEP) * TIME_STEP;
-
-export const timeToY = (time: number, pixelPerFrame: number) => (time + COUNTDOWN_DURATION) * pixelPerFrame;
-
-export const getAreaHeight = (pixelPerFrame: number, raidDuration: number) =>
-  timeToY(raidDuration, pixelPerFrame) + BOTTOM_PADDING_PX;
-
 export const weightedCompareFunction =
   <ValueType>(
     compareFn1: (item1: ValueType, item2: ValueType) => number,
@@ -22,33 +10,51 @@ export const weightedCompareFunction =
   (item1: ValueType, item2: ValueType): number =>
     compareFn1(item1, item2) === 0 ? compareFn2(item1, item2) : compareFn1(item1, item2);
 
-export const blockOffsetToXFactory = (editColumnWidths: number[]) => (block: number, offset: number) => {
-  const clampedBlock = clamp(block, 1, 9);
-  const clampedOffset = clamp(offset, 0, 1);
+export const verticalTransformsFactory = (raidDuration: number, pixelPerFrame: number) => {
+  const yToTime = (y: number) =>
+    Math.round((clamp(y / pixelPerFrame, 0, raidDuration + COUNTDOWN_DURATION) - COUNTDOWN_DURATION) / TIME_STEP) *
+    TIME_STEP;
 
-  let horizontalPosition = 1;
-  for (let idx = 0; idx < clampedBlock - 1; idx++) {
-    horizontalPosition += editColumnWidths[idx];
-  }
-  horizontalPosition += editColumnWidths[clampedBlock - 1] * clampedOffset;
+  const yToTimeUnclamped = (y: number) => Math.round((y / pixelPerFrame - COUNTDOWN_DURATION) / TIME_STEP) * TIME_STEP;
 
-  return horizontalPosition;
+  const timeToY = (time: number) => (time + COUNTDOWN_DURATION) * pixelPerFrame;
+
+  const areaHeight = timeToY(raidDuration) + BOTTOM_PADDING_PX;
+
+  return { yToTime, yToTimeUnclamped, timeToY, areaHeight };
 };
 
-export const xToBlockOffsetFactory = (editColumnWidths: number[]) => (x: number) => {
-  let clampedX = clamp(x - 1, 0);
+export const horizontalTransformsFactory = (editColumnWidths: number[]) => {
+  const blockOffsetToX = (block: number, offset: number) => {
+    const clampedBlock = clamp(block, 1, 9);
+    const clampedOffset = clamp(offset, 0, 1);
 
-  let block = 1;
-  while (block < 9 && clampedX > editColumnWidths[block - 1]) {
-    clampedX -= editColumnWidths[block - 1];
-    block++;
-  }
+    let x = 1;
+    for (let idx = 0; idx < clampedBlock - 1; idx++) {
+      x += editColumnWidths[idx];
+    }
+    x += editColumnWidths[clampedBlock - 1] * clampedOffset;
 
-  let offset = clampedX / editColumnWidths[block - 1];
+    return x;
+  };
 
-  if (offset > 1) offset = 1;
+  const xToBlockOffset = (x: number) => {
+    let clampedX = clamp(x - 1, 0);
 
-  return { block, offset };
+    let block = 1;
+    while (block < 9 && clampedX > editColumnWidths[block - 1]) {
+      clampedX -= editColumnWidths[block - 1];
+      block++;
+    }
+
+    let offset = clampedX / editColumnWidths[block - 1];
+
+    if (offset > 1) offset = 1;
+
+    return { block, offset };
+  };
+
+  return { blockOffsetToX, xToBlockOffset };
 };
 
 export class MultiIntervalSet {
