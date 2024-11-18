@@ -1,5 +1,10 @@
 {
   "Common": {
+    "Meta": {
+      "Description": "Learn, Look, and Remember. A strategy sharing platform for Final Fantasy XIV.",
+      "StratDescription": "Check out this strategy for {raid} on LLR.",
+      "UnknownAuthor": "Unknown Author"
+    },
     "FFXIVPatches": {
       "2": {
         "0": "A Realm Reborn",

@@ -38,8 +38,8 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
         {...props}
       >
         <div className="flex items-center">
-          <Link href="/" className="flex mr-2.5">
-            <BrandIdentity variant="heavy" className="fill-brand h-8" />
+          <Link href="/" className="flex mr-3.5 ml-1">
+            <BrandIdentity variant="simple" className="fill-foreground hover:fill-brand transition-all h-6" />
           </Link>
           <StratInfoDialog className="hidden sm:block" />
         </div>

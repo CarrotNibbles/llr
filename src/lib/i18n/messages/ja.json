@@ -1,5 +1,10 @@
 {
   "Common": {
+    "Meta": {
+      "Description": "見て、学んで、覚えてください。ファイナルファンタジー14のレイド攻略を共有する場所、LLR。",
+      "StratDescription": "Check out this {raid} strategy on LLR.",
+      "UnknownAuthor": "不明な作成者"
+    },
     "FFXIVPatches": {
       "2": {
         "0": "新生エオルゼア",

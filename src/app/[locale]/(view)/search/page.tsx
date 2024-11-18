@@ -3,6 +3,7 @@
 import { Separator } from '@/components/ui/separator';
 import { buildMaxPageQuery, buildRaidsDataQuery, buildStrategiesDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
+import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 import { LimitCombobox } from '../components/LimitCombobox';
 import { SortCombobox } from '../components/SortCombobox';
@@ -17,6 +18,29 @@ type BoardPageProps = Readonly<{
   params: Promise<{ locale: string }>;
   searchParams: Promise<Partial<SearchSearchParamsRaw>>;
 }>;
+
+export async function generateMetadata() {
+  const t = await getTranslations('Common.Meta');
+
+  const title = 'LLR';
+  const description = t('Description');
+  const hostURI = process.env.HOST_URI;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      url: hostURI,
+    },
+    twitter: {
+      card: 'summary',
+      site: '@replace-this-with-twitter-handle',
+    },
+  };
+}
 
 export default async function BoardPage(props: BoardPageProps) {
   const searchParams = await props.searchParams;

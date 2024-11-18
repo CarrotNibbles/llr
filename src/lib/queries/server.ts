@@ -72,6 +72,7 @@ export const buildStrategyDataQuery = async (supabase: SupabaseServerClient, str
       like_counts(*),
       user_likes(*),
       notes(*),
+      profiles!strategies_author_fkey(*),
       strategy_players(*, strategy_player_entries(*)),
       raids!inner(*, gimmicks(*, damages(*, strategy_damage_options(*))))`,
     )
