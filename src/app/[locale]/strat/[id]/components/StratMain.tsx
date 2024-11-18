@@ -190,12 +190,12 @@ export const StratMain = () => {
           <ScrollSyncPaneFixed group={scrollSyncGroup} innerRef={mainRef}>
             <div
               className={cn(
-                'relative overscroll-none overflow-x-scroll',
+                'relative overscroll-none overflow-x-scroll bg-background',
                 RIGHT_PADDING_CLS,
                 autoScroll.active ? 'overflow-y-hidden' : 'overflow-y-scroll',
               )}
             >
-              <div className="flex flex-grow relative bg-background" style={{ height: areaHeight }} ref={editRef}>
+              <div className="flex flex-grow relative" style={{ height: areaHeight }} ref={editRef}>
                 {strategyData.strategy_players.map(({ id, job }) => (
                   <EditColumn
                     playerId={id}
