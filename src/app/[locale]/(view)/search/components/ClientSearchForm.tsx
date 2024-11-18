@@ -8,18 +8,9 @@ import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { RaidsDataType } from '@/lib/queries/server';
-import {
-  ALL_PATCHES,
-  ALL_SELECTABLE_JOBS,
-  DEFAULT_LIMIT,
-  DEFAULT_SORT,
-  type Patch,
-  type SelectableJob,
-  buildSearchURL,
-  cn,
-  getRole,
-  patchRegex,
-} from '@/lib/utils';
+import { ALL_PATCHES, ALL_SELECTABLE_JOBS, PATCH_REGEX } from '@/lib/utils/constants';
+import { cn, getRole } from '@/lib/utils/helpers';
+import type { Patch } from '@/lib/utils/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CaretSortIcon, CheckIcon, MagnifyingGlassIcon, ResetIcon } from '@radix-ui/react-icons';
 import { useTranslations } from 'next-intl';
@@ -27,6 +18,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { DEFAULT_LIMIT, DEFAULT_SORT } from '../../utils/constants';
+import { buildSearchURL } from '../../utils/helpers';
+import type { SelectableJob } from '../../utils/types';
 import { JobToggleGroup } from './JobToggleGroup';
 
 type ClientSearchFormProps = Readonly<
@@ -60,7 +54,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
   const formSchema = z.object({
     q: z.string().optional(),
     raid: z.string().optional(),
-    patch: z.string().regex(patchRegex).optional(),
+    patch: z.string().regex(PATCH_REGEX).optional(),
     jobs: z.array(z.enum(ALL_SELECTABLE_JOBS)).optional(),
   });
 

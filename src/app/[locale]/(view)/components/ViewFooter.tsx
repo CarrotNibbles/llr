@@ -1,6 +1,6 @@
 import { LocaleSwitchLink } from '@/components/LocaleSwitchLink';
 import { BrandIdentity } from '@/components/icons/BrandIdentity';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 

@@ -1,6 +1,6 @@
 'use server';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import type React from 'react';
 import { Skeleton } from './ui/skeleton';
 

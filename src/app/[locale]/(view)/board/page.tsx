@@ -2,25 +2,19 @@
 
 import { buildMaxPageQuery, buildStrategiesDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
-import {
-  type BoardSearchParamsRaw,
-  DEFAULT_LIMIT,
-  DEFAULT_SORT,
-  buildBoardURL,
-  tryParseInt,
-  tryParseJobs,
-  tryParsePatch,
-} from '@/lib/utils';
 import { redirect } from 'next/navigation';
 import { LimitCombobox } from '../components/LimitCombobox';
 import { SortCombobox } from '../components/SortCombobox';
 import { StrategyTable } from '../components/StrategyTable';
 import { ViewPagination } from '../components/ViewPagination';
+import { DEFAULT_LIMIT, DEFAULT_SORT } from '../utils/constants';
+import { buildBoardURL, tryParseInt, tryParseJobs, tryParsePatch } from '../utils/helpers';
+import type { BoardSearchParamsRaw } from '../utils/types';
 import { BoardSubheader } from './components/BoardSubheader';
 
 type BoardPageProps = Readonly<{
-  params: { locale: string };
-  searchParams: Partial<BoardSearchParamsRaw>;
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<Partial<BoardSearchParamsRaw>>;
 }>;
 
 export default async function BoardPage(props: BoardPageProps) {

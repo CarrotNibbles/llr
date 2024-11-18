@@ -4,7 +4,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { SignInButton } from '@/components/auth/SignInButton';
 import { BrandIdentity } from '@/components/icons/BrandIdentity';
 import { createClient } from '@/lib/supabase/server';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import Link from 'next/link';
 import type React from 'react';
 import { ProfileDropdown } from './ProfileDropdown';

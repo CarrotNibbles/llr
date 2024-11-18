@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/context-menu';
 import { useToast } from '@/components/ui/use-toast';
 import type { ActionDataType, StrategyDataType } from '@/lib/queries/server';
-import type { ArrayElement } from '@/lib/utils';
+import type { ArrayElement } from '@/lib/utils/types';
 import { AnimatePresence, animate, motion, useDragControls, useMotionValue } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';

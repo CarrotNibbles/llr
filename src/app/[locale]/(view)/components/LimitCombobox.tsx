@@ -3,7 +3,7 @@
 import { Button, type ButtonProps } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import { CaretDownIcon, CaretUpIcon } from '@radix-ui/react-icons';
 import { useTranslations } from 'next-intl';
 import type React from 'react';

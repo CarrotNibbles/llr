@@ -4,7 +4,8 @@ import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider
 import { useTank } from '@/lib/calc/hooks';
 import type { Enums } from '@/lib/database.types';
 import type { StrategyDataType } from '@/lib/queries/server';
-import { type ArrayElement, cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
+import type { ArrayElement } from '@/lib/utils/types';
 import { deepEqual } from 'fast-equals';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';

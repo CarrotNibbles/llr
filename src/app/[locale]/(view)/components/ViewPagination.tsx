@@ -3,11 +3,13 @@
 import { type ButtonProps, buttonVariants } from '@/components/ui/button';
 import { Pagination, PaginationContent, PaginationItem } from '@/components/ui/pagination';
 import type { buildMaxPageQuery } from '@/lib/queries/server';
-import { PAGINATION_OFFSET, PAGINATION_TOTAL_PAGE, cn, rangeInclusive } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 import type Link from 'next/link';
 import type React from 'react';
 import { Suspense } from 'react';
+import { PAGINATION_OFFSET, PAGINATION_TOTAL_PAGE } from '../utils/constants';
+import { rangeInclusive } from '../utils/helpers';
 import { ViewLink } from './ViewLink';
 
 type ViewPaginationData = Awaited<ReturnType<typeof buildMaxPageQuery>>;

@@ -1,7 +1,7 @@
 'use client';
 
 import type { Locale } from '@/lib/i18n';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import { differenceInMonths, format, formatDistanceToNowStrict } from 'date-fns';
 import { type Locale as DateFNSLocale, enUS, ja, ko } from 'date-fns/locale';
 import { useLocale } from 'next-intl';

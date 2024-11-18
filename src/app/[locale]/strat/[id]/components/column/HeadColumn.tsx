@@ -17,7 +17,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useToast } from '@/components/ui/use-toast';
 import { activeEntriesAtom } from '@/lib/atoms';
 import type { Enums } from '@/lib/database.types';
-import { JOB_LAYOUT, getOrderedRole } from '@/lib/utils';
+import { JOB_LAYOUT } from '@/lib/utils/constants';
+import { getOrderedRole } from '@/lib/utils/helpers';
 import { useSetAtom } from 'jotai';
 import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';

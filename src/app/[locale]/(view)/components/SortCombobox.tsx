@@ -3,11 +3,13 @@
 import { Button, type ButtonProps } from '@/components/ui/button';
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { ALL_SORT_OPTIONS, DEFAULT_LIMIT, type SortOption, cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import { CaretDownIcon, CaretUpIcon } from '@radix-ui/react-icons';
 import { useTranslations } from 'next-intl';
 import type React from 'react';
 import { useState } from 'react';
+import { ALL_SORT_OPTIONS, DEFAULT_LIMIT } from '../utils/constants';
+import type { SortOption } from '../utils/types';
 import { ViewLink } from './ViewLink';
 
 type SortComboboxProps = Readonly<

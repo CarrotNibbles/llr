@@ -5,7 +5,7 @@ import { BrandIdentity } from '@/components/icons/BrandIdentity';
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import { Share1Icon, ZoomInIcon } from '@radix-ui/react-icons';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';

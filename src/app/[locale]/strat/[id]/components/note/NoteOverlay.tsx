@@ -2,7 +2,7 @@
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { noteAtom, pixelPerFrameAtom } from '@/lib/atoms';
 import type { Tables } from '@/lib/database.types';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import { deepEqual } from 'fast-equals';
 import { AnimatePresence } from 'framer-motion';
 import { useAtom, useAtomValue } from 'jotai';

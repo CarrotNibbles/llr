@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
 import { useToast } from '@/components/ui/use-toast';
 import { autoScrollAtom, noteAtom } from '@/lib/atoms';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import { Pencil2Icon, PlayIcon, ResetIcon, StopIcon } from '@radix-ui/react-icons';
 import { useAtom } from 'jotai';
 import { useTranslations } from 'next-intl';

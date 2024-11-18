@@ -2,7 +2,7 @@
 
 import { LocalizedDate } from '@/components/LocalizedDate';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import { getTranslations } from 'next-intl/server';
 import type React from 'react';
 

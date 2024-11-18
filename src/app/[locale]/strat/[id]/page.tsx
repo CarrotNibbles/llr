@@ -9,7 +9,7 @@ import { StratToolbar } from './components/StratToolbar';
 
 export default async function StratPage(
   props: Readonly<{
-    params: { id: string; locale: Locale };
+    params: Promise<{ id: string; locale: Locale }>;
   }>,
 ) {
   const id = (await props.params).id;

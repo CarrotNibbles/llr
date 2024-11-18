@@ -2,7 +2,8 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/h
 import { Separator } from '@/components/ui/separator';
 import { pixelPerFrameAtom } from '@/lib/atoms';
 import type { StrategyDataType } from '@/lib/queries/server';
-import { type ArrayElement, cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
+import type { ArrayElement } from '@/lib/utils/types';
 import { useAtomValue } from 'jotai';
 import { useTranslations } from 'next-intl';
 import React from 'react';

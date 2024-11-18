@@ -3,7 +3,8 @@ import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider
 import { OrderedMap } from '@js-sdsl/ordered-map';
 import { useMemo } from 'react';
 import type { Tables } from '../database.types';
-import { type ArrayElement, type Role, getDiversedRole, getRole } from '../utils';
+import { getDiversedRole, getRole } from '../utils/helpers';
+import type { ArrayElement, Role } from '../utils/types';
 import { estimateAll } from './estimations';
 
 const HEALER_BASIC_BARRIERS = [

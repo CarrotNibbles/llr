@@ -6,7 +6,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/componen
 import { autoScrollAtom, noteAtom, pixelPerFrameAtom, zoomAtom } from '@/lib/atoms';
 import type { Tables } from '@/lib/database.types';
 import type { ActionDataType } from '@/lib/queries/server';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import { useAnimationFrame } from 'framer-motion';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';

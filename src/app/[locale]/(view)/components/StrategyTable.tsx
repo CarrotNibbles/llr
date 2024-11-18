@@ -5,12 +5,14 @@ import { JobIcon } from '@/components/icons/JobIcon';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import type { buildStrategiesDataQuery } from '@/lib/queries/server';
-import { DEFAULT_LIMIT, cn, getOrderedRole, rangeInclusive } from '@/lib/utils';
+import { cn, getOrderedRole } from '@/lib/utils/helpers';
 import { HeartFilledIcon } from '@radix-ui/react-icons';
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import type React from 'react';
 import { Suspense } from 'react';
+import { DEFAULT_LIMIT } from '../utils/constants';
+import { rangeInclusive } from '../utils/helpers';
 import { ModifiedTime } from './ModifiedTime';
 
 type StrategiesTableData = Awaited<ReturnType<typeof buildStrategiesDataQuery>>;

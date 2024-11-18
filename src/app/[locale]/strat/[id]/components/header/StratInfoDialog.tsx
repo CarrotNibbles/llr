@@ -2,7 +2,7 @@
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useEstimations } from '@/lib/calc/hooks';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import { useTranslations } from 'next-intl';
 
 export const StratInfoDialog = ({ className }: { className?: string }) => {

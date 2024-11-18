@@ -1,4 +1,4 @@
-import { clamp } from '@/lib/utils';
+import { clamp } from '@/lib/utils/helpers';
 import { OrderedSet } from '@js-sdsl/ordered-set';
 import { BOTTOM_PADDING_PX, COUNTDOWN_DURATION, TIME_STEP } from './constants';
 

@@ -2,7 +2,7 @@
 
 import { type RaidsDataType, buildRaidsDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import type React from 'react';
 import { Suspense } from 'react';
 import { CreateButton } from './CreateButton';

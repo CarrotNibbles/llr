@@ -2,7 +2,7 @@
 
 import { Slider as DefaultSlider } from '@/components/ui/slider';
 import { zoomAtom } from '@/lib/atoms';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import { useAtom } from 'jotai';
 
 type SliderProps = React.ComponentProps<typeof DefaultSlider>;

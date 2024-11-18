@@ -5,7 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Toggle } from '@/components/ui/toggle';
 import { filterAtom } from '@/lib/atoms';
 import type { Enums } from '@/lib/database.types';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import { useAtom } from 'jotai';
 import { useTranslations } from 'next-intl';
 import { GIMMICK_BACKGROUND_STYLE } from '../../utils/constants';

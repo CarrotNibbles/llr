@@ -4,7 +4,7 @@ import './globals.css';
 import { StaticDataProvider } from '@/components/providers/StaticDataProvider';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import { Provider as JotaiProvider } from 'jotai';
 
 const pretendard = localFont({

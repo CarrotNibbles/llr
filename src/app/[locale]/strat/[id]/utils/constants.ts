@@ -1,5 +1,5 @@
 import type { Enums } from '@/lib/database.types';
-import type { Role } from '@/lib/utils';
+import type { Role } from '@/lib/utils/types';
 
 export const COLUMN_WIDTH_PX = 28;
 export const COLUMN_WIDTH_CLS = 'w-6';

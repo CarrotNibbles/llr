@@ -15,7 +15,7 @@ import { useMediaQuery } from '@/lib/hooks/useMediaQuery';
 import { buildClientInsertStrategyQuery } from '@/lib/queries/client';
 import type { RaidsDataType } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/client';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CaretSortIcon, CheckIcon, Pencil1Icon } from '@radix-ui/react-icons';
 import { sha256 } from 'hash-wasm';

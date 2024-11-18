@@ -1,8 +1,9 @@
 'use server';
 
 import type { buildRaidsDataQuery } from '@/lib/queries/server';
-import type { Patch, SelectableJob } from '@/lib/utils';
+import type { Patch } from '@/lib/utils/types';
 import { Suspense } from 'react';
+import type { SelectableJob } from '../../utils/types';
 import { ClientSearchForm } from './ClientSearchForm';
 
 type SearchFormData = Awaited<ReturnType<typeof buildRaidsDataQuery>>;

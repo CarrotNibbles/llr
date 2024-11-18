@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from '@/lib/i18n';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 type LocaleSwitchLinkProps = Readonly<

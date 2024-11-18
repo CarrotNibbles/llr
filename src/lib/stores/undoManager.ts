@@ -3,7 +3,7 @@ import { LinkList } from '@js-sdsl/link-list';
 import type { Tables } from '../database.types';
 import type { Entry, Note } from '../proto/stratsync_pb';
 import type { StrategyDataType } from '../queries/server';
-import type { ArrayElement } from '../utils';
+import type { ArrayElement } from '../utils/types';
 
 export type NoteMutation =
   | {

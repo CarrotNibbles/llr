@@ -2,9 +2,12 @@
 
 import { JobIcon } from '@/components/icons/JobIcon';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { JOB_LAYOUT, type SelectableJob, cn, getRole, sortJobs } from '@/lib/utils';
+import { JOB_LAYOUT } from '@/lib/utils/constants';
+import { cn, getRole } from '@/lib/utils/helpers';
 import { useTranslations } from 'next-intl';
 import React, { useState } from 'react';
+import { sortJobs } from '../../utils/helpers';
+import type { SelectableJob } from '../../utils/types';
 
 type JobToggleGroupProps = Readonly<
   Omit<React.ComponentProps<'div'>, 'defaultValue' | 'dir'> & {

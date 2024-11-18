@@ -1,10 +1,11 @@
 'use client';
 import { Button, type ButtonProps } from '@/components/ui/button';
-import { DEFAULT_LIMIT, buildSearchURL } from '@/lib/utils';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import React from 'react';
+import { DEFAULT_LIMIT } from '../utils/constants';
+import { buildSearchURL } from '../utils/helpers';
 
 type SearchButtonProps = Readonly<ButtonProps & {}>;
 
