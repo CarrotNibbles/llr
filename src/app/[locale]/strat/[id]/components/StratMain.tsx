@@ -12,7 +12,7 @@ import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import type React from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ScrollSync, ScrollSyncPane, type ScrollSyncPaneProps, type ScrollSyncProps } from 'react-scroll-sync';
-import { COLUMN_WIDTH_PX } from '../utils/constants';
+import { COLUMN_WIDTH_PX, RIGHT_PADDING_CLS, RIGHT_PADDING_PX } from '../utils/constants';
 import { getAreaHeight } from '../utils/helpers';
 import { EditColumn, HeadColumn } from './column';
 import { NoteOverlay } from './note/NoteOverlay';
@@ -33,6 +33,7 @@ export const StratMain = () => {
 
   const overlayRef = useRef<HTMLDivElement>(null);
   const mainRef = useRef<HTMLDivElement>(null);
+  const editRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useAtom(autoScrollAtom);
   const setNoteState = useSetAtom(noteAtom);
 
@@ -169,34 +170,32 @@ export const StratMain = () => {
           }}
         >
           <ScrollSyncPaneFixed group="x">
-            <div className="min-h-20 h-20 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide border-b relative">
-              <div className="flex flex-row h-full">
-                {strategyData.strategy_players.map(({ id, job, order }) => (
-                  <HeadColumn
-                    playerId={id}
-                    job={job}
-                    order={order}
-                    actionsMeta={job ? jobActionsMetaRecord[job] : []}
-                    key={`headcolumn-${id}`}
-                  />
-                ))}
-              </div>
-              <div
-                className="absolute h-full w-1 bg-transparent"
-                style={{
-                  left: (mainRef.current?.scrollWidth ?? 0) - 4,
-                }}
-              />
+            <div
+              className={cn(
+                'min-h-20 h-20 overflow-x-scroll overflow-y-clip overscroll-none scrollbar-hide border-b flex flex-row',
+                RIGHT_PADDING_CLS,
+              )}
+            >
+              {strategyData.strategy_players.map(({ id, job, order }) => (
+                <HeadColumn
+                  playerId={id}
+                  job={job}
+                  order={order}
+                  actionsMeta={job ? jobActionsMetaRecord[job] : []}
+                  key={`headcolumn-${id}`}
+                />
+              ))}
             </div>
           </ScrollSyncPaneFixed>
           <ScrollSyncPaneFixed group={scrollSyncGroup} innerRef={mainRef}>
             <div
               className={cn(
                 'relative overscroll-none overflow-x-scroll',
+                RIGHT_PADDING_CLS,
                 autoScroll.active ? 'overflow-y-hidden' : 'overflow-y-scroll',
               )}
             >
-              <div className="flex flex-grow relative bg-background pr-32" style={{ height: areaHeight }}>
+              <div className="flex flex-grow relative bg-background" style={{ height: areaHeight }} ref={editRef}>
                 {strategyData.strategy_players.map(({ id, job }) => (
                   <EditColumn
                     playerId={id}
@@ -208,7 +207,12 @@ export const StratMain = () => {
                 ))}
               </div>
               <NoteOverlay
-                className="absolute z-20 top-0 left-0"
+                className="absolute z-20 top-0 left-0 w-full"
+                style={{
+                  height: areaHeight,
+                  width: (editRef.current?.scrollWidth ?? 0) + RIGHT_PADDING_PX,
+                  maxWidth: (editRef.current?.scrollWidth ?? 0) + RIGHT_PADDING_PX,
+                }}
                 raidDuration={raidDuration}
                 notes={strategyData.notes}
               />

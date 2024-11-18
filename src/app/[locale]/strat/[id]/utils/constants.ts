@@ -10,6 +10,8 @@ export const TIME_STEP = 1;
 export const COUNTDOWN_DURATION = 1800;
 
 export const BOTTOM_PADDING_PX = 60;
+export const RIGHT_PADDING_PX = 160;
+export const RIGHT_PADDING_CLS = 'pr-40';
 
 export const ROLE_ICON_STYLE = {
   Tank: 'fill-blue-600 dark:fill-blue-400 border-blue-600 dark:border-blue-400',
