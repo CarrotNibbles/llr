@@ -9,7 +9,7 @@ export async function generateMetadata(props: { params: Promise<{ slug: string[]
 
   const frontmatter = (await import(`./contents/${locale}/${slug.join('/')}.mdx`)).frontmatter;
 
-  const title = `${frontmatter.title} | LLR`;
+  const title = `${frontmatter.title} ⬩ LLR`;
   const description = t('Description');
   const hostURI = process.env.HOST_URI;
 

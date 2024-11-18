@@ -25,7 +25,7 @@ export async function generateMetadata(
     notFound();
   }
 
-  const title = `${strategyData.name} | LLR`;
+  const title = `${strategyData.name} ⬩ LLR`;
   const description = t('StratDescription', { raid: strategyData.raids.name });
   const host_uri = process.env.HOST_URI;
   const author = strategyData.profiles?.display_name ?? t('UnknownAuthor');
