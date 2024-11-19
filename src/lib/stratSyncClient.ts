@@ -1,4 +1,4 @@
-import { createPromiseClient } from '@connectrpc/connect';
+import { createClient } from '@connectrpc/connect';
 import { createGrpcWebTransport } from '@connectrpc/connect-web';
 import { StratSync } from './proto/stratsync_connect';
 
@@ -6,7 +6,7 @@ const transport = createGrpcWebTransport({
   baseUrl: process.env.NEXT_PUBLIC_STRATSYNC_URI ?? '',
 });
 
-export const createStratSyncClient = () => createPromiseClient(StratSync, transport);
+export const createStratSyncClient = () => createClient(StratSync, transport);
 export type StratSyncClient = ReturnType<typeof createStratSyncClient>;
 
 export class StratSyncClientFactory {
