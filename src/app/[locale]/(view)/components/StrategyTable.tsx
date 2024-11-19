@@ -120,12 +120,12 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
               </Link>
             </TableCell>
             <TableCell className="p-0 w-0 h-0">
-              <Link href={`/strat/${strategyData.id}`} className="w-full h-full flex justify-center items-center">
+              <Link href={`/strat/${strategyData.id}`} className="w-full h-full flex justify-center items-center tabular-nums">
                 <div className="px-2 py-4">{`${strategyData.version}.${strategyData.subversion}`}</div>
               </Link>
             </TableCell>
             <TableCell className="p-0 w-0 h-0">
-              <Link href={`/strat/${strategyData.id}`} className="w-full h-full flex justify-center items-center">
+              <Link href={`/strat/${strategyData.id}`} className="w-full h-full flex justify-center items-center tabular-nums">
                 <div className="px-2 py-4 flex items-center">
                   <HeartFilledIcon className="w-4 h-4 mr-1" />
                   {strategyData.total_likes === null ? 0 : strategyData.total_likes}
