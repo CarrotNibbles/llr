@@ -515,6 +515,8 @@ export type Database = {
           raid_skey?: string
           patch?: Json
           jobs?: Database["public"]["Enums"]["job"][]
+          author_id?: string
+          liker_id?: string
         }
         Returns: number
       }
@@ -530,6 +532,8 @@ export type Database = {
           raid_skey?: string
           patch?: Json
           jobs?: Database["public"]["Enums"]["job"][]
+          author_id?: string
+          liker_id?: string
           sort?: string
           page?: number
           lim?: number
