@@ -63,7 +63,7 @@ const JobToggleGroup = React.forwardRef<HTMLDivElement, JobToggleGroupProps>(
                       key={job}
                       value={job ?? ''}
                       disabled={maxCount && value.length >= maxCount ? !value.includes(job) : false}
-                      className="w-auto h-auto focus:bg-inherit p-0"
+                      className="w-auto h-auto focus:bg-inherit p-0 [&_svg]:size-auto gap-0 min-w-0"
                     >
                       <JobIcon job={job} role={getRole(job)} className="w-6 h-6" />
                     </ToggleGroupItem>
