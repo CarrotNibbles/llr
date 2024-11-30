@@ -183,6 +183,8 @@
       "DamageOption": {
         "Share": "Stack",
         "RaidWide": "Raid-wide",
+        "SingleTarget": "個人",
+        "NTargets": "{numTargets}人",
         "Unknown": "???"
       }
     },

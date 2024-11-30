@@ -41,6 +41,7 @@ type DamageTextProps = {
   damageType: Enums<'damage_type'>;
   defaultDamage: number;
   currentDamage: number;
+  numTargets: number;
   primaryTarget?: string;
   numShared?: number;
 };
@@ -204,8 +205,15 @@ const ShareAllRaidWide = (props: DamageTextProps) => {
 };
 
 const RaidWide = (props: DamageTextProps) => {
-  const { damageType, defaultDamage, currentDamage } = props;
+  const { numTargets, damageType, defaultDamage, currentDamage } = props;
   const t = useTranslations('StratPage.DamageText');
+
+  const text =
+    numTargets === 8
+      ? t('DamageOption.RaidWide')
+      : numTargets === 1
+        ? t('DamageOption.SingleTarget')
+        : t('DamageOption.NTargets', { numTargets });
 
   return (
     <>
@@ -289,7 +297,7 @@ const componentSelector = (target: 'Raidwide' | 'Tankbuster', numTargets: number
   if (target === 'Raidwide') {
     if (numTargets === 1 && maxShared === 8) return ShareAllRaidWide;
     if (numTargets === 2 && maxShared === 4) return ShareHalfRaidWide;
-    if (numTargets === 8 && maxShared === 1) return RaidWide;
+    if (maxShared === 1) return RaidWide;
   }
 
   return Unknown;
@@ -308,6 +316,7 @@ const DamageText = React.memo(
       damageId: damage.id,
       damageType: damage.type,
       defaultDamage: damage.combined_damage,
+      numTargets: damage.num_targets,
       currentDamage: mitigatedDamage ?? damage.combined_damage,
       primaryTarget: damage.strategy_damage_options?.[0]?.primary_target ?? undefined,
       numShared: damage.strategy_damage_options?.[0]?.num_shared ?? undefined,

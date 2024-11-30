@@ -183,6 +183,8 @@
       "DamageOption": {
         "Share": "쉐어",
         "RaidWide": "광역",
+        "SingleTarget": "개인",
+        "NTargets": "{numTargets}인",
         "Unknown": "???"
       }
     },

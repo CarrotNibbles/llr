@@ -183,6 +183,8 @@
       "DamageOption": {
         "Share": "頭割り",
         "RaidWide": "全体",
+        "SingleTarget": "個人",
+        "NTargets": "{numTargets}人",
         "Unknown": "???"
       }
     },
