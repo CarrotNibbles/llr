@@ -13,6 +13,7 @@ import type { MergedGimmick, SuperMergedGimmick } from '../../utils/types';
 import { DamagesText } from './DamagesText';
 
 type GimmickSubLineProps = {
+  raidSemanticKey: string;
   time: number;
   primaryTime: number;
   textColor: string;
@@ -23,6 +24,7 @@ type GimmickSubLineProps = {
 };
 
 const GimmickSubLine = ({
+  raidSemanticKey,
   time,
   primaryTime,
   textColor,
@@ -54,7 +56,7 @@ const GimmickSubLine = ({
               top: `${timeToY(time)}px`,
             }}
           >
-            <div className="text-xs right-0">{tGimmicks(semanticKey)}</div>
+            <div className="text-xs right-0">{tGimmicks(`${raidSemanticKey}.${semanticKey}`)}</div>
           </div>
         )}
       </>
@@ -63,10 +65,11 @@ const GimmickSubLine = ({
 };
 
 type GimmicksNamesProps = React.ComponentPropsWithRef<'div'> & {
+  raidSemanticKey: string;
   mergedGimmicks: MergedGimmick[];
 };
 
-const GimmicksNames = React.forwardRef<HTMLDivElement, GimmicksNamesProps>(({ className, mergedGimmicks }, ref) => {
+const GimmicksNames = React.forwardRef<HTMLDivElement, GimmicksNamesProps>(({ className, raidSemanticKey, mergedGimmicks }, ref) => {
   const t = useTranslations('StratPage.GimmickLine');
   const tGimmicks = useTranslations('Common.Gimmicks');
 
@@ -89,10 +92,10 @@ const GimmicksNames = React.forwardRef<HTMLDivElement, GimmicksNamesProps>(({ cl
   const superMergedGimmicks = superMergeGimmicks(mergedGimmicks);
 
   return (
-    <div className={cn('flex text-md', className)}>
+    <div className={cn('flex text-md', className)} ref={ref}>
       {superMergedGimmicks.slice(0, MAX_DISPLAY_COUNT).map((superMergedGimmick, idx, array) => (
         <div key={superMergedGimmick.id} className={cn(GIMMICK_TEXT_STYLE[superMergedGimmick.type], 'mr-1')}>
-          {tGimmicks(superMergedGimmick.translationKey)}
+          {tGimmicks(`${raidSemanticKey}.${superMergedGimmick.translationKey}`)}
           {superMergedGimmick.mergeCount >= 2 && `×${superMergedGimmick.mergeCount}`}
           {idx !== array.length - 1 && ','}
         </div>
@@ -105,6 +108,7 @@ const GimmicksNames = React.forwardRef<HTMLDivElement, GimmicksNamesProps>(({ cl
 });
 
 export type GimmickLineProps = ArrayElement<Exclude<StrategyDataType['raids'], null>['gimmicks']> & {
+  raidSemanticKey: string;
   displayDamage: boolean;
   damageDisplayGimmick?: ArrayElement<Exclude<StrategyDataType['raids'], null>['gimmicks']>;
   mergedGimmicks: MergedGimmick[];
@@ -118,7 +122,6 @@ const GimmickLine = React.memo(
       className?: string;
     } & React.ComponentPropsWithoutRef<'div'>
   >(({ className, ...props }, ref) => {
-    const tGimmicks = useTranslations('Common.Gimmicks');
     const {
       semantic_key: semanticKey,
       type: gimmickType,
@@ -129,7 +132,9 @@ const GimmickLine = React.memo(
       damageDisplayGimmick,
       mergedGimmicks,
       resizePanelSize,
+      raidSemanticKey,
     } = props;
+    const tGimmicks = useTranslations('Common.Gimmicks');
     const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
     const { timeToY } = verticalTransformsFactory(Number.NaN, pixelPerFrame);
 
@@ -142,6 +147,7 @@ const GimmickLine = React.memo(
       <div ref={ref}>
         {castAt && (
           <GimmickSubLine
+            raidSemanticKey={raidSemanticKey}
             time={castAt}
             primaryTime={prepareAt}
             textColor={textColor}
@@ -153,6 +159,7 @@ const GimmickLine = React.memo(
         )}
         {resolveAt && (
           <GimmickSubLine
+            raidSemanticKey={raidSemanticKey}
             time={resolveAt}
             primaryTime={prepareAt}
             textColor={textColor}
@@ -172,6 +179,7 @@ const GimmickLine = React.memo(
               <HoverCardTrigger>
                 {mergedGimmicks.length > 0 && (
                   <GimmicksNames
+                    raidSemanticKey={raidSemanticKey}
                     mergedGimmicks={mergedGimmicks}
                     className={cn(titleWeight, gimmickType === 'Enrage' && 'mt-1', 'cursor-pointer')}
                   />
@@ -182,7 +190,7 @@ const GimmickLine = React.memo(
                   mergedGimmicks.map((mergedGimmick, index) => (
                     <div key={mergedGimmick.id} className={cn(className, 'space-y-1 mb-1')}>
                       <div className={cn(GIMMICK_TEXT_STYLE[mergedGimmick.type], 'text-xs', 'font-bold')}>
-                        {tGimmicks(mergedGimmick.translationKey)}
+                        {tGimmicks(`${raidSemanticKey}.${mergedGimmick.translationKey}`)}
                       </div>
                       <div className="grid text-sm gap-x-2 gap-y-1" style={{ gridTemplateColumns: 'auto auto auto' }}>
                         <DamagesText damages={mergedGimmick.damages} />

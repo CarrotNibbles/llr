@@ -85,6 +85,7 @@ export type Database = {
       }
       damages: {
         Row: {
+          barrier_resolution: boolean
           combined_damage: number
           gimmick: string
           id: string
@@ -94,6 +95,7 @@ export type Database = {
           type: Database["public"]["Enums"]["damage_type"]
         }
         Insert: {
+          barrier_resolution?: boolean
           combined_damage: number
           gimmick: string
           id?: string
@@ -103,6 +105,7 @@ export type Database = {
           type?: Database["public"]["Enums"]["damage_type"]
         }
         Update: {
+          barrier_resolution?: boolean
           combined_damage?: number
           gimmick?: string
           id?: string
@@ -284,7 +287,6 @@ export type Database = {
           id: string
           item_level: number
           level: number
-          name: string
           semantic_key: string
         }
         Insert: {
@@ -294,7 +296,6 @@ export type Database = {
           id?: string
           item_level: number
           level: number
-          name?: string
           semantic_key?: string
         }
         Update: {
@@ -304,7 +305,6 @@ export type Database = {
           id?: string
           item_level?: number
           level?: number
-          name?: string
           semantic_key?: string
         }
         Relationships: []
@@ -545,7 +545,6 @@ export type Database = {
           subversion: number
           modified_at: string
           created_at: string
-          raid_name: string
           raid_semantic_key: string
           total_likes: number
           strategy_players: Json

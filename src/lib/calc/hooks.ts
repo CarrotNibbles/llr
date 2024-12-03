@@ -127,6 +127,7 @@ export const useMitigatedDamages = (actionData: ActionDataType) => {
     primary_target: string | null;
     target: Tables<'damages'>['target'];
     type: Tables<'damages'>['type'];
+    barrier_resolution: boolean;
   };
 
   type DamageTimeline = {
@@ -183,6 +184,7 @@ export const useMitigatedDamages = (actionData: ActionDataType) => {
           primary_target: damage.strategy_damage_options?.[0]?.primary_target ?? null,
           target: damage.target,
           type: damage.type,
+          barrier_resolution: damage.barrier_resolution,
         };
 
         if (
@@ -233,7 +235,33 @@ export const useMitigatedDamages = (actionData: ActionDataType) => {
       }
     }
 
-    timeline.sort((lhs, rhs) => lhs.at - rhs.at);
+    timeline.sort((lhs, rhs) => {
+      if (lhs.at !== rhs.at) return lhs.at - rhs.at;
+      if (lhs.type === 'DAMAGE_PREPARE' && rhs.type === 'DAMAGE_PREPARE') {
+        if (lhs.damageApplied.barrier_resolution !== rhs.damageApplied.barrier_resolution)
+          return lhs.damageApplied.barrier_resolution ? -1 : 1;
+
+        return 0;
+      }
+      if (lhs.type === 'MITIGATION_ACQUIRE' && rhs.type === 'MITIGATION_ACQUIRE') {
+        const TYPE_ORDER_MAP = {
+          Support: 6,
+          Physical: 5,
+          Magical: 4,
+          Barrier: 3,
+          Invuln: 2,
+          ActiveAmp: 1,
+          PassiveAmp: 0,
+        };
+
+        const lhsTypeOrder = TYPE_ORDER_MAP[lhs.mitigation.type];
+        const rhsTypeOrder = TYPE_ORDER_MAP[rhs.mitigation.type];
+
+        return lhsTypeOrder - rhsTypeOrder;
+      }
+
+      return lhs.type === 'MITIGATION_ACQUIRE' ? -1 : 1;
+    });
 
     const effectMapComparator = (lhs: ActiveEffectMapKey, rhs: ActiveEffectMapKey) => {
       const compares = [lhs.at - rhs.at, lhs._auto_incrementing_key - rhs._auto_incrementing_key];
@@ -365,8 +393,8 @@ export const useMitigatedDamages = (actionData: ActionDataType) => {
           let offTankDamage: number;
 
           if (damageApplied.num_targets === 2) {
-            mainTankDamage = damageApplied.combined_damage / 2;
-            offTankDamage = damageApplied.combined_damage / 2;
+            mainTankDamage = damageApplied.combined_damage;
+            offTankDamage = damageApplied.combined_damage;
           } else {
             if (damageApplied.num_shared === 2) {
               mainTankDamage = damageApplied.combined_damage / 2;
@@ -397,16 +425,18 @@ export const useMitigatedDamages = (actionData: ActionDataType) => {
 
           mitigatedDamages[damageApplied.id] = Math.max(mainTankResult.remaining, offTankResult.remaining);
 
-          personalEffect[mainTank] = handleAbsorption(
-            activePersonalEffects[mainTank],
-            mainTankResult.absorbed,
-            personalEffect[mainTank],
-          );
-          personalEffect[offTank] = handleAbsorption(
-            activePersonalEffects[offTank],
-            offTankResult.absorbed,
-            personalEffect[offTank],
-          );
+          if (damageApplied.barrier_resolution) {
+            personalEffect[mainTank] = handleAbsorption(
+              activePersonalEffects[mainTank],
+              mainTankResult.absorbed,
+              personalEffect[mainTank],
+            );
+            personalEffect[offTank] = handleAbsorption(
+              activePersonalEffects[offTank],
+              offTankResult.absorbed,
+              personalEffect[offTank],
+            );
+          }
         }
 
         if (damageApplied.target === 'Raidwide') {
@@ -418,7 +448,9 @@ export const useMitigatedDamages = (actionData: ActionDataType) => {
 
           mitigatedDamages[damageApplied.id] = raidwideResult.remaining;
 
-          raidwideEffect = handleAbsorption(activeRaidwideEffects, raidwideResult.absorbed, raidwideEffect);
+          if (damageApplied.barrier_resolution) {
+            raidwideEffect = handleAbsorption(activeRaidwideEffects, raidwideResult.absorbed, raidwideEffect);
+          }
         }
       }
 

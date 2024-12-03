@@ -95,9 +95,10 @@ const GridOverlay = ({ className, ...props }: { className?: string } & GridOverl
 };
 
 type GimmickOverlayProps = {
+  raidSemanticKey: string;
+  raidDuration: number;
   gimmicks: Exclude<StrategyDataType['raids'], null>['gimmicks'];
   availableActions: ActionDataType;
-  raidDuration: number;
   resizePanelSize: number;
 };
 
@@ -105,7 +106,7 @@ const GimmickOverlay = React.forwardRef<
   HTMLDivElement,
   GimmickOverlayProps & { className?: string } & React.ComponentPropsWithoutRef<'div'>
 >(({ className, ...props }, ref) => {
-  const { gimmicks, raidDuration, resizePanelSize, availableActions } = props;
+  const { gimmicks, raidDuration, resizePanelSize, availableActions, raidSemanticKey } = props;
   const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
   const { areaHeight } = verticalTransformsFactory(raidDuration, pixelPerFrame);
 
@@ -201,7 +202,12 @@ const GimmickOverlay = React.forwardRef<
     <div ref={ref} className={cn(className, 'absolute top-0 left-0 w-screen')} style={{ height: areaHeight }}>
       <MitigatedDamagesContext.Provider value={mitigatedDamages}>
         {gimmicksWithMerged.map((value) => (
-          <GimmickLine {...value} resizePanelSize={resizePanelSize} key={`gimmick-${value.id}`} />
+          <GimmickLine
+            {...value}
+            resizePanelSize={resizePanelSize}
+            raidSemanticKey={raidSemanticKey}
+            key={`gimmick-${value.id}`}
+          />
         ))}
         <GridOverlay
           raidDuration={raidDuration}

@@ -54,7 +54,7 @@ const BothTankBuster = (props: DamageTextProps) => {
       <div className="space-x-1 pr-6">
         <span className={ACTIVE_DAMAGE_OPTION_STYLE}>T1+T2</span>
       </div>
-      <DamageAmounts damageType={damageType} currentDamage={currentDamage} defaultDamage={defaultDamage / 2} />
+      <DamageAmounts damageType={damageType} currentDamage={currentDamage} defaultDamage={defaultDamage} />
     </>
   );
 };
@@ -218,7 +218,7 @@ const RaidWide = (props: DamageTextProps) => {
   return (
     <>
       <div className="space-x-1 pr-6">
-        <span className={ACTIVE_DAMAGE_OPTION_STYLE}>{t('DamageOption.RaidWide')}</span>
+        <span className={ACTIVE_DAMAGE_OPTION_STYLE}>{text}</span>
       </div>
       <DamageAmounts damageType={damageType} currentDamage={currentDamage} defaultDamage={defaultDamage} />
     </>

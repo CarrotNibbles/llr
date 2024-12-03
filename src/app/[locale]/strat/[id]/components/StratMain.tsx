@@ -229,6 +229,7 @@ export const StratMain = () => {
             <GimmickOverlay
               resizePanelSize={resizePanelSize}
               availableActions={availableActions}
+              raidSemanticKey={strategyData.raids?.semantic_key ?? ''}
               raidDuration={strategyData.raids?.duration ?? 0}
               gimmicks={strategyData.raids?.gimmicks ?? []}
             />
