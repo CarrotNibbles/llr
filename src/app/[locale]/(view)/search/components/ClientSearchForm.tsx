@@ -1,35 +1,26 @@
 'use client';
 
-import { JobIcon } from '@/components/JobIcon';
-import { Icons } from '@/components/icons';
+import { JobIcon } from '@/components/icons/JobIcon';
 import { Button } from '@/components/ui/button';
-import { Collapsible, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { RaidsDataType } from '@/lib/queries/server';
-import {
-  ALL_PATCHES,
-  ALL_SELECTABLE_JOBS,
-  DEFAULT_LIMIT,
-  DEFAULT_SORT,
-  type Patch,
-  type SelectableJob,
-  buildSearchURL,
-  cn,
-  getRole,
-  patchRegex,
-} from '@/lib/utils';
+import { ALL_PATCHES, ALL_SELECTABLE_JOBS, PATCH_REGEX } from '@/lib/utils/constants';
+import { cn, getRole } from '@/lib/utils/helpers';
+import type { Patch } from '@/lib/utils/types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CollapsibleContent } from '@radix-ui/react-collapsible';
-import { CaretSortIcon, CheckIcon, MagnifyingGlassIcon } from '@radix-ui/react-icons';
+import { CaretSortIcon, CheckIcon, MagnifyingGlassIcon, ResetIcon } from '@radix-ui/react-icons';
 import { useTranslations } from 'next-intl';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { DEFAULT_LIMIT, DEFAULT_SORT } from '../../utils/constants';
+import { buildSearchURL } from '../../utils/helpers';
+import type { SelectableJob } from '../../utils/types';
 import { JobToggleGroup } from './JobToggleGroup';
 
 type ClientSearchFormProps = Readonly<
@@ -63,13 +54,13 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
   const formSchema = z.object({
     q: z.string().optional(),
     raid: z.string().optional(),
-    patch: z.string().regex(patchRegex).optional(),
+    patch: z.string().regex(PATCH_REGEX).optional(),
     jobs: z.array(z.enum(ALL_SELECTABLE_JOBS)).optional(),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { q, raid: '', patch: '', jobs: [] },
+    defaultValues: { q: q ?? '', raid: '', patch: '', jobs: [] },
   });
 
   useEffect(() => {
@@ -86,7 +77,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
 
     if (
       (q === undefined || q === '') &&
-      raid === undefined &&
+      (raid === undefined || raid === '') &&
       patch === undefined &&
       (jobs === undefined || jobs.length === 0)
     ) {
@@ -100,12 +91,12 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
       buildSearchURL(
         searchParams,
         {
-          raid: raid,
-          jobs: jobs,
+          raid: raid === '' ? undefined : raid,
+          jobs: jobs?.length === 0 ? undefined : jobs,
           page: 1,
           limit: DEFAULT_LIMIT,
           sort: DEFAULT_SORT,
-          q: values.q,
+          q: values.q === '' ? undefined : values.q,
         },
         {
           patch: patch,
@@ -117,11 +108,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className={cn('rounded-xl px-12 py-8 mx-2 mt-4 mb-8 bg-secondary space-y-4', className)}
-        {...props}
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className={cn('py-3 space-y-4', className)} {...props}>
         <div className="flex flex-col gap-y-4 sm:flex-row sm:gap-x-6 sm:gap-y-0">
           <FormField
             control={form.control}
@@ -130,13 +117,7 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
               <FormItem className="flex-grow">
                 <div>
                   <FormControl>
-                    <Input
-                      type="search"
-                      placeholder={t('NameLabel')}
-                      className="border-muted-foreground bg-background"
-                      value={q ?? ''}
-                      {...field}
-                    />
+                    <Input type="search" placeholder={t('NameLabel')} value={q ?? ''} {...field} />
                   </FormControl>
                   {errorMessage !== null && (
                     <p className="text-[0.8rem] mt-0.5 font-medium text-destructive">{errorMessage}</p>
@@ -147,166 +128,165 @@ const ClientSearchForm: React.FC<ClientSearchFormProps> = ({
           />
           <Button type="submit" className="pl-7 pr-6 w-auto">
             <div className="flex gap-x-2 w-auto max-w-full">
+              <MagnifyingGlassIcon className="w-5 h-5 -ml-2" />
               {t('SearchButton')}
-              <MagnifyingGlassIcon className="w-5 h-5" />
             </div>
           </Button>
         </div>
-        <Collapsible defaultOpen={true}>
-          <CollapsibleTrigger className="flex gap-x-1 items-center mt-2 ml-2">
-            <Icons.filter /> {t('AdvancedFilter')}
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-7 gap-y-4 gap-x-6 mt-4 mx-4">
-              <FormField
-                control={form.control}
-                name="raid"
-                render={({ field }) => (
-                  <FormItem className="md:col-span-2 xl:col-span-3">
-                    <FormLabel className="inline-block">{t('RaidLabel')}</FormLabel>
-                    <Popover open={raidsPopoverOpen} onOpenChange={setRaidsPopoverOpen}>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn(
-                              'w-full inline-flex text-left justify-between hover:bg-background hover:ring-ring hover:ring-1',
-                              !field.value && 'text-muted-foreground',
-                            )}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-7 gap-y-4 gap-x-6 mt-4">
+          <FormField
+            control={form.control}
+            name="raid"
+            render={({ field }) => {
+              const raidSelected = raidsData.some((raid) => raid.semantic_key === field.value);
+              return (
+                <FormItem className="md:col-span-2 xl:col-span-3">
+                  <FormLabel className="inline-block">{t('RaidLabel')}</FormLabel>
+                  <Popover
+                    open={raidsPopoverOpen}
+                    onOpenChange={(open) => {
+                      if (!open && !raidSelected) form.resetField('raid');
+                      setRaidsPopoverOpen(open);
+                    }}
+                  >
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            'w-full inline-flex text-left justify-between hover:bg-background hover:ring-ring hover:ring-1 transition-all',
+                            !raidSelected && 'text-muted-foreground',
+                          )}
+                        >
+                          <div className="overflow-hidden">{raidSelected ? tRaids(field.value) : t('RaidAll')}</div>
+                          <CaretSortIcon className="ml-1 h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      align="start"
+                      className="p-0"
+                      style={{ width: 'var(--radix-popover-trigger-width)' }}
+                    >
+                      <Command>
+                        <CommandInput placeholder={t('RaidSearchPlaceholder')} className="h-9" />
+                        <CommandEmpty>{t('RaidEmpty')}</CommandEmpty>
+                        <CommandGroup>
+                          <CommandItem
+                            onSelect={() => {
+                              form.resetField('raid');
+                              setRaidsPopoverOpen(false);
+                            }}
                           >
-                            <div className="overflow-hidden">
-                              {field.value
-                                ? tRaids(raidsData.find((raid) => raid.semantic_key === field.value)?.semantic_key)
-                                : t('RaidAll')}
-                            </div>
-                            <CaretSortIcon className="ml-1 h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent
-                        align="start"
-                        className="p-0"
-                        style={{ width: 'var(--radix-popover-trigger-width)' }}
-                      >
-                        <Command>
-                          <CommandInput placeholder={t('RaidSearchPlaceholder')} className="h-9" />
-                          <CommandEmpty>{t('RaidEmpty')}</CommandEmpty>
-                          <CommandGroup>
+                            {t('RaidAll')}
+                            <CheckIcon
+                              className={cn('ml-auto h-4 w-4', field.value === '' ? 'opacity-100' : 'opacity-0')}
+                            />
+                          </CommandItem>
+                          {raidsData.map((raid) => (
                             <CommandItem
+                              value={raid.semantic_key}
+                              key={raid.id}
                               onSelect={() => {
-                                form.setValue('raid', undefined);
+                                form.setValue('raid', raid.semantic_key);
                                 setRaidsPopoverOpen(false);
                               }}
                             >
-                              {t('RaidAll')}
+                              {tRaids(raid.semantic_key)}
                               <CheckIcon
-                                className={cn('ml-auto h-4 w-4', field.value === '' ? 'opacity-100' : 'opacity-0')}
+                                className={cn(
+                                  'ml-auto h-4 w-4',
+                                  raid.semantic_key === field.value ? 'opacity-100' : 'opacity-0',
+                                )}
                               />
                             </CommandItem>
-                            {raidsData.map((raid) => (
-                              <CommandItem
-                                value={raid.semantic_key}
-                                key={raid.id}
-                                onSelect={() => {
-                                  form.setValue('raid', raid.semantic_key);
-                                  setRaidsPopoverOpen(false);
-                                }}
-                              >
-                                {tRaids(raid.semantic_key)}
-                                <CheckIcon
-                                  className={cn(
-                                    'ml-auto h-4 w-4',
-                                    raid.semantic_key === field.value ? 'opacity-100' : 'opacity-0',
-                                  )}
-                                />
-                              </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </FormItem>
+              );
+            }}
+          />
+          <FormField
+            control={form.control}
+            name="jobs"
+            render={({ field: { value: jobs, ...field } }) => (
+              <FormItem className="md:col-span-1 xl:col-span-2">
+                <ResetIcon className="float-right mt-1 h-4 w-4 cursor-pointer" onClick={() => field.onChange([])} />
+                <FormLabel>{t('JobLabel')}</FormLabel>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          'w-full h-auto min-h-9 inline-flex text-left justify-between hover:bg-background hover:ring-ring hover:ring-1 transition-all',
+                          jobs === undefined || (jobs.length === 0 && 'text-muted-foreground'),
+                        )}
+                      >
+                        {jobs === undefined || jobs.length === 0 ? (
+                          t('JobAll')
+                        ) : (
+                          <div className="grid grid-cols-4 xs:grid-cols-8 gap-2">
+                            {jobs.map((job) => (
+                              <JobIcon key={job} job={job} role={getRole(job)} className="w-4 h-4 xs:w-5 xs:h-5" />
                             ))}
-                          </CommandGroup>
-                        </Command>
-                      </PopoverContent>
-                    </Popover>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="jobs"
-                render={({ field: { value: jobs, ...field } }) => (
-                  <FormItem className="md:col-span-1 xl:col-span-2">
-                    <FormLabel>{t('JobLabel')}</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn(
-                              'w-full h-auto min-h-9 inline-flex text-left justify-between hover:bg-background hover:ring-ring hover:ring-1',
-                              jobs === undefined || (jobs.length === 0 && 'text-muted-foreground'),
-                            )}
-                          >
-                            {jobs === undefined || jobs.length === 0 ? (
-                              t('JobAll')
-                            ) : (
-                              <div className="grid grid-cols-4 xs:grid-cols-8 gap-2">
-                                {jobs.map((job) => (
-                                  <JobIcon key={job} job={job} role={getRole(job)} className="w-4 h-4 xs:w-5 xs:h-5" />
-                                ))}
-                              </div>
-                            )}
-                            <CaretSortIcon className="ml-1 h-4 w-4 opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent>
-                        <JobToggleGroup sort maxCount={8} value={jobs ?? []} {...field} />
-                      </PopoverContent>
-                    </Popover>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="patch"
-                render={({ field }) => (
-                  <FormItem className="md:col-span-1 xl:col-span-2">
-                    <FormLabel>{t('PatchLabel')}</FormLabel>
-                    <Select
-                      onValueChange={(value) => {
-                        value !== 'none' ? field.onChange(value) : field.onChange(undefined);
-                      }}
-                      defaultValue="none"
+                          </div>
+                        )}
+                        <CaretSortIcon className="ml-1 h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto" align="end">
+                    <JobToggleGroup sort maxCount={8} value={jobs ?? []} {...field} />
+                  </PopoverContent>
+                </Popover>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="patch"
+            render={({ field }) => (
+              <FormItem className="md:col-span-1 xl:col-span-2">
+                <FormLabel>{t('PatchLabel')}</FormLabel>
+                <Select
+                  onValueChange={(value) => {
+                    value !== 'none' ? field.onChange(value) : field.onChange(undefined);
+                  }}
+                  defaultValue="none"
+                >
+                  <FormControl>
+                    <SelectTrigger
+                      className={cn(
+                        'w-full inline-flex text-left justify-between bg-background hover:ring-ring hover:ring-1 hover:text-accent-foreground hover:font-semibold transition-all',
+                        field.value === '' && 'text-muted-foreground',
+                      )}
                     >
-                      <FormControl>
-                        <SelectTrigger
-                          className={cn(
-                            'w-full inline-flex text-left justify-between bg-background hover:ring-ring hover:ring-1 hover:text-accent-foreground hover:font-semibold',
-                            field.value === '' && 'text-muted-foreground',
-                          )}
-                        >
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent align="end">
-                        <SelectItem value="none">
-                          <div className="px-1">{t('PatchAll')}</div>
-                        </SelectItem>
-                        {ALL_PATCHES.map(({ version, subversion }) => (
-                          <SelectItem key={`select-patch-${version}.${subversion}`} value={`${version}.${subversion}`}>
-                            <div className="px-1">
-                              {`${version}.${subversion}`} - {tPatches(`${version}.${subversion}`)}
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormItem>
-                )}
-              />
-            </div>
-          </CollapsibleContent>
-        </Collapsible>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent align="end">
+                    <SelectItem value="none">
+                      <div className="px-1">{t('PatchAll')}</div>
+                    </SelectItem>
+                    {ALL_PATCHES.toReversed().map(({ version, subversion }) => (
+                      <SelectItem key={`select-patch-${version}.${subversion}`} value={`${version}.${subversion}`}>
+                        <div className="px-1">
+                          {`${version}.${subversion}`} - {tPatches(`${version}.${subversion}`)}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormItem>
+            )}
+          />
+        </div>
+        {/* </CollapsibleContent>
+        </Collapsible> */}
       </form>
     </Form>
   );

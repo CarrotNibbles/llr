@@ -15,7 +15,7 @@ import { useMediaQuery } from '@/lib/hooks/useMediaQuery';
 import { buildClientInsertStrategyQuery } from '@/lib/queries/client';
 import type { RaidsDataType } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/client';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CaretSortIcon, CheckIcon, Pencil1Icon } from '@radix-ui/react-icons';
 import { sha256 } from 'hash-wasm';
@@ -40,8 +40,8 @@ const CreateButton = React.forwardRef<HTMLButtonElement, CreateButtonProps>(
       <Dialog>
         <DialogTrigger asChild>
           <Button className={className} {...props} ref={ref}>
-            <Pencil1Icon className="mr-1" />
-            <div className="mx-1">{t('ButtonTitle')}</div>
+            <Pencil1Icon />
+            <div className="ml-2 mr-1 sm:block hidden">{t('ButtonTitle')}</div>
           </Button>
         </DialogTrigger>
         <DialogContent>
@@ -56,8 +56,8 @@ const CreateButton = React.forwardRef<HTMLButtonElement, CreateButtonProps>(
       <Drawer>
         <DrawerTrigger asChild>
           <Button className={className} {...props} ref={ref}>
-            <Pencil1Icon className="mr-1" />
-            <div className="mx-1">{t('ButtonTitle')}</div>
+            <Pencil1Icon />
+            <div className="ml-2 mr-1 sm:block hidden">{t('ButtonTitle')}</div>
           </Button>
         </DrawerTrigger>
         <DrawerContent>
@@ -96,10 +96,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
     scope: z.enum(['public', 'private'], {
       required_error: t('ScopeRequired'),
     }),
-    password: z
-      .string({ required_error: t('PasswordRequired') })
-      .min(8, t('PasswordLengthMismatch'))
-      .max(8, t('PasswordLengthMismatch')),
+    password: z.string({ required_error: t('PasswordRequired') }).regex(/^\d{8}$/, t('PasswordError')),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -120,9 +117,15 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
       return;
     }
 
+    const raid = raidsData.find((raid) => raid.semantic_key === values.raid);
+    if (raid === undefined) {
+      setFailMessage(t('UnknownRaid'));
+      return;
+    }
+
     const stratPrototype: Omit<Tables<'strategies'>, 'id'> = {
       name: values.name,
-      raid: values.raid,
+      raid: raid.id,
       author: userResponse.data.user.id,
       is_editable: true,
       is_public: values.scope === 'public',
@@ -149,7 +152,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
 
   return (
     <Form {...form}>
-      <form className={cn('py-4 space-y-2', className)} onSubmit={form.handleSubmit(onSubmit)} ref={ref} {...props}>
+      <form className={cn('space-y-6', className)} onSubmit={form.handleSubmit(onSubmit)} ref={ref} {...props}>
         <FormField
           control={form.control}
           name="name"
@@ -166,61 +169,67 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
         <FormField
           control={form.control}
           name="raid"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="inline-block">{t('RaidLabel')}</FormLabel>
-              <Popover open={raidPopoverOpen} onOpenChange={(open) => setRaidPopoverOpen(open)}>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        'w-full inline-grid text-left justify-between',
-                        !field.value && 'text-muted-foreground',
-                      )}
-                      style={{ gridTemplateColumns: '1fr 1rem' }}
-                    >
-                      <div className="overflow-hidden">
-                        {field.value
-                          ? tRaids(raidsData.find((raid) => raid.id === field.value)?.semantic_key)
-                          : t('RaidPlaceholder')}
-                      </div>
-                      <CaretSortIcon className="ml-1 h-4 w-4 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent
-                  align="start"
-                  className="p-0 pointer-events-auto"
-                  style={{ width: 'var(--radix-popover-trigger-width)' }}
+          render={({ field }) => {
+            const raidSelected = raidsData.some((raid) => raid.semantic_key === field.value);
+            return (
+              <FormItem>
+                <FormLabel className="inline-block">{t('RaidLabel')}</FormLabel>
+                <Popover
+                  open={raidPopoverOpen}
+                  onOpenChange={(open) => {
+                    if (!open && !raidSelected) form.resetField('raid');
+                    setRaidPopoverOpen(open);
+                  }}
                 >
-                  <Command {...field}>
-                    <CommandInput placeholder={t('RaidSearchPlaceholder')} className="h-9" />
-                    <CommandEmpty>{t('RaidEmpty')}</CommandEmpty>
-                    <CommandGroup>
-                      {raidsData.map((raid) => (
-                        <CommandItem
-                          value={raid.id}
-                          key={raid.id}
-                          onSelect={() => {
-                            form.setValue('raid', raid.id);
-                            setRaidPopoverOpen(false);
-                          }}
-                        >
-                          {tRaids(raid.semantic_key)}
-                          <CheckIcon
-                            className={cn('ml-auto h-4 w-4', raid.id === field.value ? 'opacity-100' : 'opacity-0')}
-                          />
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              <FormMessage />
-            </FormItem>
-          )}
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          'w-full inline-grid text-left justify-between',
+                          !raidSelected && 'text-muted-foreground',
+                        )}
+                        style={{ gridTemplateColumns: '1fr 1rem' }}
+                      >
+                        <div className="overflow-hidden">
+                          {raidSelected ? tRaids(field.value) : t('RaidPlaceholder')}
+                        </div>
+                        <CaretSortIcon className="ml-1 h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    align="start"
+                    className="p-0 pointer-events-auto"
+                    style={{ width: 'var(--radix-popover-trigger-width)' }}
+                  >
+                    <Command {...field}>
+                      <CommandInput placeholder={t('RaidSearchPlaceholder')} className="h-9" />
+                      <CommandEmpty>{t('RaidEmpty')}</CommandEmpty>
+                      <CommandGroup>
+                        {raidsData.map((raid) => (
+                          <CommandItem
+                            value={raid.id}
+                            key={raid.id}
+                            onSelect={() => {
+                              form.setValue('raid', raid.semantic_key);
+                              setRaidPopoverOpen(false);
+                            }}
+                          >
+                            {tRaids(raid.semantic_key)}
+                            <CheckIcon
+                              className={cn('ml-auto h-4 w-4', raid.id === field.value ? 'opacity-100' : 'opacity-0')}
+                            />
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+                <FormMessage />
+              </FormItem>
+            );
+          }}
         />
         <FormField
           control={form.control}
@@ -230,7 +239,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
               <FormLabel>{t('ScopeLabel')}</FormLabel>
               <FormControl>
                 <RadioGroup
-                  className="grid items-center w-fit gap-x-2"
+                  className="grid items-start w-fit gap-x-2"
                   style={{ gridTemplateColumns: 'auto auto' }}
                   onValueChange={field.onChange}
                   defaultValue={field.value}

@@ -1,4 +1,5 @@
 'use client';
+
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -11,10 +12,11 @@ import { useEffect, useRef, useState } from 'react';
 
 export const AuthenticatedLikeButton = () => {
   const { toast } = useToast();
-  const {
-    userId,
-    strategyData: { like_counts, user_likes, id },
-  } = useStratSyncStore((state) => state);
+
+  const userId = useStratSyncStore((state) => state.userId);
+  const like_counts = useStratSyncStore((state) => state.strategyData.like_counts);
+  const user_likes = useStratSyncStore((state) => state.strategyData.user_likes);
+  const id = useStratSyncStore((state) => state.strategyData.id);
 
   const t = useTranslations('StratPage.StratHeader.LikeButton');
 
@@ -27,7 +29,7 @@ export const AuthenticatedLikeButton = () => {
     const supabase = createClient();
 
     if ((user_likes?.length ?? 0) > 0) {
-      const response = await supabase.from('user_likes').delete().eq('liked_by', userId);
+      const response = await supabase.from('user_likes').delete().eq('liked_by', userId).eq('strategy', id);
 
       if (response.error) {
         toast({ variant: 'destructive', description: t('Error') });

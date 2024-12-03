@@ -3,10 +3,11 @@ import { sha256 } from 'hash-wasm';
 import { produce } from 'immer';
 import { createStore } from 'zustand';
 import type { Enums } from '../database.types';
-import type { DamageOption, Entry, EventResponse } from '../proto/stratsync_pb';
+import type { DamageOption, EventResponse } from '../proto/stratsync_pb';
 import type { StrategyDataType } from '../queries/server';
 import { type StratSyncClient, StratSyncClientFactory } from '../stratSyncClient';
 import { createClient } from '../supabase/client';
+import { type EntryMutation, type NoteMutation, UndoManager, type UndoableMutation } from './undoManager';
 
 export type StratSyncState = {
   strategy: string;
@@ -19,17 +20,24 @@ export type StratSyncState = {
   eventStream?: AsyncIterable<EventResponse>;
   client?: StratSyncClient;
   strategyData: StrategyDataType;
+  undoManager: UndoManager;
+  undoAvailable: boolean;
+  redoAvailable: boolean;
 };
 
 export type StratSyncActions = {
+  getStore: () => StratSyncStore;
   updateStrategyData: (data: Partial<StrategyDataType>) => void;
   connect: (strategy: string, isAuthor: boolean, editable: boolean) => Promise<void>;
   elevate: (password: string) => Promise<boolean>;
   clearOtherSessions: () => Promise<boolean>;
   abort: () => void;
   upsertDamageOption: (damageOption: PlainMessage<DamageOption>, local: boolean) => void;
-  mutateEntries: (upserts: PlainMessage<Entry>[], deletes: string[], local: boolean) => void;
+  mutateEntries: (entryMutation: EntryMutation, local: boolean) => void;
+  mutateNote: (noteMutation: NoteMutation) => void;
   updatePlayerJob: (id: string, job: string | undefined, local: boolean) => void;
+  undo: () => UndoableMutation | undefined;
+  redo: () => UndoableMutation | undefined;
 };
 
 export type StratSyncStore = StratSyncState & StratSyncActions;
@@ -41,7 +49,15 @@ const defaultState = {
   elevatable: false,
   connectionAborted: false,
   strategyData: {} as StrategyDataType,
+  undoManager: new UndoManager(),
+  undoAvailable: false,
+  redoAvailable: false,
 };
+
+const refreshUndoRedoAvailability = produce((state: StratSyncStore) => {
+  state.undoAvailable = state.undoManager.isUndoAvailable();
+  state.redoAvailable = state.undoManager.isRedoAvailable();
+});
 
 const handleUpsertDamageOption = (damageOption: PlainMessage<DamageOption>) =>
   produce((state: StratSyncStore) => {
@@ -65,7 +81,7 @@ const handleUpsertDamageOption = (damageOption: PlainMessage<DamageOption>) =>
     }
   });
 
-const handleMutateEntries = (upserts: PlainMessage<Entry>[], deletes: string[]) =>
+const handleMutateEntries = ({ upserts, deletes }: EntryMutation) =>
   produce((state: StratSyncStore) => {
     const deletes_set = new Set(deletes);
 
@@ -98,6 +114,16 @@ const handleUpdatePlayerJob = (id: string, job: string | undefined) =>
     }
   });
 
+const handleMutateNote = (mut: NoteMutation) =>
+  produce((state: StratSyncStore) => {
+    if ('upsert' in mut) {
+      state.strategyData.notes = state.strategyData.notes.filter((n) => n.id !== mut.upsert.id);
+      state.strategyData.notes.push({ ...mut.upsert, strategy: state.strategyData.id });
+    } else {
+      state.strategyData.notes = state.strategyData.notes.filter((n) => n.id !== mut.delete);
+    }
+  });
+
 const getAuthorizationHeader = async () => {
   const supabase = createClient();
   const access_token = (await supabase.auth.getSession())?.data?.session?.access_token;
@@ -106,7 +132,7 @@ const getAuthorizationHeader = async () => {
 
 export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
   createStore<StratSyncStore>()((set, get) => {
-    const localFirstDispatch =
+    const optimisticDispatch =
       <T>(
         localHandler: (state: StratSyncStore) => StratSyncStore,
         asyncDispatcher: (state: StratSyncStore) => Promise<T> | undefined,
@@ -114,12 +140,12 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
       ) =>
       (state: StratSyncStore) => {
         if (!state.client || !state.token || !state.elevated) return state;
-        const updatedState = localHandler(state);
+
+        set(localHandler);
+
         if (!local)
           (async () => {
             try {
-              if (!state.client) return;
-
               await asyncDispatcher(state);
             } catch (e) {
               console.error(e);
@@ -131,16 +157,14 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
               );
             }
           })();
-        return updatedState;
       };
 
     return {
       ...defaultState,
       ...initState,
+      getStore: () => get(),
       connect: async (strategy: string, isAuthor: boolean, editable: boolean) => {
         try {
-          if (StratSyncClientFactory.instance) return;
-
           const client = new StratSyncClientFactory().client;
           const eventStream = client.event({ strategy }, { headers: await getAuthorizationHeader() });
           const { event } = (await eventStream[Symbol.asyncIterator]().next()).value as EventResponse;
@@ -153,6 +177,7 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
               state.eventStream = eventStream;
               state.strategy = strategy;
               state.token = event.value.token;
+              state.undoManager = new UndoManager();
 
               state.isAuthor = isAuthor;
               state.elevatable = !isAuthor && editable;
@@ -189,6 +214,10 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
           );
 
           for await (const { event } of eventStream) {
+            if (get().eventStream !== eventStream) {
+              return;
+            }
+
             if (event.case === 'initializationEvent') {
               // This should never happen, but just in case
               throw new Error('Received initialization event after initial connection');
@@ -197,18 +226,24 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
             if (event.case === 'upsertDamageOptionEvent') {
               if (event.value.damageOption) {
                 const { damageOption } = event.value;
-                set((state: StratSyncStore) => handleUpsertDamageOption(damageOption)(state));
+                set(handleUpsertDamageOption(damageOption));
               }
             }
 
             if (event.case === 'mutateEntriesEvent') {
               const { upserts, deletes } = event.value;
-              set((state: StratSyncStore) => handleMutateEntries(upserts, deletes)(state));
+              get().undoManager.lockEntries([...upserts.map((e) => e.id), ...deletes]);
+              set(handleMutateEntries({ upserts, deletes }));
             }
 
             if (event.case === 'updatePlayerJobEvent') {
               const { id, job } = event.value;
-              set((state: StratSyncStore) => handleUpdatePlayerJob(id, job)(state));
+              get().undoManager.lockEntries(
+                get()
+                  .strategyData.strategy_players.find((p) => p.id === id)
+                  ?.strategy_player_entries.map((e) => e.id) ?? [],
+              );
+              set(handleUpdatePlayerJob(id, job));
             }
           }
         } catch (e) {
@@ -268,29 +303,160 @@ export const createStratSyncStore = (initState: Partial<StratSyncState>) =>
           return false;
         }
       },
-      upsertDamageOption: (damageOption: PlainMessage<DamageOption>, local = false) =>
+      upsertDamageOption: (damageOption: PlainMessage<DamageOption>, local = false) => {
+        optimisticDispatch(
+          handleUpsertDamageOption(damageOption),
+          (state: StratSyncState) =>
+            state.client?.upsertDamageOption({
+              token: state.token,
+              damageOption,
+            }),
+          local,
+        )(get());
+      },
+      mutateEntries: (entryMutation: EntryMutation, local = false) => {
+        if (entryMutation.upserts.length === 0 && entryMutation.deletes.length === 0) return;
+
         set(
-          localFirstDispatch(
-            handleUpsertDamageOption(damageOption),
-            (state: StratSyncState) => state.client?.upsertDamageOption({ token: state.token, damageOption }),
-            local,
-          ),
-        ),
-      mutateEntries: (upserts: PlainMessage<Entry>[], deletes: string[], local = false) =>
-        set(
-          localFirstDispatch(
-            handleMutateEntries(upserts, deletes),
-            (state: StratSyncState) => state.client?.mutateEntries({ token: state.token, upserts, deletes }),
-            local,
-          ),
-        ),
-      updatePlayerJob: (id: string, job: string | undefined, local = false) =>
-        set(
-          localFirstDispatch(
-            handleUpdatePlayerJob(id, job),
-            (state: StratSyncState) => state.client?.updatePlayerJob({ token: state.token, id, job }),
-            local,
-          ),
-        ),
+          produce((state: StratSyncStore) => {
+            state.undoManager.pushEntryMutation(
+              entryMutation,
+              state.strategyData.strategy_players.flatMap((p) => p.strategy_player_entries),
+            );
+          }),
+        );
+
+        set(refreshUndoRedoAvailability);
+
+        optimisticDispatch(
+          handleMutateEntries(entryMutation),
+          (state: StratSyncState) =>
+            state.client?.mutateEntries({
+              token: state.token,
+              upserts: entryMutation.upserts,
+              deletes: entryMutation.deletes,
+            }),
+          local,
+        )(get());
+      },
+      undo: () => {
+        const backwardMutation = get().undoManager.undo();
+
+        if (backwardMutation) {
+          if (backwardMutation.type === 'entry') {
+            optimisticDispatch(
+              handleMutateEntries(backwardMutation.mutation),
+              (state: StratSyncState) =>
+                state.client?.mutateEntries({
+                  token: state.token,
+                  upserts: backwardMutation.mutation.upserts,
+                  deletes: backwardMutation.mutation.deletes,
+                }),
+              false,
+            )(get());
+          }
+
+          if (backwardMutation.type === 'note') {
+            optimisticDispatch(
+              handleMutateNote(backwardMutation.mutation),
+              (state: StratSyncState) => {
+                if ('upsert' in backwardMutation.mutation) {
+                  return state.client?.upsertNote({
+                    token: state.token,
+                    note: backwardMutation.mutation.upsert,
+                  });
+                }
+
+                return state.client?.deleteNote({
+                  token: state.token,
+                  id: backwardMutation.mutation.delete,
+                });
+              },
+              false,
+            )(get());
+          }
+        }
+
+        set(refreshUndoRedoAvailability);
+
+        return backwardMutation;
+      },
+      redo: () => {
+        const forwardMutation = get().undoManager.redo();
+
+        if (forwardMutation) {
+          if (forwardMutation.type === 'entry') {
+            optimisticDispatch(
+              handleMutateEntries(forwardMutation.mutation),
+              (state: StratSyncState) =>
+                state.client?.mutateEntries({
+                  token: state.token,
+                  upserts: forwardMutation.mutation.upserts,
+                  deletes: forwardMutation.mutation.deletes,
+                }),
+              false,
+            )(get());
+          }
+
+          if (forwardMutation.type === 'note') {
+            optimisticDispatch(
+              handleMutateNote(forwardMutation.mutation),
+              (state: StratSyncState) => {
+                if ('upsert' in forwardMutation.mutation) {
+                  return state.client?.upsertNote({
+                    token: state.token,
+                    note: forwardMutation.mutation.upsert,
+                  });
+                }
+
+                return state.client?.deleteNote({
+                  token: state.token,
+                  id: forwardMutation.mutation.delete,
+                });
+              },
+              false,
+            )(get());
+          }
+        }
+
+        set(refreshUndoRedoAvailability);
+
+        return forwardMutation;
+      },
+      updatePlayerJob: (id: string, job: string | undefined, local = false) => {
+        get().undoManager.lockEntries(
+          get()
+            .strategyData.strategy_players.find((p) => p.id === id)
+            ?.strategy_player_entries.map((e) => e.id) ?? [],
+        );
+
+        optimisticDispatch(
+          handleUpdatePlayerJob(id, job),
+          (state: StratSyncState) => state.client?.updatePlayerJob({ token: state.token, id, job }),
+          local,
+        )(get());
+      },
+      mutateNote: (noteMutation: NoteMutation) => {
+        get().undoManager.pushNoteMutation(noteMutation, get().strategyData.notes);
+
+        optimisticDispatch(
+          handleMutateNote(noteMutation),
+          (state: StratSyncState) => {
+            if ('upsert' in noteMutation) {
+              return state.client?.upsertNote({
+                token: state.token,
+                note: noteMutation.upsert,
+              });
+            }
+            return state.client?.deleteNote({
+              token: state.token,
+              id: noteMutation.delete,
+            });
+          },
+          false,
+        )(get());
+
+        set(refreshUndoRedoAvailability);
+      },
     };
   });

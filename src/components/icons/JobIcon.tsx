@@ -1,7 +1,8 @@
 'use client';
 
 import type { Enums } from '@/lib/database.types';
-import { type Role, cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
+import type { Role } from '@/lib/utils/types';
 import { ReactSVG } from 'react-svg';
 
 const ROLE_ICON_STYLE = {

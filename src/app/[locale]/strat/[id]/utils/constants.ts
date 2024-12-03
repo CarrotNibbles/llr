@@ -1,14 +1,17 @@
 import type { Enums } from '@/lib/database.types';
-import type { Role } from '@/lib/utils';
+import type { Role } from '@/lib/utils/types';
 
-export const columnWidth = 'w-6 lg:w-6';
-export const jobIconWidth = 'w-8 lg:w-8';
+export const COLUMN_WIDTH_PX = 28;
+export const COLUMN_WIDTH_CLS = 'w-6';
+export const JOB_ICON_WIDTH_CLS = 'w-8';
 
 export const TIME_STEP = 1;
 
 export const COUNTDOWN_DURATION = 1800;
 
 export const BOTTOM_PADDING_PX = 60;
+export const RIGHT_PADDING_PX = 160;
+export const RIGHT_PADDING_CLS = 'pr-40';
 
 export const ROLE_ICON_STYLE = {
   Tank: 'fill-blue-600 dark:fill-blue-400 border-blue-600 dark:border-blue-400',
@@ -54,3 +57,17 @@ export const MAX_DISPLAY_COUNT = 3;
 
 export const ACTIVE_DAMAGE_OPTION_STYLE = 'font-bold';
 export const INACTIVE_DAMAGE_OPTION_STYLE = 'text-muted-foreground text-xs';
+
+export const MAJOR_GRID_INTERVAL = 60 * 60;
+export const AVAILABLE_GRID_MINOR_INTERVALS = [
+  1 * 60,
+  2 * 60,
+  3 * 60,
+  5 * 60,
+  10 * 60,
+  15 * 60,
+  20 * 60,
+  30 * 60,
+  60 * 60,
+];
+export const INTERVAL_RENDER_THRESHOLD = 50;

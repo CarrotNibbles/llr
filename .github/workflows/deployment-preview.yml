@@ -1,0 +1,35 @@
+name: Deploy Image (Preview)
+
+on:
+  push:
+    branches:
+      - preview
+    paths:
+      - .github/workflows/deployment-preview.yml
+  workflow_run:
+    workflows:
+      - Build and Push Image (Preview)
+    types:
+      - completed
+  workflow_dispatch:
+
+env:
+  DOCKER_TAG: ghcr.io/carrotnibbles/llr-preview:latest
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+
+    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            docker pull ${{ env.DOCKER_TAG }}
+            docker stop llr-preview || true
+            docker rm llr-preview || true
+            docker run -d --name llr-preview -p 7103:3000 --restart unless-stopped --env-file ~/envs/llr-preview.env ${{ env.DOCKER_TAG }}

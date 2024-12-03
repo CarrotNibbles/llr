@@ -1,5 +1,10 @@
 {
   "Common": {
+    "Meta": {
+      "Description": "Learn, Look, and Remember. A strategy sharing platform for Final Fantasy XIV.",
+      "StratDescription": "Check out this strategy for {raid} on LLR.",
+      "UnknownAuthor": "Unknown Author"
+    },
     "FFXIVPatches": {
       "2": {
         "0": "A Realm Reborn",
@@ -42,7 +47,8 @@
         "5": "Growing Light"
       },
       "7": {
-        "0": "Dawntrail"
+        "0": "Dawntrail",
+        "1": "Crossroads"
       }
     },
     "Actions": {
@@ -96,7 +102,7 @@
       "arcane_crest": "Arcane Crest",
       "seraphism": "Seraphism",
       "expedient": "Expedient",
-      "summon_seraph": "Summon Seraph",
+      "consolation": "Consolation",
       "recitation": "Recitation",
       "deployment_tactics": "Deployment Tactics",
       "sacred_soil": "Sacred Soil",
@@ -131,36 +137,62 @@
     },
     "Raids": {
       "P10S": "Anabaseios: The Tenth Circle (Savage)",
-      "P11S": "Anabaseios: The Eleventh Circle (Savage)"
+      "P11S": "Anabaseios: The Eleventh Circle (Savage)",
+      "M1S": "AAC Light-heavyweight M1 (Savage)"
     },
     "Gimmicks": {
-      "auto_attack": "Auto Attack",
-      "ultima": "Ultima",
-      "soul_grasp": "Soul Grasp",
-      "dividing_wings": "Dividing Wings",
-      "steel_web": "Steel Web",
-      "wicked_step": "Wicked Step",
-      "bury": "Bury",
-      "silkspit": "Silkspit",
-      "pandaemoniac_meltdown": "Pandæmoniac Meltdown",
-      "daemoniac_bonds": "Dæmoniac Bonds",
-      "tetradaemoniac_bonds": "Tetradæmoniac Bonds",
-      "peal_of_condemnation": "Peal of Condemnation",
-      "duodaemoniac_bonds": "Duodæmoniac Bonds",
-      "harrowing_hell": "Harrowing Hell",
-      "unmitigated_explosion": "Unmitigated Explosion",
-      "cannonspawn": "Cannonspawn",
-      "pandaemonium_holy_circle": "Circles of Pandæmonium/Pandæmon's Holy",
-      "circles_of_pandaemonium": "Circles of Pandæmonium",
-      "pandaemons_holy": "Pandæmon's Holy",
-      "entangling_web": "Entangling Web",
-      "pandaemonium_pillars": "Pandæmonium Pillars",
-      "pandaemoniac_turrets": "Pandæmonium Turrets",
-      "pandaemoniac_ray": "Pandæmonium Ray",
-      "parted_plumes": "Parted Plumes",
-      "temp_jade": "Jade?",
-      "temp_landing": "Landing?",
-      "temp_judgement": "Judgement?"
+      "P10S": {
+        "auto_attack": "Auto Attack",
+        "ultima": "Ultima",
+        "soul_grasp": "Soul Grasp",
+        "dividing_wings": "Dividing Wings",
+        "steel_web": "Steel Web",
+        "wicked_step": "Wicked Step",
+        "bury": "Bury",
+        "silkspit": "Silkspit",
+        "pandaemoniac_meltdown": "Pandæmoniac Meltdown",
+        "daemoniac_bonds": "Dæmoniac Bonds",
+        "tetradaemoniac_bonds": "Tetradæmoniac Bonds",
+        "peal_of_condemnation": "Peal of Condemnation",
+        "duodaemoniac_bonds": "Duodæmoniac Bonds",
+        "harrowing_hell": "Harrowing Hell",
+        "unmitigated_explosion": "Unmitigated Explosion",
+        "cannonspawn": "Cannonspawn",
+        "pandaemonium_holy_circle": "Circles of Pandæmonium/Pandæmon's Holy",
+        "circles_of_pandaemonium": "Circles of Pandæmonium",
+        "pandaemons_holy": "Pandæmon's Holy",
+        "entangling_web": "Entangling Web",
+        "pandaemonium_pillars": "Pandæmonium Pillars",
+        "pandaemoniac_turrets": "Pandæmonium Turrets",
+        "pandaemoniac_ray": "Pandæmonium Ray",
+        "parted_plumes": "Parted Plumes",
+        "temp_jade": "Jade?",
+        "temp_landing": "Landing?",
+        "temp_judgement": "Judgement?"
+      },
+      "M1S": {
+        "auto_attack": "Auto Attack",
+        "quadruple_crossing": "Quadruple Crossing",
+        "biscuit_maker": "Biscuit Maker",
+        "nine_lives": "Nine Lives",
+        "one_two_paw": "One-two Paw",
+        "soulshade": "Soulshade",
+        "double_quadruple_swipe": "Double / Quadruple Swipe",
+        "leaping_quadruple_crossing": "Leaping Quadruple Crossing",
+        "bloddy_scratch": "Bloddy Scratch",
+        "mouser": "Mouser",
+        "copycat": "Copycat",
+        "elevate_and_eviscerate": "Elevate and Eviscerate",
+        "impact": "Impact",
+        "shockwave": "Shockwave",
+        "grimalkin_gale": "Grimalkin Gale",
+        "leaping_one_two_paw": "Leaping One-Tempestuous Paw",
+        "tempestuous_tear": "Tempestuous Tear",
+        "nailchipper": "Nailchipper",
+        "overshadow_splintering_nails": "Overshadow / Splintering Nails",
+        "raining_cats": "Raining Cats",
+        "predaceous_pounce": "Predaceous Pounce"
+      }
     }
   },
   "ErrorPage": {
@@ -169,11 +201,16 @@
     "GoHome": "Return to home"
   },
   "StratPage": {
-    "CoreArea": {},
+    "StratToolbar": {
+      "NoMoreUndo": "No more undo actions available.",
+      "NoMoreRedo": "No more redo actions available."
+    },
     "DamageText": {
       "DamageOption": {
         "Share": "Stack",
         "RaidWide": "Raid-wide",
+        "SingleTarget": "個人",
+        "NTargets": "{numTargets}人",
         "Unknown": "???"
       }
     },
@@ -244,6 +281,12 @@
         "PatchDescription": "Select the base patch version.",
         "Password": "Edit Password",
         "DeleteStrategy": "Delete Strategy",
+        "DeleteConfirmationTitle": "Confirm Deletion of Strategy",
+        "DeleteConfirmationDescription": "Are you sure you want to delete this strategy? Deleted strategies cannot be restored.",
+        "Delete": "Delete",
+        "Cancel": "Cancel",
+        "DeleteError": "An error occurred while deleting the strategy.",
+        "Deleted": "The strategy has been deleted.",
         "AlertTitle": "Warning",
         "AlertDescription": "If you change the settings to be more restrictive, other sessions will be disconnected.",
         "Save": "Save",
@@ -270,6 +313,11 @@
       "ErrorTitle": "Connection Lost",
       "ErrorDescription": "Lost connection to the server. Please refresh the page and try again.",
       "Refresh": "Refresh"
+    },
+    "Note": {
+      "NewNote": "New Note",
+      "DeleteNote": "Delete Note",
+      "EditNote": "Edit Note"
     }
   },
   "ViewPage": {
@@ -286,6 +334,7 @@
       "RaidSearchPlaceholder": "Search raid",
       "RaidEmpty": "No raids found",
       "RaidRequired": "Please select a raid",
+      "UnkownRaid": "Unknown raid selected, please select a valid raid",
       "ScopeLabel": "Visibility",
       "ScopePublicLabel": "Public",
       "ScopePublicDescription": "Anyone can view this strategy",
@@ -295,10 +344,15 @@
       "PasswordLabel": "Password",
       "PasswordDescription": "Password required to edit this strategy (not needed for author)",
       "PasswordRequired": "Please set a password",
-      "PasswordLengthMismatch": "Password must be 8 characters long",
+      "PasswordError": "The password must be an 8-digit number.",
       "CreateConfirm": "Create",
       "NotSignedIn": "Please sign in to create a strategy",
       "UnknownError": "Failed to create strategy. Please try again later."
+    },
+    "RaidSearchPopover": {
+      "RaidAll": "All Raids",
+      "RaidSearchPlaceholder": "Search raid",
+      "RaidEmpty": "No raids found"
     },
     "LimitCombobox": {
       "Current": "{currentLimit} Strats in Page",
@@ -324,7 +378,8 @@
       "Patch": "Version",
       "Likes": "Likes",
       "Created": "Created",
-      "NoStrategyFound": "No Strategy Found"
+      "NoStrategyFound": "No Strategy Found",
+      "DeletedUser": "Deleted User"
     },
     "SearchForm": {
       "FieldRequired": "Please select at least one condition",
@@ -337,10 +392,25 @@
       "RaidEmpty": "No raids found",
       "JobLabel": "Jobs Included",
       "JobAll": "All jobs",
-      "JobDescription": "Search for a strategy including all jobs selected",
+      "JobDescription": "Includes all the following:",
       "JobClear": "Clear",
       "PatchLabel": "Version",
       "PatchAll": "Version"
+    },
+    "Footer": {
+      "Trademark": "The company/product/system names mentioned are (registered) trademarks of their respective owners.",
+      "NotAffiliated": "LLR is not affiliated with SQUARE ENIX CO., LTD. or ACTOZ SOFT CO., LTD.",
+      "PrivacyPolicy": "Privacy Policy",
+      "TermsOfService": "Terms of Service"
     }
+  },
+  "Auth": {
+    "SignIn": "Sign In",
+    "SignOut": "Sign Out"
+  },
+  "ThemeToggle": {
+    "Light": "Light",
+    "Dark": "Dark",
+    "System": "Match system"
   }
 }

@@ -33,8 +33,7 @@ export const buildSearchButtonStrategiesDataQuery = async (
     .from('strategies')
     .select(
       `id, name, version, subversion, modified_at, created_at,
-      raids(name),
-      like_counts(total_likes), 
+      like_counts(total_likes),
       strategy_players(id, job, order)`,
     )
     .like('name', `%${q}%`)

@@ -1,14 +1,15 @@
 'use client';
 import { Button, type ButtonProps } from '@/components/ui/button';
-import { DEFAULT_LIMIT, buildSearchURL } from '@/lib/utils';
 import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { forwardRef } from 'react';
+import React from 'react';
+import { DEFAULT_LIMIT } from '../utils/constants';
+import { buildSearchURL } from '../utils/helpers';
 
 type SearchButtonProps = Readonly<ButtonProps & {}>;
 
-// const SearchButton = forwardRef<HTMLButtonElement, SearchButtonProps>(({ className, ...props }, ref) => {
+// const SearchButton = React.forwardRef<HTMLButtonElement, SearchButtonProps>(({ className, ...props }, ref) => {
 //   const isDesktop = useMediaQuery('(min-width: 640px)');
 //   const [isOpen, setIsOpen] = useState(false);
 
@@ -260,14 +261,14 @@ type SearchButtonProps = Readonly<ButtonProps & {}>;
 // };
 // SearchButtonResult.displayName = 'SearchButtonResult';
 
-const SearchButtonNew = forwardRef<HTMLButtonElement, SearchButtonProps>(({ className, ...props }, ref) => {
+const SearchButtonNew = React.forwardRef<HTMLButtonElement, SearchButtonProps>(({ className, ...props }, ref) => {
   const searchParams = useSearchParams();
 
   return (
     <Button variant="ghost" size="icon" className={className} {...props} ref={ref}>
       <Link href={buildSearchURL(searchParams, { page: 1, limit: DEFAULT_LIMIT })}>
-        <span className="sr-only">Search</span>
-        <MagnifyingGlassIcon className="w-6 h-6" />
+        <span className="sr-only select-none">Search</span>
+        <MagnifyingGlassIcon className="h-4 w-4" />
       </Link>
     </Button>
   );

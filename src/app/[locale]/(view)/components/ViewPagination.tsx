@@ -3,11 +3,13 @@
 import { type ButtonProps, buttonVariants } from '@/components/ui/button';
 import { Pagination, PaginationContent, PaginationItem } from '@/components/ui/pagination';
 import type { buildMaxPageQuery } from '@/lib/queries/server';
-import { PAGINATION_OFFSET, PAGINATION_TOTAL_PAGE, cn, rangeInclusive } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons';
 import type Link from 'next/link';
 import type React from 'react';
 import { Suspense } from 'react';
+import { PAGINATION_OFFSET, PAGINATION_TOTAL_PAGE } from '../utils/constants';
+import { rangeInclusive } from '../utils/helpers';
 import { ViewLink } from './ViewLink';
 
 type ViewPaginationData = Awaited<ReturnType<typeof buildMaxPageQuery>>;
@@ -18,7 +20,12 @@ type ViewPaginationProps = Readonly<
   }
 >;
 
-const ViewPagination: React.FC<ViewPaginationProps> = ({ dataPromise, currentPage, className, ...props }) => {
+const ViewPagination = async ({
+  dataPromise,
+  currentPage,
+  className,
+  ...props
+}: { className?: string } & ViewPaginationProps) => {
   return (
     <Suspense fallback={<ViewPaginationContent currentPage={currentPage} className={className} {...props} />}>
       <ViewPaginationContent dataPromise={dataPromise} currentPage={currentPage} className={className} {...props} />
@@ -59,27 +66,29 @@ const ViewPaginationContent: React.FC<ViewPaginationContentProps> = async ({
 
   return (
     <Pagination className={className} {...props}>
-      <PaginationContent>
-        <PaginationItem>
-          <ViewPaginationPrevious
-            page={currentPage - 1}
-            className={cn('gap-1 pr-2.5', currentPage === 1 ? 'invisible' : 'visible  ')}
-          />
-        </PaginationItem>
-        {rangeInclusive(startPage, endPage).map((page) => (
-          <PaginationItem key={page}>
-            <ViewPaginationLink page={page} isActive={page === currentPage}>
-              {page}
-            </ViewPaginationLink>
+      {startPage <= endPage && (
+        <PaginationContent>
+          <PaginationItem>
+            <ViewPaginationPrevious
+              page={currentPage - 1}
+              className={cn(currentPage === 1 ? 'invisible' : 'visible  ')}
+            />
           </PaginationItem>
-        ))}
-        <PaginationItem>
-          <ViewPaginationNext
-            page={currentPage + 1}
-            className={cn('gap-1 pr-2.5', currentPage === maxPage ? 'invisible' : 'visible  ')}
-          />
-        </PaginationItem>
-      </PaginationContent>
+          {rangeInclusive(startPage, endPage).map((page) => (
+            <PaginationItem key={page}>
+              <ViewPaginationLink page={page} isActive={page === currentPage}>
+                {page}
+              </ViewPaginationLink>
+            </PaginationItem>
+          ))}
+          <PaginationItem>
+            <ViewPaginationNext
+              page={currentPage + 1}
+              className={cn(currentPage === maxPage ? 'invisible' : 'visible  ')}
+            />
+          </PaginationItem>
+        </PaginationContent>
+      )}
     </Pagination>
   );
 };
@@ -109,15 +118,23 @@ const ViewPaginationLink: React.FC<PaginationLinkProps> = ({ page, className, is
 ViewPaginationLink.displayName = 'ViewPaginationLink';
 
 const ViewPaginationPrevious: React.FC<PaginationLinkProps> = ({ className, ...props }) => (
-  <ViewPaginationLink aria-label="Go to previous page" size="default" className={cn('pl-2.5', className)} {...props}>
-    <ChevronLeftIcon className="h-4 w-4" />
+  <ViewPaginationLink
+    aria-label="Go to previous page"
+    className={cn('flex items-center justify-center p-0', className)}
+    {...props}
+  >
+    <ChevronLeftIcon />
   </ViewPaginationLink>
 );
 ViewPaginationPrevious.displayName = 'ViewPaginationPrevious';
 
 const ViewPaginationNext: React.FC<PaginationLinkProps> = ({ className, ...props }) => (
-  <ViewPaginationLink aria-label="Go to next page" size="default" className={cn('pr-2.5', className)} {...props}>
-    <ChevronRightIcon className="h-4 w-4" />
+  <ViewPaginationLink
+    aria-label="Go to next page"
+    className={cn('flex items-center justify-center p-0', className)}
+    {...props}
+  >
+    <ChevronRightIcon />
   </ViewPaginationLink>
 );
 ViewPaginationNext.displayName = 'ViewPaginationNext';

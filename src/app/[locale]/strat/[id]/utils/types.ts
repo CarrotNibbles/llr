@@ -14,3 +14,11 @@ export type MergedGimmick = {
 export type SuperMergedGimmick = MergedGimmick & {
   mergeCount: number;
 };
+
+export type ActionMeta = {
+  id: string;
+  semanticKey: string;
+  job: Enums<'job'> | null;
+  cooldown: number;
+  charges: number;
+};

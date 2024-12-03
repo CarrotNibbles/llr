@@ -15,7 +15,9 @@ import { z } from 'zod';
 export const ElevationDialog = () => {
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
-  const { elevated, elevate } = useStratSyncStore((state) => state);
+  const elevated = useStratSyncStore((state) => state.elevated);
+  const elevate = useStratSyncStore((state) => state.elevate);
+
   const t = useTranslations('StratPage.StratHeader.EditPermission');
 
   const formSchema = z.object({
@@ -62,12 +64,12 @@ export const ElevationDialog = () => {
       <DialogTrigger asChild>
         {elevated ? (
           <Button size="icon">
-            <span className="sr-only">Strategy unlocked</span>
+            <span className="sr-only select-none">Strategy unlocked</span>
             <LockOpen2Icon />
           </Button>
         ) : (
           <Button variant="ghost" size="icon">
-            <span className="sr-only">Unlock this strategy</span>
+            <span className="sr-only select-none">Unlock this strategy</span>
             <LockClosedIcon />
           </Button>
         )}

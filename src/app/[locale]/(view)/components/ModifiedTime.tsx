@@ -2,8 +2,8 @@
 
 import { LocalizedDate } from '@/components/LocalizedDate';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { cn } from '@/lib/utils';
-import { useTranslations } from 'next-intl';
+import { cn } from '@/lib/utils/helpers';
+import { getTranslations } from 'next-intl/server';
 import type React from 'react';
 
 type ModifiedTimeProp = Readonly<
@@ -13,8 +13,13 @@ type ModifiedTimeProp = Readonly<
   }
 >;
 
-const ModifiedTime: React.FC<ModifiedTimeProp> = ({ createdAt, modifiedAt, className, ...props }) => {
-  const t = useTranslations('ViewPage.ModifiedTime');
+const ModifiedTime = async ({
+  createdAt,
+  modifiedAt,
+  className,
+  ...props
+}: { className?: string } & ModifiedTimeProp) => {
+  const t = await getTranslations('ViewPage.ModifiedTime');
 
   return (
     <Tooltip>

@@ -1,8 +1,9 @@
 'use server';
 
 import type { buildRaidsDataQuery } from '@/lib/queries/server';
-import type { Patch, SelectableJob } from '@/lib/utils';
+import type { Patch } from '@/lib/utils/types';
 import { Suspense } from 'react';
+import type { SelectableJob } from '../../utils/types';
 import { ClientSearchForm } from './ClientSearchForm';
 
 type SearchFormData = Awaited<ReturnType<typeof buildRaidsDataQuery>>;
@@ -16,7 +17,15 @@ type SearchFormProps = Readonly<
   }
 >;
 
-const SearchForm: React.FC<SearchFormProps> = ({ q, raid, patch, jobs, dataPromise, className, ...props }) => (
+const SearchForm = async ({
+  q,
+  raid,
+  patch,
+  jobs,
+  dataPromise,
+  className,
+  ...props
+}: { className?: string } & SearchFormProps) => (
   <Suspense fallback={<SearchFormContent q={q} raid={raid} patch={patch} jobs={jobs} />}>
     <SearchFormContent
       q={q}

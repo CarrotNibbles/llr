@@ -1,6 +1,6 @@
 'use server';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import type React from 'react';
 import { Skeleton } from './ui/skeleton';
 
@@ -59,7 +59,12 @@ type TextSkeletonProps = Readonly<
   }
 >;
 
-export const TextSkeleton: React.FC<TextSkeletonProps> = ({ textSize, mdTextSize, className, ...props }) => (
+export const TextSkeleton = async ({
+  textSize,
+  mdTextSize,
+  className,
+  ...props
+}: { className?: string } & TextSkeletonProps) => (
   <div
     className={cn(
       LineHeightClass[textSize],

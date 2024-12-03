@@ -1,9 +1,10 @@
-import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvider';
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { OrderedMap } from '@js-sdsl/ordered-map';
 import { useMemo } from 'react';
 import type { Tables } from '../database.types';
-import { type ArrayElement, type Role, getDiversedRole, getRole } from '../utils';
+import type { ActionDataType } from '../queries/server';
+import { getDiversedRole, getRole } from '../utils/helpers';
+import type { ArrayElement, Role } from '../utils/types';
 import { estimateAll } from './estimations';
 
 const HEALER_BASIC_BARRIERS = [
@@ -117,7 +118,7 @@ const semanticKeyTransform = (key: string): string => {
   return key;
 };
 
-export const useMitigatedDamages = () => {
+export const useMitigatedDamages = (actionData: ActionDataType) => {
   type DamageApplied = {
     id: string;
     combined_damage: number;
@@ -126,6 +127,7 @@ export const useMitigatedDamages = () => {
     primary_target: string | null;
     target: Tables<'damages'>['target'];
     type: Tables<'damages'>['type'];
+    barrier_resolution: boolean;
   };
 
   type DamageTimeline = {
@@ -149,7 +151,6 @@ export const useMitigatedDamages = () => {
   type ActiveEffectMapKey = { at: number; _auto_incrementing_key: number };
   type ActiveEffectMap = OrderedMap<ActiveEffectMapKey, Effect>;
 
-  const { actionData } = useStaticDataStore((state) => state);
   const [mainTank, offTank] = useTank();
   const { strategyData } = useStratSyncStore((state) => state);
   const { hpHealer, hpTank, potencyCoefficientHealer, potencyCoefficientTank } = useEstimations();
@@ -180,14 +181,15 @@ export const useMitigatedDamages = () => {
           combined_damage: damage.combined_damage,
           num_shared: damage.strategy_damage_options?.[0]?.num_shared ?? damage.max_shared,
           num_targets: damage.num_targets,
-          primary_target: damage.strategy_damage_options?.[0]?.primary_target,
+          primary_target: damage.strategy_damage_options?.[0]?.primary_target ?? null,
           target: damage.target,
           type: damage.type,
+          barrier_resolution: damage.barrier_resolution,
         };
 
         if (
           damageApplied.primary_target === null &&
-          gimmick.type === 'Tankbuster' &&
+          damageApplied.target === 'Tankbuster' &&
           damageApplied.num_targets === 1 &&
           damageApplied.num_shared === 1
         ) {
@@ -204,26 +206,62 @@ export const useMitigatedDamages = () => {
           throw new Error('ERROR: Job must be defined');
         }
 
+        if (actionRecord[entry.action] === undefined) {
+          continue;
+        }
+
         const job = player.job;
         const gcd = actionRecord[entry.action].is_gcd;
         const mitigations = actionRecord[entry.action].mitigations;
         const semanticKey = semanticKeyTransform(actionRecord[entry.action].semantic_key);
 
-        mitigations.forEach((mitigation, index) => {
+        const mitigationTypeMultiplicity = new Map<string, number>();
+
+        for (const mitigation of mitigations) {
+          const currentMultiplicity = mitigationTypeMultiplicity.get(mitigation.type) ?? 0;
+
           timeline.push({
             type: 'MITIGATION_ACQUIRE',
             at: entry.use_at,
             by: player.id,
-            via: `${semanticKey}.${mitigation.type}`,
+            via: `${semanticKey}.${mitigation.type}.${currentMultiplicity}`,
             role: getRole(job),
             gcd,
             mitigation,
           });
-        });
+
+          mitigationTypeMultiplicity.set(mitigation.type, currentMultiplicity + 1);
+        }
       }
     }
 
-    timeline.sort((lhs, rhs) => lhs.at - rhs.at);
+    timeline.sort((lhs, rhs) => {
+      if (lhs.at !== rhs.at) return lhs.at - rhs.at;
+      if (lhs.type === 'DAMAGE_PREPARE' && rhs.type === 'DAMAGE_PREPARE') {
+        if (lhs.damageApplied.barrier_resolution !== rhs.damageApplied.barrier_resolution)
+          return lhs.damageApplied.barrier_resolution ? -1 : 1;
+
+        return 0;
+      }
+      if (lhs.type === 'MITIGATION_ACQUIRE' && rhs.type === 'MITIGATION_ACQUIRE') {
+        const TYPE_ORDER_MAP = {
+          Support: 6,
+          Physical: 5,
+          Magical: 4,
+          Barrier: 3,
+          Invuln: 2,
+          ActiveAmp: 1,
+          PassiveAmp: 0,
+        };
+
+        const lhsTypeOrder = TYPE_ORDER_MAP[lhs.mitigation.type];
+        const rhsTypeOrder = TYPE_ORDER_MAP[rhs.mitigation.type];
+
+        return lhsTypeOrder - rhsTypeOrder;
+      }
+
+      return lhs.type === 'MITIGATION_ACQUIRE' ? -1 : 1;
+    });
 
     const effectMapComparator = (lhs: ActiveEffectMapKey, rhs: ActiveEffectMapKey) => {
       const compares = [lhs.at - rhs.at, lhs._auto_incrementing_key - rhs._auto_incrementing_key];
@@ -355,8 +393,8 @@ export const useMitigatedDamages = () => {
           let offTankDamage: number;
 
           if (damageApplied.num_targets === 2) {
-            mainTankDamage = damageApplied.combined_damage / 2;
-            offTankDamage = damageApplied.combined_damage / 2;
+            mainTankDamage = damageApplied.combined_damage;
+            offTankDamage = damageApplied.combined_damage;
           } else {
             if (damageApplied.num_shared === 2) {
               mainTankDamage = damageApplied.combined_damage / 2;
@@ -387,16 +425,18 @@ export const useMitigatedDamages = () => {
 
           mitigatedDamages[damageApplied.id] = Math.max(mainTankResult.remaining, offTankResult.remaining);
 
-          personalEffect[mainTank] = handleAbsorption(
-            activePersonalEffects[mainTank],
-            mainTankResult.absorbed,
-            personalEffect[mainTank],
-          );
-          personalEffect[offTank] = handleAbsorption(
-            activePersonalEffects[offTank],
-            offTankResult.absorbed,
-            personalEffect[offTank],
-          );
+          if (damageApplied.barrier_resolution) {
+            personalEffect[mainTank] = handleAbsorption(
+              activePersonalEffects[mainTank],
+              mainTankResult.absorbed,
+              personalEffect[mainTank],
+            );
+            personalEffect[offTank] = handleAbsorption(
+              activePersonalEffects[offTank],
+              offTankResult.absorbed,
+              personalEffect[offTank],
+            );
+          }
         }
 
         if (damageApplied.target === 'Raidwide') {
@@ -408,7 +448,9 @@ export const useMitigatedDamages = () => {
 
           mitigatedDamages[damageApplied.id] = raidwideResult.remaining;
 
-          raidwideEffect = handleAbsorption(activeRaidwideEffects, raidwideResult.absorbed, raidwideEffect);
+          if (damageApplied.barrier_resolution) {
+            raidwideEffect = handleAbsorption(activeRaidwideEffects, raidwideResult.absorbed, raidwideEffect);
+          }
         }
       }
 
@@ -427,9 +469,14 @@ export const useMitigatedDamages = () => {
 
         if (gcd && personalEffect[timelineEntry.by].activeAmp > 1) {
           for (const semanticKey of ACTIONS_ACTIVEAMP_ONCE) {
-            const via = `${semanticKey}.ActiveAmp`;
-            const activeEffectKey = effectKeyMapPersonal[timelineEntry.by].get(via);
-            if (activeEffectKey) {
+            let index = 0;
+
+            while (true) {
+              const via = `${semanticKey}.ActiveAmp.${index}`;
+              const activeEffectKey = effectKeyMapPersonal[timelineEntry.by].get(via);
+
+              if (!activeEffectKey) break;
+
               const activeEffect =
                 activePersonalEffects[timelineEntry.by].getElementByKey(activeEffectKey) ?? IDENTITY_EFFECT;
               personalEffect[timelineEntry.by] = addEffect(
@@ -437,6 +484,8 @@ export const useMitigatedDamages = () => {
                 inverseEffect(activeEffect),
               );
               activePersonalEffects[timelineEntry.by].eraseElementByKey(activeEffectKey);
+
+              index += 1;
             }
           }
         }
@@ -505,5 +554,5 @@ export const useMitigatedDamages = () => {
     }
 
     return mitigatedDamages;
-  }, [strategyData]);
+  }, [actionData, strategyData]);
 };

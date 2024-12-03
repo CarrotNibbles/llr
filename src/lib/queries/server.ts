@@ -1,25 +1,29 @@
 'use server';
 
+import { removeUndefinedFields } from '@/app/[locale]/(view)/utils/helpers';
+import type { SelectableJob, SortOption } from '@/app/[locale]/(view)/utils/types';
+import type { ArrayElement, Patch } from '@/lib/utils/types';
 import type { QueryData } from '@supabase/supabase-js';
 import type { Database } from '../database.types';
 import type { createClient } from '../supabase/server';
-import type { ArrayElement, Patch, SelectableJob, SortOption } from '../utils';
 
-export const buildActionDataQuery = (supabase: ReturnType<typeof createClient>) => {
+type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
+
+export const buildActionDataQuery = async (supabase: SupabaseServerClient) => {
   return supabase.from('actions').select('*, mitigations(*)').order('priority');
 };
 
 export type ActionDataType = QueryData<ReturnType<typeof buildActionDataQuery>>;
 
 export const buildStrategyCountQuery = async (
-  supabase: ReturnType<typeof createClient>,
+  supabase: SupabaseServerClient,
   params: { q?: string; raid_skey?: string; patch?: Patch; jobs?: SelectableJob[] },
 ) => {
   return supabase.rpc('count_strategies', params);
 };
 
 export const buildMaxPageQuery = async (
-  supabase: ReturnType<typeof createClient>,
+  supabase: SupabaseServerClient,
   limit: number,
   params: { q?: string; raid_skey?: string; patch?: Patch; jobs?: SelectableJob[] },
 ) => {
@@ -31,7 +35,7 @@ export const buildMaxPageQuery = async (
 };
 
 export const buildStrategiesDataQuery = async (
-  supabase: ReturnType<typeof createClient>,
+  supabase: SupabaseServerClient,
   params: {
     q?: string;
     raid_skey?: string;
@@ -42,7 +46,7 @@ export const buildStrategiesDataQuery = async (
     jobs?: SelectableJob[];
   },
 ) => {
-  const { data, error } = await supabase.rpc('select_strategies', params);
+  const { data, error } = await supabase.rpc('select_strategies', removeUndefinedFields(params));
   if (data === null || error) return { data: null, error };
   return { data: data as ViewStrategiesDataType, error };
 };
@@ -60,13 +64,15 @@ type ViewStrategyType = Readonly<
 >;
 export type ViewStrategiesDataType = Readonly<ViewStrategyType[]>;
 
-export const buildStrategyDataQuery = async (supabase: ReturnType<typeof createClient>, strategyId: string) => {
+export const buildStrategyDataQuery = async (supabase: SupabaseServerClient, strategyId: string) => {
   const res = await supabase
     .from('strategies')
     .select(
       `*,
       like_counts(*),
       user_likes(*),
+      notes(*),
+      profiles!strategies_author_fkey(*),
       strategy_players(*, strategy_player_entries(*)),
       raids!inner(*, gimmicks(*, damages(*, strategy_damage_options(*))))`,
     )
@@ -80,6 +86,6 @@ export const buildStrategyDataQuery = async (supabase: ReturnType<typeof createC
 
 export type StrategyDataType = QueryData<ReturnType<typeof buildStrategyDataQuery>>;
 
-export const buildRaidsDataQuery = async (supabase: ReturnType<typeof createClient>) => supabase.from('raids').select();
+export const buildRaidsDataQuery = async (supabase: SupabaseServerClient) => supabase.from('raids').select();
 
 export type RaidsDataType = QueryData<ReturnType<typeof buildRaidsDataQuery>>;

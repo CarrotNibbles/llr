@@ -26,7 +26,11 @@ export type StratSyncProviderProps = {
 
 const StratSyncLoader = (props: { strategy: string; isAuthor: boolean; editable: boolean }) => {
   const supabase = createClient();
-  const { connect, abort, connectionAborted, updateStrategyData } = useStratSyncStore((state) => state);
+  const connect = useStratSyncStore((state) => state.connect);
+  const abort = useStratSyncStore((state) => state.abort);
+  const connectionAborted = useStratSyncStore((state) => state.connectionAborted);
+  const notes = useStratSyncStore((state) => state.strategyData.notes);
+  const updateStrategyData = useStratSyncStore((state) => state.updateStrategyData);
   const t = useTranslations('StratPage.StratSyncProvider');
 
   useEffect(() => {
@@ -92,12 +96,39 @@ const StratSyncLoader = (props: { strategy: string; isAuthor: boolean; editable:
           updateStrategyData({ user_likes: [] });
         },
       )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'notes',
+          filter: `strategy=eq.${props.strategy}`,
+        },
+        (payload) => {
+          updateStrategyData({
+            notes: [
+              ...notes.filter((note) => {
+                if ('id' in payload.old && note.id === payload.old.id) {
+                  return false;
+                }
+
+                if ('id' in payload.new && note.id === payload.new.id) {
+                  return false;
+                }
+
+                return true;
+              }),
+              payload.new as Tables<'notes'>,
+            ],
+          });
+        },
+      )
       .subscribe();
 
     return () => {
       channel.unsubscribe();
     };
-  }, [supabase.channel, props.strategy, updateStrategyData]);
+  }, [supabase.channel, props.strategy, updateStrategyData, notes]);
 
   return (
     <AlertDialog open={connectionAborted}>

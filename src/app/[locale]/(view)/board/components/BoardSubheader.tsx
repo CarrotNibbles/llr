@@ -2,16 +2,16 @@
 
 import { type RaidsDataType, buildRaidsDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
-import { NAV_RAID_CATEGORIES, cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import type React from 'react';
 import { Suspense } from 'react';
 import { CreateButton } from './CreateButton';
-import { RaidPopover } from './RaidPopover';
+import { RaidSearchPopover } from './RaidPopover';
 
 type BoardSubheaderProps = Readonly<React.HTMLAttributes<HTMLDivElement>>;
 
-const BoardSubheader: React.FC<BoardSubheaderProps> = ({ className, ...props }) => {
-  const supabase = createClient();
+const BoardSubheader = async ({ className, ...props }: { className?: string } & BoardSubheaderProps) => {
+  const supabase = await createClient();
 
   const fecthData = async () => {
     const { data: raidsData, error: raidsDataQueryError } = await buildRaidsDataQuery(supabase);
@@ -37,27 +37,31 @@ type BoardSubheaderContentProps = Readonly<
 
 const BOARD_SUBHEADER_CONTENT_DEFAULT_DATA: BoardSubheaderContentData = { raidsData: [] };
 const BoardSubheaderContent: React.FC<BoardSubheaderContentProps> = async ({ dataPromise, className, ...props }) => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   const { raidsData } = (await dataPromise) ?? BOARD_SUBHEADER_CONTENT_DEFAULT_DATA;
 
   return (
-    <nav>
-      <div className={cn('rounded-none flex min-w-full items-center', className)} {...props}>
-        <ul className="hidden sm:flex gap-x-2">
+    <nav className="py-3">
+      <div className={cn('rounded-none flex w-full items-center space-x-1', className)} {...props}>
+        {/* <ul className="hidden sm:flex gap-x-2 self-start">
+          <li>
+
+          </li>
           {NAV_RAID_CATEGORIES.map((raidCategory) => (
             <li key={raidCategory}>
               <RaidPopover
-                name={raidCategory.toUpperCase()}
+                name={raidCategory}
                 raidsData={raidsData.filter((raidData) => raidData.category === raidCategory)}
               />
             </li>
           ))}
-        </ul>
+        </ul> */}
+        <RaidSearchPopover className="sm:w-80 w-full" raidsData={raidsData} />
         <div className="flex-grow" />
-        {user && <CreateButton className="h-8" raidsData={raidsData} />}
+        {user && <CreateButton raidsData={raidsData} />}
       </div>
     </nav>
   );

@@ -1,5 +1,10 @@
 {
   "Common": {
+    "Meta": {
+      "Description": "見て、学んで、覚えてください。ファイナルファンタジー14のレイド攻略を共有する場所、LLR。",
+      "StratDescription": "Check out this {raid} strategy on LLR.",
+      "UnknownAuthor": "不明な作成者"
+    },
     "FFXIVPatches": {
       "2": {
         "0": "新生エオルゼア",
@@ -42,7 +47,8 @@
         "5": "光明の起点"
       },
       "7": {
-        "0": "黄金の遺産"
+        "0": "黄金の遺産",
+        "1": "未知との邂逅"
       }
     },
     "Actions": {
@@ -96,7 +102,7 @@
       "arcane_crest": "アルケインクレスト",
       "seraphism": "セラフィズム",
       "expedient": "疾風怒濤の計",
-      "summon_seraph": "サモン・セラフィム",
+      "consolation": "コンソレイション",
       "recitation": "秘策",
       "deployment_tactics": "展開戦術",
       "sacred_soil": "野戦治療の陣",
@@ -131,36 +137,62 @@
     },
     "Raids": {
       "P10S": "万魔殿パンデモニウム：天獄編２(解説)",
-      "P11S": "万魔殿パンデモニウム：天獄編３(解説)"
+      "P11S": "万魔殿パンデモニウム：天獄編３(解説)",
+      "M1S": "至天の座アルカディア：ライトヘビー級1(解説)"
     },
     "Gimmicks": {
-      "auto_attack": "攻击",
-      "ultima": "알테마",
-      "soul_grasp": "영혼 장악",
-      "dividing_wings": "날개 분리",
-      "steel_web": "강력 거미줄",
-      "wicked_step": "뾰족다리",
-      "bury": "충격",
-      "silkspit": "攻击",
-      "pandaemoniac_meltdown": "판데모니움 멜튼",
-      "daemoniac_bonds": "판데모니움 결속",
-      "tetradaemoniac_bonds": "판데모니움 사중 결속",
-      "peal_of_condemnation": "형벌 선포",
-      "duodaemoniac_bonds": "판데모니움 이중 결속",
-      "harrowing_hell": "판데모니움 격돌",
-      "unmitigated_explosion": "대폭발",
-      "cannonspawn": "산탄포",
-      "pandaemonium_holy_circle": "판데모니움 홀리/고리",
-      "pandaemons_holy": "판데모니움 홀리",
-      "circles_of_pandaemonium": "판데모니움 고리",
-      "entangling_web": "거대 거미줄",
-      "pandaemonium_pillars": "판데모니움 기둥",
-      "pandaemoniac_turrets": "판데모니움 포탑",
-      "pandaemoniac_ray": "판데모니움 광선",
-      "parted_plumes": "깃털 분리",
-      "temp_jade": "제이드 통로",
-      "temp_landing": "착지",
-      "temp_judgement": "천벌 선포"
+      "P10S": {
+        "auto_attack": "攻击",
+        "ultima": "알테마",
+        "soul_grasp": "영혼 장악",
+        "dividing_wings": "날개 분리",
+        "steel_web": "강력 거미줄",
+        "wicked_step": "뾰족다리",
+        "bury": "충격",
+        "silkspit": "攻击",
+        "pandaemoniac_meltdown": "판데모니움 멜튼",
+        "daemoniac_bonds": "판데모니움 결속",
+        "tetradaemoniac_bonds": "판데모니움 사중 결속",
+        "peal_of_condemnation": "형벌 선포",
+        "duodaemoniac_bonds": "판데모니움 이중 결속",
+        "harrowing_hell": "판데모니움 격돌",
+        "unmitigated_explosion": "대폭발",
+        "cannonspawn": "산탄포",
+        "pandaemonium_holy_circle": "판데모니움 홀리/고리",
+        "pandaemons_holy": "판데모니움 홀리",
+        "circles_of_pandaemonium": "판데모니움 고리",
+        "entangling_web": "거대 거미줄",
+        "pandaemonium_pillars": "판데모니움 기둥",
+        "pandaemoniac_turrets": "판데모니움 포탑",
+        "pandaemoniac_ray": "판데모니움 광선",
+        "parted_plumes": "깃털 분리",
+        "temp_jade": "제이드 통로",
+        "temp_landing": "착지",
+        "temp_judgement": "천벌 선포"
+      },
+      "M1S": {
+        "auto_attack": "攻击",
+        "quadruple_crossing": "クアドラプルネイル",
+        "biscuit_maker": "ビスケットメーカー",
+        "nine_lives": "ナインライヴス",
+        "one_two_paw": "デュアルネイル",
+        "soulshade": "ソウルシェード",
+        "double_quadruple_swipe": "ダブル/クァッドクロウ",
+        "leaping_quadruple_crossing": "リーピング・クアドラプルネイル",
+        "bloddy_scratch": "ブラッディースクラッチ",
+        "mouser": "マウサーラッシュ",
+        "copycat": "コピーキャット",
+        "elevate_and_eviscerate": "エレベート・エビセレート",
+        "impact": "衝撃",
+        "shockwave": "衝撃波",
+        "grimalkin_gale": "キャッタクリスム・ゲイル",
+        "leaping_one_two_paw": "リーピング・デュアルネイル",
+        "tempestuous_tear": "テンペストテアー",
+        "nailchipper": "ネイルチッパー",
+        "overshadow_splintering_nails": "オーバーシャドウ/スプレッドネイル",
+        "raining_cats": "レイニングキャッツ",
+        "predaceous_pounce": "キャッツレイド"
+      }
     }
   },
   "ErrorPage": {
@@ -169,11 +201,16 @@
     "GoHome": "ホームに戻る"
   },
   "StratPage": {
-    "CoreArea": {},
+    "StratToolbar": {
+      "NoMoreUndo": "これ以上元に戻せません。",
+      "NoMoreRedo": "これ以上やり直せません。"
+    },
     "DamageText": {
       "DamageOption": {
         "Share": "頭割り",
         "RaidWide": "全体",
+        "SingleTarget": "個人",
+        "NTargets": "{numTargets}人",
         "Unknown": "???"
       }
     },
@@ -244,6 +281,12 @@
         "PatchDescription": "基準となるパッチバージョンを選択します。",
         "Password": "編集用パスワード",
         "DeleteStrategy": "戦略を削除する",
+        "DeleteConfirmationTitle": "攻略削除の確認",
+        "DeleteConfirmationDescription": "この攻略を削除しますか？削除された攻略は復元できません。",
+        "Delete": "削除",
+        "Cancel": "キャンセル",
+        "DeleteError": "攻略の削除中にエラーが発生しました。",
+        "Deleted": "攻略が削除されました。",
         "AlertTitle": "注意",
         "AlertDescription": "以下の設定をより制限された設定に変更すると、他のセッションの接続が切断されます。",
         "Save": "保存",
@@ -270,6 +313,11 @@
       "ErrorTitle": "接続切断",
       "ErrorDescription": "サーバーへの接続が失われました。ページを再読み込みして、もう一度お試しください。",
       "Refresh": "再読み込み"
+    },
+    "Note": {
+      "NewNote": "新しいメモ",
+      "DeleteNote": "メモを削除",
+      "EditNote": "メモを編集"
     }
   },
   "ViewPage": {
@@ -286,6 +334,7 @@
       "RaidSearchPlaceholder": "レイドを検索",
       "RaidEmpty": "利用可能なレイドがありません",
       "RaidRequired": "レイドを選択してください",
+      "UnkownRaid": "不明なレイドが選択されました。有効なレイドを選択してください",
       "ScopeLabel": "公開範囲",
       "ScopePublicLabel": "公開",
       "ScopePublicDescription": "誰でもこの戦略を閲覧できます",
@@ -295,10 +344,15 @@
       "PasswordLabel": "パスワード",
       "PasswordDescription": "戦略を編集する際に必要なパスワード（作成者は不要）",
       "PasswordRequired": "パスワードを設定してください",
-      "PasswordLengthMismatch": "パスワードは8文字である必要があります",
+      "PasswordError": "パスワードは8桁の数字である必要があります。",
       "CreateConfirm": "作成",
       "NotSignedIn": "投稿するにはログインしてください",
       "UnknownError": "戦略の作成に失敗しました。しばらくしてから再度お試しください。"
+    },
+    "RaidSearchPopover": {
+      "RaidAll": "すべてのレイド",
+      "RaidSearchPlaceholder": "レイド検索",
+      "RaidEmpty": "レイドが見つかりません"
     },
     "LimitCombobox": {
       "Current": "{currentLimit}件ずつ",
@@ -324,7 +378,8 @@
       "Patch": "バージョン",
       "Likes": "いいね",
       "Created": "作成日",
-      "NoStrategyFound": "戦略が見つかりませんでした"
+      "NoStrategyFound": "戦略が見つかりませんでした",
+      "DeletedUser": "削除されたユーザー"
     },
     "SearchForm": {
       "FieldRequired": "少なくとも1つの条件を選択してください",
@@ -337,10 +392,25 @@
       "RaidEmpty": "レイドが見つかりません",
       "JobLabel": "含まれる職業",
       "JobAll": "すべての職業",
-      "JobDescription": "選択したすべての職業を含む戦略を検索",
+      "JobDescription": "次の職業をすべて含む：",
       "JobClear": "全選択解除",
       "PatchLabel": "バージョン",
       "PatchAll": "すべてのバージョン"
+    },
+    "Footer": {
+      "Trademark": "記載されている会社名・製品名・システム名は、各所有者の商標または登録商標です。",
+      "NotAffiliated": "LLRはSQUARE ENIX CO., LTD.やACTOZ SOFT CO., LTD.とは関係がありません。",
+      "PrivacyPolicy": "プライバシーポリシー",
+      "TermsOfService": "利用規約"
     }
+  },
+  "Auth": {
+    "SignIn": "サインイン",
+    "SignOut": "サインアウト"
+  },
+  "ThemeToggle": {
+    "Light": "明るく",
+    "Dark": "暗く",
+    "System": "システムに合わせて"
   }
 }

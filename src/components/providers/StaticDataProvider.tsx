@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { StaticDataStoreProvider } from './StaticDataStoreProvider';
 
 export async function StaticDataProvider({ children }: { children: React.ReactNode }) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: actionData } = await buildActionDataQuery(supabase);
 
   return (

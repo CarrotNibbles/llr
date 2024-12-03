@@ -8,23 +8,28 @@ import {
 } from '@/components/ui/context-menu';
 import { useToast } from '@/components/ui/use-toast';
 import type { ActionDataType, StrategyDataType } from '@/lib/queries/server';
-import type { ArrayElement } from '@/lib/utils';
+import type { ArrayElement } from '@/lib/utils/types';
 import { AnimatePresence, animate, motion, useDragControls, useMotionValue } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import Image from 'next/legacy/image';
-import { type MouseEventHandler, useContext, useEffect, useMemo, useState } from 'react';
+import React, { type MouseEventHandler, useEffect, useMemo, useState } from 'react';
 
 import { useStaticDataStore } from '@/components/providers/StaticDataStoreProvider';
-import { usePixelPerFrame } from '@/lib/states';
-import { BOX_X_OFFSET, BOX_Z_INDEX, columnWidth } from '../../utils/constants';
-import { MultiIntervalSet, getAreaHeight, timeToY, yToTime } from '../../utils/helpers';
-import { EntrySelectionContext } from './EntrySelectionContext';
+import { activeEntriesAtom, pixelPerFrameAtom } from '@/lib/atoms';
+import { deepEqual } from 'fast-equals';
+import { useAtom, useAtomValue } from 'jotai';
+import { BOX_X_OFFSET, BOX_Z_INDEX, COLUMN_WIDTH_CLS, COUNTDOWN_DURATION } from '../../utils/constants';
+import { MultiIntervalSet, verticalTransformsFactory } from '../../utils/helpers';
 
 function useEntryMutation() {
-  const { mutateEntries, strategyData } = useStratSyncStore((state) => state);
-  const { actionData } = useStaticDataStore((state) => state);
+  const getStore = useStratSyncStore((state) => state.getStore);
+  const actionData = useStaticDataStore((state) => state.actionData);
 
   const moveEntries = (ids: string[], offset: number) => {
+    const { strategyData, mutateEntries } = getStore();
+
+    const raidDuration = strategyData.raids?.duration ?? 0;
+
     const upserts = strategyData.strategy_players
       .flatMap((player) => {
         const targetActions = new Set(
@@ -46,9 +51,17 @@ function useEntryMutation() {
             const fixedIntervals = entries
               .filter((entry) => !ids.includes(entry.id))
               .map((entry) => [entry.use_at, entry.use_at + action.cooldown] as [number, number]);
-            const upserts = entries.filter((entry) => ids.includes(entry.id)).toReversed();
 
+            const upserts = entries.filter((entry) => ids.includes(entry.id));
             let currentOffset = offset;
+
+            if (offset > 0) {
+              upserts.reverse();
+              currentOffset = Math.min(currentOffset, raidDuration - upserts[0].use_at);
+            } else {
+              currentOffset = Math.max(currentOffset, -COUNTDOWN_DURATION - upserts[0].use_at);
+            }
+
             const mis = new MultiIntervalSet(action.charges, fixedIntervals);
             return upserts.map((entry) => {
               currentOffset = mis.offsetSearch([entry.use_at, entry.use_at + action.cooldown], currentOffset);
@@ -66,12 +79,20 @@ function useEntryMutation() {
         useAt: use_at,
       }));
 
-    mutateEntries(upserts, [], false);
+    mutateEntries(
+      {
+        upserts,
+        deletes: [],
+      },
+      false,
+    );
   };
 
   const insertEntry = (
     entry: ArrayElement<ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries']>,
   ) => {
+    const { strategyData, mutateEntries } = getStore();
+
     const { id, player: playerId, action: actionId, use_at } = entry;
     const playerData = strategyData.strategy_players.find((p) => p.id === playerId);
 
@@ -91,15 +112,17 @@ function useEntryMutation() {
 
     if (insertable) {
       mutateEntries(
-        [
-          {
-            id,
-            action: actionId,
-            player: playerId,
-            useAt: use_at,
-          },
-        ],
-        [],
+        {
+          upserts: [
+            {
+              id,
+              action: actionId,
+              player: playerId,
+              useAt: use_at,
+            },
+          ],
+          deletes: [],
+        },
         false,
       );
     }
@@ -115,28 +138,32 @@ type DraggableBoxProps = {
   entry: ArrayElement<ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries']>;
   slot: number;
   raidDuration: number;
-  durations: number[];
 };
 
-const DraggableBox = ({ action, entry, slot, raidDuration, durations }: DraggableBoxProps) => {
-  const { use_at: useAt, id: entryId, action: actionId, player: playerId } = entry;
+const DraggableBox = ({ action, entry, slot, raidDuration }: DraggableBoxProps) => {
+  const { use_at: useAt, id: entryId, player: playerId } = entry;
+  const durations = action.mitigations.map(({ duration }) => duration);
 
   const t = useTranslations('StratPage.EditColumn');
   const tActions = useTranslations('Common.Actions');
-  const pixelPerFrame = usePixelPerFrame();
+
+  const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
+  const { timeToY, yToTime, yToTimeUnclamped } = verticalTransformsFactory(raidDuration, pixelPerFrame);
+
   const src = `/icons/action/${action.job}/${action.semantic_key}.png`;
 
   const { toast } = useToast();
 
-  const { mutateEntries, elevated } = useStratSyncStore((state) => state);
+  const elevated = useStratSyncStore((state) => state.elevated);
+  const mutateEntries = useStratSyncStore((state) => state.mutateEntries);
   const { insertEntry, moveEntries } = useEntryMutation();
 
   const [holdingShift, setHoldingShift] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const xMotionValue = useMotionValue(BOX_X_OFFSET[slot]);
-  const yMotionValue = useMotionValue(timeToY(useAt, pixelPerFrame));
+  const yMotionValue = useMotionValue(timeToY(useAt));
 
-  const { activeEntries, setActiveEntries, draggingCount, setDraggingCount } = useContext(EntrySelectionContext);
+  const [activeEntries, setActiveEntries] = useAtom(activeEntriesAtom);
   const draggable = elevated && !isLocked;
   const [isDragging, setIsDragging] = useState(false);
 
@@ -147,20 +174,21 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    void animate(xMotionValue, BOX_X_OFFSET[slot]);
+    animate(xMotionValue, BOX_X_OFFSET[slot]);
   }, [slot]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    void animate(yMotionValue, timeToY(useAt, pixelPerFrame));
+    // yMotionValue.animation?.stop();
+    animate(yMotionValue, timeToY(useAt));
   }, [pixelPerFrame, useAt]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    if (draggingCount === 0) {
-      void animate(yMotionValue, timeToY(useAt, pixelPerFrame));
+    if (!isDragging) {
+      void animate(yMotionValue, timeToY(useAt));
     }
-  }, [draggingCount]);
+  }, [isDragging]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -184,10 +212,11 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
     <ContextMenu>
       <ContextMenuTrigger className="relative" disabled={!elevated}>
         <motion.div
-          className={`${columnWidth} h-0 absolute z-[5] shadow-xl filter ${activeEntries.get(entryId) ? 'drop-shadow-selection' : ''}`}
+          className={`${COLUMN_WIDTH_CLS} h-0 absolute z-[5] filter ${activeEntries.get(entryId) ? 'drop-shadow-selection' : ''}`}
           style={{
             x: xMotionValue,
             y: yMotionValue,
+            height: `${action.cooldown * pixelPerFrame}px`,
             zIndex: BOX_Z_INDEX[slot],
             cursor: draggable ? 'grab' : 'not-allowed',
             transitionProperty: 'filter',
@@ -203,7 +232,7 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
           dragMomentum={false}
           dragPropagation
           onPointerDown={(e) => {
-            if (effectiveDragControls) {
+            if (draggable) {
               if (!activeEntries.get(entryId)) {
                 if (!holdingShift) {
                   activeEntries.clear();
@@ -218,79 +247,78 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
               for (const dc of activeEntries.values()) {
                 dc.start(e);
               }
-
-              setDraggingCount(activeEntries.size);
             }
           }}
           onDragStart={() => {
             setIsDragging(true);
           }}
           onDragEnd={() => {
+            if (activeEntries.size === 1) {
+              setActiveEntries(new Map());
+            }
+
+            if (activeEntries.keys().next().value === entryId) {
+              const oldUseAt = useAt;
+              const newUseAt = yToTimeUnclamped(yMotionValue.get());
+              const offset = newUseAt - oldUseAt;
+
+              if (offset !== 0) {
+                moveEntries(activeEntries.keys().toArray(), offset);
+              }
+            }
+
             setIsDragging(false);
-            yMotionValue.animation?.stop();
-
-            const oldUseAt = useAt;
-            const newUseAt = yToTime(yMotionValue.get(), pixelPerFrame, raidDuration);
-            const offset = newUseAt - oldUseAt;
-
-            moveEntries(activeEntries.keys().toArray(), offset);
-            setActiveEntries(new Map());
-
-            setDraggingCount((prev) => prev - 1);
           }}
           onClick={(e) => {
-            if (!holdingShift) {
-              setActiveEntries(new Map());
+            if (!holdingShift && action.charges > 1 && !isDragging) {
+              const cursorY = e.clientY - e.currentTarget.getBoundingClientRect().top + timeToY(useAt);
+              const cursorUseAt = yToTime(cursorY);
 
-              if (action.charges > 1 && !isDragging) {
-                const cursorY = e.clientY - e.currentTarget.getBoundingClientRect().top + timeToY(useAt, pixelPerFrame);
-                const cursorUseAt = yToTime(cursorY, pixelPerFrame, raidDuration);
+              const success = insertEntry({
+                id: crypto.randomUUID(),
+                action: action.id,
+                player: playerId,
+                use_at: cursorUseAt,
+              });
 
-                const success = insertEntry({
-                  id: crypto.randomUUID(),
-                  action: actionId,
-                  player: playerId,
-                  use_at: cursorUseAt,
+              if (!success) {
+                toast({
+                  description: t('ActionOverlapError'),
                 });
-
-                if (!success) {
-                  toast({
-                    description: t('ActionOverlapError'),
-                  });
-                }
               }
             }
           }}
         >
-          <div
-            className={`relative ${columnWidth} overflow-hidden border-zinc-300 dark:border-zinc-700 border-b-[2px]`}
-            style={{ height: `${action.cooldown * pixelPerFrame}px` }}
-          >
+          <div className="pointer-events-none">
             <div
-              className={`absolute top-0 mx-auto ${columnWidth} ml-[calc(50%-1.5px)] border-zinc-300 dark:border-zinc-700 border-l-[3px] border-dotted`}
+              className={`absolute top-0 ${COLUMN_WIDTH_CLS} ml-[calc(50%-1.5px)] border-zinc-300 dark:border-zinc-700 border-l-[3px] border-dotted`}
+              style={{ height: `${action.cooldown * pixelPerFrame}px` }}
+            />
+            <div
+              className={`absolute top-0 ${COLUMN_WIDTH_CLS} border-zinc-300 dark:border-zinc-700 border-b-[2px] border-solid`}
               style={{ height: `${action.cooldown * pixelPerFrame}px` }}
             />
             {otherDurations.length > 0 && (
               <>
                 <div
-                  className={`absolute top-0 ${columnWidth} ml-[calc(50%-1.5px)] border-zinc-400 dark:border-zinc-600 border-l-[3px] border-solid`}
+                  className={`absolute top-0 ${COLUMN_WIDTH_CLS} ml-[calc(50%-1.5px)] border-zinc-400 dark:border-zinc-600 border-l-[3px] border-solid`}
                   style={{ height: `${otherDurations[0] * pixelPerFrame}px` }}
                 />
                 <div
-                  className={`absolute top-0 ${columnWidth} border-zinc-400 dark:border-zinc-600 border-b-[2px] border-solid`}
+                  className={`absolute top-0 ${COLUMN_WIDTH_CLS} border-zinc-400 dark:border-zinc-600 border-b-[2px] border-solid`}
                   style={{ height: `${otherDurations[0] * pixelPerFrame}px` }}
                 />
               </>
             )}
             <div
-              className={`absolute top-0 ${columnWidth} ml-[calc(50%-1.5px)] border-zinc-500 dark:border-zinc-500 border-l-[3px] border-solid`}
+              className={`absolute top-0 ${COLUMN_WIDTH_CLS} ml-[calc(50%-1.5px)] border-zinc-500 dark:border-zinc-500 border-l-[3px] border-solid`}
               style={{ height: `${primaryDuration * pixelPerFrame}px` }}
             />
             <div
-              className={`absolute top-0 ${columnWidth} border-zinc-500 dark:border-zinc-500 border-b-[2px] border-solid`}
+              className={`absolute top-0 ${COLUMN_WIDTH_CLS} border-zinc-500 dark:border-zinc-500 border-b-[2px] border-solid`}
               style={{ height: `${primaryDuration * pixelPerFrame}px` }}
             />
-            <div className="aspect-square relative w-full pointer-events-none">
+            <div className="aspect-square relative w-full">
               <Image
                 src={src}
                 alt={tActions(action.semantic_key)}
@@ -299,9 +327,6 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
                 }}
                 layout="fill"
                 objectFit="contain"
-                className="pointer-events-none select-none"
-                draggable={false}
-                unselectable="on"
               />
             </div>
           </div>
@@ -323,8 +348,8 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
         </ContextMenuCheckboxItem>
         <ContextMenuItem
           inset
-          onClick={() => {
-            mutateEntries([], [entryId], false);
+          onSelect={() => {
+            mutateEntries({ upserts: [], deletes: [entryId] }, false);
             setActiveEntries((prev) => {
               const newActiveEntries = new Map(prev);
               newActiveEntries.delete(entryId);
@@ -337,8 +362,8 @@ const DraggableBox = ({ action, entry, slot, raidDuration, durations }: Draggabl
         {activeEntries.size > 1 && (
           <ContextMenuItem
             inset
-            onClick={() => {
-              mutateEntries([], activeEntries.keys().toArray(), false);
+            onSelect={() => {
+              mutateEntries({ upserts: [], deletes: activeEntries.keys().toArray() }, false);
               setActiveEntries(new Map());
             }}
           >
@@ -357,17 +382,16 @@ type EditSubColumnProps = {
   playerId: string;
 };
 
-const EditSubColumn = ({ raidDuration, action, entries, playerId }: EditSubColumnProps) => {
+const EditSubColumn = React.memo(({ raidDuration, action, entries, playerId }: EditSubColumnProps) => {
   const { toast } = useToast();
   const t = useTranslations('StratPage.EditColumn');
 
-  const pixelPerFrame = usePixelPerFrame();
-  const areaHeight = getAreaHeight(pixelPerFrame, raidDuration);
+  const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
+  const { areaHeight, yToTime } = verticalTransformsFactory(raidDuration, pixelPerFrame);
 
   const { insertEntry } = useEntryMutation();
-  const { elevated } = useStratSyncStore((state) => state);
-
-  const { setActiveEntries } = useContext(EntrySelectionContext);
+  const elevated = useStratSyncStore((state) => state.elevated);
+  const [activeEntries, setActiveEntries] = useAtom(activeEntriesAtom);
 
   const slotMap: Map<string, number> = useMemo(() => {
     const slots: { id: string; use_at: number }[][] = Array.from({ length: action.charges }, () => []);
@@ -387,7 +411,7 @@ const EditSubColumn = ({ raidDuration, action, entries, playerId }: EditSubColum
 
   const createBox: MouseEventHandler<HTMLDivElement> = async (evt) => {
     const cursorY = evt.clientY - evt.currentTarget.getBoundingClientRect().top;
-    const cursorUseAt = yToTime(cursorY, pixelPerFrame, raidDuration);
+    const cursorUseAt = yToTime(cursorY);
 
     setActiveEntries(new Map());
 
@@ -406,16 +430,18 @@ const EditSubColumn = ({ raidDuration, action, entries, playerId }: EditSubColum
   };
 
   return (
-    <div className={`flex flex-shrink-0 ${columnWidth} overflow-hidden hover:bg-muted`} style={{ height: areaHeight }}>
+    <div
+      className={`flex flex-shrink-0 ${COLUMN_WIDTH_CLS} overflow-hidden hover:bg-muted`}
+      style={{ height: areaHeight }}
+    >
       <AnimatePresence>
-        {...entries.map(({ id, use_at }, index) => (
+        {entries.map(({ id }, index) => (
           <DraggableBox
             key={`draggable-box-${id}`}
             action={action}
             entry={entries[index]}
             slot={slotMap.get(id) ?? 0}
             raidDuration={raidDuration}
-            durations={action.mitigations.map(({ duration }) => duration)}
           />
         ))}
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
@@ -427,36 +453,56 @@ const EditSubColumn = ({ raidDuration, action, entries, playerId }: EditSubColum
       </AnimatePresence>
     </div>
   );
-};
+}, deepEqual);
 
 export type EditColumnProps = {
+  playerId: string;
   raidDuration: number;
-  playerStrategy: ArrayElement<StrategyDataType['strategy_players']>;
+  entries: ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries'];
   actions: ActionDataType;
 };
 
-export const EditColumn = ({ raidDuration, playerStrategy, actions }: EditColumnProps) => {
-  const pixelPerFrame = usePixelPerFrame();
-  const areaHeight = getAreaHeight(pixelPerFrame, raidDuration);
+const EditColumn = React.memo(({ playerId, raidDuration, entries, actions }: EditColumnProps) => {
+  const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
+  const { areaHeight } = verticalTransformsFactory(raidDuration, pixelPerFrame);
+
+  const actionEntriesRecord = useMemo(() => {
+    const record: Record<string, ArrayElement<StrategyDataType['strategy_players']>['strategy_player_entries']> = {};
+
+    for (const entry of entries) {
+      if (record[entry.action] === undefined) {
+        record[entry.action] = [];
+      }
+
+      record[entry.action].push(entry);
+    }
+
+    return record;
+  }, [entries]);
 
   return (
     <div className="flex px-1 space-x-1 border-r-[1px] relative" style={{ height: areaHeight }}>
       {actions.map((action) => (
         <EditSubColumn
-          key={`subcolumn-${playerStrategy.id}-${action.id}`}
+          key={`subcolumn-${playerId}-${action.id}`}
+          playerId={playerId}
           raidDuration={raidDuration}
           action={action}
-          entries={playerStrategy.strategy_player_entries.filter(({ action: actionId }) => actionId === action.id)}
-          playerId={playerStrategy.id}
+          entries={actionEntriesRecord[action.id] ?? []}
         />
       ))}
       {actions.length === 0 && (
         <>
-          <div className={`${columnWidth}`} />
-          <div className={`${columnWidth}`} />
-          <div className={`${columnWidth}`} />
+          <div className={`${COLUMN_WIDTH_CLS}`} />
+          <div className={`${COLUMN_WIDTH_CLS}`} />
+          <div className={`${COLUMN_WIDTH_CLS}`} />
         </>
       )}
     </div>
   );
-};
+}, deepEqual);
+
+EditSubColumn.displayName = 'EditSubColumn';
+EditColumn.displayName = 'EditColumn';
+
+export { EditColumn };

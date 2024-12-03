@@ -1,13 +1,18 @@
 'use client';
 
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
-import { useMitigatedDamages, useTank } from '@/lib/calc/hooks';
+import { useTank } from '@/lib/calc/hooks';
 import type { Enums } from '@/lib/database.types';
 import type { StrategyDataType } from '@/lib/queries/server';
-import { type ArrayElement, cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
+import type { ArrayElement } from '@/lib/utils/types';
+import { deepEqual } from 'fast-equals';
 import { useTranslations } from 'next-intl';
 import Image from 'next/image';
+import React from 'react';
+import { useContextSelector } from 'use-context-selector';
 import { ACTIVE_DAMAGE_OPTION_STYLE, INACTIVE_DAMAGE_OPTION_STYLE } from '../../utils/constants';
+import { MitigatedDamagesContext } from './MitigatedDamagesContext';
 
 type DamageAmountsProps = {
   damageType: Enums<'damage_type'>;
@@ -36,6 +41,7 @@ type DamageTextProps = {
   damageType: Enums<'damage_type'>;
   defaultDamage: number;
   currentDamage: number;
+  numTargets: number;
   primaryTarget?: string;
   numShared?: number;
 };
@@ -48,7 +54,7 @@ const BothTankBuster = (props: DamageTextProps) => {
       <div className="space-x-1 pr-6">
         <span className={ACTIVE_DAMAGE_OPTION_STYLE}>T1+T2</span>
       </div>
-      <DamageAmounts damageType={damageType} currentDamage={currentDamage} defaultDamage={defaultDamage / 2} />
+      <DamageAmounts damageType={damageType} currentDamage={currentDamage} defaultDamage={defaultDamage} />
     </>
   );
 };
@@ -57,7 +63,8 @@ const SingleTankBuster = (props: DamageTextProps) => {
   const { damageType, defaultDamage, currentDamage, primaryTarget } = props;
 
   const [mainTank, offTank] = useTank();
-  const { upsertDamageOption, elevated } = useStratSyncStore((state) => state);
+  const elevated = useStratSyncStore((state) => state.elevated);
+  const upsertDamageOption = useStratSyncStore((state) => state.upsertDamageOption);
 
   const activeOption = primaryTarget === offTank ? 1 : 0;
   const cursorStyle = elevated ? 'cursor-pointer' : 'cursor-not-allowed';
@@ -110,7 +117,8 @@ const ShareTankBuster = (props: DamageTextProps) => {
   const { damageType, defaultDamage, currentDamage, primaryTarget } = props;
 
   const [mainTank, offTank] = useTank();
-  const { upsertDamageOption, elevated } = useStratSyncStore((state) => state);
+  const elevated = useStratSyncStore((state) => state.elevated);
+  const upsertDamageOption = useStratSyncStore((state) => state.upsertDamageOption);
 
   const activeOption = primaryTarget === undefined ? 0 : primaryTarget === mainTank ? 1 : 2;
   const cursorStyle = elevated ? 'cursor-pointer' : 'cursor-not-allowed';
@@ -197,13 +205,20 @@ const ShareAllRaidWide = (props: DamageTextProps) => {
 };
 
 const RaidWide = (props: DamageTextProps) => {
-  const { damageType, defaultDamage, currentDamage } = props;
+  const { numTargets, damageType, defaultDamage, currentDamage } = props;
   const t = useTranslations('StratPage.DamageText');
+
+  const text =
+    numTargets === 8
+      ? t('DamageOption.RaidWide')
+      : numTargets === 1
+        ? t('DamageOption.SingleTarget')
+        : t('DamageOption.NTargets', { numTargets });
 
   return (
     <>
       <div className="space-x-1 pr-6">
-        <span className={ACTIVE_DAMAGE_OPTION_STYLE}>{t('DamageOption.RaidWide')}</span>
+        <span className={ACTIVE_DAMAGE_OPTION_STYLE}>{text}</span>
       </div>
       <DamageAmounts damageType={damageType} currentDamage={currentDamage} defaultDamage={defaultDamage} />
     </>
@@ -213,7 +228,8 @@ const RaidWide = (props: DamageTextProps) => {
 const ShareHalfRaidWide = (props: DamageTextProps) => {
   const { damageType, defaultDamage, currentDamage, numShared } = props;
 
-  const { upsertDamageOption, elevated } = useStratSyncStore((state) => state);
+  const elevated = useStratSyncStore((state) => state.elevated);
+  const upsertDamageOption = useStratSyncStore((state) => state.upsertDamageOption);
 
   const activeOption = numShared === 3 ? 0 : 1;
   const cursorStyle = elevated ? 'cursor-pointer' : 'cursor-not-allowed';
@@ -281,37 +297,55 @@ const componentSelector = (target: 'Raidwide' | 'Tankbuster', numTargets: number
   if (target === 'Raidwide') {
     if (numTargets === 1 && maxShared === 8) return ShareAllRaidWide;
     if (numTargets === 2 && maxShared === 4) return ShareHalfRaidWide;
-    if (numTargets === 8 && maxShared === 1) return RaidWide;
+    if (maxShared === 1) return RaidWide;
   }
 
   return Unknown;
 };
 
-export const DamageText = ({
-  damages,
-}: {
-  damages: ArrayElement<Exclude<StrategyDataType['raids'], null>['gimmicks']>['damages'];
-}) => {
-  const mitigatedDamages = useMitigatedDamages();
+const DamageText = React.memo(
+  ({
+    damage,
+  }: { damage: ArrayElement<ArrayElement<Exclude<StrategyDataType['raids'], null>['gimmicks']>['damages']> }) => {
+    const mitigatedDamage = useContextSelector(
+      MitigatedDamagesContext,
+      (mitigatedDamages) => mitigatedDamages[damage.id],
+    );
 
-  return (
-    <>
-      {damages.map((damage) => {
-        const textProps = {
-          damageId: damage.id,
-          damageType: damage.type,
-          defaultDamage: damage.combined_damage,
-          currentDamage: mitigatedDamages[damage.id] ?? damage.combined_damage,
-          primaryTarget: damage.strategy_damage_options?.[0]?.primary_target ?? undefined,
-          numShared: damage.strategy_damage_options?.[0]?.num_shared ?? undefined,
-        };
+    const textProps = {
+      damageId: damage.id,
+      damageType: damage.type,
+      defaultDamage: damage.combined_damage,
+      numTargets: damage.num_targets,
+      currentDamage: mitigatedDamage ?? damage.combined_damage,
+      primaryTarget: damage.strategy_damage_options?.[0]?.primary_target ?? undefined,
+      numShared: damage.strategy_damage_options?.[0]?.num_shared ?? undefined,
+    };
 
-        const key = `damagetext-${damage.id}`;
+    const TextComponent = componentSelector(damage.target, damage.num_targets, damage.max_shared);
 
-        const TextComponent = componentSelector(damage.target, damage.num_targets, damage.max_shared);
+    return <TextComponent {...textProps} />;
+  },
+);
 
-        return <TextComponent key={key} {...textProps} />;
-      })}
-    </>
-  );
-};
+const DamagesText = React.memo(
+  ({
+    damages,
+  }: {
+    damages: ArrayElement<Exclude<StrategyDataType['raids'], null>['gimmicks']>['damages'];
+  }) => {
+    return (
+      <>
+        {damages.map((damage) => (
+          <DamageText key={`damagetext-${damage.id}`} damage={damage} />
+        ))}
+      </>
+    );
+  },
+  deepEqual,
+);
+
+DamageText.displayName = 'DamageText';
+DamagesText.displayName = 'DamagesText';
+
+export { DamagesText };

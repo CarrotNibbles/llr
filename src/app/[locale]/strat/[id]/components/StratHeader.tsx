@@ -1,12 +1,14 @@
 'use client';
 
-import { ModeToggle } from '@/components/ModeToggle';
+import { ThemeToggle } from '@/components/ThemeToggle';
+import { BrandIdentity } from '@/components/icons/BrandIdentity';
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils/helpers';
 import { Share1Icon, ZoomInIcon } from '@radix-ui/react-icons';
 import { useTranslations } from 'next-intl';
+import Link from 'next/link';
 import React from 'react';
 import {
   AnonymousLikeButton,
@@ -22,12 +24,10 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
   ({ className, ...props }, ref) => {
     const { toast } = useToast();
 
-    const {
-      userId,
-      elevatable,
-      isAuthor,
-      strategyData: { raids },
-    } = useStratSyncStore((state) => state);
+    const userId = useStratSyncStore((state) => state.userId);
+    const elevatable = useStratSyncStore((state) => state.elevatable);
+    const isAuthor = useStratSyncStore((state) => state.isAuthor);
+    const raids = useStratSyncStore((state) => state.strategyData.raids);
     const t = useTranslations('StratPage.StratHeader');
     const tRaids = useTranslations('Common.Raids');
 
@@ -37,11 +37,18 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
         className={cn('rounded-none border-b flex space-x-4 py-2 px-4 items-center', className)}
         {...props}
       >
-        <StratInfoDialog />
-        <div className="text-muted-foreground">{tRaids(raids?.semantic_key)}</div>
+        <div className="flex items-center">
+          <Link href="/" className="flex mr-3.5 ml-1">
+            <BrandIdentity variant="simple" className="fill-foreground hover:fill-brand h-6 transition-all duration-1000" />
+          </Link>
+          <StratInfoDialog className="hidden sm:block" />
+        </div>
+        <div className="text-muted-foreground lg:block hidden whitespace-nowrap">{tRaids(raids?.semantic_key)}</div>
         <div className="flex-grow" />
-        <ZoomInIcon className="w-5 h-5" />
-        <ZoomSlider className="ml-0" />
+        <div className="hidden sm:inline">
+          <ZoomInIcon className="w-5 h-5" />
+        </div>
+        <ZoomSlider className="ml-0 hidden sm:flex" />
         <div className="flex">
           {elevatable && <ElevationDialog />}
           {isAuthor && <StratSettingsDialog />}
@@ -61,11 +68,11 @@ const StratHeader = React.forwardRef<HTMLDivElement, { className?: string } & Re
               }
             }}
           >
-            <span className="sr-only">Share this strategy</span>
+            <span className="sr-only select-none">Share this strategy</span>
             <Share1Icon />
           </Button>
           <FilterMenu />
-          <ModeToggle />
+          <ThemeToggle />
         </div>
         {userId ? <AuthenticatedLikeButton /> : <AnonymousLikeButton />}
       </div>

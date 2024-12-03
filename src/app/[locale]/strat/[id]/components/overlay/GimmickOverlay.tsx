@@ -1,13 +1,24 @@
 'use client';
 
-import type { StrategyDataType } from '@/lib/queries/server';
-import { useFilterState, usePixelPerFrame } from '@/lib/states';
-import { type ArrayElement, cn } from '@/lib/utils';
-import React from 'react';
-import { COUNTDOWN_DURATION, MERGE_THRESHOLD_DEFAULT, MERGE_THRESHOLD_INCREMENTAL } from '../../utils/constants';
-import { getAreaHeight, timeToY } from '../../utils/helpers';
+import { filterAtom, pixelPerFrameAtom } from '@/lib/atoms';
+import { useMitigatedDamages } from '@/lib/calc/hooks';
+import type { ActionDataType, StrategyDataType } from '@/lib/queries/server';
+import { cn } from '@/lib/utils/helpers';
+import type { ArrayElement } from '@/lib/utils/types';
+import { useAtomValue } from 'jotai';
+import React, { useMemo } from 'react';
+import {
+  AVAILABLE_GRID_MINOR_INTERVALS,
+  COUNTDOWN_DURATION,
+  INTERVAL_RENDER_THRESHOLD,
+  MAJOR_GRID_INTERVAL,
+  MERGE_THRESHOLD_DEFAULT,
+  MERGE_THRESHOLD_INCREMENTAL,
+} from '../../utils/constants';
+import { verticalTransformsFactory } from '../../utils/helpers';
 import type { MergedGimmick } from '../../utils/types';
 import { GimmickLine } from './GimmickLine';
+import { MitigatedDamagesContext } from './MitigatedDamagesContext';
 
 type GridOverlayProps = {
   raidDuration: number;
@@ -18,7 +29,8 @@ type GridOverlayProps = {
 
 const GridOverlay = ({ className, ...props }: { className?: string } & GridOverlayProps) => {
   const { raidDuration, resizePanelSize, minorInterval, majorInterval } = props;
-  const pixelPerFrame = usePixelPerFrame();
+  const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
+  const { timeToY } = verticalTransformsFactory(raidDuration, pixelPerFrame);
 
   const getTimeRepresentation = (t: number) => {
     const seconds = Math.floor(Math.abs(t) / 60);
@@ -31,12 +43,8 @@ const GridOverlay = ({ className, ...props }: { className?: string } & GridOverl
   const MinorLine = ({ t }: { t: number }) => (
     <>
       <div
-        className="absolute border-0 border-t-1 border-zinc-100 dark:border-zinc-800 right-0 pointer-events-none"
-        style={{ top: `${timeToY(t, pixelPerFrame)}px`, width: `${resizePanelSize}vw` }}
-      />
-      <div
-        className="flex absolute pointer-events-none h-8 items-center justify-end text-xs text-zinc-100 dark:text-zinc-800 pr-1 tabular-nums -z-10"
-        style={{ top: `calc(${timeToY(t, pixelPerFrame)}px - 1rem)`, right: `${resizePanelSize}vw` }}
+        className="flex absolute pointer-events-none h-8 items-center justify-end text-2xs text-zinc-300 dark:text-zinc-700 pr-1 tabular-nums -z-10"
+        style={{ top: `calc(${timeToY(t)}px - 1rem)`, right: `${resizePanelSize}vw` }}
       >
         {getTimeRepresentation(t)}
       </div>
@@ -47,11 +55,11 @@ const GridOverlay = ({ className, ...props }: { className?: string } & GridOverl
     <>
       <div
         className="absolute border-0 border-t-2 border-foreground right-0 pointer-events-none z-10"
-        style={{ top: `${timeToY(t, pixelPerFrame)}px`, width: `${resizePanelSize}vw` }}
+        style={{ top: `${timeToY(t)}px`, width: `${resizePanelSize}vw` }}
       />
       <div
         className="flex absolute pointer-events-none h-8 items-center justify-end text-xs font-extrabold text-foreground pr-1 tabular-nums -z-10"
-        style={{ top: `calc(${timeToY(t, pixelPerFrame)}px - 1rem)`, right: `${resizePanelSize}vw` }}
+        style={{ top: `calc(${timeToY(t)}px - 1rem)`, right: `${resizePanelSize}vw` }}
       >
         {getTimeRepresentation(t)}
       </div>
@@ -87,8 +95,10 @@ const GridOverlay = ({ className, ...props }: { className?: string } & GridOverl
 };
 
 type GimmickOverlayProps = {
-  gimmicks: Exclude<StrategyDataType['raids'], null>['gimmicks'];
+  raidSemanticKey: string;
   raidDuration: number;
+  gimmicks: Exclude<StrategyDataType['raids'], null>['gimmicks'];
+  availableActions: ActionDataType;
   resizePanelSize: number;
 };
 
@@ -96,15 +106,20 @@ const GimmickOverlay = React.forwardRef<
   HTMLDivElement,
   GimmickOverlayProps & { className?: string } & React.ComponentPropsWithoutRef<'div'>
 >(({ className, ...props }, ref) => {
-  const { gimmicks, raidDuration, resizePanelSize } = props;
-  const pixelPerFrame = usePixelPerFrame();
-  const areaHeight = getAreaHeight(pixelPerFrame, raidDuration);
+  const { gimmicks, raidDuration, resizePanelSize, availableActions, raidSemanticKey } = props;
+  const pixelPerFrame = useAtomValue(pixelPerFrameAtom);
+  const { areaHeight } = verticalTransformsFactory(raidDuration, pixelPerFrame);
 
-  const [filterState, _] = useFilterState();
+  const minorInterval =
+    AVAILABLE_GRID_MINOR_INTERVALS.find((intv) => pixelPerFrame * intv >= INTERVAL_RENDER_THRESHOLD) ??
+    MAJOR_GRID_INTERVAL;
+  const filterState = useAtomValue(filterAtom);
 
-  const mergeGimmicks = (gimmicks: GimmickOverlayProps['gimmicks']) => {
+  const mitigatedDamages = useMitigatedDamages(availableActions);
+
+  const gimmicksWithMerged = useMemo(() => {
     const gimmicksWithMerged = gimmicks
-      .filter((gimmick) => filterState.get(gimmick.type))
+      .filter((gimmick) => filterState[gimmick.type])
       .toSorted((gimmick1, gimmick2) => gimmick1.prepare_at - gimmick2.prepare_at)
       .map<
         ArrayElement<GimmickOverlayProps['gimmicks']> & {
@@ -181,19 +196,26 @@ const GimmickOverlay = React.forwardRef<
     }
 
     return gimmicksWithMerged;
-  };
+  }, [gimmicks, filterState, pixelPerFrame]);
 
   return (
     <div ref={ref} className={cn(className, 'absolute top-0 left-0 w-screen')} style={{ height: areaHeight }}>
-      {mergeGimmicks(gimmicks).map((value) => (
-        <GimmickLine {...value} resizePanelSize={resizePanelSize} key={`gimmick-${value.id}`} />
-      ))}
-      <GridOverlay
-        raidDuration={raidDuration}
-        resizePanelSize={resizePanelSize}
-        majorInterval={60 * 60}
-        minorInterval={5 * 60}
-      />
+      <MitigatedDamagesContext.Provider value={mitigatedDamages}>
+        {gimmicksWithMerged.map((value) => (
+          <GimmickLine
+            {...value}
+            resizePanelSize={resizePanelSize}
+            raidSemanticKey={raidSemanticKey}
+            key={`gimmick-${value.id}`}
+          />
+        ))}
+        <GridOverlay
+          raidDuration={raidDuration}
+          resizePanelSize={resizePanelSize}
+          majorInterval={MAJOR_GRID_INTERVAL}
+          minorInterval={minorInterval}
+        />
+      </MitigatedDamagesContext.Provider>
     </div>
   );
 });

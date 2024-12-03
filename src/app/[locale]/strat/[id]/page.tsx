@@ -1,17 +1,61 @@
 import type { Locale } from '@/lib/i18n';
 import { buildActionDataQuery, buildStrategyDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
+import { getTranslations } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { StratHeader } from './components/StratHeader';
 import { StratMain } from './components/StratMain';
 import { StratSyncProvider } from './components/StratSyncProvider';
+import { StratToolbar } from './components/StratToolbar';
 
-export default async function StratPage({
-  params: { id, locale },
-}: Readonly<{
-  params: { id: string; locale: Locale };
-}>) {
-  const supabase = createClient();
+export async function generateMetadata(
+  props: Readonly<{
+    params: Promise<{ id: string; locale: Locale }>;
+  }>,
+) {
+  const { id } = await props.params;
+
+  const t = await getTranslations('Common.Meta');
+  const tRaids = await getTranslations('Common.Raids');
+
+  const supabase = await createClient();
+
+  const { data: strategyData } = await buildStrategyDataQuery(supabase, id);
+
+  if (strategyData === null) {
+    notFound();
+  }
+
+  const title = `${strategyData.name} ⬩ LLR`;
+  const description = t('StratDescription', { raid: tRaids(strategyData.raids?.semantic_key) });
+  const host_uri = process.env.HOST_URI;
+  const author = strategyData.profiles?.display_name ?? t('UnknownAuthor');
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      url: `${host_uri}/strat/${id}`,
+    },
+    twitter: {
+      card: 'summary',
+      site: '@replace-this-with-twitter-handle',
+      creator: author,
+    },
+  };
+}
+
+export default async function StratPage(
+  props: Readonly<{
+    params: Promise<{ id: string; locale: Locale }>;
+  }>,
+) {
+  const id = (await props.params).id;
+
+  const supabase = await createClient();
 
   const [
     { data: strategyData, error: strategyDataQueryError },
@@ -41,6 +85,7 @@ export default async function StratPage({
       >
         <StratHeader />
         <StratMain />
+        <StratToolbar className="fixed bottom-8 right-8 z-20" />
       </StratSyncProvider>
     </div>
   );

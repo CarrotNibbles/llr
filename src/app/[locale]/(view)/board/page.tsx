@@ -2,29 +2,49 @@
 
 import { buildMaxPageQuery, buildStrategiesDataQuery } from '@/lib/queries/server';
 import { createClient } from '@/lib/supabase/server';
-import {
-  type BoardSearchParamsRaw,
-  DEFAULT_LIMIT,
-  DEFAULT_SORT,
-  buildBoardURL,
-  tryParseInt,
-  tryParseJobs,
-  tryParsePatch,
-} from '@/lib/utils';
+import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 import { LimitCombobox } from '../components/LimitCombobox';
 import { SortCombobox } from '../components/SortCombobox';
 import { StrategyTable } from '../components/StrategyTable';
 import { ViewPagination } from '../components/ViewPagination';
+import { DEFAULT_LIMIT, DEFAULT_SORT } from '../utils/constants';
+import { buildBoardURL, tryParseInt, tryParseJobs, tryParsePatch } from '../utils/helpers';
+import type { BoardSearchParamsRaw } from '../utils/types';
 import { BoardSubheader } from './components/BoardSubheader';
 
 type BoardPageProps = Readonly<{
-  params: { locale: string };
-  searchParams: Partial<BoardSearchParamsRaw>;
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<Partial<BoardSearchParamsRaw>>;
 }>;
 
-export default async function BoardPage({ params: { locale }, searchParams }: BoardPageProps) {
-  const supabase = createClient();
+export async function generateMetadata() {
+  const t = await getTranslations('Common.Meta');
+
+  const title = 'LLR';
+  const description = t('Description');
+  const hostURI = process.env.HOST_URI;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      url: hostURI,
+    },
+    twitter: {
+      card: 'summary',
+      site: '@replace-this-with-twitter-handle',
+    },
+  };
+}
+
+export default async function BoardPage(props: BoardPageProps) {
+  const searchParams = await props.searchParams;
+
+  const supabase = await createClient();
 
   const raid = searchParams.raid;
   const page = tryParseInt(searchParams.page, false);
@@ -51,21 +71,21 @@ export default async function BoardPage({ params: { locale }, searchParams }: Bo
     );
 
   return (
-    <div className="flex flex-col w-full max-w-screen-xl px-4 py-1">
+    <div className="flex flex-col w-full max-w-screen-xl px-6 py-3">
       <BoardSubheader />
-      <div className="px-4 mt-2 mb-8">
+      <div className="mt-2 mb-8">
         <StrategyTable
           dataPromise={buildStrategiesDataQuery(supabase, { raid_skey: raid, patch, page, lim: limit, sort, jobs })}
         />
-        <div className="w-full flex flex-col-reverse lg:grid lg:grid-cols-3 gap-y-2 mt-2">
+        <div className="w-full flex flex-col-reverse lg:grid lg:grid-cols-3 gap-y-4 mt-2 lg:mt-4">
           <div />
           <ViewPagination
             currentPage={page}
             dataPromise={buildMaxPageQuery(supabase, limit, { raid_skey: raid, patch, jobs })}
           />
-          <div className="flex text-xs flex-row-reverse gap-x-2">
-            <LimitCombobox currentLimit={limit} />
+          <div className="flex text-xs flex-row justify-end gap-x-2">
             <SortCombobox currentSort={sort} />
+            <LimitCombobox currentLimit={limit} />
           </div>
         </div>
       </div>

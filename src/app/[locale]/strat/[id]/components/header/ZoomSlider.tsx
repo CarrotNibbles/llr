@@ -1,8 +1,9 @@
 'use client';
 
 import { Slider as DefaultSlider } from '@/components/ui/slider';
-import { useZoomState } from '@/lib/states';
-import { cn } from '@/lib/utils';
+import { zoomAtom } from '@/lib/atoms';
+import { cn } from '@/lib/utils/helpers';
+import { useAtom } from 'jotai';
 
 type SliderProps = React.ComponentProps<typeof DefaultSlider>;
 
@@ -11,7 +12,8 @@ const getZoom = (zoomState: number) => {
 };
 
 export function ZoomSlider({ className, ...props }: SliderProps) {
-  const [zoom, setZoom] = useZoomState();
+  const [zoom, setZoom] = useAtom(zoomAtom);
+
   return (
     <DefaultSlider
       defaultValue={[5]}

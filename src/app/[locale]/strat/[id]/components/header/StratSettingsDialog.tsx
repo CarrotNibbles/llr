@@ -1,6 +1,17 @@
 'use client';
 import { useStratSyncStore } from '@/components/providers/StratSyncStoreProvider';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -9,37 +20,37 @@ import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/comp
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/components/ui/use-toast';
-import { buildClientUpdateStrategyQuery } from '@/lib/queries/client';
+import { buildClientDeleteStrategyQuery, buildClientUpdateStrategyQuery } from '@/lib/queries/client';
 import { createClient } from '@/lib/supabase/client';
-import { ALL_PATCHES, patchRegex } from '@/lib/utils';
+import { ALL_PATCHES, PATCH_REGEX } from '@/lib/utils/constants';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ExclamationTriangleIcon, GearIcon } from '@radix-ui/react-icons';
 import { bcrypt, sha1, sha256 } from 'hash-wasm';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 export const StratSettingsDialog = () => {
-  const {
-    id,
-    name,
-    is_public: isPublic,
-    is_editable: isEditable,
-    version,
-    subversion,
-  } = useStratSyncStore((state) => state.strategyData);
-  const { clearOtherSessions } = useStratSyncStore((state) => state);
+  const id = useStratSyncStore((state) => state.strategyData.id);
+  const name = useStratSyncStore((state) => state.strategyData.name);
+  const isPublic = useStratSyncStore((state) => state.strategyData.is_public);
+  const isEditable = useStratSyncStore((state) => state.strategyData.is_editable);
+  const version = useStratSyncStore((state) => state.strategyData.version);
+  const subversion = useStratSyncStore((state) => state.strategyData.subversion);
+  const clearOtherSessions = useStratSyncStore((state) => state.clearOtherSessions);
   const { toast } = useToast();
   const t = useTranslations('StratPage.StratHeader.StratSettings');
   const tPatches = useTranslations('Common.FFXIVPatches');
   const [open, setOpen] = useState(false);
+  const router = useRouter();
 
   const formSchema = z.object({
     name: z.string().min(1, t('NameError')),
     isPublic: z.boolean(),
     isEditable: z.boolean(),
-    patch: z.string().regex(patchRegex),
+    patch: z.string().regex(PATCH_REGEX),
     password: z
       .string()
       .regex(/^\d{8}$/, t('PasswordError'))
@@ -96,11 +107,32 @@ export const StratSettingsDialog = () => {
     }
   });
 
+  const deleteStrategy = () => {
+    const supabase = createClient();
+
+    (async () => {
+      const response = await buildClientDeleteStrategyQuery(supabase, id);
+
+      if (response.error) {
+        toast({
+          description: t('EDeleterror'),
+          variant: 'destructive',
+        });
+      } else {
+        toast({
+          description: t('Deleted'),
+        });
+
+        router.push('/');
+      }
+    })();
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="ghost" size="icon">
-          <span className="sr-only">Settings</span>
+          <span className="sr-only select-none">Settings</span>
           <GearIcon />
         </Button>
       </DialogTrigger>
@@ -136,7 +168,7 @@ export const StratSettingsDialog = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {ALL_PATCHES.map(({ version, subversion }) => (
+                      {ALL_PATCHES.toReversed().map(({ version, subversion }) => (
                         <SelectItem key={`select-patch-${version}.${subversion}`} value={`${version}.${subversion}`}>
                           {`${version}.${subversion}`} - {tPatches(`${version}.${subversion}`)}
                         </SelectItem>
@@ -220,9 +252,23 @@ export const StratSettingsDialog = () => {
           </Form>
           <DialogFooter>
             <div className="flex flex-row justify-between w-full">
-              <Button variant="link" className="text-muted-foreground text-xs my-auto font-regular p-0">
-                {t('DeleteStrategy')}
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="link" className="text-muted-foreground text-xs my-auto font-regular p-0">
+                    {t('DeleteStrategy')}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>{t('DeleteConfirmationTitle')}</AlertDialogTitle>
+                    <AlertDialogDescription>{t('DeleteConfirmationDescription')}</AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>{t('Cancel')}</AlertDialogCancel>
+                    <AlertDialogAction onClick={deleteStrategy}>{t('Delete')}</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
               <Button type="submit">{t('Save')}</Button>
             </div>
           </DialogFooter>

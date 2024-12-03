@@ -14,7 +14,7 @@ export interface StaticStoreProviderProps {
 }
 
 export const StaticDataStoreProvider = ({ initState, children }: StaticStoreProviderProps) => {
-  const storeRef = useRef<StaticDataStoreApi>();
+  const storeRef = useRef<StaticDataStoreApi>(undefined);
   if (!storeRef.current) {
     storeRef.current = createStaticDataStore(initState);
   }
