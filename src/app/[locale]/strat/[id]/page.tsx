@@ -16,6 +16,7 @@ export async function generateMetadata(
   const { id } = await props.params;
 
   const t = await getTranslations('Common.Meta');
+  const tRaids = await getTranslations('Common.Raids');
 
   const supabase = await createClient();
 
@@ -26,7 +27,7 @@ export async function generateMetadata(
   }
 
   const title = `${strategyData.name} ⬩ LLR`;
-  const description = t('StratDescription', { raid: strategyData.raids.name });
+  const description = t('StratDescription', { raid: tRaids(strategyData.raids?.semantic_key) });
   const host_uri = process.env.HOST_URI;
   const author = strategyData.profiles?.display_name ?? t('UnknownAuthor');
 
