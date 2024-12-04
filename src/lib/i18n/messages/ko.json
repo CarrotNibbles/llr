@@ -171,7 +171,7 @@
         "temp_judgement": "천벌 선포"
       },
       "M1S": {
-        "auto_attack": "자동 공격",
+        "auto_attack": "공격",
         "quadruple_crossing": "4중 손톱",
         "biscuit_maker": "비스킷 제조기",
         "nine_lives": "9개의 생명",
@@ -304,6 +304,9 @@
         "Error": "좋아요를 추가하는 중 오류가 발생하였습니다.",
         "CaptchaHeading": "CAPTCHA 확인",
         "CaptchaLoading": "CAPTCHA를 로드하는 중입니다..."
+      },
+      "FilterMenu": {
+        "VerboseTimeline": "상세 타임라인"
       }
     },
     "GimmickLine": {

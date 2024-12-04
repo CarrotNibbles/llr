@@ -1,6 +1,6 @@
 'use client';
 
-import { filterAtom, pixelPerFrameAtom } from '@/lib/atoms';
+import { viewOptionsAtom, pixelPerFrameAtom } from '@/lib/atoms';
 import { useMitigatedDamages } from '@/lib/calc/hooks';
 import type { ActionDataType, StrategyDataType } from '@/lib/queries/server';
 import { cn } from '@/lib/utils/helpers';
@@ -113,24 +113,26 @@ const GimmickOverlay = React.forwardRef<
   const minorInterval =
     AVAILABLE_GRID_MINOR_INTERVALS.find((intv) => pixelPerFrame * intv >= INTERVAL_RENDER_THRESHOLD) ??
     MAJOR_GRID_INTERVAL;
-  const filterState = useAtomValue(filterAtom);
+  const viewOptions = useAtomValue(viewOptionsAtom);
 
   const mitigatedDamages = useMitigatedDamages(availableActions);
 
   const gimmicksWithMerged = useMemo(() => {
     const gimmicksWithMerged = gimmicks
-      .filter((gimmick) => filterState[gimmick.type])
+      .filter((gimmick) => viewOptions.gimmickTypeFilter[gimmick.type])
       .toSorted((gimmick1, gimmick2) => gimmick1.prepare_at - gimmick2.prepare_at)
       .map<
         ArrayElement<GimmickOverlayProps['gimmicks']> & {
           damageDisplayGimmick?: ArrayElement<GimmickOverlayProps['gimmicks']>;
           displayDamage: boolean;
           mergedGimmicks: MergedGimmick[];
+          hasSpaceForDamage: boolean;
         }
       >((gimmick) => ({
         ...gimmick,
         displayDamage: gimmick.damages.length > 0,
         mergedGimmicks: [],
+        hasSpaceForDamage: false,
       }));
 
     for (let i = 0; i < gimmicksWithMerged.length; i++) {
@@ -195,8 +197,18 @@ const GimmickOverlay = React.forwardRef<
       gimmicksWithMerged[i].displayDamage = false;
     }
 
+    for (let i = 0; i < gimmicksWithMerged.length - 1; i++) {
+      const lines = gimmicksWithMerged[i].mergedGimmicks.flatMap((gimmick) => gimmick.damages).length;
+
+      if (lines === 0) continue;
+
+      const space = (gimmicksWithMerged[i + 1].prepare_at - gimmicksWithMerged[i].prepare_at) * pixelPerFrame;
+
+      gimmicksWithMerged[i].hasSpaceForDamage = space >= MERGE_THRESHOLD_DEFAULT * lines;
+    }
+
     return gimmicksWithMerged;
-  }, [gimmicks, filterState, pixelPerFrame]);
+  }, [gimmicks, viewOptions.gimmickTypeFilter, pixelPerFrame]);
 
   return (
     <div ref={ref} className={cn(className, 'absolute top-0 left-0 w-screen')} style={{ height: areaHeight }}>
