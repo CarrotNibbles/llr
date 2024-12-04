@@ -3,12 +3,15 @@ import { CustomIcons } from '@/components/icons/CustomIcons';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Toggle } from '@/components/ui/toggle';
-import { filterAtom } from '@/lib/atoms';
+import { viewOptionsAtom } from '@/lib/atoms';
 import type { Enums } from '@/lib/database.types';
 import { cn } from '@/lib/utils/helpers';
 import { useAtom } from 'jotai';
 import { useTranslations } from 'next-intl';
 import { GIMMICK_BACKGROUND_STYLE } from '../../utils/constants';
+import { produce } from 'immer';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 export const FilterMenu = () => {
   const GimmickTypes: Array<Enums<'gimmick_type'>> = [
@@ -20,8 +23,9 @@ export const FilterMenu = () => {
     'Enrage',
   ];
 
-  const [filterState, setFilterState] = useAtom(filterAtom);
-  const t = useTranslations('StratPage.StratHeader.GimmickType');
+  const [viewOptions, setViewOptions] = useAtom(viewOptionsAtom);
+  const tGimmickType = useTranslations('StratPage.StratHeader.GimmickType');
+  const t = useTranslations('StratPage.StratHeader.FilterMenu');
 
   return (
     <Popover>
@@ -37,19 +41,35 @@ export const FilterMenu = () => {
           <MixerHorizontalIcon />
         </div>
         <Separator className="mb-[2px]" /> */}
+        <div className="flex items-center space-x-2 mb-4 ml-[2px]">
+          <Switch
+            id="verbose-timeline"
+            checked={viewOptions.showVerboseTimeline}
+            onCheckedChange={() => setViewOptions(
+              produce((draft) => {
+                draft.showVerboseTimeline = !draft.showVerboseTimeline;
+              }),
+            )}
+          />
+          <Label htmlFor="verbose-timeline">{t('VerboseTimeline')}</Label>
+        </div>
         <div className="grid grid-rows-3 grid-cols-2">
           {GimmickTypes.map((gimmickType) => (
             <Toggle
               className="flex justify-start text-start h-7 px-3 m-[2px]"
               aria-label="h"
               key={gimmickType}
-              pressed={filterState[gimmickType]}
+              pressed={viewOptions.gimmickTypeFilter[gimmickType]}
               onPressedChange={(pressed) => {
-                setFilterState({ ...filterState, [gimmickType]: pressed });
+                setViewOptions(
+                  produce((draft) => {
+                    draft.gimmickTypeFilter[gimmickType] = pressed;
+                  }),
+                );
               }}
             >
               <div className={cn('rounded-sm mr-2 w-[8px] h-[8px]', GIMMICK_BACKGROUND_STYLE[gimmickType])} />
-              <div className="text-xs">{t(gimmickType)}</div>
+              <div className="text-xs">{tGimmickType(gimmickType)}</div>
             </Toggle>
           ))}
         </div>

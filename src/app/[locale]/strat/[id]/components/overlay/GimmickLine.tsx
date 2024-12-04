@@ -1,6 +1,6 @@
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
 import { Separator } from '@/components/ui/separator';
-import { pixelPerFrameAtom } from '@/lib/atoms';
+import { pixelPerFrameAtom, viewOptionsAtom } from '@/lib/atoms';
 import type { StrategyDataType } from '@/lib/queries/server';
 import { cn } from '@/lib/utils/helpers';
 import type { ArrayElement } from '@/lib/utils/types';
@@ -10,7 +10,7 @@ import React from 'react';
 import { GIMMICK_BORDER_STYLE, GIMMICK_TEXT_STYLE, MAX_DISPLAY_COUNT } from '../../utils/constants';
 import { verticalTransformsFactory } from '../../utils/helpers';
 import type { MergedGimmick, SuperMergedGimmick } from '../../utils/types';
-import { DamagesText } from './DamagesText';
+import { DamagesText, DamageTypeIcon } from './DamagesText';
 
 type GimmickSubLineProps = {
   raidSemanticKey: string;
@@ -69,43 +69,45 @@ type GimmicksNamesProps = React.ComponentPropsWithRef<'div'> & {
   mergedGimmicks: MergedGimmick[];
 };
 
-const GimmicksNames = React.forwardRef<HTMLDivElement, GimmicksNamesProps>(({ className, raidSemanticKey, mergedGimmicks }, ref) => {
-  const t = useTranslations('StratPage.GimmickLine');
-  const tGimmicks = useTranslations('Common.Gimmicks');
+const GimmicksNames = React.forwardRef<HTMLDivElement, GimmicksNamesProps>(
+  ({ className, raidSemanticKey, mergedGimmicks }, ref) => {
+    const t = useTranslations('StratPage.GimmickLine');
+    const tGimmicks = useTranslations('Common.Gimmicks');
 
-  const superMergeGimmicks = (mergedGimmicks: MergedGimmick[]) => {
-    const superMergedGimmicks: SuperMergedGimmick[] = [];
+    const superMergeGimmicks = (mergedGimmicks: MergedGimmick[]) => {
+      const superMergedGimmicks: SuperMergedGimmick[] = [];
 
-    for (const mergedGimmick of mergedGimmicks) {
-      if (
-        superMergedGimmicks.length === 0 ||
-        superMergedGimmicks[superMergedGimmicks.length - 1].translationKey !== mergedGimmick.translationKey ||
-        superMergedGimmicks[superMergedGimmicks.length - 1].type !== mergedGimmick.type
-      )
-        superMergedGimmicks.push({ ...mergedGimmick, mergeCount: 1 });
-      else superMergedGimmicks[superMergedGimmicks.length - 1].mergeCount++;
-    }
+      for (const mergedGimmick of mergedGimmicks) {
+        if (
+          superMergedGimmicks.length === 0 ||
+          superMergedGimmicks[superMergedGimmicks.length - 1].translationKey !== mergedGimmick.translationKey ||
+          superMergedGimmicks[superMergedGimmicks.length - 1].type !== mergedGimmick.type
+        )
+          superMergedGimmicks.push({ ...mergedGimmick, mergeCount: 1 });
+        else superMergedGimmicks[superMergedGimmicks.length - 1].mergeCount++;
+      }
 
-    return superMergedGimmicks;
-  };
+      return superMergedGimmicks;
+    };
 
-  const superMergedGimmicks = superMergeGimmicks(mergedGimmicks);
+    const superMergedGimmicks = superMergeGimmicks(mergedGimmicks);
 
-  return (
-    <div className={cn('flex text-md', className)} ref={ref}>
-      {superMergedGimmicks.slice(0, MAX_DISPLAY_COUNT).map((superMergedGimmick, idx, array) => (
-        <div key={superMergedGimmick.id} className={cn(GIMMICK_TEXT_STYLE[superMergedGimmick.type], 'mr-1')}>
-          {tGimmicks(`${raidSemanticKey}.${superMergedGimmick.translationKey}`)}
-          {superMergedGimmick.mergeCount >= 2 && `×${superMergedGimmick.mergeCount}`}
-          {idx !== array.length - 1 && ','}
-        </div>
-      ))}
-      {superMergedGimmicks.length > MAX_DISPLAY_COUNT && (
-        <div className={GIMMICK_TEXT_STYLE.AutoAttack}>{t('Etc', { count: superMergedGimmicks.length - 3 })}</div>
-      )}
-    </div>
-  );
-});
+    return (
+      <div className={cn('flex text-md', className)} ref={ref}>
+        {superMergedGimmicks.slice(0, MAX_DISPLAY_COUNT).map((superMergedGimmick, idx, array) => (
+          <div key={superMergedGimmick.id} className={cn(GIMMICK_TEXT_STYLE[superMergedGimmick.type], 'mr-1')}>
+            {tGimmicks(`${raidSemanticKey}.${superMergedGimmick.translationKey}`)}
+            {superMergedGimmick.mergeCount >= 2 && `×${superMergedGimmick.mergeCount}`}
+            {idx !== array.length - 1 && ','}
+          </div>
+        ))}
+        {superMergedGimmicks.length > MAX_DISPLAY_COUNT && (
+          <div className={GIMMICK_TEXT_STYLE.AutoAttack}>{t('Etc', { count: superMergedGimmicks.length - 3 })}</div>
+        )}
+      </div>
+    );
+  },
+);
 
 export type GimmickLineProps = ArrayElement<Exclude<StrategyDataType['raids'], null>['gimmicks']> & {
   raidSemanticKey: string;
@@ -113,6 +115,7 @@ export type GimmickLineProps = ArrayElement<Exclude<StrategyDataType['raids'], n
   damageDisplayGimmick?: ArrayElement<Exclude<StrategyDataType['raids'], null>['gimmicks']>;
   mergedGimmicks: MergedGimmick[];
   resizePanelSize: number;
+  hasSpaceForDamage: boolean;
 };
 
 const GimmickLine = React.memo(
@@ -132,6 +135,7 @@ const GimmickLine = React.memo(
       damageDisplayGimmick,
       mergedGimmicks,
       resizePanelSize,
+      hasSpaceForDamage,
       raidSemanticKey,
     } = props;
     const tGimmicks = useTranslations('Common.Gimmicks');
@@ -140,12 +144,14 @@ const GimmickLine = React.memo(
 
     const textColor = GIMMICK_TEXT_STYLE[gimmickType];
     const borderColor = GIMMICK_BORDER_STYLE[gimmickType];
-    const borderWidth = gimmickType === 'Enrage' ? 'border-t-4' : 'border-t-2';
-    const titleWeight = gimmickType === 'Enrage' ? 'font-extrabold' : 'font-bold';
+    const borderWidth = gimmickType === 'Enrage' ? 'border-t-4' : 'border-t-[1.5px]';
+    const titleWeight = gimmickType === 'Enrage' ? 'font-extrabold' : 'font-semibold';
+
+    const viewOptions = useAtomValue(viewOptionsAtom);
 
     return (
       <div ref={ref}>
-        {castAt && (
+        {viewOptions.showVerboseTimeline && castAt && (
           <GimmickSubLine
             raidSemanticKey={raidSemanticKey}
             time={castAt}
@@ -157,7 +163,7 @@ const GimmickLine = React.memo(
             lineType="border-dashed"
           />
         )}
-        {resolveAt && (
+        {viewOptions.showVerboseTimeline && resolveAt && (
           <GimmickSubLine
             raidSemanticKey={raidSemanticKey}
             time={resolveAt}
@@ -174,7 +180,7 @@ const GimmickLine = React.memo(
           style={{ top: `${timeToY(prepareAt)}px` }}
         />
         <div className="absolute left-[2dvw]" style={{ top: `${timeToY(prepareAt)}px` }}>
-          <div className="space-y-1">
+          <div className="space-x-6 flex">
             <HoverCard openDelay={100}>
               <HoverCardTrigger>
                 {mergedGimmicks.length > 0 && (
@@ -200,13 +206,32 @@ const GimmickLine = React.memo(
                   ))}
               </HoverCardContent>
             </HoverCard>
-            {mergedGimmicks.length > 0 && displayDamage && damageDisplayGimmick && (
-              <div className={className}>
-                <div className="inline-grid text-sm gap-x-2 gap-y-1" style={{ gridTemplateColumns: 'auto auto auto' }}>
-                  <DamagesText damages={damageDisplayGimmick.damages} />
+            {mergedGimmicks.length > 0 &&
+              (hasSpaceForDamage ? (
+                <div className={className}>
+                  <div
+                    className="inline-grid text-sm gap-x-2 gap-y-1 mt-0.5"
+                    style={{ gridTemplateColumns: 'auto auto auto' }}
+                  >
+                    {mergedGimmicks.map((mergedGimmick) => (
+                      <DamagesText damages={mergedGimmick.damages} key={mergedGimmick.id} />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className={className}>
+                  <div className="text-sm mt-0.5">
+                    <div className="flex space-x-0.5 items-center">
+                      {mergedGimmicks
+                        .flatMap((mergedGimmick) => mergedGimmick.damages)
+                        .map((damage) => (
+                          <DamageTypeIcon key={`abbr-damagetype-${damage.id}`} damageType={damage.type} />
+                        ))}
+                      <span className="font-bold text-sm text-background">Dummy</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
           </div>
         </div>
       </div>

@@ -15,22 +15,24 @@ import { ACTIVE_DAMAGE_OPTION_STYLE, INACTIVE_DAMAGE_OPTION_STYLE } from '../../
 import { MitigatedDamagesContext } from './MitigatedDamagesContext';
 
 type DamageAmountsProps = {
-  damageType: Enums<'damage_type'>;
   currentDamage: number;
   defaultDamage: number;
 };
 
-export const DamageAmounts = (props: DamageAmountsProps) => {
-  const { damageType, currentDamage, defaultDamage } = props;
+export const DamageTypeIcon = (props: { damageType: Enums<'damage_type'> }) => {
+  const { damageType } = props;
 
   const src = `/icons/damage/${damageType.toLowerCase()}.png`;
 
+  return <Image src={src} alt={damageType} width={16} height={16} className='inline' />;
+};
+
+export const DamageAmounts = (props: DamageAmountsProps) => {
+  const { currentDamage, defaultDamage } = props;
+
   return (
     <>
-      <div className="flex items-center space-x-1">
-        <Image src={src} alt={damageType} width={16} height={16} />
-        <span className="tabular-nums font-bold">{currentDamage}</span>
-      </div>
+      <span className="tabular-nums font-bold">{currentDamage}</span>
       <span className="text-muted-foreground tabular-nums text-xs my-auto">{defaultDamage}</span>
     </>
   );
@@ -51,10 +53,11 @@ const BothTankBuster = (props: DamageTextProps) => {
 
   return (
     <>
-      <div className="space-x-1 pr-6">
+      <div className="space-x-1 pr-4 flex items-center">
+        <DamageTypeIcon damageType={damageType} />
         <span className={ACTIVE_DAMAGE_OPTION_STYLE}>T1+T2</span>
       </div>
-      <DamageAmounts damageType={damageType} currentDamage={currentDamage} defaultDamage={defaultDamage} />
+      <DamageAmounts currentDamage={currentDamage} defaultDamage={defaultDamage} />
     </>
   );
 };
@@ -71,7 +74,8 @@ const SingleTankBuster = (props: DamageTextProps) => {
 
   return (
     <>
-      <div className="space-x-1 pr-6 min-w-16">
+      <div className="space-x-1 pr-4 flex items-center min-w-16">
+        <DamageTypeIcon damageType={damageType} />
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
         <span
           className={cn(activeOption === 0 ? ACTIVE_DAMAGE_OPTION_STYLE : INACTIVE_DAMAGE_OPTION_STYLE, cursorStyle)}
@@ -108,7 +112,7 @@ const SingleTankBuster = (props: DamageTextProps) => {
         </span>
       </div>
 
-      <DamageAmounts damageType={damageType} currentDamage={currentDamage} defaultDamage={defaultDamage} />
+      <DamageAmounts currentDamage={currentDamage} defaultDamage={defaultDamage} />
     </>
   );
 };
@@ -125,7 +129,8 @@ const ShareTankBuster = (props: DamageTextProps) => {
 
   return (
     <>
-      <div className="space-x-1 pr-6 min-w-28">
+      <div className="space-x-1 pr-4 flex items-center min-w-28">
+        <DamageTypeIcon damageType={damageType} />
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
         <span
           className={cn(activeOption === 0 ? ACTIVE_DAMAGE_OPTION_STYLE : INACTIVE_DAMAGE_OPTION_STYLE, cursorStyle)}
@@ -182,7 +187,6 @@ const ShareTankBuster = (props: DamageTextProps) => {
       </div>
 
       <DamageAmounts
-        damageType={damageType}
         currentDamage={currentDamage}
         defaultDamage={defaultDamage / (activeOption === 0 ? 2 : 1)}
       />
@@ -196,10 +200,12 @@ const ShareAllRaidWide = (props: DamageTextProps) => {
 
   return (
     <>
-      <div className="space-x-1 pr-6">
+      <div className="space-x-1 pr-4 flex items-center">
+      <DamageTypeIcon damageType={damageType} />
+
         <span className={ACTIVE_DAMAGE_OPTION_STYLE}>{t('DamageOption.Share')}</span>
       </div>
-      <DamageAmounts damageType={damageType} currentDamage={currentDamage} defaultDamage={defaultDamage / 8} />
+      <DamageAmounts currentDamage={currentDamage} defaultDamage={defaultDamage / 8} />
     </>
   );
 };
@@ -217,10 +223,12 @@ const RaidWide = (props: DamageTextProps) => {
 
   return (
     <>
-      <div className="space-x-1 pr-6">
+      <div className="space-x-1 pr-4 flex items-center">
+      <DamageTypeIcon damageType={damageType} />
+
         <span className={ACTIVE_DAMAGE_OPTION_STYLE}>{text}</span>
       </div>
-      <DamageAmounts damageType={damageType} currentDamage={currentDamage} defaultDamage={defaultDamage} />
+      <DamageAmounts currentDamage={currentDamage} defaultDamage={defaultDamage} />
     </>
   );
 };
@@ -236,7 +244,9 @@ const ShareHalfRaidWide = (props: DamageTextProps) => {
 
   return (
     <>
-      <div className="space-x-1 pr-6 min-w-20">
+      <div className="space-x-1 pr-4 flex items-center min-w-20">
+      <DamageTypeIcon damageType={damageType} />
+
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
         <span
           className={cn(activeOption === 0 ? ACTIVE_DAMAGE_OPTION_STYLE : INACTIVE_DAMAGE_OPTION_STYLE, cursorStyle)}
@@ -273,7 +283,6 @@ const ShareHalfRaidWide = (props: DamageTextProps) => {
         </span>
       </div>
       <DamageAmounts
-        damageType={damageType}
         currentDamage={currentDamage}
         defaultDamage={defaultDamage / (activeOption === 0 ? 4 : 3)}
       />
@@ -285,7 +294,7 @@ const ShareHalfRaidWide = (props: DamageTextProps) => {
 const Unknown = () => {
   const t = useTranslations('StratPage.DamageText');
 
-  return <div className="space-x-1 pr-6">{t('DamageOption.Unknown')}</div>;
+  return <div className="space-x-1 pr-4 flex items-center">{t('DamageOption.Unknown')}</div>;
 };
 const componentSelector = (target: 'Raidwide' | 'Tankbuster', numTargets: number, maxShared: number) => {
   if (target === 'Tankbuster') {

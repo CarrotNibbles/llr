@@ -142,7 +142,7 @@
     },
     "Gimmicks": {
       "P10S": {
-        "auto_attack": "攻击",
+        "auto_attack": "AA",
         "ultima": "알테마",
         "soul_grasp": "영혼 장악",
         "dividing_wings": "날개 분리",
@@ -171,7 +171,7 @@
         "temp_judgement": "천벌 선포"
       },
       "M1S": {
-        "auto_attack": "攻击",
+        "auto_attack": "AA",
         "quadruple_crossing": "クアドラプルネイル",
         "biscuit_maker": "ビスケットメーカー",
         "nine_lives": "ナインライヴス",
@@ -304,6 +304,9 @@
         "Error": "いいねを追加中にエラーが発生しました。",
         "CaptchaHeading": "CAPTCHA確認",
         "CaptchaLoading": "CAPTCHAをロード中です..."
+      },
+      "FilterMenu": {
+        "VerboseTimeline": "詳細タイムライン"
       }
     },
     "GimmickLine": {

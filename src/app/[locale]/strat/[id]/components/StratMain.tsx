@@ -23,6 +23,8 @@ const ScrollSyncFixed: (props: ScrollSyncProps) => React.ReactNode = ScrollSync 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const ScrollSyncPaneFixed: (props: ScrollSyncPaneProps) => React.ReactNode = ScrollSyncPane as any;
 
+const SCROLL_SYNC_GROUP = ['x', 'y'];
+
 export const StratMain = () => {
   const [resizePanelSize, setResizePanelSize] = useState(20);
   const zoom = useAtomValue(zoomAtom);
@@ -108,8 +110,6 @@ export const StratMain = () => {
     return record;
   }, [strategyData.strategy_players]);
 
-  const scrollSyncGroup = useMemo(() => ['x', 'y'], []);
-
   useEffect(() => {
     if (overlayRef.current) {
       overlayRef.current.scrollTop *= zoom.changeRatio;
@@ -157,12 +157,12 @@ export const StratMain = () => {
         direction="horizontal"
         className="relative flex w-screen flex-grow overflow-hidden select-none"
       >
-        <ResizablePanel defaultSize={20} minSize={4} className="border-r -z-50">
+        <ResizablePanel defaultSize={35} minSize={4} className="border-r -z-50">
           <div className="min-h-20 h-20 border-b" />
         </ResizablePanel>
         <ResizableHandle className="w-0" withHandle />
         <ResizablePanel
-          defaultSize={80}
+          defaultSize={65}
           maxSize={96}
           className="z-10 flex flex-col overflow-auto border-r"
           onResize={(size) => {
@@ -187,7 +187,7 @@ export const StratMain = () => {
               ))}
             </div>
           </ScrollSyncPaneFixed>
-          <ScrollSyncPaneFixed group={scrollSyncGroup} innerRef={mainRef}>
+          <ScrollSyncPaneFixed group={SCROLL_SYNC_GROUP} innerRef={mainRef}>
             <div
               className={cn(
                 'relative overscroll-none overflow-x-scroll bg-background',

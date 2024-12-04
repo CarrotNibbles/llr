@@ -142,7 +142,7 @@
     },
     "Gimmicks": {
       "P10S": {
-        "auto_attack": "Auto Attack",
+        "auto_attack": "AA",
         "ultima": "Ultima",
         "soul_grasp": "Soul Grasp",
         "dividing_wings": "Dividing Wings",
@@ -171,7 +171,7 @@
         "temp_judgement": "Judgement?"
       },
       "M1S": {
-        "auto_attack": "Auto Attack",
+        "auto_attack": "AA",
         "quadruple_crossing": "Quadruple Crossing",
         "biscuit_maker": "Biscuit Maker",
         "nine_lives": "Nine Lives",
@@ -186,7 +186,7 @@
         "impact": "Impact",
         "shockwave": "Shockwave",
         "grimalkin_gale": "Grimalkin Gale",
-        "leaping_one_two_paw": "Leaping One-Tempestuous Paw",
+        "leaping_one_two_paw": "Leaping One-Two Paw",
         "tempestuous_tear": "Tempestuous Tear",
         "nailchipper": "Nailchipper",
         "overshadow_splintering_nails": "Overshadow / Splintering Nails",
@@ -209,8 +209,8 @@
       "DamageOption": {
         "Share": "Stack",
         "RaidWide": "Raid-wide",
-        "SingleTarget": "個人",
-        "NTargets": "{numTargets}人",
+        "SingleTarget": "Single Target",
+        "NTargets": "{numTargets} Targets",
         "Unknown": "???"
       }
     },
@@ -304,6 +304,9 @@
         "Error": "An error occurred while adding the like.",
         "CaptchaHeading": "CAPTCHA Verification",
         "CaptchaLoading": "Loading CAPTCHA..."
+      },
+      "FilterMenu": {
+        "VerboseTimeline": "Detailed Timeline"
       }
     },
     "GimmickLine": {
