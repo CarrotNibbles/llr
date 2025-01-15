@@ -239,7 +239,7 @@ const ShareHalfRaidWide = (props: DamageTextProps) => {
   const elevated = useStratSyncStore((state) => state.elevated);
   const upsertDamageOption = useStratSyncStore((state) => state.upsertDamageOption);
 
-  const activeOption = numShared === 3 ? 0 : 1;
+  const activeOption = numShared === 3 ? 1: 0;
   const cursorStyle = elevated ? 'cursor-pointer' : 'cursor-not-allowed';
 
   return (
