@@ -239,7 +239,7 @@ const ShareHalfRaidWide = (props: DamageTextProps) => {
   const elevated = useStratSyncStore((state) => state.elevated);
   const upsertDamageOption = useStratSyncStore((state) => state.upsertDamageOption);
 
-  const activeOption = numShared === 3 ? 0 : 1;
+  const activeOption = numShared === 3 ? 1: 0;
   const cursorStyle = elevated ? 'cursor-pointer' : 'cursor-not-allowed';
 
   return (
@@ -284,7 +284,7 @@ const ShareHalfRaidWide = (props: DamageTextProps) => {
       </div>
       <DamageAmounts
         currentDamage={currentDamage}
-        defaultDamage={defaultDamage / (activeOption === 0 ? 4 : 3)}
+        defaultDamage={Math.round(defaultDamage / (activeOption === 0 ? 4 : 3))}
       />
     </>
   );
