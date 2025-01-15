@@ -23,8 +23,6 @@ const ScrollSyncFixed: (props: ScrollSyncProps) => React.ReactNode = ScrollSync 
 // biome-ignore lint/suspicious/noExplicitAny: <explanation>
 const ScrollSyncPaneFixed: (props: ScrollSyncPaneProps) => React.ReactNode = ScrollSyncPane as any;
 
-const SCROLL_SYNC_GROUP = ['x', 'y'];
-
 export const StratMain = () => {
   const [resizePanelSize, setResizePanelSize] = useState(20);
   const zoom = useAtomValue(zoomAtom);
@@ -187,7 +185,7 @@ export const StratMain = () => {
               ))}
             </div>
           </ScrollSyncPaneFixed>
-          <ScrollSyncPaneFixed group={SCROLL_SYNC_GROUP} innerRef={mainRef}>
+          <ScrollSyncPaneFixed group={["x", "y"]} innerRef={mainRef}>
             <div
               className={cn(
                 'relative overscroll-none overflow-x-scroll bg-background',
