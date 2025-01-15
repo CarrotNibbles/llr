@@ -284,7 +284,7 @@ const ShareHalfRaidWide = (props: DamageTextProps) => {
       </div>
       <DamageAmounts
         currentDamage={currentDamage}
-        defaultDamage={defaultDamage / (activeOption === 0 ? 4 : 3)}
+        defaultDamage={Math.round(defaultDamage / (activeOption === 0 ? 4 : 3))}
       />
     </>
   );
