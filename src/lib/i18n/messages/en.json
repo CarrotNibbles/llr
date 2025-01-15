@@ -138,7 +138,8 @@
     "Raids": {
       "P10S": "Anabaseios: The Tenth Circle (Savage)",
       "P11S": "Anabaseios: The Eleventh Circle (Savage)",
-      "M1S": "AAC Light-heavyweight M1 (Savage)"
+      "M1S": "AAC Light-heavyweight M1 (Savage)",
+      "M2S": "AAC Light-heavyweight M2 (Savage)"
     },
     "Gimmicks": {
       "P10S": {
@@ -192,6 +193,30 @@
         "overshadow_splintering_nails": "Overshadow / Splintering Nails",
         "raining_cats": "Raining Cats",
         "predaceous_pounce": "Predaceous Pounce"
+      },
+      "M2S": {
+        "auto_attack": "AA",
+        "call_me_honey": "Call Me Honey",
+        "splash_drop_of_venom": "Splash / Drop of Venom",
+        "tempting_twist_honey_beeline": "Tempting Twist / Honey Beeline",
+        "killer_sting_stinging_slash": "Killer Sting / Stinging Slash",
+        "honey_b_live_1st_beat": "Honey B. Live: 1st Beat",
+        "centerstage_outerstage_combo": "Centerstage / Outerstage Combo",
+        "love_me_tender": "Love Me Tender",
+        "fracture": "Fracture",
+        "loveseeker": "Loveseeker",
+        "heartsick": "Heartsick",
+        "honey_b_finale": "Honey B. Finale",
+        "alarm_pheromones": "Alarm Pheromones",
+        "honey_b_live_2nd_beat": "Honey B. Live: 2nd Beat",
+        "spread_drop_of_love": "Spread Drop of Love",
+        "heartsore": "Heartsore",
+        "poison_sting": "Poison Sting",
+        "bee_sting": "Bee Sting",
+        "honey_b_live_3rd_beat": "Honey B. Live: 3rd Beat",
+        "big_burst": "Big Burst",
+        "rotten_heart": "Rotten Heart",
+        "sheer_heart_attack": "Sheer Heart Attack"
       }
     }
   },

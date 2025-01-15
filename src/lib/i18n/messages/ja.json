@@ -138,7 +138,8 @@
     "Raids": {
       "P10S": "万魔殿パンデモニウム：天獄編２(解説)",
       "P11S": "万魔殿パンデモニウム：天獄編３(解説)",
-      "M1S": "至天の座アルカディア：ライトヘビー級1(解説)"
+      "M1S": "至天の座アルカディア：ライトヘビー級1(解説)",
+      "M2S": "至天の座アルカディア：ライトヘビー級2(解説)"
     },
     "Gimmicks": {
       "P10S": {
@@ -192,6 +193,30 @@
         "overshadow_splintering_nails": "オーバーシャドウ/スプレッドネイル",
         "raining_cats": "レイニングキャッツ",
         "predaceous_pounce": "キャッツレイド"
+      },
+      "M2S": {
+        "auto_attack": "AA",
+        "call_me_honey": "ラブリーコール",
+        "splash_drop_of_venom": "ベノムレイン / ドロップ",
+        "tempting_twist_honey_beeline": "ハニーブラスト / ツイスター",
+        "killer_sting_stinging_slash": "キラースティング / ラッシュ",
+        "honey_b_live_1st_beat": "ハニー・B・ライヴ [1st]",
+        "centerstage_outerstage_combo": "リング / ラウンド・ラブコンビネーション",
+        "love_me_tender": "ラブ・ミー・テンダー",
+        "fracture": "炸裂",
+        "loveseeker": "ラブシーカー",
+        "heartsick": "ハートシック",
+        "honey_b_finale": "ハニー・B・フィナーレ",
+        "alarm_pheromones": "アラームフェロモン",
+        "honey_b_live_2nd_beat": "ハニー・B・ライヴ [2nd]",
+        "spread_drop_of_love": "ラブレイン / ドロップ",
+        "heartsore": "ハートソゥ",
+        "poison_sting": "ポイズンスティング",
+        "bee_sting": "ビースティング",
+        "honey_b_live_3rd_beat": "ハニー・B・ライヴ [3rd]",
+        "big_burst": "爆発",
+        "rotten_heart": "ブラックハート",
+        "sheer_heart_attack": "シアー・ハート・アタック"
       }
     }
   },
