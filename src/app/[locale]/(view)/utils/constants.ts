@@ -13,6 +13,8 @@ export const SORT_PARAM = 'sort';
 export const RAID_PARAM = 'raid';
 export const PATCH_PARAM = 'patch';
 export const JOBS_PARAM = 'jobs';
+export const AUTHORED_PARAM = 'authored';
+export const LIKED_PARAM = 'liked';
 
 export const NAV_RAID_CATEGORIES = ['Savage', 'Ultimate'] as const;
 export const ALL_RAIG_CATEGORIES = ['Savage', 'Ultimate', 'Trial', 'Raid', 'Dungeon'] as const;

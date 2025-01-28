@@ -40,7 +40,7 @@ const ProfileDropdown = async ({ className, ...props }: { className?: string } &
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-auto p-4 flex flex-col items-end gap-y-1" align="end" sideOffset={8}>
         <DropdownMenuItem className="w-full p-0">
-          <Link href="/" passHref className="w-full text-sm font-bold text-center">
+          <Link href="/board?authored" passHref className="w-full text-sm font-bold text-center">
             <Button variant="ghost" className="flex w-full px-4 py-1">
               <FileTextIcon />
               <div className="flex-grow min-w-8" />
@@ -49,7 +49,7 @@ const ProfileDropdown = async ({ className, ...props }: { className?: string } &
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem className="w-full p-0">
-          <Link href="/" passHref className="w-full text-sm font-bold text-center">
+          <Link href="/board?liked" passHref className="w-full text-sm font-bold text-center">
             <Button variant="ghost" className="flex w-full px-4 py-1">
               <HeartIcon />
               <div className="flex-grow min-w-8" />

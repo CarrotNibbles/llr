@@ -17,7 +17,15 @@ export type ActionDataType = QueryData<ReturnType<typeof buildActionDataQuery>>;
 
 export const buildStrategyCountQuery = async (
   supabase: SupabaseServerClient,
-  params: { q?: string; raid_skey?: string; patch?: Patch; jobs?: SelectableJob[] },
+  params: {
+    q?: string;
+    raid_skey?: string;
+    patch?: Patch;
+    jobs?: SelectableJob[];
+    author_id?: string;
+    liker_id?: string;
+    allow_private?: boolean;
+  },
 ) => {
   return supabase.rpc('count_strategies', params);
 };
@@ -25,7 +33,15 @@ export const buildStrategyCountQuery = async (
 export const buildMaxPageQuery = async (
   supabase: SupabaseServerClient,
   limit: number,
-  params: { q?: string; raid_skey?: string; patch?: Patch; jobs?: SelectableJob[] },
+  params: {
+    q?: string;
+    raid_skey?: string;
+    patch?: Patch;
+    jobs?: SelectableJob[];
+    author_id?: string;
+    liker_id?: string;
+    allow_private?: boolean;
+  },
 ) => {
   const { data, error } = await buildStrategyCountQuery(supabase, params);
   if (error) return { data: null, error };
@@ -44,6 +60,9 @@ export const buildStrategiesDataQuery = async (
     lim: number;
     sort?: SortOption;
     jobs?: SelectableJob[];
+    author_id?: string;
+    liker_id?: string;
+    allow_private?: boolean;
   },
 ) => {
   const { data, error } = await supabase.rpc('select_strategies', removeUndefinedFields(params));

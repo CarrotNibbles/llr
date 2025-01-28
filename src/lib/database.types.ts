@@ -517,6 +517,7 @@ export type Database = {
           jobs?: Database["public"]["Enums"]["job"][]
           author_id?: string
           liker_id?: string
+          allow_private?: boolean
         }
         Returns: number
       }
@@ -534,6 +535,7 @@ export type Database = {
           jobs?: Database["public"]["Enums"]["job"][]
           author_id?: string
           liker_id?: string
+          allow_private?: boolean
           sort?: string
           page?: number
           lim?: number
@@ -541,6 +543,8 @@ export type Database = {
         Returns: {
           id: string
           name: string
+          is_public: boolean
+          is_editable: boolean
           version: number
           subversion: number
           modified_at: string

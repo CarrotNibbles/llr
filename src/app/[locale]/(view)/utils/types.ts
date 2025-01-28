@@ -3,7 +3,9 @@ import type { ALL_SELECTABLE_JOBS } from '@/lib/utils/constants';
 import type { Patch } from '@/lib/utils/types';
 import {
   type ALL_SORT_OPTIONS,
+  AUTHORED_PARAM,
   JOBS_PARAM,
+  LIKED_PARAM,
   LIMIT_PARAM,
   PAGE_PARAM,
   PATCH_PARAM,
@@ -19,6 +21,8 @@ export type BoardSearchParamsRaw = {
   [PAGE_PARAM]: string;
   [LIMIT_PARAM]: string;
   [SORT_PARAM]: string;
+  [AUTHORED_PARAM]?: string;
+  [LIKED_PARAM]?: string;
 };
 export type BoardSearchParamsParsed = {
   [RAID_PARAM]?: string;
@@ -27,6 +31,8 @@ export type BoardSearchParamsParsed = {
   [PAGE_PARAM]: number;
   [LIMIT_PARAM]: number;
   [SORT_PARAM]: SortOption;
+  [AUTHORED_PARAM]?: boolean;
+  [LIKED_PARAM]?: boolean;
 };
 export type BoardSearchParams = BoardSearchParamsRaw | BoardSearchParamsParsed;
 export type BoardSearchParamKeys = keyof BoardSearchParams;

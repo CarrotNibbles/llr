@@ -6,7 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import type { buildStrategiesDataQuery } from '@/lib/queries/server';
 import { cn, getOrderedRole } from '@/lib/utils/helpers';
-import { HeartFilledIcon } from '@radix-ui/react-icons';
+import { HeartFilledIcon, LockClosedIcon, Pencil1Icon } from '@radix-ui/react-icons';
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import type React from 'react';
@@ -87,7 +87,11 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
             <TableCell className="p-0 h-0">
               <Link href={`/strat/${strategyData.id}`} className="w-full h-full flex items-center">
                 <div className="flex flex-col pl-4 pr-2 py-4">
-                  <h2 className="text-base md:text-lg font-bold">{strategyData.name}</h2>
+                  <div className="flex items-center">
+                    <h2 className="text-base md:text-lg font-bold">{strategyData.name}</h2>
+                    {!strategyData.is_public && <LockClosedIcon className="ml-1 text-amber-600 dark:text-amber-400" />}
+                    {strategyData.is_editable && <Pencil1Icon className="ml-1 text-muted-foreground" />}
+                  </div>
                   <div className="text-xs md:text-sm text-muted-foreground">
                     {tRaids(strategyData.raid_semantic_key)}
                   </div>
@@ -120,12 +124,18 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
               </Link>
             </TableCell>
             <TableCell className="p-0 w-0 h-0">
-              <Link href={`/strat/${strategyData.id}`} className="w-full h-full flex justify-center items-center tabular-nums">
+              <Link
+                href={`/strat/${strategyData.id}`}
+                className="w-full h-full flex justify-center items-center tabular-nums"
+              >
                 <div className="px-2 py-4">{`${strategyData.version}.${strategyData.subversion}`}</div>
               </Link>
             </TableCell>
             <TableCell className="p-0 w-0 h-0">
-              <Link href={`/strat/${strategyData.id}`} className="w-full h-full flex justify-center items-center tabular-nums">
+              <Link
+                href={`/strat/${strategyData.id}`}
+                className="w-full h-full flex justify-center items-center tabular-nums"
+              >
                 <div className="px-2 py-4 flex items-center">
                   <HeartFilledIcon className="w-4 h-4 mr-1" />
                   {strategyData.total_likes === null ? 0 : strategyData.total_likes}
