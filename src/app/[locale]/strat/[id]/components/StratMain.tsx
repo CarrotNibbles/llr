@@ -149,6 +149,8 @@ export const StratMain = () => {
     }
   });
 
+  const xyScrollGroup = useMemo(() => ['x', 'y'], []);
+
   return (
     <ScrollSyncFixed horizontal vertical={!autoScroll.active} proportional={false}>
       <ResizablePanelGroup
@@ -185,7 +187,7 @@ export const StratMain = () => {
               ))}
             </div>
           </ScrollSyncPaneFixed>
-          <ScrollSyncPaneFixed group={["x", "y"]} innerRef={mainRef}>
+          <ScrollSyncPaneFixed group={xyScrollGroup} innerRef={mainRef}>
             <div
               className={cn(
                 'relative overscroll-none overflow-x-scroll bg-background',
