@@ -41,8 +41,8 @@ export const tryParseJobs = (input: string | undefined | null): SelectableJob[] 
 export const buildURL = (
   url: string,
   ...searchParams: (
-    | Record<string, string | number | Patch | null | undefined | string[]>
-    | [string, string | number | Patch | null | undefined | string[]]
+    | Record<string, string | number | Patch | null | undefined | string[] | boolean>
+    | [string, string | number | Patch | null | undefined | string[] | boolean]
     | URLSearchParams
     | ReadonlyURLSearchParams
   )[]
@@ -56,6 +56,7 @@ export const buildURL = (
       if (value === null || value === undefined) newSearchParams.delete(key);
       else if (typeof value === 'string') newSearchParams.set(key, value);
       else if (typeof value === 'number') newSearchParams.set(key, value.toString());
+      else if (typeof value === 'boolean') newSearchParams.set(key, value.toString());
       else if (Array.isArray(value)) newSearchParams.set(key, value.join(','));
       else newSearchParams.set(key, `${value.version}.${value.subversion}`);
     } else if (searchParam instanceof URLSearchParams || searchParam instanceof ReadonlyURLSearchParams) {
@@ -69,6 +70,7 @@ export const buildURL = (
         if (value === undefined || value === null) newSearchParams.delete(key);
         else if (typeof value === 'string') newSearchParams.set(key, value);
         else if (typeof value === 'number') newSearchParams.set(key, value.toString());
+        else if (typeof value === 'boolean') newSearchParams.set(key, value.toString());
         else if (Array.isArray(value)) newSearchParams.set(key, value.join(','));
         else newSearchParams.set(key, `${value.version}.${value.subversion}`);
       }
