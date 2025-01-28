@@ -24,7 +24,7 @@ export const DamageTypeIcon = (props: { damageType: Enums<'damage_type'> }) => {
 
   const src = `/icons/damage/${damageType.toLowerCase()}.png`;
 
-  return <Image src={src} alt={damageType} width={16} height={16} className='inline' />;
+  return <Image src={src} alt={damageType} width={16} height={16} className="inline" />;
 };
 
 export const DamageAmounts = (props: DamageAmountsProps) => {
@@ -186,10 +186,7 @@ const ShareTankBuster = (props: DamageTextProps) => {
         </span>
       </div>
 
-      <DamageAmounts
-        currentDamage={currentDamage}
-        defaultDamage={defaultDamage / (activeOption === 0 ? 2 : 1)}
-      />
+      <DamageAmounts currentDamage={currentDamage} defaultDamage={defaultDamage / (activeOption === 0 ? 2 : 1)} />
     </>
   );
 };
@@ -201,7 +198,7 @@ const ShareAllRaidWide = (props: DamageTextProps) => {
   return (
     <>
       <div className="space-x-1 pr-4 flex items-center">
-      <DamageTypeIcon damageType={damageType} />
+        <DamageTypeIcon damageType={damageType} />
 
         <span className={ACTIVE_DAMAGE_OPTION_STYLE}>{t('DamageOption.Share')}</span>
       </div>
@@ -224,7 +221,7 @@ const RaidWide = (props: DamageTextProps) => {
   return (
     <>
       <div className="space-x-1 pr-4 flex items-center">
-      <DamageTypeIcon damageType={damageType} />
+        <DamageTypeIcon damageType={damageType} />
 
         <span className={ACTIVE_DAMAGE_OPTION_STYLE}>{text}</span>
       </div>
@@ -239,13 +236,13 @@ const ShareHalfRaidWide = (props: DamageTextProps) => {
   const elevated = useStratSyncStore((state) => state.elevated);
   const upsertDamageOption = useStratSyncStore((state) => state.upsertDamageOption);
 
-  const activeOption = numShared === 3 ? 1: 0;
+  const activeOption = numShared === 3 ? 1 : 0;
   const cursorStyle = elevated ? 'cursor-pointer' : 'cursor-not-allowed';
 
   return (
     <>
       <div className="space-x-1 pr-4 flex items-center min-w-20">
-      <DamageTypeIcon damageType={damageType} />
+        <DamageTypeIcon damageType={damageType} />
 
         {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
         <span

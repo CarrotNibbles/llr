@@ -1,17 +1,17 @@
 'use client';
 import { CustomIcons } from '@/components/icons/CustomIcons';
 import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Switch } from '@/components/ui/switch';
 import { Toggle } from '@/components/ui/toggle';
 import { viewOptionsAtom } from '@/lib/atoms';
 import type { Enums } from '@/lib/database.types';
 import { cn } from '@/lib/utils/helpers';
+import { produce } from 'immer';
 import { useAtom } from 'jotai';
 import { useTranslations } from 'next-intl';
 import { GIMMICK_BACKGROUND_STYLE } from '../../utils/constants';
-import { produce } from 'immer';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 
 export const FilterMenu = () => {
   const GimmickTypes: Array<Enums<'gimmick_type'>> = [
@@ -45,11 +45,13 @@ export const FilterMenu = () => {
           <Switch
             id="verbose-timeline"
             checked={viewOptions.showVerboseTimeline}
-            onCheckedChange={() => setViewOptions(
-              produce((draft) => {
-                draft.showVerboseTimeline = !draft.showVerboseTimeline;
-              }),
-            )}
+            onCheckedChange={() =>
+              setViewOptions(
+                produce((draft) => {
+                  draft.showVerboseTimeline = !draft.showVerboseTimeline;
+                }),
+              )
+            }
           />
           <Label htmlFor="verbose-timeline">{t('VerboseTimeline')}</Label>
         </div>

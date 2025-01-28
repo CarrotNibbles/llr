@@ -1,6 +1,6 @@
 'use client';
 
-import { viewOptionsAtom, pixelPerFrameAtom } from '@/lib/atoms';
+import { pixelPerFrameAtom, viewOptionsAtom } from '@/lib/atoms';
 import { useMitigatedDamages } from '@/lib/calc/hooks';
 import type { ActionDataType, StrategyDataType } from '@/lib/queries/server';
 import { cn } from '@/lib/utils/helpers';

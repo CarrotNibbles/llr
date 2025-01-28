@@ -10,7 +10,7 @@ import React from 'react';
 import { GIMMICK_BORDER_STYLE, GIMMICK_TEXT_STYLE, MAX_DISPLAY_COUNT } from '../../utils/constants';
 import { verticalTransformsFactory } from '../../utils/helpers';
 import type { MergedGimmick, SuperMergedGimmick } from '../../utils/types';
-import { DamagesText, DamageTypeIcon } from './DamagesText';
+import { DamageTypeIcon, DamagesText } from './DamagesText';
 
 type GimmickSubLineProps = {
   raidSemanticKey: string;
