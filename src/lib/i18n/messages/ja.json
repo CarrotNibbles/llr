@@ -139,7 +139,8 @@
       "P10S": "万魔殿パンデモニウム：天獄編２(解説)",
       "P11S": "万魔殿パンデモニウム：天獄編３(解説)",
       "M1S": "至天の座アルカディア：ライトヘビー級1(解説)",
-      "M2S": "至天の座アルカディア：ライトヘビー級2(解説)"
+      "M2S": "至天の座アルカディア：ライトヘビー級2(解説)",
+      "M3S": "至天の座アルカディア：ライトヘビー級3(解説)"
     },
     "Gimmicks": {
       "P10S": {
@@ -217,6 +218,33 @@
         "big_burst": "爆発",
         "rotten_heart": "ブラックハート",
         "sheer_heart_attack": "シアー・ハート・アタック"
+      },
+      "M3S": {
+        "auto_attack": "AA",
+        "brutal_impact": "スマッシュインパクト",
+        "knuckle_sandwich": "ナックルパート",
+        "quadruple_octuple_lariat": "4 / 8ウェイ・ダブルラリアット",
+        "blazing_lariat": "ラリアット・ブレイザー",
+        "quadroboom_octoboom_dive": "4 / 8ショック・パワーダイブ",
+        "diveboom": "パワーダイブ・ショック",
+        "barbarous_barrage": "ボンバリアンボム",
+        "explosion": "爆発",
+        "murdurous_mist": "グリーンミスト",
+        "doping_draught": "ドーピング",
+        "tag_team": "タッグマッチ",
+        "chain_deathmatch": "チェーンデスマッチ",
+        "lariat_combo": "ラリアットコンビネーション",
+        "final_fusedown": "零式フューズボム",
+        "fusefield": "フューズフィールド",
+        "bombarian_flame": "ボンバリアンファイヤー",
+        "mana_explosion": "魔力爆発",
+        "quadroboom_octoboom_bombarian_special": "4 / 8ショック・ボンバリアンスペシャル",
+        "bombarian_special": "ボンバリアンスペシャル",
+        "bombariboom": "ボンバリアン・ショック",
+        "fuses_of_fury": "フューズボム",
+        "fuse_or_foe": "アタッチ・フューズボム",
+        "infernal_spin": "極盛り式スピニングファイヤー",
+        "special_bombarian_special": "アルティメット・ボンバリアンスペシャル"
       }
     }
   },

@@ -139,7 +139,8 @@
       "P10S": "Anabaseios: The Tenth Circle (Savage)",
       "P11S": "Anabaseios: The Eleventh Circle (Savage)",
       "M1S": "AAC Light-heavyweight M1 (Savage)",
-      "M2S": "AAC Light-heavyweight M2 (Savage)"
+      "M2S": "AAC Light-heavyweight M2 (Savage)",
+      "M3S": "AAC Light-heavyweight M3 (Savage)"
     },
     "Gimmicks": {
       "P10S": {
@@ -217,6 +218,33 @@
         "big_burst": "Big Burst",
         "rotten_heart": "Rotten Heart",
         "sheer_heart_attack": "Sheer Heart Attack"
+      },
+      "M3S": {
+        "auto_attack": "AA",
+        "brutal_impact": "Brutal Impact",
+        "knuckle_sandwich": "Knuckle Sandwich",
+        "quadruple_octuple_lariat": "Quadruple / Octuple Lariat",
+        "blazing_lariat": "Blazing Lariat",
+        "quadroboom_octoboom_dive": "Quadroboom / Octoboom Dive",
+        "diveboom": "Diveboom",
+        "barbarous_barrage": "Barbarous Barrage",
+        "explosion": "Explosion",
+        "murdurous_mist": "Murderous Mist",
+        "doping_draught": "Doping Draught",
+        "tag_team": "Tag Team",
+        "chain_deathmatch": "Chain Deathmatch",
+        "lariat_combo": "Lariat Combo",
+        "final_fusedown": "Final Fusedown",
+        "fusefield": "Fusefield",
+        "bombarian_flame": "Bombarian Flame",
+        "mana_explosion": "Mana Explosion",
+        "quadroboom_octoboom_bombarian_special": "Quadroboom / Octoboom Bombarian Special",
+        "bombarian_special": "Bombarian Special",
+        "bombariboom": "Bombariboom",
+        "fuses_of_fury": "Fuses of Fury",
+        "fuse_or_foe": "Fuse or Foe",
+        "infernal_spin": "Infernal Spin",
+        "special_bombarian_special": "Special Bombarian Special"
       }
     }
   },

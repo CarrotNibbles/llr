@@ -139,7 +139,8 @@
       "P10S": "마의 전당 판데모니움: 천옥편(영웅) 2",
       "P11S": "마의 전당 판데모니움: 천옥편(영웅) 3",
       "M1S": "아르카디아 선수권: 라이트헤비급(영웅) 1",
-      "M2S": "아르카디아 선수권: 라이트헤비급(영웅) 2"
+      "M2S": "아르카디아 선수권: 라이트헤비급(영웅) 2",
+      "M3S": "아르카디아 선수권: 라이트헤비급(영웅) 3"
     },
     "Gimmicks": {
       "P10S": {
@@ -217,6 +218,33 @@
         "big_burst": "대폭발",
         "rotten_heart": "흑심",
         "sheer_heart_attack": "심쿵사"
+      },
+      "M3S": {
+        "auto_attack": "자동 공격",
+        "brutal_impact": "비열한 내리치기",
+        "knuckle_sandwich": "비열한 주먹질",
+        "quadruple_octuple_lariat": "4 / 8갈래 양팔 후려갈기기",
+        "blazing_lariat": "불타는 후려갈기기",
+        "quadroboom_octoboom_dive": "4 / 8폭발 강타",
+        "diveboom": "강타 폭발",
+        "barbarous_barrage": "봄버리안 봄",
+        "explosion": "폭발",
+        "murdurous_mist": "녹색 안개",
+        "doping_draught": "도핑",
+        "tag_team": "태그매치",
+        "chain_deathmatch": "체인 데스매치",
+        "lariat_combo": "연속 후려갈기기",
+        "final_fusedown": "0식 불붙은 봄",
+        "fusefield": "도화선 지옥",
+        "bombarian_flame": "봄버리안 파이어",
+        "mana_explosion": "마력 폭발",
+        "quadroboom_octoboom_bombarian_special": "4 / 8폭발 봄버리안 스페셜",
+        "bombarian_special": "봄버리안 스페셜",
+        "bombariboom": "봄바리안 폭발",
+        "fuses_of_fury": "퓨즈 폭탄",
+        "fuse_or_foe": "불붙은 봄 부착",
+        "infernal_spin": "회전 지옥불 뿜기",
+        "special_bombarian_special": "궁극의 봄버리안 스페셜"
       }
     }
   },
