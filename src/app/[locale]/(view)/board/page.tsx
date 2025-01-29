@@ -80,7 +80,7 @@ export default async function BoardPage(props: BoardPageProps) {
 
   const authorId = authored ? user?.id : undefined;
   const likerId = liked ? user?.id : undefined;
-  const allowPrivate = authored || liked;
+  const showAll = authored || liked;
 
   const commonParams = {
     raid_skey: raid,
@@ -88,7 +88,7 @@ export default async function BoardPage(props: BoardPageProps) {
     jobs,
     author_id: authorId,
     liker_id: likerId,
-    allow_private: allowPrivate,
+    show_all: showAll,
   };
 
   return (

@@ -315,6 +315,7 @@ export type Database = {
           created_at: string
           id: string
           is_editable: boolean
+          is_listed: boolean
           is_public: boolean
           modified_at: string
           name: string
@@ -328,6 +329,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_editable?: boolean
+          is_listed?: boolean
           is_public?: boolean
           modified_at?: string
           name?: string
@@ -341,6 +343,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_editable?: boolean
+          is_listed?: boolean
           is_public?: boolean
           modified_at?: string
           name?: string
@@ -517,7 +520,7 @@ export type Database = {
           jobs?: Database["public"]["Enums"]["job"][]
           author_id?: string
           liker_id?: string
-          allow_private?: boolean
+          show_all?: boolean
         }
         Returns: number
       }
@@ -535,7 +538,7 @@ export type Database = {
           jobs?: Database["public"]["Enums"]["job"][]
           author_id?: string
           liker_id?: string
-          allow_private?: boolean
+          show_all?: boolean
           sort?: string
           page?: number
           lim?: number
@@ -544,6 +547,7 @@ export type Database = {
           id: string
           name: string
           is_public: boolean
+          is_listed: boolean
           is_editable: boolean
           version: number
           subversion: number

@@ -299,6 +299,8 @@
         "Name": "戦略名",
         "isPublic": "戦略公開",
         "isPublicDescription": "戦略を公開すると、他のユーザーが検索して閲覧できます。",
+        "isListed": "リストに表示",
+        "isListedDescription": "攻略をリストに表示すると、検索やリストで確認できます。攻略が非公開の場合は無視されます。",
         "isEditable": "編集可能",
         "isEditableDescription": "パスワードで戦略を編集できるように設定します。",
         "Patch": "基準パッチバージョン",

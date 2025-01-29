@@ -6,7 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import type { buildStrategiesDataQuery } from '@/lib/queries/server';
 import { cn, getOrderedRole } from '@/lib/utils/helpers';
-import { HeartFilledIcon, LockClosedIcon, Pencil1Icon } from '@radix-ui/react-icons';
+import { EyeNoneIcon, HeartFilledIcon, LockClosedIcon, Pencil1Icon } from '@radix-ui/react-icons';
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
 import type React from 'react';
@@ -89,7 +89,7 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
                 <div className="flex flex-col pl-4 pr-2 py-4">
                   <div className="flex items-center">
                     <h2 className="text-base md:text-lg font-bold">{strategyData.name}</h2>
-                    {!strategyData.is_public && <LockClosedIcon className="ml-1 text-amber-600 dark:text-amber-400" />}
+                    {!strategyData.is_public ? <LockClosedIcon className="ml-1 text-amber-600 dark:text-amber-400" /> : (!strategyData.is_listed && <EyeNoneIcon className="ml-1 text-fuchsia-600 dark:text-fuchsia-400" />)}
                     {strategyData.is_editable && <Pencil1Icon className="ml-1 text-muted-foreground" />}
                   </div>
                   <div className="text-xs md:text-sm text-muted-foreground">

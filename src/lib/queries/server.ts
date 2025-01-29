@@ -24,7 +24,7 @@ export const buildStrategyCountQuery = async (
     jobs?: SelectableJob[];
     author_id?: string;
     liker_id?: string;
-    allow_private?: boolean;
+    show_all?: boolean;
   },
 ) => {
   return supabase.rpc('count_strategies', params);
@@ -40,7 +40,7 @@ export const buildMaxPageQuery = async (
     jobs?: SelectableJob[];
     author_id?: string;
     liker_id?: string;
-    allow_private?: boolean;
+    show_all?: boolean;
   },
 ) => {
   const { data, error } = await buildStrategyCountQuery(supabase, params);
@@ -62,7 +62,7 @@ export const buildStrategiesDataQuery = async (
     jobs?: SelectableJob[];
     author_id?: string;
     liker_id?: string;
-    allow_private?: boolean;
+    show_all?: boolean;
   },
 ) => {
   const { data, error } = await supabase.rpc('select_strategies', removeUndefinedFields(params));

@@ -128,6 +128,7 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
       raid: raid.id,
       author: userResponse.data.user.id,
       is_editable: true,
+      is_listed: true,
       is_public: values.scope === 'public',
       version: 7,
       subversion: 0, // TODO: Add something like current_version

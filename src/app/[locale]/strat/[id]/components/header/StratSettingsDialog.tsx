@@ -36,6 +36,7 @@ export const StratSettingsDialog = () => {
   const id = useStratSyncStore((state) => state.strategyData.id);
   const name = useStratSyncStore((state) => state.strategyData.name);
   const isPublic = useStratSyncStore((state) => state.strategyData.is_public);
+  const isListed = useStratSyncStore((state) => state.strategyData.is_listed);
   const isEditable = useStratSyncStore((state) => state.strategyData.is_editable);
   const version = useStratSyncStore((state) => state.strategyData.version);
   const subversion = useStratSyncStore((state) => state.strategyData.subversion);
@@ -50,6 +51,7 @@ export const StratSettingsDialog = () => {
     name: z.string().min(1, t('NameError')),
     isPublic: z.boolean(),
     isEditable: z.boolean(),
+    isListed: z.boolean(),
     patch: z.string().regex(PATCH_REGEX),
     password: z
       .string()
@@ -62,6 +64,7 @@ export const StratSettingsDialog = () => {
     defaultValues: {
       name,
       isPublic,
+      isListed,
       isEditable,
       patch: `${version}.${subversion}`,
     },
@@ -75,6 +78,7 @@ export const StratSettingsDialog = () => {
       name: values.name,
       is_public: values.isPublic,
       is_editable: values.isEditable,
+      is_listed: values.isListed,
       version: Number.parseInt(values.patch.split('.')[0]),
       subversion: Number.parseInt(values.patch.split('.')[1]),
       password:
@@ -190,7 +194,7 @@ export const StratSettingsDialog = () => {
               name="isPublic"
               render={({ field }) => (
                 <FormItem>
-                  <div className="flex flex-row items-center justify-between">
+                  <div className="flex flex-row items-center justify-between space-x-4">
                     <div>
                       <FormLabel>{t('isPublic')}</FormLabel>
                       <FormDescription>{t('isPublicDescription')}</FormDescription>
@@ -206,10 +210,29 @@ export const StratSettingsDialog = () => {
             />
             <FormField
               control={form.control}
+              name="isListed"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex flex-row items-center justify-between space-x-4">
+                    <div>
+                      <FormLabel>{t('isListed')}</FormLabel>
+                      <FormDescription>{t('isListedDescription')}</FormDescription>
+                      <FormMessage />
+                    </div>
+
+                    <FormControl>
+                      <Switch className="my-0" checked={field.value} onCheckedChange={field.onChange} />
+                    </FormControl>
+                  </div>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="isEditable"
               render={({ field }) => (
                 <FormItem>
-                  <div className="flex flex-row items-center justify-between">
+                  <div className="flex flex-row items-center justify-between space-x-4">
                     <div>
                       <FormLabel>{t('isEditable')}</FormLabel>
                       <FormDescription>{t('isEditableDescription')}</FormDescription>

@@ -299,6 +299,8 @@
         "Name": "Strategy Name",
         "isPublic": "Public Strategy",
         "isPublicDescription": "If you make the strategy public, other users can search and view it.",
+        "isListed": "Show in List",
+        "isListedDescription": "If the strategy is listed, it will be visible in search and lists. This setting is ignored if the strategy is private.",
         "isEditable": "Editable",
         "isEditableDescription": "Allows the strategy to be edited with a password.",
         "Patch": "Base Patch Version",
