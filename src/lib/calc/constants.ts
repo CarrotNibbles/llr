@@ -128,7 +128,7 @@ Main Stat Regressive Gear Stat Parameters
 | 70    | 0.002545       | 53.36               | 51.46              | 32.38              | 25.54             |
 | 80    | 0.002545       | 55.15               | 53.17              | 33.50              | 26.40             |
 | 90    | 0.005408       | 11.54               | 11.12              | 7.003              | 5.525             |
-| 100   | 0.005236       | 13.36               | 12.87              | 8.113              | 6.393             |
+| 100   | 0.005235       | 13.38               | 12.89              | 8.123              | 6.402             |
 */
 
 export const MAIN_STAT_GEAR_REGRESSIONS: Record<number, RegressiveGearStatParams> = {
@@ -154,11 +154,11 @@ export const MAIN_STAT_GEAR_REGRESSIONS: Record<number, RegressiveGearStatParams
     C_accessory: 5.525,
   },
   100: {
-    zeta: 0.005236,
-    C_weapon: 13.36,
-    C_major_piece: 12.87,
-    C_minor_piece: 8.113,
-    C_accessory: 6.393,
+    zeta: 0.005235,
+    C_weapon: 13.38,
+    C_major_piece: 12.89,
+    C_minor_piece: 8.123,
+    C_accessory: 6.402,
   },
 };
 
@@ -169,7 +169,7 @@ Tank VIT Regressive Gear Stat Parameters
 | 70    | 0.003392       | 40.50               | 39.01              | 24.56              | 19.41             |
 | 80    | 0.003133       | 42.47               | 40.91              | 25.74              | 20.29             |
 | 90    | 0.006475       | 6.362               | 6.137              | 3.861              | 3.042             |
-| 100   | 0.006141       | 7.293               | 7.023              | 4.422              | 3.486             |
+| 100   | 0.006135       | 7.322               | 7.049              | 4.439              | 3.499             |
 */
 
 export const TANK_VIT_GEAR_REGRESSIONS: Record<number, RegressiveGearStatParams> = {
@@ -195,11 +195,11 @@ export const TANK_VIT_GEAR_REGRESSIONS: Record<number, RegressiveGearStatParams>
     C_accessory: 3.042,
   },
   100: {
-    zeta: 0.006141,
-    C_weapon: 7.293,
-    C_major_piece: 7.023,
-    C_minor_piece: 4.422,
-    C_accessory: 3.486,
+    zeta: 0.006135,
+    C_weapon: 7.322,
+    C_major_piece: 7.049,
+    C_minor_piece: 4.439,
+    C_accessory: 3.499,
   },
 };
 
@@ -210,7 +210,7 @@ Healer VIT Regressive Gear Stat Parameters
 | 70    | 0.003384       | 36.55               | 35.21              | 22.15              | 17.54             |
 | 80    | 0.003122       | 38.43               | 37.02              | 23.30              | 18.37             |
 | 90    | 0.006470       | 5.746               | 5.543              | 3.488              | 2.748             |
-| 100   | 0.006141       | 6.560               | 6.319              | 3.975              | 3.136             |
+| 100   | 0.006136       | 6.587               | 6.345              | 3.992              | 3.149             |
 */
 
 export const HEALER_VIT_GEAR_REGRESSIONS: Record<number, RegressiveGearStatParams> = {
@@ -236,11 +236,11 @@ export const HEALER_VIT_GEAR_REGRESSIONS: Record<number, RegressiveGearStatParam
     C_accessory: 2.748,
   },
   100: {
-    zeta: 0.006141,
-    C_weapon: 6.56,
-    C_major_piece: 6.319,
-    C_minor_piece: 3.975,
-    C_accessory: 3.136,
+    zeta: 0.006136,
+    C_weapon: 6.587,
+    C_major_piece: 6.345,
+    C_minor_piece: 3.992,
+    C_accessory: 3.149,
   },
 };
 
