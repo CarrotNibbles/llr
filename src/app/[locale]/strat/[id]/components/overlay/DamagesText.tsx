@@ -287,6 +287,63 @@ const ShareHalfRaidWide = (props: DamageTextProps) => {
   );
 };
 
+const ShareQuarterRaidWide = (props: DamageTextProps) => {
+  const { damageType, defaultDamage, currentDamage, numShared } = props;
+
+  const elevated = useStratSyncStore((state) => state.elevated);
+  const upsertDamageOption = useStratSyncStore((state) => state.upsertDamageOption);
+
+  const activeOption = numShared === 1 ? 1 : 0;
+  const cursorStyle = elevated ? 'cursor-pointer' : 'cursor-not-allowed';
+
+  return (
+    <>
+      <div className="space-x-1 pr-4 flex items-center min-w-20">
+        <DamageTypeIcon damageType={damageType} />
+
+        {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+        <span
+          className={cn(activeOption === 0 ? ACTIVE_DAMAGE_OPTION_STYLE : INACTIVE_DAMAGE_OPTION_STYLE, cursorStyle)}
+          onClick={() => {
+            if (activeOption === 0) return;
+
+            upsertDamageOption(
+              {
+                damage: props.damageId,
+                numShared: 2,
+              },
+              false,
+            );
+          }}
+        >
+          2+2+2+2
+        </span>
+        {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+        <span
+          className={cn(activeOption === 1 ? ACTIVE_DAMAGE_OPTION_STYLE : INACTIVE_DAMAGE_OPTION_STYLE, cursorStyle)}
+          onClick={() => {
+            if (activeOption === 1) return;
+
+            upsertDamageOption(
+              {
+                damage: props.damageId,
+                numShared: 1,
+              },
+              false,
+            );
+          }}
+        >
+          1+α
+        </span>
+      </div>
+      <DamageAmounts
+        currentDamage={currentDamage}
+        defaultDamage={Math.round(defaultDamage / (activeOption === 0 ? 2 : 1))}
+      />
+    </>
+  );
+};
+
 // This is a fallback component for when the damage type is unknown
 const Unknown = () => {
   const t = useTranslations('StratPage.DamageText');
@@ -303,6 +360,7 @@ const componentSelector = (target: 'Raidwide' | 'Tankbuster', numTargets: number
   if (target === 'Raidwide') {
     if (numTargets === 1 && maxShared === 8) return ShareAllRaidWide;
     if (numTargets === 2 && maxShared === 4) return ShareHalfRaidWide;
+    if (numTargets === 4 && maxShared === 2) return ShareQuarterRaidWide;
     if (maxShared === 1) return RaidWide;
   }
 
