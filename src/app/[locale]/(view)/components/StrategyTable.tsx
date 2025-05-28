@@ -84,12 +84,16 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
       ) : (
         strategiesData.map((strategyData) => (
           <TableRow key={strategyData.id}>
-            <TableCell className="p-0 h-0">
+            <TableCell className="p-0">
               <Link href={`/strat/${strategyData.id}`} className="w-full h-full flex items-center">
                 <div className="flex flex-col pl-4 pr-2 py-4">
                   <div className="flex items-center">
                     <h2 className="text-base md:text-lg font-bold">{strategyData.name}</h2>
-                    {!strategyData.is_public ? <LockClosedIcon className="ml-1 text-amber-600 dark:text-amber-400" /> : (!strategyData.is_listed && <EyeNoneIcon className="ml-1 text-fuchsia-600 dark:text-fuchsia-400" />)}
+                    {!strategyData.is_public ? (
+                      <LockClosedIcon className="ml-1 text-amber-600 dark:text-amber-400" />
+                    ) : (
+                      !strategyData.is_listed && <EyeNoneIcon className="ml-1 text-fuchsia-600 dark:text-fuchsia-400" />
+                    )}
                     {strategyData.is_editable && <Pencil1Icon className="ml-1 text-muted-foreground" />}
                   </div>
                   <div className="text-xs md:text-sm text-muted-foreground">
@@ -112,7 +116,7 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
                 </div>
               </Link>
             </TableCell>
-            <TableCell className="p-0 w-0 h-0 hidden md:table-cell">
+            <TableCell className="p-0 hidden md:table-cell">
               <Link
                 href={`/strat/${strategyData.id}`}
                 className={cn(
@@ -123,7 +127,7 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
                 <div className="px-2 py-4">{strategyData.author_display_name ?? t('DeletedUser')}</div>
               </Link>
             </TableCell>
-            <TableCell className="p-0 w-0 h-0">
+            <TableCell className="p-0">
               <Link
                 href={`/strat/${strategyData.id}`}
                 className="w-full h-full flex justify-center items-center tabular-nums"
@@ -131,7 +135,7 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
                 <div className="px-2 py-4">{`${strategyData.version}.${strategyData.subversion}`}</div>
               </Link>
             </TableCell>
-            <TableCell className="p-0 w-0 h-0">
+            <TableCell className="p-0">
               <Link
                 href={`/strat/${strategyData.id}`}
                 className="w-full h-full flex justify-center items-center tabular-nums"
@@ -142,7 +146,7 @@ const StrategyTableBody: React.FC<StrategyTableBodyProps> = async ({ dataPromise
                 </div>
               </Link>
             </TableCell>
-            <TableCell className="p-0 w-0 h-0  hidden md:table-cell">
+            <TableCell className="p-0 hidden md:table-cell">
               <Link href={`/strat/${strategyData.id}`} className="w-full h-full flex justify-center items-center">
                 <div className="px-2 py-4 flex justify-center items-center">
                   <ModifiedTime createdAt={strategyData.created_at} modifiedAt={strategyData.modified_at} />
@@ -163,7 +167,7 @@ const StrategyTableBodySkeleton: React.FC<StrategyTableBodySkeletonProps> = ({ c
   <TableBody className={className} {...props}>
     {rangeInclusive(1, DEFAULT_LIMIT).map((index) => (
       <TableRow key={index}>
-        <TableCell className="p-0 h-0">
+        <TableCell className="p-0">
           <div className="w-full h-full flex items-center">
             <div className="w-full flex flex-col pl-4 py-4 pr-2">
               <TextSkeleton textSize="base" mdTextSize="lg" className="w-1/2" />
@@ -178,22 +182,22 @@ const StrategyTableBodySkeleton: React.FC<StrategyTableBodySkeletonProps> = ({ c
             </div>
           </div>
         </TableCell>
-        <TableCell className="p-0 w-0 h-0 hidden md:table-cell">
+        <TableCell className="p-0 hidden md:table-cell">
           <div className="w-full h-full flex items-center">
             {/* <TextSkeleton textSize="sm" className="w-1/2" /> */}
           </div>
         </TableCell>
-        <TableCell className="p-0 w-0 h-0">
+        <TableCell className="p-0">
           <div className="w-full h-full flex justify-center items-center">
             {/* <TextSkeleton textSize="sm" className="w-1/2" /> */}
           </div>
         </TableCell>
-        <TableCell className="p-0 w-0 h-0">
+        <TableCell className="p-0">
           <div className="w-full h-full flex justify-center items-center">
             {/* <TextSkeleton textSize="sm" className="w-1/2" /> */}
           </div>
         </TableCell>
-        <TableCell className="p-0 w-0 h-0  hidden md:table-cell">
+        <TableCell className="p-0  hidden md:table-cell">
           <div className="w-full h-full flex justify-center items-center">
             {/* <TextSkeleton textSize="sm" className="w-1/2" /> */}
           </div>
