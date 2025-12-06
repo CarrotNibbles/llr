@@ -43,8 +43,8 @@ jobs:
             # lexicographically sortable timestamp (UTC)
             type=raw,value=ts-{{date 'YYYYMMDDHHmmss'}}
           labels: |
-            org.opencontainers.image.title=hareen.io
-            org.opencontainers.image.description=hareen.io application image
+            org.opencontainers.image.title=llr-preview
+            org.opencontainers.image.description=llr-preview application image
             org.opencontainers.image.source=${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created={{date 'YYYY-MM-DDTHH:mm:ssZ'}}
