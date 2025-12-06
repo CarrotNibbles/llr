@@ -19,6 +19,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
   if (!locale || !SUPPORTED_LOCALES.includes(locale as Locale)) notFound();
 
   return {
+    locale: locale,
     messages: (await import(`./messages/${locale}.json`)).default,
   };
 });
