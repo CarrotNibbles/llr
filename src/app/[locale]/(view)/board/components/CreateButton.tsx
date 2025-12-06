@@ -89,14 +89,14 @@ const CreateForm = React.forwardRef<HTMLFormElement, CreateFormProps>(({ raidsDa
 
   const formSchema = z.object({
     name: z
-      .string({ required_error: t('NameRequired') })
+      .string({ error: t('NameRequired') })
       .min(2, t('NameTooShort'))
       .max(50, t('NameTooLong')),
-    raid: z.string({ required_error: t('RaidRequired') }),
+    raid: z.string({ error: t('RaidRequired') }),
     scope: z.enum(['public', 'private'], {
-      required_error: t('ScopeRequired'),
+      error: t('ScopeRequired'),
     }),
-    password: z.string({ required_error: t('PasswordRequired') }).regex(/^\d{8}$/, t('PasswordError')),
+    password: z.string({ error: t('PasswordRequired') }).regex(/^\d{8}$/, t('PasswordError')),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({

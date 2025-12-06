@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils/helpers';
 import { Provider as JotaiProvider } from 'jotai';
+import { getLocale } from 'next-intl/server';
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',
@@ -32,12 +33,9 @@ const pretendard = localFont({
 export default async function RootLayout(
   props: Readonly<{
     children: React.ReactNode;
-    params: { lang: string };
   }>,
 ): Promise<React.ReactElement> {
-  const params = await props.params;
-
-  const { lang } = params;
+  const lang = await getLocale();
 
   const { children } = props;
 
