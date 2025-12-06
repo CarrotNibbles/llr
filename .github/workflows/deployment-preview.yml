@@ -20,7 +20,7 @@ jobs:
   push:
     runs-on: ubuntu-latest
 
-    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    if: false
 
     steps:
       - uses: appleboy/ssh-action@master
